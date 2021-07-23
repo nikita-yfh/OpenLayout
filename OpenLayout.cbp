@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="OpenLayout" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/OpenLayout" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="include" />
+					<Add directory="./" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/OpenLayout" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-fomit-frame-pointer" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-flto" />
+					<Add option="-Os" />
+					<Add directory="include" />
+					<Add directory="./" />
+				</Compiler>
+				<Linker>
+					<Add option="-flto" />
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-w" />
+			<Add option="`wx-config --cflags`" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs std,aui`" />
+		</Linker>
+		<Unit filename="Board.cpp" />
+		<Unit filename="Board.hpp" />
+		<Unit filename="LayerInfo.cpp" />
+		<Unit filename="LayerInfo.h" />
+		<Unit filename="NewBoardDialog.cpp" />
+		<Unit filename="NewBoardDialog.h" />
+		<Unit filename="OpenLayoutApp.cpp" />
+		<Unit filename="OpenLayoutApp.h" />
+		<Unit filename="OpenLayoutMain.cpp" />
+		<Unit filename="OpenLayoutMain.h" />
+		<Unit filename="ProjectInfo.cpp" />
+		<Unit filename="ProjectInfo.h" />
+		<Unit filename="Settings.cpp" />
+		<Unit filename="Settings.h" />
+		<Unit filename="wxsmith/LayerInfo.wxs" />
+		<Unit filename="wxsmith/NewBoardDialog.wxs" />
+		<Unit filename="wxsmith/OpenLayoutframe.wxs" />
+		<Unit filename="wxsmith/ProjectInfo.wxs" />
+		<Unit filename="wxsmith/Settings.wxs" />
+		<Extensions>
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="OpenLayoutApp.cpp" main="OpenLayoutFrame" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxFrame wxs="wxsmith/OpenLayoutframe.wxs" src="OpenLayoutMain.cpp" hdr="OpenLayoutMain.h" fwddecl="0" i18n="1" name="OpenLayoutFrame" language="CPP" />
+					<wxDialog wxs="wxsmith/NewBoardDialog.wxs" src="NewBoardDialog.cpp" hdr="NewBoardDialog.h" fwddecl="0" i18n="1" name="NewBoardDialog" language="CPP" />
+					<wxDialog wxs="wxsmith/LayerInfo.wxs" src="LayerInfo.cpp" hdr="LayerInfo.h" fwddecl="0" i18n="1" name="LayerInfo" language="CPP" />
+					<wxDialog wxs="wxsmith/ProjectInfo.wxs" src="ProjectInfo.cpp" hdr="ProjectInfo.h" fwddecl="0" i18n="1" name="ProjectInfo" language="CPP" />
+					<wxDialog wxs="wxsmith/Settings.wxs" src="Settings.cpp" hdr="Settings.h" fwddecl="0" i18n="1" name="Settings" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
