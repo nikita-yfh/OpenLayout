@@ -1,21 +1,21 @@
 #ifndef LAYERINFO_H
 #define LAYERINFO_H
 
-//(*Headers(LayerInfo)
+//(*Headers(LayerInfoDialog)
 #include <wx/dialog.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/statbmp.h>
 //*)
 
-class LayerInfo: public wxDialog
+class LayerInfoDialog: public wxDialog
 {
 	public:
 
-		LayerInfo(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-		virtual ~LayerInfo();
+		LayerInfoDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+		virtual ~LayerInfoDialog();
 
-		//(*Declarations(LayerInfo)
+		//(*Declarations(LayerInfoDialog)
 		wxPanel* Panel1;
 		wxPanel* Panel2;
 		wxPanel* Panel3;
@@ -30,7 +30,7 @@ class LayerInfo: public wxDialog
 
 	protected:
 
-		//(*Identifiers(LayerInfo)
+		//(*Identifiers(LayerInfoDialog)
 		static const long ID_STATICBITMAP1;
 		static const long ID_PANEL1;
 		static const long ID_STATICBITMAP2;
@@ -45,7 +45,7 @@ class LayerInfo: public wxDialog
 
 	private:
 
-		//(*Handlers(LayerInfo)
+		//(*Handlers(LayerInfoDialog)
 		//*)
 
 		DECLARE_EVENT_TABLE()

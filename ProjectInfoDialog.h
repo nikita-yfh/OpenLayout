@@ -1,22 +1,23 @@
 #ifndef PROJECTINFO_H
 #define PROJECTINFO_H
+#include "PCBFile.h"
 
-//(*Headers(ProjectInfo)
+//(*Headers(ProjectInfoDialog)
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
 
-class ProjectInfo: public wxDialog
+class ProjectInfoDialog: public wxDialog
 {
 	public:
-		void Set(const char *title,const char *author, const char *company, const char *comment);
-		void Get(char *title,char *author, char *company, char *comment);
-		ProjectInfo(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-		virtual ~ProjectInfo();
+		void Set(const ProjectInfo info);
+		void Get(ProjectInfo &info);
+		ProjectInfoDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+		virtual ~ProjectInfoDialog();
 
-		//(*Declarations(ProjectInfo)
+		//(*Declarations(ProjectInfoDialog)
 		wxStaticText* StaticText1;
 		wxStaticText* StaticText2;
 		wxStaticText* StaticText3;
@@ -29,7 +30,7 @@ class ProjectInfo: public wxDialog
 
 	protected:
 
-		//(*Identifiers(ProjectInfo)
+		//(*Identifiers(ProjectInfoDialog)
 		static const long ID_STATICTEXT2;
 		static const long ID_STATICTEXT3;
 		static const long ID_STATICTEXT4;
@@ -41,7 +42,7 @@ class ProjectInfo: public wxDialog
 		//*)
 
 	private:
-		//(*Handlers(ProjectInfo)
+		//(*Handlers(ProjectInfoDialog)
 		//*)
 
 		DECLARE_EVENT_TABLE()

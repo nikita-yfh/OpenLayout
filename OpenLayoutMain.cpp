@@ -9,9 +9,9 @@
 
 #include "OpenLayoutMain.h"
 #include "NewBoardDialog.h"
-#include "LayerInfo.h"
-#include "ProjectInfo.h"
-#include "Settings.h"
+#include "LayerInfoDialog.h"
+#include "ProjectInfoDialog.h"
+#include "SettingsDialog.h"
 #include <wx/msgdlg.h>
 #include <wx/dcclient.h>
 //(*InternalHeaders(OpenLayoutFrame)
@@ -350,10 +350,10 @@ OpenLayoutFrame::OpenLayoutFrame(wxWindow* parent,wxWindowID id) {
     FlexGridSizer2->Add(RadioBox1, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
     FlexGridSizer4 = new wxFlexGridSizer(0, 3, 0, 0);
     GridSizeB = new wxBitmapButton(Panel1, ID_BITMAPBUTTON4, grid_xpm, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE, wxDefaultValidator, _T("ID_BITMAPBUTTON4"));
-    FlexGridSizer4->Add(GridSizeB, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 0);
+    FlexGridSizer4->Add(GridSizeB, 1, wxALL|wxEXPAND, 0);
     GridSizeV = new wxButton(Panel1, ID_BUTTON1, _("Label"), wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, wxDefaultValidator, _T("ID_BUTTON1"));
     FlexGridSizer4->Add(GridSizeV, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
-    FlexGridSizer2->Add(FlexGridSizer4, 1, wxALL|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL, 0);
+    FlexGridSizer2->Add(FlexGridSizer4, 1, wxALL|wxEXPAND, 0);
     FlexGridSizer3 = new wxFlexGridSizer(3, 2, 0, 0);
     TrackSizeB = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, track_xpm, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
     FlexGridSizer3->Add(TrackSizeB, 1, wxALL|wxEXPAND, 0);
@@ -723,6 +723,7 @@ OpenLayoutFrame::OpenLayoutFrame(wxWindow* parent,wxWindowID id) {
     Connect(ID_MENUITEM20,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::OnQuit);
     Connect(ID_MENUITEM29,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::AddNewBoard);
     Connect(ID_MENUITEM48,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::OnProjectInfoButtonClick);
+    Connect(ID_MENUITEM59,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::OnSettingsButtonClick);
     Connect(ID_TOOLBARITEM19,wxEVT_COMMAND_TOOL_CLICKED,(wxObjectEventFunction)&OpenLayoutFrame::OnProjectInfoButtonClick);
     Connect(ID_MENUITEM70,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::OnGridSize1Selected);
     Connect(ID_MENUITEM71,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&OpenLayoutFrame::OnGridSize2Selected);
@@ -756,24 +757,14 @@ void OpenLayoutFrame::OnClose(wxCloseEvent& event) {
     Destroy();
 }
 
-Board &OpenLayoutFrame::GetSelectedBoard(){
-	return boards[selected_board];
-}
 void OpenLayoutFrame::SetDefaults(){
-	boards.clear();
-	boards.push_back(Board());
-
 	SetGridSize(1.27f);
 	SetPadSize1(1.8f);
 	SetPadSize2(0.6);
 	SetPadSMDW(0.9f);
 	SetPadSMDH(1.8f);
 
-	strcpy(project_title,"");
-	strcpy(project_author,"");
-	strcpy(project_company,"");
-	strcpy(project_comment,"");
-	Settings(this).ShowModal();
+	file.SetDefaults();
 }
 void OpenLayoutFrame::SwapSMDSize(){
 	swap(pad_smd_w,pad_smd_h);
@@ -797,7 +788,7 @@ void OpenLayoutFrame::OnPadSMDHChange(wxSpinDoubleEvent& event){
 }
 
 void OpenLayoutFrame::SetGridSize(float value,bool micro){
-	GetSelectedBoard().grid_size=value*(micro?0.001f:1.0f);
+	file.GetSelectedBoard().grid_size=value*(micro?0.001f:1.0f);
 	string label=to_str(value);
 	if(micro)label+=" um";
 	else label+=" mm";
@@ -856,10 +847,9 @@ void OpenLayoutFrame::AddNewBoard(wxCommandEvent& event){
 		NewBoardDialog dialog(this);
 		if(dialog.ShowModal()==wxID_OK){
 			if(dialog.board.isValid()){
-				boards.push_back(dialog.board);
-				selected_board=boards.size()-1;
+				file.AddBoard(dialog.board);
 				BoardChoice->Append(dialog.board.name);
-				BoardChoice->SetSelection(boards.size()-1);
+				BoardChoice->SetSelection(file.GetNumBoards()-1);
 				wxMessageDialog(nullptr,_("A new board added successfully"),_("Info"),wxOK|wxCENTRE|wxICON_INFORMATION).ShowModal();
 				break;
 			}else{
@@ -883,13 +873,20 @@ void OpenLayoutFrame::OnBoardChoiceSelect(wxCommandEvent& event)
 }
 
 void OpenLayoutFrame::OnLayerHelpButtonClick(wxCommandEvent& event){
-	LayerInfo(this).ShowModal();
+	LayerInfoDialog(this).ShowModal();
 }
 
 
 void OpenLayoutFrame::OnProjectInfoButtonClick(wxCommandEvent& event){
-	ProjectInfo i(this);
-	i.Set(project_title,project_author,project_company,project_comment);
+	ProjectInfoDialog i(this);
+	i.Set(file.info);
 	if(i.ShowModal()==wxID_OK)
-		i.Get(project_title,project_author,project_company,project_comment);
+		i.Get(file.info);
+}
+
+void OpenLayoutFrame::OnSettingsButtonClick(wxCommandEvent& event){
+	SettingsDialog dialog(this);
+	dialog.Set(s);
+	if(dialog.ShowModal()==wxID_OK)
+		dialog.Get(s);
 }

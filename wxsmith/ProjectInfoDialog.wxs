@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="ProjectInfo">
+	<object class="wxDialog" name="ProjectInfoDialog">
 		<title>Project info</title>
 		<pos_arg>1</pos_arg>
 		<size_arg>1</size_arg>

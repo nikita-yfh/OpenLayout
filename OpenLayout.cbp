@@ -17,6 +17,7 @@
 					<Add option="-g" />
 					<Add directory="include" />
 					<Add directory="./" />
+					<Add directory="../OpenLayout" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -32,6 +33,7 @@
 					<Add option="-Os" />
 					<Add directory="include" />
 					<Add directory="./" />
+					<Add directory="../OpenLayout" />
 				</Compiler>
 				<Linker>
 					<Add option="-flto" />
@@ -47,33 +49,37 @@
 			<Add option="`wx-config --libs std,aui`" />
 		</Linker>
 		<Unit filename="Board.cpp" />
-		<Unit filename="Board.hpp" />
-		<Unit filename="LayerInfo.cpp" />
-		<Unit filename="LayerInfo.h" />
+		<Unit filename="Board.h" />
+		<Unit filename="LayerInfoDialog.cpp" />
+		<Unit filename="LayerInfoDialog.h" />
 		<Unit filename="NewBoardDialog.cpp" />
 		<Unit filename="NewBoardDialog.h" />
 		<Unit filename="OpenLayoutApp.cpp" />
 		<Unit filename="OpenLayoutApp.h" />
 		<Unit filename="OpenLayoutMain.cpp" />
 		<Unit filename="OpenLayoutMain.h" />
-		<Unit filename="ProjectInfo.cpp" />
-		<Unit filename="ProjectInfo.h" />
+		<Unit filename="PCBFile.cpp" />
+		<Unit filename="PCBFile.h" />
+		<Unit filename="ProjectInfoDialog.cpp" />
+		<Unit filename="ProjectInfoDialog.h" />
 		<Unit filename="Settings.cpp" />
 		<Unit filename="Settings.h" />
-		<Unit filename="wxsmith/LayerInfo.wxs" />
+		<Unit filename="SettingsDialog.cpp" />
+		<Unit filename="SettingsDialog.h" />
+		<Unit filename="wxsmith/LayerInfoDialog.wxs" />
 		<Unit filename="wxsmith/NewBoardDialog.wxs" />
 		<Unit filename="wxsmith/OpenLayoutframe.wxs" />
-		<Unit filename="wxsmith/ProjectInfo.wxs" />
-		<Unit filename="wxsmith/Settings.wxs" />
+		<Unit filename="wxsmith/ProjectInfoDialog.wxs" />
+		<Unit filename="wxsmith/SettingsDialog.wxs" />
 		<Extensions>
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="OpenLayoutApp.cpp" main="OpenLayoutFrame" init_handlers="necessary" language="CPP" />
 				<resources>
 					<wxFrame wxs="wxsmith/OpenLayoutframe.wxs" src="OpenLayoutMain.cpp" hdr="OpenLayoutMain.h" fwddecl="0" i18n="1" name="OpenLayoutFrame" language="CPP" />
 					<wxDialog wxs="wxsmith/NewBoardDialog.wxs" src="NewBoardDialog.cpp" hdr="NewBoardDialog.h" fwddecl="0" i18n="1" name="NewBoardDialog" language="CPP" />
-					<wxDialog wxs="wxsmith/LayerInfo.wxs" src="LayerInfo.cpp" hdr="LayerInfo.h" fwddecl="0" i18n="1" name="LayerInfo" language="CPP" />
-					<wxDialog wxs="wxsmith/ProjectInfo.wxs" src="ProjectInfo.cpp" hdr="ProjectInfo.h" fwddecl="0" i18n="1" name="ProjectInfo" language="CPP" />
-					<wxDialog wxs="wxsmith/Settings.wxs" src="Settings.cpp" hdr="Settings.h" fwddecl="0" i18n="1" name="Settings" language="CPP" />
+					<wxDialog wxs="wxsmith/LayerInfoDialog.wxs" src="LayerInfoDialog.cpp" hdr="LayerInfoDialog.h" fwddecl="0" i18n="1" name="LayerInfoDialog" language="CPP" />
+					<wxDialog wxs="wxsmith/ProjectInfoDialog.wxs" src="ProjectInfoDialog.cpp" hdr="ProjectInfoDialog.h" fwddecl="0" i18n="1" name="ProjectInfoDialog" language="CPP" />
+					<wxDialog wxs="wxsmith/SettingsDialog.wxs" src="SettingsDialog.cpp" hdr="SettingsDialog.h" fwddecl="0" i18n="1" name="SettingsDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

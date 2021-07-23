@@ -12,6 +12,8 @@
 
 #include <vector>
 #include "Board.h"
+#include "PCBFile.h"
+#include "Settings.h"
 
 using namespace std;
 
@@ -71,6 +73,7 @@ private:
     void OnBoardChoiceSelect(wxCommandEvent& event);
     void OnLayerHelpButtonClick(wxCommandEvent& event);
     void OnProjectInfoButtonClick(wxCommandEvent& event);
+    void OnSettingsButtonClick(wxCommandEvent& event);
     //*)
 
     //(*Identifiers(OpenLayoutFrame)
@@ -380,10 +383,6 @@ private:
     wxToolBarToolBase* ToolBarItem9;
     //*)
 
-    int selected_board=0;
-    vector<Board>boards;
-
-    float grid_size;
 
     float track_size;
 
@@ -394,8 +393,9 @@ private:
     float pad_smd_h;
 
     void SetDefaults();
-    Board &GetSelectedBoard();
     void SwapSMDSize();
+
+    Settings s;
 
 	void SetGridSize(float,bool micro=false);
 	void SetTrackSize(float,bool set=false);
@@ -404,10 +404,7 @@ private:
 	void SetPadSMDW(float,bool set=false);
 	void SetPadSMDH(float,bool set=false);
 
-	char project_title[100];
-	char project_author[100];
-	char project_company[100];
-	char project_comment[1900];
+	PCBFile file;
 
     DECLARE_EVENT_TABLE()
 };

@@ -628,6 +628,7 @@
 				<label>Options</label>
 				<object class="wxMenuItem" name="ID_MENUITEM59" variable="MenuItem59" member="yes">
 					<label>General settings</label>
+					<handler function="OnSettingsButtonClick" entry="EVT_MENU" />
 				</object>
 				<object class="separator" />
 				<object class="wxMenuItem" name="ID_MENUITEM60" variable="MenuItem60" member="yes">

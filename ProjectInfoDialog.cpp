@@ -1,30 +1,30 @@
-#include "ProjectInfo.h"
+#include "ProjectInfoDialog.h"
 
-//(*InternalHeaders(ProjectInfo)
+//(*InternalHeaders(ProjectInfoDialog)
 #include <wx/button.h>
 #include <wx/intl.h>
 #include <wx/string.h>
 //*)
 
-//(*IdInit(ProjectInfo)
-const long ProjectInfo::ID_STATICTEXT2 = wxNewId();
-const long ProjectInfo::ID_STATICTEXT3 = wxNewId();
-const long ProjectInfo::ID_STATICTEXT4 = wxNewId();
-const long ProjectInfo::ID_TEXTCTRL2 = wxNewId();
-const long ProjectInfo::ID_TEXTCTRL3 = wxNewId();
-const long ProjectInfo::ID_TEXTCTRL4 = wxNewId();
-const long ProjectInfo::ID_STATICTEXT1 = wxNewId();
-const long ProjectInfo::ID_TEXTCTRL1 = wxNewId();
+//(*IdInit(ProjectInfoDialog)
+const long ProjectInfoDialog::ID_STATICTEXT2 = wxNewId();
+const long ProjectInfoDialog::ID_STATICTEXT3 = wxNewId();
+const long ProjectInfoDialog::ID_STATICTEXT4 = wxNewId();
+const long ProjectInfoDialog::ID_TEXTCTRL2 = wxNewId();
+const long ProjectInfoDialog::ID_TEXTCTRL3 = wxNewId();
+const long ProjectInfoDialog::ID_TEXTCTRL4 = wxNewId();
+const long ProjectInfoDialog::ID_STATICTEXT1 = wxNewId();
+const long ProjectInfoDialog::ID_TEXTCTRL1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(ProjectInfo,wxDialog)
-	//(*EventTable(ProjectInfo)
+BEGIN_EVENT_TABLE(ProjectInfoDialog,wxDialog)
+	//(*EventTable(ProjectInfoDialog)
 	//*)
 END_EVENT_TABLE()
 
-ProjectInfo::ProjectInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
+ProjectInfoDialog::ProjectInfoDialog(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
-	//(*Initialize(ProjectInfo)
+	//(*Initialize(ProjectInfoDialog)
 	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer3;
@@ -73,21 +73,21 @@ ProjectInfo::ProjectInfo(wxWindow* parent,wxWindowID id,const wxPoint& pos,const
 	//*)
 }
 
-void ProjectInfo::Set(const char *title,const char *author, const char *company, const char *comment){
-	TextTitle->SetValue(title);
-	TextAuthor->SetValue(author);
-	TextCompany->SetValue(company);
-	TextComment->SetValue(comment);
+void ProjectInfoDialog::Set(const ProjectInfo info){
+	TextTitle->SetValue(info.title);
+	TextAuthor->SetValue(info.author);
+	TextCompany->SetValue(info.company);
+	TextComment->SetValue(info.comment);
 }
-void ProjectInfo::Get(char *title,char *author,char *company,char *comment){
-	strcpy(title,TextTitle->GetValue().c_str());
-	strcpy(author,TextAuthor->GetValue().c_str());
-	strcpy(company,TextCompany->GetValue().c_str());
-	strcpy(comment,TextComment->GetValue().c_str());
+void ProjectInfoDialog::Get(ProjectInfo &info){
+	strcpy(info.title,TextTitle->GetValue().c_str());
+	strcpy(info.author,TextAuthor->GetValue().c_str());
+	strcpy(info.company,TextCompany->GetValue().c_str());
+	strcpy(info.comment,TextComment->GetValue().c_str());
 }
-ProjectInfo::~ProjectInfo()
+ProjectInfoDialog::~ProjectInfoDialog()
 {
-	//(*Destroy(ProjectInfo)
+	//(*Destroy(ProjectInfoDialog)
 	//*)
 }
 
