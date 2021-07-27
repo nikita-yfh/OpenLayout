@@ -20,10 +20,11 @@ bool OpenLayoutApp::OnInit() {
     //(*AppInitialize
     bool wxsOK = true;
     wxInitAllImageHandlers();
-    if ( wxsOK ) {
-        OpenLayoutFrame* Frame = new OpenLayoutFrame(0);
-        Frame->Show();
-        SetTopWindow(Frame);
+    if ( wxsOK )
+    {
+    OpenLayoutFrame* Frame = new OpenLayoutFrame(0);
+    Frame->Show();
+    SetTopWindow(Frame);
     }
     //*)
     return wxsOK;

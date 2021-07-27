@@ -1,9 +1,8 @@
 #include "NewBoardDialog.h"
 #include <sstream>
-
-#include "BITMAP/board1.xpm"
-#include "BITMAP/board2.xpm"
-#include "BITMAP/board3.xpm"
+#define NEWBOARD_XPM
+#include "images.h"
+#undef NEWBOARD_XPM
 
 //(*InternalHeaders(NewBoardDialog)
 #include <wx/bitmap.h>

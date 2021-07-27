@@ -26,3 +26,7 @@ void PCBFile::AddBoard(Board b){
 size_t PCBFile::GetNumBoards() const{
 	return boards.size();
 }
+void PCBFile::SelectBoard(size_t v){
+	assert(v<boards.size());
+	selected_board=v;
+}

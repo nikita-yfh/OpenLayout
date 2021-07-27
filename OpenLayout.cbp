@@ -42,12 +42,15 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-w" />
 			<Add option="`wx-config --cflags`" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs std,aui`" />
 		</Linker>
+		<ExtraCommands>
+			<Add before="./genimages.sh" />
+			<Add after="rm images.h" />
+		</ExtraCommands>
 		<Unit filename="Board.cpp" />
 		<Unit filename="Board.h" />
 		<Unit filename="LayerInfoDialog.cpp" />
@@ -66,6 +69,8 @@
 		<Unit filename="Settings.h" />
 		<Unit filename="SettingsDialog.cpp" />
 		<Unit filename="SettingsDialog.h" />
+		<Unit filename="inifile.cpp" />
+		<Unit filename="inifile.h" />
 		<Unit filename="wxsmith/LayerInfoDialog.wxs" />
 		<Unit filename="wxsmith/NewBoardDialog.wxs" />
 		<Unit filename="wxsmith/OpenLayoutframe.wxs" />
@@ -79,7 +84,6 @@
 					<wxDialog wxs="wxsmith/NewBoardDialog.wxs" src="NewBoardDialog.cpp" hdr="NewBoardDialog.h" fwddecl="0" i18n="1" name="NewBoardDialog" language="CPP" />
 					<wxDialog wxs="wxsmith/LayerInfoDialog.wxs" src="LayerInfoDialog.cpp" hdr="LayerInfoDialog.h" fwddecl="0" i18n="1" name="LayerInfoDialog" language="CPP" />
 					<wxDialog wxs="wxsmith/ProjectInfoDialog.wxs" src="ProjectInfoDialog.cpp" hdr="ProjectInfoDialog.h" fwddecl="0" i18n="1" name="ProjectInfoDialog" language="CPP" />
-					<wxDialog wxs="wxsmith/SettingsDialog.wxs" src="SettingsDialog.cpp" hdr="SettingsDialog.h" fwddecl="0" i18n="1" name="SettingsDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 		</Extensions>

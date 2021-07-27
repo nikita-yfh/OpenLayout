@@ -25,7 +25,7 @@ public:
 	void MoveBoardToBegin();
 	void MoveBoardToEnd();
 	size_t GetNumBoards() const;
-
+	void SelectBoard(size_t num);
 	ProjectInfo info;
 
 protected:

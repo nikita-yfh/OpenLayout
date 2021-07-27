@@ -17,6 +17,26 @@
 
 using namespace std;
 
+
+enum class Tool{
+	Edit,
+	Zoom,
+	Track,
+	Pad,
+	SMDPad,
+	Circle,
+	Rectangle,
+	Zone,
+	SpecialForm,
+	Text,
+	Connection,
+	Autoroute,
+	Test,
+	Measure,
+	Photoview,
+	SolderMask
+};
+
 //(*Headers(OpenLayoutFrame)
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
@@ -30,6 +50,7 @@ using namespace std;
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/stattext.h>
+#include <wx/tglbtn.h>
 #include <wx/toolbar.h>
 //*)
 
@@ -93,14 +114,13 @@ private:
     static const long ID_PANEL2;
     static const long ID_SCROLLEDWINDOW1;
     static const long ID_STATICTEXT1;
-    static const long ID_STATICTEXT3;
-    static const long ID_STATICTEXT4;
-    static const long ID_STATICTEXT5;
-    static const long ID_STATICTEXT6;
-    static const long ID_STATICTEXT7;
-    static const long ID_STATICTEXT8;
-    static const long ID_STATICTEXT9;
-    static const long ID_PANEL3;
+    static const long ID_TOGGLEBUTTON1;
+    static const long ID_TOGGLEBUTTON2;
+    static const long ID_TOGGLEBUTTON3;
+    static const long ID_TOGGLEBUTTON4;
+    static const long ID_TOGGLEBUTTON5;
+    static const long ID_TOGGLEBUTTON6;
+    static const long ID_TOGGLEBUTTON7;
     static const long ID_STATICTEXT2;
     static const long ID_RADIOBUTTON1;
     static const long ID_RADIOBUTTON2;
@@ -333,7 +353,6 @@ private:
     wxMenuItem* MenuItem8;
     wxPanel* Canvas;
     wxPanel* Panel1;
-    wxPanel* Panel2;
     wxPanel* Panel3;
     wxRadioBox* RadioBox1;
     wxRadioButton* RadioButton1;
@@ -351,13 +370,13 @@ private:
     wxSpinCtrlDouble* TrackSizeV;
     wxStaticText* StaticText1;
     wxStaticText* StaticText2;
-    wxStaticText* StaticText3;
-    wxStaticText* StaticText4;
-    wxStaticText* StaticText5;
-    wxStaticText* StaticText6;
-    wxStaticText* StaticText7;
-    wxStaticText* StaticText8;
-    wxStaticText* StaticText9;
+    wxToggleButton* ToggleButton1;
+    wxToggleButton* ToggleButton2;
+    wxToggleButton* ToggleButton3;
+    wxToggleButton* ToggleButton4;
+    wxToggleButton* ToggleButton5;
+    wxToggleButton* ToggleButton6;
+    wxToggleButton* ToggleButton7;
     wxToolBar* ToolBar;
     wxToolBarToolBase* ToolBarItem10;
     wxToolBarToolBase* ToolBarItem11;

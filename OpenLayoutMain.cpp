@@ -45,102 +45,10 @@ wxString wxbuildinfo(wxbuildinfoformat format) {
 
     return wxbuild;
 }
-#include "BITMAP/16600.xpm"
-#include "BITMAP/16900.xpm"
-#include "BITMAP/16999.xpm"
-#include "BITMAP/AKTIV.xpm"
-#include "BITMAP/ANSCHLUSSFANG_AUS.xpm"
-#include "BITMAP/ANSCHLUSSFANG_EIN.xpm"
-#include "BITMAP/to_grid.xpm"
-#include "BITMAP/align.xpm"
-#include "BITMAP/AUTOMASSE_AUS.xpm"
-#include "BITMAP/AUTOMASSE_DISABLED.xpm"
-#include "BITMAP/AUTOMASSE_EIN.xpm"
-#include "BITMAP/align_hcenter.xpm"
-#include "BITMAP/align_top.xpm"
-#include "BITMAP/align_bottom.xpm"
-#include "BITMAP/align_left.xpm"
-#include "BITMAP/align_right.xpm"
-#include "BITMAP/align_vcenter.xpm"
-#include "BITMAP/BAUTEILE.xpm"
-#include "BITMAP/CIRCLE.xpm"
-#include "BITMAP/CLEARCONNECTIONS.xpm"
-#include "BITMAP/COLOR.xpm"
-#include "BITMAP/copy.xpm"
-#include "BITMAP/cut.xpm"
-#include "BITMAP/delete.xpm"
-#include "BITMAP/DIP.xpm"
-#include "BITMAP/DRC.xpm"
-#include "BITMAP/duplicate.xpm"
-#include "BITMAP/EIGENSCHAFTEN.xpm"
-#include "BITMAP/group_off.xpm"
-#include "BITMAP/group_on.xpm"
-#include "BITMAP/GUMMIBAND_0.xpm"
-#include "BITMAP/GUMMIBAND_1.xpm"
-#include "BITMAP/GUMMIBAND_2.xpm"
-#include "BITMAP/H_OCTA.xpm"
-#include "BITMAP/H_ROUND.xpm"
-#include "BITMAP/H_SQUARE.xpm"
-#include "BITMAP/info.xpm"
-#include "BITMAP/ISO_HAAR_AUS.xpm"
-#include "BITMAP/ISO_HAAR_EIN.xpm"
-#include "BITMAP/KREIS.xpm"
-#include "BITMAP/KREIS2.xpm"
-#include "BITMAP/LAYER_AUF.xpm"
-#include "BITMAP/LAYER_ZU.xpm"
-#include "BITMAP/LEER.xpm"
-#include "BITMAP/MAKRO.xpm"
-#include "BITMAP/MAKRO_BOTTOM.xpm"
-#include "BITMAP/MAKRO_TOP.xpm"
-#include "BITMAP/MYSPINDOWN.xpm"
-#include "BITMAP/MYSPINUP.xpm"
-#include "BITMAP/new.xpm"
-#include "BITMAP/NEUZEICHNEN.xpm"
-#include "BITMAP/NONE.xpm"
-#include "BITMAP/OCTA.xpm"
-#include "BITMAP/open.xpm"
-#include "BITMAP/paste.xpm"
-#include "BITMAP/print.xpm"
-#include "BITMAP/QUAD.xpm"
-#include "BITMAP/Q_OCTA.xpm"
-#include "BITMAP/Q_ROUND.xpm"
-#include "BITMAP/Q_SQUARE.xpm"
-#include "BITMAP/RAD1.xpm"
-#include "BITMAP/RAD2.xpm"
-#include "BITMAP/RAD3.xpm"
-#include "BITMAP/redo.xpm"
-#include "BITMAP/rotate.xpm"
-#include "BITMAP/save.xpm"
-#include "BITMAP/selector.xpm"
-#include "BITMAP/SIP.xpm"
-#include "BITMAP/mirror_h.xpm"
-#include "BITMAP/mirror_v.xpm"
-#include "BITMAP/SQUARE.xpm"
-#include "BITMAP/transparent.xpm"
-#include "BITMAP/undo.xpm"
-#include "BITMAP/UPDATE.xpm"
-#include "BITMAP/UPDATE2.xpm"
-#include "BITMAP/VOLL.xpm"
-#include "BITMAP/VORLAGE.xpm"
-#include "BITMAP/bitmap.xpm"
-#include "BITMAP/V_CIRCLE.xpm"
-#include "BITMAP/V_H_OCTA.xpm"
-#include "BITMAP/V_H_ROUND.xpm"
-#include "BITMAP/V_H_SQUARE.xpm"
-#include "BITMAP/V_OCTA.xpm"
-#include "BITMAP/V_Q_OCTA.xpm"
-#include "BITMAP/V_Q_ROUND.xpm"
-#include "BITMAP/V_Q_SQUARE.xpm"
-#include "BITMAP/V_SQUARE.xpm"
-#include "BITMAP/zoom.xpm"
-#include "BITMAP/zoom_prev.xpm"
-#include "BITMAP/zoom_objects.xpm"
-#include "BITMAP/zoom_board.xpm"
-#include "BITMAP/zoom_selection.xpm"
-#include "BITMAP/pad.xpm"
-#include "BITMAP/pad_smd.xpm"
-#include "BITMAP/track.xpm"
-#include "BITMAP/grid.xpm"
+#define MAIN_XPM
+#include "images.h"
+#undef MAIN_XPM
+
 #include <string>
 #include <sstream>
 using namespace std;
@@ -167,14 +75,13 @@ const long OpenLayoutFrame::ID_CHOICE1 = wxNewId();
 const long OpenLayoutFrame::ID_PANEL2 = wxNewId();
 const long OpenLayoutFrame::ID_SCROLLEDWINDOW1 = wxNewId();
 const long OpenLayoutFrame::ID_STATICTEXT1 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT3 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT4 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT5 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT6 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT7 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT8 = wxNewId();
-const long OpenLayoutFrame::ID_STATICTEXT9 = wxNewId();
-const long OpenLayoutFrame::ID_PANEL3 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON1 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON2 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON3 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON4 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON5 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON6 = wxNewId();
+const long OpenLayoutFrame::ID_TOGGLEBUTTON7 = wxNewId();
 const long OpenLayoutFrame::ID_STATICTEXT2 = wxNewId();
 const long OpenLayoutFrame::ID_RADIOBUTTON1 = wxNewId();
 const long OpenLayoutFrame::ID_RADIOBUTTON2 = wxNewId();
@@ -324,7 +231,7 @@ OpenLayoutFrame::OpenLayoutFrame(wxWindow* parent,wxWindowID id) {
     SetClientSize(wxSize(600,400));
     BoxSizer5 = new wxBoxSizer(wxVERTICAL);
     BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
+    Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL|wxVSCROLL|wxHSCROLL, _T("ID_PANEL1"));
     FlexGridSizer2 = new wxFlexGridSizer(7, 1, 0, 0);
     wxString __wxRadioBoxChoices_1[16] =
     {
@@ -352,7 +259,7 @@ OpenLayoutFrame::OpenLayoutFrame(wxWindow* parent,wxWindowID id) {
     GridSizeB = new wxBitmapButton(Panel1, ID_BITMAPBUTTON4, grid_xpm, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE, wxDefaultValidator, _T("ID_BITMAPBUTTON4"));
     FlexGridSizer4->Add(GridSizeB, 1, wxALL|wxEXPAND, 0);
     GridSizeV = new wxButton(Panel1, ID_BUTTON1, _("Label"), wxDefaultPosition, wxDefaultSize, wxBORDER_NONE, wxDefaultValidator, _T("ID_BUTTON1"));
-    FlexGridSizer4->Add(GridSizeV, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer4->Add(GridSizeV, 1, wxALL|wxEXPAND, 0);
     FlexGridSizer2->Add(FlexGridSizer4, 1, wxALL|wxEXPAND, 0);
     FlexGridSizer3 = new wxFlexGridSizer(3, 2, 0, 0);
     TrackSizeB = new wxBitmapButton(Panel1, ID_BITMAPBUTTON1, track_xpm, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|wxBORDER_NONE, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
@@ -403,52 +310,47 @@ OpenLayoutFrame::OpenLayoutFrame(wxWindow* parent,wxWindowID id) {
     FlexGridSizer1 = new wxFlexGridSizer(2, 2, 0, 0);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("visible"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     FlexGridSizer1->Add(StaticText1, 1, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Panel2 = new wxPanel(this, ID_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL3"));
-    Panel2->SetBackgroundColour(wxColour(0,0,0));
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    StaticText3 = new wxStaticText(Panel2, ID_STATICTEXT3, _("C1"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    StaticText3->SetForegroundColour(wxColour(0,106,249));
-    BoxSizer8->Add(StaticText3, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText4 = new wxStaticText(Panel2, ID_STATICTEXT4, _("S1"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-    StaticText4->SetForegroundColour(wxColour(255,0,0));
-    BoxSizer8->Add(StaticText4, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText5 = new wxStaticText(Panel2, ID_STATICTEXT5, _("I1"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
-    StaticText5->SetForegroundColour(wxColour(194,124,20));
-    BoxSizer8->Add(StaticText5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText6 = new wxStaticText(Panel2, ID_STATICTEXT6, _("I2"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
-    StaticText6->SetForegroundColour(wxColour(238,192,98));
-    BoxSizer8->Add(StaticText6, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText7 = new wxStaticText(Panel2, ID_STATICTEXT7, _("C2"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
-    StaticText7->SetForegroundColour(wxColour(0,186,0));
-    BoxSizer8->Add(StaticText7, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText8 = new wxStaticText(Panel2, ID_STATICTEXT8, _("S2"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
-    StaticText8->SetForegroundColour(wxColour(225,215,4));
-    BoxSizer8->Add(StaticText8, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticText9 = new wxStaticText(Panel2, ID_STATICTEXT9, _(" O"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
-    StaticText9->SetForegroundColour(wxColour(255,255,255));
-    BoxSizer8->Add(StaticText9, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    Panel2->SetSizer(BoxSizer8);
-    BoxSizer8->Fit(Panel2);
-    BoxSizer8->SetSizeHints(Panel2);
-    FlexGridSizer1->Add(Panel2, 1, wxEXPAND, 5);
+    ToggleButton1 = new wxToggleButton(this, ID_TOGGLEBUTTON1, _("C1"), wxDefaultPosition, wxSize(30,30), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON1"));
+    ToggleButton1->SetValue(true);
+    BoxSizer8->Add(ToggleButton1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton2 = new wxToggleButton(this, ID_TOGGLEBUTTON2, _("S1"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON2"));
+    ToggleButton2->SetValue(true);
+    BoxSizer8->Add(ToggleButton2, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton3 = new wxToggleButton(this, ID_TOGGLEBUTTON3, _("I1"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON3"));
+    ToggleButton3->SetValue(true);
+    BoxSizer8->Add(ToggleButton3, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton4 = new wxToggleButton(this, ID_TOGGLEBUTTON4, _("I2"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON4"));
+    ToggleButton4->SetValue(true);
+    BoxSizer8->Add(ToggleButton4, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton5 = new wxToggleButton(this, ID_TOGGLEBUTTON5, _("C2"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON5"));
+    ToggleButton5->SetValue(true);
+    BoxSizer8->Add(ToggleButton5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton6 = new wxToggleButton(this, ID_TOGGLEBUTTON6, _("S2"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON6"));
+    ToggleButton6->SetValue(true);
+    BoxSizer8->Add(ToggleButton6, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    ToggleButton7 = new wxToggleButton(this, ID_TOGGLEBUTTON7, _("O"), wxDefaultPosition, wxSize(0,0), 0, wxDefaultValidator, _T("ID_TOGGLEBUTTON7"));
+    ToggleButton7->SetValue(true);
+    BoxSizer8->Add(ToggleButton7, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
+    FlexGridSizer1->Add(BoxSizer8, 0, wxALIGN_LEFT|wxALIGN_TOP, 5);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("active"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
     FlexGridSizer1->Add(StaticText2, 1, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Panel3 = new wxPanel(this, ID_PANEL4, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL4"));
     BoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
     RadioButton1 = new wxRadioButton(Panel3, ID_RADIOBUTTON1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
-    BoxSizer9->Add(RadioButton1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton2 = new wxRadioButton(Panel3, ID_RADIOBUTTON2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
-    BoxSizer9->Add(RadioButton2, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton2, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton3 = new wxRadioButton(Panel3, ID_RADIOBUTTON3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
-    BoxSizer9->Add(RadioButton3, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton3, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton4 = new wxRadioButton(Panel3, ID_RADIOBUTTON4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON4"));
-    BoxSizer9->Add(RadioButton4, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton4, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton5 = new wxRadioButton(Panel3, ID_RADIOBUTTON5, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON5"));
-    BoxSizer9->Add(RadioButton5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton6 = new wxRadioButton(Panel3, ID_RADIOBUTTON6, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON6"));
-    BoxSizer9->Add(RadioButton6, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton6, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     RadioButton7 = new wxRadioButton(Panel3, ID_RADIOBUTTON7, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON7"));
-    BoxSizer9->Add(RadioButton7, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(RadioButton7, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 5);
     Panel3->SetSizer(BoxSizer9);
     BoxSizer9->Fit(Panel3);
     BoxSizer9->SetSizeHints(Panel3);
@@ -868,8 +770,8 @@ void OpenLayoutFrame::OnPanel2Paint(wxPaintEvent& event)
 	//Update();
 }
 
-void OpenLayoutFrame::OnBoardChoiceSelect(wxCommandEvent& event)
-{
+void OpenLayoutFrame::OnBoardChoiceSelect(wxCommandEvent& event){
+	file.SelectBoard(static_cast<wxChoice*>(event.GetEventObject())->GetSelection());
 }
 
 void OpenLayoutFrame::OnLayerHelpButtonClick(wxCommandEvent& event){
@@ -885,8 +787,8 @@ void OpenLayoutFrame::OnProjectInfoButtonClick(wxCommandEvent& event){
 }
 
 void OpenLayoutFrame::OnSettingsButtonClick(wxCommandEvent& event){
-	SettingsDialog dialog(this);
-	dialog.Set(s);
+	SettingsDialog dialog(this,s);
 	if(dialog.ShowModal()==wxID_OK)
 		dialog.Get(s);
 }
+
