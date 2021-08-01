@@ -9,43 +9,42 @@
 #include <wx/textctrl.h>
 //*)
 
-class ProjectInfoDialog: public wxDialog
-{
-	public:
-		void Set(const ProjectInfo info);
-		void Get(ProjectInfo &info);
-		ProjectInfoDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-		virtual ~ProjectInfoDialog();
+class ProjectInfoDialog: public wxDialog {
+public:
+    void Set(const ProjectInfo info);
+    void Get(ProjectInfo &info);
+    ProjectInfoDialog(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+    virtual ~ProjectInfoDialog();
 
-		//(*Declarations(ProjectInfoDialog)
-		wxStaticText* StaticText1;
-		wxStaticText* StaticText2;
-		wxStaticText* StaticText3;
-		wxStaticText* StaticText4;
-		wxTextCtrl* TextAuthor;
-		wxTextCtrl* TextComment;
-		wxTextCtrl* TextCompany;
-		wxTextCtrl* TextTitle;
-		//*)
+    //(*Declarations(ProjectInfoDialog)
+    wxStaticText* StaticText1;
+    wxStaticText* StaticText2;
+    wxStaticText* StaticText3;
+    wxStaticText* StaticText4;
+    wxTextCtrl* TextAuthor;
+    wxTextCtrl* TextComment;
+    wxTextCtrl* TextCompany;
+    wxTextCtrl* TextTitle;
+    //*)
 
-	protected:
+protected:
 
-		//(*Identifiers(ProjectInfoDialog)
-		static const long ID_STATICTEXT2;
-		static const long ID_STATICTEXT3;
-		static const long ID_STATICTEXT4;
-		static const long ID_TEXTCTRL2;
-		static const long ID_TEXTCTRL3;
-		static const long ID_TEXTCTRL4;
-		static const long ID_STATICTEXT1;
-		static const long ID_TEXTCTRL1;
-		//*)
+    //(*Identifiers(ProjectInfoDialog)
+    static const long ID_STATICTEXT2;
+    static const long ID_STATICTEXT3;
+    static const long ID_STATICTEXT4;
+    static const long ID_TEXTCTRL2;
+    static const long ID_TEXTCTRL3;
+    static const long ID_TEXTCTRL4;
+    static const long ID_STATICTEXT1;
+    static const long ID_TEXTCTRL1;
+    //*)
 
-	private:
-		//(*Handlers(ProjectInfoDialog)
-		//*)
+private:
+    //(*Handlers(ProjectInfoDialog)
+    //*)
 
-		DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

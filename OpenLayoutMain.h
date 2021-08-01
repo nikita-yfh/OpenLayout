@@ -17,27 +17,25 @@
 
 using namespace std;
 
-
-enum class Tool{
-	Edit,
-	Zoom,
-	Track,
-	Pad,
-	SMDPad,
-	Circle,
-	Rectangle,
-	Zone,
-	SpecialForm,
-	Text,
-	Connection,
-	Autoroute,
-	Test,
-	Measure,
-	Photoview,
-	SolderMask
+enum class Tool {
+    Edit,
+    Zoom,
+    Track,
+    Pad,
+    SMDPad,
+    Circle,
+    Rectangle,
+    Zone,
+    SpecialForm,
+    Text,
+    Connection,
+    Autoroute,
+    Test,
+    Measure,
+    Photoview,
+    SolderMask
 };
 
-//(*Headers(OpenLayoutFrame)
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/choice.h>
@@ -52,7 +50,6 @@ enum class Tool{
 #include <wx/stattext.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbar.h>
-//*)
 
 class OpenLayoutFrame: public wxFrame {
 public:
@@ -61,7 +58,6 @@ public:
     virtual ~OpenLayoutFrame();
 private:
 
-    //(*Handlers(OpenLayoutFrame)
     void OnQuit(wxCommandEvent& event);
     void OnClose(wxCloseEvent& event);
     void OnGridSize1Selected(wxCommandEvent& event);
@@ -95,9 +91,7 @@ private:
     void OnLayerHelpButtonClick(wxCommandEvent& event);
     void OnProjectInfoButtonClick(wxCommandEvent& event);
     void OnSettingsButtonClick(wxCommandEvent& event);
-    //*)
 
-    //(*Identifiers(OpenLayoutFrame)
     static const long ID_RADIOBOX1;
     static const long ID_BITMAPBUTTON4;
     static const long ID_BUTTON1;
@@ -131,75 +125,6 @@ private:
     static const long ID_RADIOBUTTON7;
     static const long ID_PANEL4;
     static const long ID_BUTTON2;
-    static const long ID_MENUITEM1;
-    static const long ID_MENUITEM2;
-    static const long ID_MENUITEM3;
-    static const long ID_MENUITEM4;
-    static const long ID_MENUITEM5;
-    static const long ID_MENUITEM6;
-    static const long ID_MENUITEM7;
-    static const long ID_MENUITEM9;
-    static const long ID_MENUITEM10;
-    static const long ID_MENUITEM11;
-    static const long ID_MENUITEM12;
-    static const long ID_MENUITEM13;
-    static const long ID_MENUITEM14;
-    static const long ID_MENUITEM15;
-    static const long ID_MENUITEM16;
-    static const long ID_MENUITEM8;
-    static const long ID_MENUITEM17;
-    static const long ID_MENUITEM18;
-    static const long ID_MENUITEM19;
-    static const long ID_MENUITEM20;
-    static const long ID_MENUITEM21;
-    static const long ID_MENUITEM22;
-    static const long ID_MENUITEM23;
-    static const long ID_MENUITEM24;
-    static const long ID_MENUITEM25;
-    static const long ID_MENUITEM26;
-    static const long ID_MENUITEM27;
-    static const long ID_MENUITEM28;
-    static const long ID_MENUITEM29;
-    static const long ID_MENUITEM30;
-    static const long ID_MENUITEM31;
-    static const long ID_MENUITEM32;
-    static const long ID_MENUITEM33;
-    static const long ID_MENUITEM34;
-    static const long ID_MENUITEM35;
-    static const long ID_MENUITEM36;
-    static const long ID_MENUITEM37;
-    static const long ID_MENUITEM38;
-    static const long ID_MENUITEM39;
-    static const long ID_MENUITEM40;
-    static const long ID_MENUITEM41;
-    static const long ID_MENUITEM42;
-    static const long ID_MENUITEM43;
-    static const long ID_MENUITEM44;
-    static const long ID_MENUITEM45;
-    static const long ID_MENUITEM46;
-    static const long ID_MENUITEM47;
-    static const long ID_MENUITEM48;
-    static const long ID_MENUITEM49;
-    static const long ID_MENUITEM50;
-    static const long ID_MENUITEM51;
-    static const long ID_MENUITEM52;
-    static const long ID_MENUITEM53;
-    static const long ID_MENUITEM54;
-    static const long ID_MENUITEM55;
-    static const long ID_MENUITEM56;
-    static const long ID_MENUITEM57;
-    static const long ID_MENUITEM58;
-    static const long ID_MENUITEM59;
-    static const long ID_MENUITEM60;
-    static const long ID_MENUITEM61;
-    static const long ID_MENUITEM62;
-    static const long ID_MENUITEM63;
-    static const long ID_MENUITEM64;
-    static const long ID_MENUITEM65;
-    static const long ID_MENUITEM66;
-    static const long ID_MENUITEM67;
-    static const long ID_MENUITEM68;
-    static const long ID_MENUITEM69;
     static const long ID_TOOLBARITEM1;
     static const long OpenFile;
     static const long SaveFile;
@@ -243,9 +168,7 @@ private:
     static const long ID_MENUITEM88;
     static const long ID_MENUITEM89;
     static const long ID_MENUITEM78;
-    //*)
 
-    //(*Declarations(OpenLayoutFrame)
     wxBitmapButton* GridSizeB;
     wxBitmapButton* PadSMDV;
     wxBitmapButton* PadSizeB;
@@ -400,7 +323,6 @@ private:
     wxToolBarToolBase* ToolBarItem7;
     wxToolBarToolBase* ToolBarItem8;
     wxToolBarToolBase* ToolBarItem9;
-    //*)
 
 
     float track_size;
@@ -416,16 +338,16 @@ private:
 
     Settings s;
 
-	void SetGridSize(float,bool micro=false);
-	void SetTrackSize(float,bool set=false);
-	void SetPadSize1(float,bool set=false);
-	void SetPadSize2(float,bool set=false);
-	void SetPadSMDW(float,bool set=false);
-	void SetPadSMDH(float,bool set=false);
+    void SetGridSize(float,bool micro=false);
+    void SetTrackSize(float,bool set=false);
+    void SetPadSize1(float,bool set=false);
+    void SetPadSize2(float,bool set=false);
+    void SetPadSMDW(float,bool set=false);
+    void SetPadSMDH(float,bool set=false);
 
-	PCBFile file;
+    PCBFile file;
+    void init_menu_bar();
 
-    DECLARE_EVENT_TABLE()
 };
 
 #endif

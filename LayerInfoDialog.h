@@ -6,10 +6,9 @@
 #include <wx/sizer.h>
 #include <wx/statbmp.h>
 
-class LayerInfoDialog: public wxDialog
-{
+class LayerInfoDialog: public wxDialog {
 public:
-	LayerInfoDialog(wxWindow* parent);
+    LayerInfoDialog(wxWindow* parent);
 };
 
 #endif
