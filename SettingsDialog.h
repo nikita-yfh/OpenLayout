@@ -28,34 +28,33 @@ public:
 
 
 protected:
-    static const long ID_PANEL_COLORS;
-    static const long ID_PANEL_DIRS;
-    static const long ID_PANEL_CROSSHAIR;
-    static const long ID_PANEL_AUTOSAVE;
-    static const long ID_COLORSELECTION;
-    static const long ID_MACRO_DIR;
-    static const long ID_RB_BLACK;
-    static const long ID_RB_WHITE;
-    static const long ID_TEST_PANEL;
-    static const long ID_TEST_TEXT1;
-    static const long ID_TEST_TEXT2;
-    static const long ID_AUTOSAVE_CHECK;
-    static const long ID_AUTOSAVE_TIMER;
-    static const long ID_UNITS_CHOISE;
-    static const long ID_DRILL_CHOISE;
-    static const long ID_UNDO_DEPTH;
-    static const long ID_SHOW_45;
-    static const long ID_CCOORD_SHOW;
-    static const long ID_CCOORD_TP;
-    static const long ID_CCOORD_BIG;
-    static const long ID_COPPER_THICKNESS;
-    static const long ID_TEMP_ENHANCE;
-    static const long ID_KEY_CHOICE;
-    static const long ID_KEY_LIST;
-    static const long ID_DIRS[5];
-    static const long ID_SAME_DIRS;
-    static const long ID_COLORS[12];
-    static const long ID_CHECKBOXES[11];
+
+    wxPanel *panel_colors;
+	wxPanel *panel_dirs;
+	wxPanel *panel_crosshair;
+	wxPanel *panel_autosave;
+	wxChoice *colorselection;
+	wxDirPickerCtrl *macro_dir;
+	wxRadioButton *rb_black;
+	wxRadioButton *rb_white;
+	wxCheckBox *autosave_enable;
+	wxSpinCtrl *autosave_timer;
+	wxChoice *units_choice;
+	wxChoice *drill_choice;
+	wxSpinCtrl *undo_depth;
+	wxCheckBox *show_45;
+	wxCheckBox *ccoord_show;
+	wxCheckBox *ccoord_tp;
+	wxCheckBox *ccoord_big;
+	wxSpinCtrl *copper_thickness;
+	wxSpinCtrl *temp_enhance;
+	wxChoice *key_choice;
+	wxListView *key_list;
+	wxDirPickerCtrl *dirs[5];
+	wxCheckBox *same_dirs;
+	wxColourPickerCtrl *c_colors[12];
+	wxCheckBox *checkboxes[11];
+
 
 private:
 	void GetColorScheme(ColorScheme &c);

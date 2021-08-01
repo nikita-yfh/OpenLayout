@@ -6,35 +6,6 @@
 #define WIDGET(type,id)\
 	static_cast<type>(FindWindowById(id))
 
-const long SettingsDialog::ID_PANEL_COLORS = wxNewId();
-const long SettingsDialog::ID_PANEL_DIRS = wxNewId();
-const long SettingsDialog::ID_PANEL_CROSSHAIR = wxNewId();
-const long SettingsDialog::ID_PANEL_AUTOSAVE = wxNewId();
-const long SettingsDialog::ID_COLORSELECTION = wxNewId();
-const long SettingsDialog::ID_MACRO_DIR = wxNewId();
-const long SettingsDialog::ID_RB_BLACK = wxNewId();
-const long SettingsDialog::ID_RB_WHITE = wxNewId();
-const long SettingsDialog::ID_TEST_PANEL = wxNewId();
-const long SettingsDialog::ID_TEST_TEXT1 = wxNewId();
-const long SettingsDialog::ID_TEST_TEXT2 = wxNewId();
-const long SettingsDialog::ID_AUTOSAVE_CHECK = wxNewId();
-const long SettingsDialog::ID_AUTOSAVE_TIMER = wxNewId();
-const long SettingsDialog::ID_UNITS_CHOISE = wxNewId();
-const long SettingsDialog::ID_DRILL_CHOISE = wxNewId();
-const long SettingsDialog::ID_UNDO_DEPTH = wxNewId();
-const long SettingsDialog::ID_SHOW_45 = wxNewId();
-const long SettingsDialog::ID_CCOORD_BIG = wxNewId();
-const long SettingsDialog::ID_CCOORD_SHOW = wxNewId();
-const long SettingsDialog::ID_CCOORD_TP = wxNewId();
-const long SettingsDialog::ID_COPPER_THICKNESS = wxNewId();
-const long SettingsDialog::ID_TEMP_ENHANCE = wxNewId();
-const long SettingsDialog::ID_KEY_CHOICE = wxNewId();
-const long SettingsDialog::ID_KEY_LIST = wxNewId();
-const long SettingsDialog::ID_COLORS[12]={wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId()};
-const long SettingsDialog::ID_CHECKBOXES[11]={wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId()};
-const long SettingsDialog::ID_DIRS[5]={wxNewId(),wxNewId(),wxNewId(),wxNewId(),wxNewId()};
-const long SettingsDialog::ID_SAME_DIRS=wxNewId();
-
 
 SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
     Create(parent, wxID_ANY, _("General settings"));
@@ -52,18 +23,18 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer* choices = new wxBoxSizer(wxHORIZONTAL);
 
 		choices->Add(new wxStaticText(tabs[0], wxID_ANY, _("Base unit:")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-		wxChoice *utils = new wxChoice(tabs[0], ID_UNITS_CHOISE);
-		utils->Append(_("mm"));
-		utils->Append(_("mil (1/1000 Zoll)"));
-		utils->SetSelection((int)s.units);
-		choices->Add(utils, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+		units_choice = new wxChoice(tabs[0], wxID_ANY);
+		units_choice ->Append(_("mm"));
+		units_choice ->Append(_("mil (1/1000 Zoll)"));
+		units_choice ->SetSelection((int)s.units);
+		choices->Add(units_choice , 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		choices->Add(new wxStaticText(tabs[0], wxID_ANY, _("Drillings:")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-		wxChoice *bgr = new wxChoice(tabs[0], ID_DRILL_CHOISE);
-		bgr->Append(_("Background color"));
-		bgr->Append(_("White"));
-		bgr->Append(_("Black"));
-		bgr->SetSelection((int)s.drill);
-		choices->Add(bgr, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+		drill_choice = new wxChoice(tabs[0], wxID_ANY);
+		drill_choice->Append(_("Background color"));
+		drill_choice->Append(_("White"));
+		drill_choice->Append(_("Black"));
+		drill_choice->SetSelection((int)s.drill);
+		choices->Add(drill_choice, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		all_box->Add(choices, 0, wxEXPAND, 5);
 
 		const char *buttons[]={
@@ -81,9 +52,9 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		};
 
 		for(int q=0;q<(int)GenSettings::COUNT;q++){
-			wxCheckBox *checkbox = new wxCheckBox(tabs[0],ID_CHECKBOXES[q], buttons[q]);
-			checkbox->SetValue(s.gen_settings[q]);
-			all_box->Add(checkbox, 0, wxEXPAND, 5);
+			checkboxes[q]=new wxCheckBox(tabs[0],wxID_ANY, buttons[q]);
+			checkboxes[q]->SetValue(s.gen_settings[q]);
+			all_box->Add(checkboxes[q], 0, wxEXPAND, 5);
 		}
 		tabs[0]->SetSizerAndFit(all_box);
 	}
@@ -93,19 +64,19 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer *box = new wxBoxSizer(wxHORIZONTAL);
 		box->Add(new wxStaticText(tabs[1], wxID_ANY, _("Color scheme:")),0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 
-		wxChoice *ColorSchemeChoise = new wxChoice(tabs[1], ID_COLORSELECTION);
-		ColorSchemeChoise->Append(_("Standart"));
-		ColorSchemeChoise->Append(_("User 1"));
-		ColorSchemeChoise->Append(_("User 2"));
-		ColorSchemeChoise->Append(_("User 3"));
-		ColorSchemeChoise->SetSelection(s.s_color_scheme);
+		colorselection = new wxChoice(tabs[1], wxID_ANY);
+		colorselection->Append(_("Standart"));
+		colorselection->Append(_("User 1"));
+		colorselection->Append(_("User 2"));
+		colorselection->Append(_("User 3"));
+		colorselection->SetSelection(s.s_color_scheme);
 
 
-		box->Add(ColorSchemeChoise, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+		box->Add(colorselection, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		all_box->Add(box, 0, wxALL|wxEXPAND, 5);
-		wxPanel *color_panel = new wxPanel(tabs[1],ID_PANEL_COLORS);
+		panel_colors = new wxPanel(tabs[1],wxID_ANY);
 		if(s.s_color_scheme==0)
-			color_panel->Disable();
+			panel_colors->Disable();
 
 		wxBoxSizer *BoxSizer9 = new wxBoxSizer(wxVERTICAL);
 		const int color_ids[]={0,7,1,8,2,9,3,-1,4,10,5,11,6};
@@ -130,18 +101,18 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 
 
 		auto color_cb=[&](wxCommandEvent& event){
-			int selected=WIDGET(wxChoice*,ID_COLORSELECTION)->GetSelection();
+			int selected=colorselection->GetSelection();
 			assert(selected);
 			GetColorScheme(colors[selected-1]);
 		};
 
 		for(int q=0;q<13;q++){
 			if(color_names[q]){
-				wxColourPickerCtrl *color_ctrl=new wxColourPickerCtrl(color_panel,ID_COLORS[color_ids[q]]);
-				color_ctrl->Bind(wxEVT_COLOURPICKER_CHANGED,color_cb);
-				FlexGridSizer1->Add(color_ctrl,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+				c_colors[color_ids[q]]=new wxColourPickerCtrl(panel_colors,wxID_ANY);
+				c_colors[color_ids[q]]->Bind(wxEVT_COLOURPICKER_CHANGED,color_cb);
+				FlexGridSizer1->Add(c_colors[color_ids[q]],1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 				FlexGridSizer1->Add(
-					new wxStaticText(color_panel, wxID_ANY, color_names[q]),
+					new wxStaticText(panel_colors, wxID_ANY, color_names[q]),
 					1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 			}else{
 				for(int q=0;q<2;q++)
@@ -149,10 +120,10 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 			}
 		}
 		BoxSizer9->Add(FlexGridSizer1, 0, wxEXPAND, 5);
-		wxButton *reset=new wxButton(color_panel, wxID_ANY, _("Reset scheme to default"));
+		wxButton *reset=new wxButton(panel_colors, wxID_ANY, _("Reset scheme to default"));
 		BoxSizer9->Add(reset, 0, wxALL|wxALIGN_RIGHT, 5);
-		color_panel->SetSizerAndFit(BoxSizer9);
-		all_box->Add(color_panel, 1, wxALL|wxEXPAND, 5);
+		panel_colors->SetSizerAndFit(BoxSizer9);
+		all_box->Add(panel_colors, 1, wxALL|wxEXPAND, 5);
 		tabs[1]->SetSizerAndFit(all_box);
 
 		if(s.s_color_scheme!=0)
@@ -160,17 +131,17 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		else
 			SetColorScheme(ColorScheme());
 
-		ColorSchemeChoise->Bind(wxEVT_CHOICE,[&](wxCommandEvent&event){
+		colorselection->Bind(wxEVT_CHOICE,[&](wxCommandEvent&event){
 			int selected=static_cast<wxChoice*>(event.GetEventObject())->GetSelection();
 			if(selected!=0)
 				SetColorScheme(colors[selected-1]);
 			else
 				SetColorScheme(ColorScheme());
-			FindWindowById(ID_PANEL_COLORS)->Enable(selected!=0);
+			panel_colors->Enable(selected!=0);
 		});
 
 		reset->Bind(wxEVT_BUTTON,[&](wxCommandEvent&){
-			int selected=WIDGET(wxChoice*,ID_COLORSELECTION)->GetSelection();
+			int selected=colorselection->GetSelection();
 			assert(selected!=0);
 			SetColorScheme(ColorScheme());
 			colors[selected-1]=ColorScheme();
@@ -190,14 +161,14 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 
 		wxPanel *dir1_panel  = new wxPanel(tabs[2]);
-		wxPanel *other_panel = new wxPanel(tabs[2],ID_PANEL_DIRS);
+		panel_dirs = new wxPanel(tabs[2],wxID_ANY);
 
 		wxBoxSizer *dir1_box  = new wxBoxSizer(wxVERTICAL);
 		wxBoxSizer *other_box = new wxBoxSizer(wxVERTICAL);
 
-		other_panel->Disable();
+		panel_dirs->Disable();
 		for(int q=0;q<5;q++){
-			wxPanel *panel=other_panel;
+			wxPanel *panel=panel_dirs;
 			wxBoxSizer *box=other_box;
 			if(q==0){
 				panel=dir1_panel;
@@ -207,7 +178,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 			wxBoxSizer *box_l = new wxBoxSizer(wxHORIZONTAL);
 			box_l->Add(new wxStaticText(panel, wxID_ANY, names[q]), 1, wxALL|wxEXPAND, 5);
 
-			wxDirPickerCtrl *dir = new wxDirPickerCtrl(panel, ID_DIRS[q],
+			dirs[q] = new wxDirPickerCtrl(panel, wxID_ANY,
 					wxEmptyString, wxEmptyString, wxDefaultPosition,
 					wxDefaultSize, wxDIRP_USE_TEXTCTRL|wxDIRP_SMALL);
 			string text;
@@ -218,19 +189,19 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 				case 3:text=s.hpgl_export; break;
 				case 4:text=s.scanned_copies; break;
 			}
-			dir->SetPath(text);
-			box_l->Add(dir, 2, wxLEFT|wxRIGHT|wxEXPAND, 5);
+			dirs[q]->SetPath(text);
+			box_l->Add(dirs[q], 2, wxLEFT|wxRIGHT|wxEXPAND, 5);
 
 			box->Add(box_l,0,wxEXPAND,5);
 		}
 
-		other_panel->SetSizerAndFit(other_box);
+		panel_dirs->SetSizerAndFit(other_box);
 		dir1_panel->SetSizerAndFit(dir1_box);
 
-		other_panel->Enable(!s.same_dir);
+		panel_dirs->Enable(!s.same_dir);
 
 		all_box->Add(dir1_panel, 0, wxEXPAND, 5);
-		all_box->Add(other_panel, 0, wxEXPAND, 5);
+		all_box->Add(panel_dirs, 0, wxEXPAND, 5);
 
 		all_box->Add(new wxStaticText(tabs[2], wxID_ANY,
 			_("Leave this fields empty, if you want OpenLayout to remember\n"
@@ -238,27 +209,27 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 
 		all_box->Add(-1,-1,1, wxALL|wxEXPAND, 5);
 
-		wxCheckBox *SameDir = new wxCheckBox(tabs[2], ID_SAME_DIRS, _("Use the same folder for all file types"));
-		SameDir->SetValue(s.same_dir);
-		SameDir->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent&e){
-			WIDGET(wxPanel*,ID_PANEL_DIRS)->Enable(
+		same_dirs = new wxCheckBox(tabs[2], wxID_ANY, _("Use the same folder for all file types"));
+		same_dirs->SetValue(s.same_dir);
+		same_dirs->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent&e){
+			panel_dirs->Enable(
 				!static_cast<wxCheckBox*>(e.GetEventObject())->GetValue());
 		});
-		all_box->Add(SameDir, 0, wxALL|wxEXPAND, 5);
+		all_box->Add(same_dirs, 0, wxALL|wxEXPAND, 5);
 
 		tabs[2]->SetSizerAndFit(all_box);
 	}
 	{//PAGE 4
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 		all_box->Add(new wxStaticText(tabs[3], wxID_ANY, _("Root-Directory for macros:")), 0, wxALL|wxALIGN_LEFT, 5);
-		wxDirPickerCtrl *MacroDir = new wxDirPickerCtrl(tabs[3], ID_MACRO_DIR, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL|wxDIRP_SMALL);
-		MacroDir->SetPath(s.macro_dir);
-		all_box->Add(MacroDir, 0, wxALL|wxEXPAND, 20);
+		macro_dir = new wxDirPickerCtrl(tabs[3], wxID_ANY, wxEmptyString, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDIRP_USE_TEXTCTRL|wxDIRP_SMALL);
+		macro_dir->SetPath(s.macro_dir);
+		all_box->Add(macro_dir, 0, wxALL|wxEXPAND, 20);
 
 		wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 2, 0, 0);
 		wxButton *reset=new wxButton(tabs[3], wxID_ANY, _("Reset"));
 		reset->Bind(wxEVT_BUTTON,[&](wxCommandEvent&){
-			WIDGET(wxDirPickerCtrl*,ID_MACRO_DIR)->SetPath(Settings::GetDefaultMacroPath());
+			macro_dir->SetPath(Settings::GetDefaultMacroPath());
 		});
 		sizer->Add(reset, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		sizer->Add(new wxStaticText(tabs[3], wxID_ANY,
@@ -266,7 +237,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxButton*open=new wxButton(tabs[3], wxID_ANY, _("Folder"));
 		sizer->Add(open, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		open->Bind(wxEVT_BUTTON,[&](wxCommandEvent&){
-			string path=(string)WIDGET(wxDirPickerCtrl*,ID_MACRO_DIR)->GetPath();
+			string path=(string)macro_dir->GetPath();
 #ifdef _WIN32
 			system(string("explorer.exe "+path).c_str());
 #else
@@ -279,9 +250,9 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 	}
 	{//PAGE 5
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
-		wxSpinCtrl *ctrl=new wxSpinCtrl(tabs[4], ID_UNDO_DEPTH, "0", wxDefaultPosition, wxDefaultSize, 0,1,50,0);
-		ctrl->SetValue(s.undo);
-		all_box->Add(ctrl, 0, wxALL|wxALIGN_LEFT, 5);
+		undo_depth=new wxSpinCtrl(tabs[4], wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, 0,1,50,0);
+		undo_depth->SetValue(s.undo);
+		all_box->Add(undo_depth, 0, wxALL|wxALIGN_LEFT, 5);
 		all_box->Add(new wxStaticText(tabs[4], wxID_ANY,
 			_("Here you can define the maximum number of UNDO operations.\n"
 				"The maximum is 50 operations\n"
@@ -294,17 +265,17 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		{
 			wxBoxSizer *box1 = new wxBoxSizer(wxHORIZONTAL);
 			box1->Add(new wxStaticText(tabs[5], wxID_ANY, _("Copper-Thickness in um:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-			wxSpinCtrl *thickness=new wxSpinCtrl(tabs[5], ID_COPPER_THICKNESS, "0", wxDefaultPosition, wxDefaultSize, 0,0, 299,0);
-			thickness->SetValue(s.copper_thickness);
-			box1->Add(thickness, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			copper_thickness=new wxSpinCtrl(tabs[5], wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, 0,0, 299,0);
+			copper_thickness->SetValue(s.copper_thickness);
+			box1->Add(copper_thickness, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			all_box->Add(box1, 0, wxALL|wxEXPAND, 5);
 		}
 		{
 			wxBoxSizer *box2 = new wxBoxSizer(wxHORIZONTAL);
 			box2->Add(new wxStaticText(tabs[5], wxID_ANY, _("Temperature enchance in C:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-			wxSpinCtrl *temp=new wxSpinCtrl(tabs[5], ID_TEMP_ENHANCE, "0", wxDefaultPosition, wxDefaultSize, 0,0,299,0);
-			temp->SetValue(s.temp_enhance);
-			box2->Add(temp, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			temp_enhance=new wxSpinCtrl(tabs[5], wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, 0,0,299,0);
+			temp_enhance->SetValue(s.temp_enhance);
+			box2->Add(temp_enhance, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			all_box->Add(box2, 0, wxALL|wxEXPAND, 5);
 		}
 
@@ -314,46 +285,46 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 	{//PAGE 7
 		wxBoxSizer *all_box = new wxBoxSizer(wxHORIZONTAL);
 		{
-			wxListView *list=new wxListView(tabs[6], ID_KEY_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxBORDER_SIMPLE);
+			key_list=new wxListView(tabs[6], wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxBORDER_SIMPLE);
 
-			list->AppendColumn("Mode", wxLIST_FORMAT_LEFT, 150);
-			list->AppendColumn("Key", wxLIST_FORMAT_LEFT, 50);
+			key_list->AppendColumn("Mode", wxLIST_FORMAT_LEFT, 150);
+			key_list->AppendColumn("Key", wxLIST_FORMAT_LEFT, 50);
 			for(int q=0;q<TOOL_COUNT;q++){
-				list->InsertItem(q,Settings::tool_names[q]);
-				list->SetItem(q,0,Settings::tool_names[q]);
+				key_list->InsertItem(q,Settings::tool_names[q]);
+				key_list->SetItem(q,0,Settings::tool_names[q]);
 				if(s.tool_keys[q]=='\27')
-					list->SetItem(q,1,"ESC");
+					key_list->SetItem(q,1,"ESC");
 				else
-					list->SetItem(q,1,s.tool_keys[q]);
-				list->Bind(wxEVT_LIST_ITEM_SELECTED,[&](wxCommandEvent &e){
+					key_list->SetItem(q,1,s.tool_keys[q]);
+				key_list->Bind(wxEVT_LIST_ITEM_SELECTED,[&](wxCommandEvent &e){
 					int s=static_cast<wxListView*>(e.GetEventObject())->GetFirstSelected();
 					wxString text=static_cast<wxListView*>(e.GetEventObject())->GetItemText(s,1);
 					if(text=="ESC")
-						WIDGET(wxChoice*,ID_KEY_CHOICE)->SetSelection(0);
+						key_choice->SetSelection(0);
 					else
-						WIDGET(wxChoice*,ID_KEY_CHOICE)->SetSelection(text[0]-'A'+1);
-					WIDGET(wxChoice*,ID_KEY_CHOICE)->Enable();
+						key_choice->SetSelection(text[0]-'A'+1);
+					key_choice->Enable();
 				});
 			}
-			all_box->Add(list, 5, wxALL|wxEXPAND, 5);
+			all_box->Add(key_list, 5, wxALL|wxEXPAND, 5);
 		}
 		{
 			wxStaticBoxSizer *hk_box = new wxStaticBoxSizer(wxHORIZONTAL, tabs[6], _("Change hotkey"));
 			{
-				wxChoice *ToolKeyChoice = new wxChoice(tabs[6], ID_KEY_CHOICE);
-				ToolKeyChoice->Append("ESC",reinterpret_cast<void*>('\27'));
+				key_choice = new wxChoice(tabs[6], wxID_ANY);
+				key_choice->Append("ESC",reinterpret_cast<void*>('\27'));
 				for(char q='A';q<='Z';q++)
-					ToolKeyChoice->Append(q,reinterpret_cast<void*>(q));
-				ToolKeyChoice->Bind(wxEVT_CHOICE,[&](wxCommandEvent &e){
+					key_choice->Append(q,reinterpret_cast<void*>(q));
+				key_choice->Bind(wxEVT_CHOICE,[&](wxCommandEvent &e){
 					int s1=static_cast<wxChoice*>(e.GetEventObject())->GetSelection();
-					int s2=WIDGET(wxListView*,ID_KEY_LIST)->GetFirstSelected();
+					int s2=key_list->GetFirstSelected();
 					if(s1==0)
-						WIDGET(wxListView*,ID_KEY_LIST)->SetItem(s2,1,"ESC");
+						key_list->SetItem(s2,1,"ESC");
 					else
-						WIDGET(wxListView*,ID_KEY_LIST)->SetItem(s2,1,char(s1-1+'A'));
+						key_list->SetItem(s2,1,char(s1-1+'A'));
 				});
-				ToolKeyChoice->Disable();
-				hk_box->Add(ToolKeyChoice, 0, wxALL|wxEXPAND, 5);
+				key_choice->Disable();
+				hk_box->Add(key_choice, 0, wxALL|wxEXPAND, 5);
 			}
 			all_box->Add(hk_box, 3, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 		}
@@ -362,75 +333,47 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 	{//PAGE 8
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 
-		wxCheckBox *c45 = new wxCheckBox(tabs[7], ID_SHOW_45, _("Show 45 lines"));
-		c45->SetValue(s.show_45_lines);
-		all_box->Add(c45, 0, wxALL|wxALIGN_LEFT, 5);
+		show_45 = new wxCheckBox(tabs[7], wxID_ANY, _("Show 45 lines"));
+		show_45->SetValue(s.show_45_lines);
+		all_box->Add(show_45, 0, wxALL|wxALIGN_LEFT, 5);
 
-		wxCheckBox *coord = new wxCheckBox(tabs[7], ID_CCOORD_SHOW,_("Show coordinates of crosshair"));
-		coord->SetValue(s.ccoord_show);
-		coord->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e){
-			WIDGET(wxPanel*,ID_PANEL_CROSSHAIR)->Enable(
+		wxCheckBox *coord_show = new wxCheckBox(tabs[7], wxID_ANY,_("Show coordinates of crosshair"));
+		coord_show->SetValue(s.ccoord_show);
+		coord_show->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e){
+			panel_crosshair->Enable(
 				static_cast<wxCheckBox*>(e.GetEventObject())->GetValue());
 		});
-		all_box->Add(coord, 0, wxALL|wxALIGN_LEFT, 5);
+		all_box->Add(coord_show, 0, wxALL|wxALIGN_LEFT, 5);
 		{
-			wxPanel *panel = new wxPanel(tabs[7],ID_PANEL_CROSSHAIR);
-			panel->Enable(s.ccoord_show);
+			panel_crosshair = new wxPanel(tabs[7]);
+			panel_crosshair->Enable(s.ccoord_show);
 			wxBoxSizer *box = new wxBoxSizer(wxVERTICAL);
 			{
-				wxCheckBox *tp = new wxCheckBox(panel, ID_CCOORD_TP,_("Transparent"));
-				tp->SetValue(s.ccoord_tp);
-				box->Add(tp, 0, wxALL|wxALIGN_LEFT, 5);
+				ccoord_tp = new wxCheckBox(panel_crosshair, wxID_ANY,_("Transparent"));
+				ccoord_tp->SetValue(s.ccoord_tp);
+				box->Add(ccoord_tp, 0, wxALL|wxALIGN_LEFT, 5);
 			}
 			{
-				wxCheckBox *bt = new wxCheckBox(panel, ID_CCOORD_BIG, _("Big text"));
-				bt->SetValue(s.ccoord_big);
-				box->Add(bt, 0, wxALL|wxALIGN_LEFT, 5);
+				ccoord_big = new wxCheckBox(panel_crosshair, wxID_ANY, _("Big text"));
+				ccoord_big->SetValue(s.ccoord_big);
+				box->Add(ccoord_big, 0, wxALL|wxALIGN_LEFT, 5);
 			}
-			wxBoxSizer *box2 = new wxBoxSizer(wxHORIZONTAL);
-			auto set_test_style=[&](bool light){
-				wxColor color_panel=wxColour(255,255,255);
-				wxColor color_text=wxColour(0,0,0);
-				if(!light)
-					swap(color_panel,color_text);
-				WIDGET(wxPanel*,ID_TEST_PANEL)->SetBackgroundColour(color_panel);
-				WIDGET(wxPanel*,ID_TEST_TEXT1)->SetForegroundColour(color_text);
-				WIDGET(wxPanel*,ID_TEST_TEXT2)->SetForegroundColour(color_text);
-			};
 			{
-				wxStaticBoxSizer *radio_box = new wxStaticBoxSizer(wxVERTICAL, panel, _("Textbox"));
+				wxStaticBoxSizer *radio_box = new wxStaticBoxSizer(wxVERTICAL, panel_crosshair, _("Textbox"));
 				{
-					wxRadioButton *rb_black=new wxRadioButton(panel, ID_RB_BLACK, _("Black background"));
+					rb_black=new wxRadioButton(panel_crosshair, wxID_ANY, _("Black background"));
 					rb_black->SetValue(!s.ccoord_light);
-					rb_black->Bind(wxEVT_RADIOBUTTON,[&](wxCommandEvent&){set_test_style(false);});
 					radio_box->Add(rb_black, 0, wxALIGN_LEFT, 5);
 				}
 				{
-					wxRadioButton *rb_white=new wxRadioButton(panel, ID_RB_WHITE, _("White background"));
+					rb_white=new wxRadioButton(panel_crosshair, wxID_ANY, _("White background"));
 					rb_white->SetValue(s.ccoord_light);
-					rb_white->Bind(wxEVT_RADIOBUTTON,[&](wxCommandEvent&){set_test_style(true);});
 					radio_box->Add(rb_white, 0, wxALIGN_LEFT, 5);
 				}
-				box2->Add(radio_box, 0, wxALL|wxEXPAND, 5);
+				box->Add(radio_box,0,wxLEFT,30);
 			}
-			{
-				wxPanel *test_panel = new wxPanel(panel,ID_TEST_PANEL);
-				test_panel->SetBackgroundColour(wxColour(0,0,0));
-				wxBoxSizer *test_box = new wxBoxSizer(wxVERTICAL);
-
-
-				const char *str[2]={"X:  12.280 mm", "Y:  14.640 mm"};
-				for(int q=0;q<2;q++){
-					wxStaticText *text = new wxStaticText(test_panel, q?ID_TEST_TEXT2:ID_TEST_TEXT1, str[q]);
-					test_box->Add(text, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-				}
-				test_panel->SetSizerAndFit(test_box);
-				box2->Add(test_panel, 0, wxALL|wxEXPAND, 5);
-			}
-			set_test_style(s.ccoord_light);
-			box->Add(box2, 0, wxALL|wxEXPAND, 5);
-			panel->SetSizerAndFit(box);
-			all_box->Add(panel, 0, wxLEFT|wxALIGN_LEFT, 20);
+			panel_crosshair->SetSizerAndFit(box);
+			all_box->Add(panel_crosshair,0,wxLEFT|wxEXPAND,30);
 		}
 		tabs[7]->SetSizerAndFit(all_box);
 
@@ -439,27 +382,27 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 		all_box->Add(new wxStaticText(tabs[8], wxID_ANY, _("Save layout periodical\nto a separate backup file (*.bak)")), 0, wxALL|wxALIGN_LEFT, 5);
 		{
-			wxCheckBox *check=new wxCheckBox(tabs[8], ID_AUTOSAVE_CHECK, _("Activate AutoSave"));
-			check->SetValue(s.autosave);
-			check->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e){
-				WIDGET(wxPanel*,ID_PANEL_AUTOSAVE)->Enable(
+			autosave_enable=new wxCheckBox(tabs[8], wxID_ANY, _("Activate AutoSave"));
+			autosave_enable->SetValue(s.autosave);
+			autosave_enable->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e){
+				panel_autosave->Enable(
 					static_cast<wxCheckBox*>(e.GetEventObject())->GetValue());
 			});
-			all_box->Add(check, 0, wxALL|wxALIGN_LEFT, 5);
+			all_box->Add(autosave_enable, 0, wxALL|wxALIGN_LEFT, 5);
 		}
 		{
-			wxPanel *autosave_panel = new wxPanel(tabs[8],ID_PANEL_AUTOSAVE);
-			autosave_panel->Enable(s.autosave);
+			panel_autosave = new wxPanel(tabs[8],wxID_ANY);
+			panel_autosave->Enable(s.autosave);
 			wxBoxSizer* min_box = new wxBoxSizer(wxHORIZONTAL);
-			min_box->Add(new wxStaticText(autosave_panel, wxID_ANY, _("Interval:")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			min_box->Add(new wxStaticText(panel_autosave, wxID_ANY, _("Interval:")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			{
-				wxSpinCtrl *timer=new wxSpinCtrl(autosave_panel, ID_AUTOSAVE_TIMER, "5", wxDefaultPosition, wxDefaultSize, 0, 1, 100, 0);
-				timer->SetValue(s.autosave_timer);
-				min_box->Add(timer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+				autosave_timer=new wxSpinCtrl(panel_autosave, wxID_ANY, "5", wxDefaultPosition, wxDefaultSize, 0, 1, 100, 0);
+				autosave_timer->SetValue(s.autosave_timer);
+				min_box->Add(autosave_timer, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			}
-			min_box->Add(new wxStaticText(autosave_panel, wxID_ANY, _("min")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-			autosave_panel->SetSizerAndFit(min_box);
-			all_box->Add(autosave_panel, 0, wxLEFT|wxALIGN_LEFT, 20);
+			min_box->Add(new wxStaticText(panel_autosave, wxID_ANY, _("min")), 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			panel_autosave->SetSizerAndFit(min_box);
+			all_box->Add(panel_autosave, 0, wxLEFT|wxALIGN_LEFT, 20);
 		}
 		tabs[8]->SetSizerAndFit(all_box);
 	}
@@ -488,50 +431,48 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 SettingsDialog::~SettingsDialog() {}
 
 void SettingsDialog::Get(Settings &s){
-	for(int q=0;q<(int)GenSettings::COUNT;q++){
-		wxCheckBox *checkbox = WIDGET(wxCheckBox*,ID_CHECKBOXES[q]);
-		s.gen_settings[q]=checkbox->GetValue();
-	}
+	for(int q=0;q<(int)GenSettings::COUNT;q++)
+		s.gen_settings[q]=checkboxes[q]->GetValue();
 	for(int q=0;q<3;q++)
 		s.colors[q]=colors[q];
 	for(int q=0;q<TOOL_COUNT;q++){
-		wxString text=WIDGET(wxListView*,ID_KEY_LIST)->GetItemText(q,1);
+		wxString text=key_list->GetItemText(q,1);
 		if(text=="ESC")
 			s.tool_keys[q]='\27';
 		else
 			s.tool_keys[q]=char(text[0]);
 	}
-	s.units=(Unit)WIDGET(wxChoice*,ID_UNITS_CHOISE)->GetSelection();
-	s.drill=(Drillings)WIDGET(wxChoice*,ID_DRILL_CHOISE)->GetSelection();
-	s.s_color_scheme=WIDGET(wxChoice*,ID_COLORSELECTION)->GetSelection();
+	s.units=(Unit)units_choice->GetSelection();
+	s.drill=(Drillings)drill_choice->GetSelection();
+	s.s_color_scheme=colorselection->GetSelection();
 
-	s.lay_export=WIDGET(wxDirPickerCtrl*,ID_DIRS[0])->GetPath();
-	s.gbr_export=WIDGET(wxDirPickerCtrl*,ID_DIRS[1])->GetPath();
-	s.bmp_export=WIDGET(wxDirPickerCtrl*,ID_DIRS[2])->GetPath();
-	s.hpgl_export=WIDGET(wxDirPickerCtrl*,ID_DIRS[3])->GetPath();
-	s.scanned_copies=WIDGET(wxDirPickerCtrl*,ID_DIRS[4])->GetPath();
-	s.macro_dir=WIDGET(wxDirPickerCtrl*,ID_MACRO_DIR)->GetPath();
-	s.same_dir=WIDGET(wxCheckBox*,ID_SAME_DIRS)->GetValue();
+	s.lay_export=dirs[0]->GetPath();
+	s.gbr_export=dirs[1]->GetPath();
+	s.bmp_export=dirs[2]->GetPath();
+	s.hpgl_export=dirs[3]->GetPath();
+	s.scanned_copies=dirs[4]->GetPath();
+	s.macro_dir=macro_dir->GetPath();
+	s.same_dir=same_dirs->GetValue();
 
-	s.undo=WIDGET(wxSpinCtrl*,ID_UNDO_DEPTH)->GetValue();
-	s.copper_thickness=WIDGET(wxSpinCtrl*,ID_COPPER_THICKNESS)->GetValue();
-	s.temp_enhance=WIDGET(wxSpinCtrl*,ID_TEMP_ENHANCE)->GetValue();
+	s.undo=undo_depth->GetValue();
+	s.copper_thickness=copper_thickness->GetValue();
+	s.temp_enhance=temp_enhance->GetValue();
 
-	s.ccoord_big=WIDGET(wxCheckBox*,ID_CCOORD_BIG)->GetValue();
-	s.ccoord_tp=WIDGET(wxCheckBox*,ID_CCOORD_TP)->GetValue();
-	s.ccoord_show=WIDGET(wxCheckBox*,ID_CCOORD_SHOW)->GetValue();
-	s.ccoord_light=WIDGET(wxCheckBox*,ID_RB_WHITE)->GetValue();
-	s.show_45_lines=WIDGET(wxCheckBox*,ID_SHOW_45)->GetValue();
+	s.ccoord_big=ccoord_big->GetValue();
+	s.ccoord_tp=ccoord_tp->GetValue();
+	s.ccoord_show=ccoord_show->GetValue();
+	s.ccoord_light=rb_white->GetValue();
+	s.show_45_lines=show_45->GetValue();
 
-	s.autosave=WIDGET(wxCheckBox*,ID_AUTOSAVE_CHECK)->GetValue();
-	s.autosave_timer=WIDGET(wxSpinCtrl*,ID_AUTOSAVE_TIMER)->GetValue();
+	s.autosave=autosave_enable->GetValue();
+	s.autosave_timer=autosave_timer->GetValue();
 }
 void SettingsDialog::SetColorScheme(const ColorScheme c){
 	for(int q=0;q<12;q++)
-		WIDGET(wxColourPickerCtrl*,ID_COLORS[q])->SetColour(c.colors[q]);
+		c_colors[q]->SetColour(c.colors[q]);
 }
 
 void SettingsDialog::GetColorScheme(ColorScheme &c){
 	for(int q=0;q<12;q++)
-		c.colors[q]=WIDGET(wxColourPickerCtrl*,ID_COLORS[q])->GetColour();
+		c.colors[q]=c_colors[q]->GetColour();
 }

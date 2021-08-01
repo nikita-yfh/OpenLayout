@@ -69,8 +69,6 @@
 		<Unit filename="Settings.h" />
 		<Unit filename="SettingsDialog.cpp" />
 		<Unit filename="SettingsDialog.h" />
-		<Unit filename="inifile.cpp" />
-		<Unit filename="inifile.h" />
 		<Unit filename="wxsmith/LayerInfoDialog.wxs" />
 		<Unit filename="wxsmith/NewBoardDialog.wxs" />
 		<Unit filename="wxsmith/OpenLayoutframe.wxs" />
