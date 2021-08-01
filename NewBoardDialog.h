@@ -18,20 +18,19 @@ class NewBoardDialog: public wxDialog
 		Board board;
 
 	private:
-
-		static const long ID_TYPES[3];
-		static const long ID_PANELS[4];
-		static const long ID_WIDTH;
-		static const long ID_HEIGHT;
-		static const long ID_DIAMETER;
-		static const long ID_BORDER;
-		static const long ID_INPUT_NAME;
-		static const long ID_ALL_WIDTH;
-		static const long ID_ALL_HEIGHT;
-
-		void SetType(BoardType type);
-		void RecalcSize(wxSpinDoubleEvent &e);
-		void ChangeText(wxCommandEvent &e);
+		
+		wxRadioButton *types[3];
+		wxPanel *panels[4];
+		
+		wxSpinCtrlDouble *width;
+		wxSpinCtrlDouble *height;
+		wxSpinCtrlDouble *diameter;
+		wxSpinCtrlDouble *border;
+		wxTextCtrl *input_name;
+		wxStaticText *all_width;
+		wxStaticText *all_height;
+		
+		void SetType(const BoardType &b);
 };
 
 #endif
