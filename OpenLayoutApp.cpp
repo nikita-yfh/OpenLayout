@@ -8,23 +8,13 @@
  **************************************************************/
 
 #include "OpenLayoutApp.h"
-
-//(*AppHeaders
 #include "OpenLayoutMain.h"
-#include <wx/image.h>
-//*)
 
 IMPLEMENT_APP(OpenLayoutApp);
+
 bool OpenLayoutApp::OnInit() {
-    //m_Locale.Init(wxLANGUAGE_RUSSIAN);
-    //(*AppInitialize
-    bool wxsOK = true;
-    wxInitAllImageHandlers();
-    if ( wxsOK ) {
-        OpenLayoutFrame* Frame = new OpenLayoutFrame(0);
-        Frame->Show();
-        SetTopWindow(Frame);
-    }
-    //*)
-    return wxsOK;
+    OpenLayoutFrame* Frame = new OpenLayoutFrame();
+    Frame->Show();
+    SetTopWindow(Frame);
+    return true;
 }

@@ -30,7 +30,7 @@
 					<Add option="-fomit-frame-pointer" />
 					<Add option="-fexpensive-optimizations" />
 					<Add option="-flto" />
-					<Add option="-Os" />
+					<Add option="-O3" />
 					<Add directory="include" />
 					<Add directory="./" />
 					<Add directory="../OpenLayout" />
@@ -38,6 +38,8 @@
 				<Linker>
 					<Add option="-flto" />
 					<Add option="-s" />
+					<Add option="-fdata-sections" />
+					<Add option="-ffunction-sections" />
 				</Linker>
 			</Target>
 		</Build>
@@ -45,7 +47,7 @@
 			<Add option="`wx-config --cflags`" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,aui`" />
+			<Add option="`wx-config --libs std`" />
 		</Linker>
 		<ExtraCommands>
 			<Add before="./genimages.sh" />

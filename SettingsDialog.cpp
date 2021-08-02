@@ -355,13 +355,13 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
         show_45->SetValue(s.show_45_lines);
         all_box->Add(show_45, 0, wxALL|wxALIGN_LEFT, 5);
 
-        wxCheckBox *coord_show = new wxCheckBox(tabs[7], wxID_ANY,_("Show coordinates of crosshair"));
-        coord_show->SetValue(s.ccoord_show);
-        coord_show->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e) {
+        ccoord_show = new wxCheckBox(tabs[7], wxID_ANY,_("Show coordinates of crosshair"));
+        ccoord_show->SetValue(s.ccoord_show);
+        ccoord_show->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e) {
             panel_crosshair->Enable(
                 static_cast<wxCheckBox*>(e.GetEventObject())->GetValue());
         });
-        all_box->Add(coord_show, 0, wxALL|wxALIGN_LEFT, 5);
+        all_box->Add(ccoord_show, 0, wxALL|wxALIGN_LEFT, 5);
         {
             panel_crosshair = new wxPanel(tabs[7]);
             panel_crosshair->Enable(s.ccoord_show);

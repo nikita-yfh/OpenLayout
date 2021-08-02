@@ -50,304 +50,77 @@ enum class Tool {
 #include <wx/stattext.h>
 #include <wx/tglbtn.h>
 #include <wx/toolbar.h>
-
+enum{
+	ID_SAVE_MACRO=1,
+	ID_AUTOSAVE,
+	ID_GERBER_IMPORT,
+	ID_GERBER_EXPORT,
+	ID_DRILL_DATA,
+	ID_ISOLATION,
+	ID_SAVE_BMP,
+	ID_SAVE_JPG,
+	ID_SAVE_GIF,
+	ID_SAVE_EMP,
+	ID_SAVE_PNG,
+	ID_DIRECTORIES,
+	ID_BOARD_NEW,
+	ID_BOARD_PROPERTIES,
+	ID_BOARD_COPY,
+	ID_BOARD_DELETE,
+	ID_BOARD_SET_RIGHT,
+	ID_BOARD_SET_LEFT,
+	ID_BOARD_MOVE_RIGHT,
+	ID_BOARD_MOVE_LEFT,
+	ID_BOARD_SAVE,
+	ID_BOARD_IMPORT,
+	ID_ROTATE,
+	ID_VMIRROR,
+	ID_HMIRROR,
+	ID_GROUP,
+	ID_UNGROUP,
+	ID_CHANGE_SIDE,
+	ID_SNAP_GRID,
+	ID_MASSIVE,
+	ID_LIST_DRILLINGS,
+	ID_SCANNED_COPY,
+	ID_FOOTPRINT,
+	ID_RESET_MASK,
+	ID_REMOVE_CONNECTIONS,
+	ID_DELETE_OUTSIDE,
+	ID_ELEMENT_IMPORT,
+	ID_ELEMENT_EXPORT,
+	ID_DEFINE_PLUGIN,
+	ID_RUN_PLUGIN,
+	ID_PANEL_MACRO,
+	ID_PANEL_PROPERTIES,
+	ID_PANEL_DRC,
+	ID_PANEL_COMPONENTS,
+	ID_PANEL_SELECTOR,
+	ID_ALIGN,
+	ID_TRANSPARENT,
+	ID_ZOOM,
+	ID_ZOOM_BOARD,
+	ID_ZOOM_OBJECTS,
+	ID_ZOOM_SELECTION,
+	ID_ZOOM_PREVIOUS
+};
 class OpenLayoutFrame: public wxFrame {
 public:
 
-    OpenLayoutFrame(wxWindow* parent=nullptr,wxWindowID id = -1);
-    virtual ~OpenLayoutFrame();
+    OpenLayoutFrame();
 private:
-
-    void OnQuit(wxCommandEvent& event);
-    void OnClose(wxCloseEvent& event);
-    void OnGridSize1Selected(wxCommandEvent& event);
-    void OnGridSize2Selected(wxCommandEvent& event);
-    void OnGridSize3Selected(wxCommandEvent& event);
-    void OnGridSize4Selected(wxCommandEvent& event);
-    void OnGridSize5Selected(wxCommandEvent& event);
-    void OnGridSize6Selected(wxCommandEvent& event);
-    void OnGridSize7Selected(wxCommandEvent& event);
-    void OnGridSize8Selected(wxCommandEvent& event);
-    void OnGridSize9Selected(wxCommandEvent& event);
-    void OnGridSize10Selected(wxCommandEvent& event);
-    void OnGridSize11Selected(wxCommandEvent& event);
-    void OnGridSize12Selected(wxCommandEvent& event);
-    void OnGridSize13Selected(wxCommandEvent& event);
-    void OnGridSize14Selected(wxCommandEvent& event);
-    void OnGridSize15Selected(wxCommandEvent& event);
-    void OnGridSize16Selected(wxCommandEvent& event);
-    void OnGridSize17Selected(wxCommandEvent& event);
-    void OnGridSize18Selected(wxCommandEvent& event);
-    void OnGridSize19Selected(wxCommandEvent& event);
-    void OnTrackSizeVChange(wxSpinDoubleEvent& event);
-    void OnPadSize1Change(wxSpinDoubleEvent& event);
-    void OnPadSize2Change(wxSpinDoubleEvent& event);
-    void OnPadSMDWChange(wxSpinDoubleEvent& event);
-    void OnPadSMDHChange(wxSpinDoubleEvent& event);
-    void OnGridSizeClick(wxCommandEvent& event);
-    void AddNewBoard(wxCommandEvent& event);
-    void OnPanel2Paint(wxPaintEvent& event);
-    void OnBoardChoiceSelect(wxCommandEvent& event);
-    void OnLayerHelpButtonClick(wxCommandEvent& event);
-    void OnProjectInfoButtonClick(wxCommandEvent& event);
-    void OnSettingsButtonClick(wxCommandEvent& event);
-
-    static const long ID_RADIOBOX1;
-    static const long ID_BITMAPBUTTON4;
-    static const long ID_BUTTON1;
-    static const long ID_BITMAPBUTTON1;
-    static const long ID_SPINCTRLDOUBLE1;
-    static const long ID_BITMAPBUTTON2;
-    static const long ID_SPINCTRLDOUBLE3;
-    static const long ID_SPINCTRLDOUBLE2;
-    static const long ID_BITMAPBUTTON3;
-    static const long ID_SPINCTRLDOUBLE4;
-    static const long ID_SPINCTRLDOUBLE5;
-    static const long ID_PANEL1;
-    static const long ID_CHOICE1;
-    static const long ID_PANEL2;
-    static const long ID_SCROLLEDWINDOW1;
-    static const long ID_STATICTEXT1;
-    static const long ID_TOGGLEBUTTON1;
-    static const long ID_TOGGLEBUTTON2;
-    static const long ID_TOGGLEBUTTON3;
-    static const long ID_TOGGLEBUTTON4;
-    static const long ID_TOGGLEBUTTON5;
-    static const long ID_TOGGLEBUTTON6;
-    static const long ID_TOGGLEBUTTON7;
-    static const long ID_STATICTEXT2;
-    static const long ID_RADIOBUTTON1;
-    static const long ID_RADIOBUTTON2;
-    static const long ID_RADIOBUTTON3;
-    static const long ID_RADIOBUTTON4;
-    static const long ID_RADIOBUTTON5;
-    static const long ID_RADIOBUTTON6;
-    static const long ID_RADIOBUTTON7;
-    static const long ID_PANEL4;
-    static const long ID_BUTTON2;
-    static const long ID_TOOLBARITEM1;
-    static const long OpenFile;
-    static const long SaveFile;
-    static const long ID_TOOLBARITEM2;
-    static const long ID_TOOLBARITEM3;
-    static const long ID_TOOLBARITEM4;
-    static const long ID_TOOLBARITEM5;
-    static const long ID_TOOLBARITEM6;
-    static const long ID_TOOLBARITEM7;
-    static const long ID_TOOLBARITEM8;
-    static const long ID_TOOLBARITEM9;
-    static const long ID_TOOLBARITEM10;
-    static const long ID_TOOLBARITEM11;
-    static const long ID_TOOLBARITEM12;
-    static const long ID_TOOLBARITEM13;
-    static const long ID_TOOLBARITEM14;
-    static const long ID_TOOLBARITEM15;
-    static const long ID_TOOLBARITEM16;
-    static const long ID_TOOLBARITEM17;
-    static const long ID_TOOLBARITEM18;
-    static const long ID_TOOLBARITEM19;
-    static const long ID_TOOLBARITEM20;
-    static const long ID_TOOLBAR1;
-    static const long ID_MENUITEM70;
-    static const long ID_MENUITEM71;
-    static const long ID_MENUITEM72;
-    static const long ID_MENUITEM73;
-    static const long ID_MENUITEM74;
-    static const long ID_MENUITEM75;
-    static const long ID_MENUITEM76;
-    static const long ID_MENUITEM77;
-    static const long ID_MENUITEM79;
-    static const long ID_MENUITEM80;
-    static const long ID_MENUITEM81;
-    static const long ID_MENUITEM82;
-    static const long ID_MENUITEM83;
-    static const long ID_MENUITEM84;
-    static const long ID_MENUITEM85;
-    static const long ID_MENUITEM86;
-    static const long ID_MENUITEM87;
-    static const long ID_MENUITEM88;
-    static const long ID_MENUITEM89;
-    static const long ID_MENUITEM78;
-
-    wxBitmapButton* GridSizeB;
-    wxBitmapButton* PadSMDV;
-    wxBitmapButton* PadSizeB;
-    wxBitmapButton* TrackSizeB;
-    wxBoxSizer* BoxSizer5;
-    wxBoxSizer* BoxSizer6;
-    wxButton* GridSizeV;
-    wxButton* LayerHelpButton;
-    wxChoice* BoardChoice;
-    wxMenu GridMenu;
-    wxMenu* Menu2;
-    wxMenu* Menu3;
-    wxMenu* Menu4;
-    wxMenu* Menu5;
-    wxMenu* Menu6;
-    wxMenu* Menu7;
-    wxMenu* MenuItem78;
-    wxMenu* MenuItem9;
-    wxMenuItem* MenuItem10;
-    wxMenuItem* MenuItem11;
-    wxMenuItem* MenuItem12;
-    wxMenuItem* MenuItem13;
-    wxMenuItem* MenuItem14;
-    wxMenuItem* MenuItem15;
-    wxMenuItem* MenuItem16;
-    wxMenuItem* MenuItem17;
-    wxMenuItem* MenuItem18;
-    wxMenuItem* MenuItem19;
-    wxMenuItem* MenuItem1;
-    wxMenuItem* MenuItem20;
-    wxMenuItem* MenuItem21;
-    wxMenuItem* MenuItem22;
-    wxMenuItem* MenuItem23;
-    wxMenuItem* MenuItem24;
-    wxMenuItem* MenuItem25;
-    wxMenuItem* MenuItem26;
-    wxMenuItem* MenuItem27;
-    wxMenuItem* MenuItem28;
-    wxMenuItem* MenuItem29;
-    wxMenuItem* MenuItem2;
-    wxMenuItem* MenuItem30;
-    wxMenuItem* MenuItem31;
-    wxMenuItem* MenuItem32;
-    wxMenuItem* MenuItem33;
-    wxMenuItem* MenuItem34;
-    wxMenuItem* MenuItem35;
-    wxMenuItem* MenuItem36;
-    wxMenuItem* MenuItem37;
-    wxMenuItem* MenuItem38;
-    wxMenuItem* MenuItem39;
-    wxMenuItem* MenuItem3;
-    wxMenuItem* MenuItem40;
-    wxMenuItem* MenuItem41;
-    wxMenuItem* MenuItem42;
-    wxMenuItem* MenuItem43;
-    wxMenuItem* MenuItem44;
-    wxMenuItem* MenuItem45;
-    wxMenuItem* MenuItem46;
-    wxMenuItem* MenuItem47;
-    wxMenuItem* MenuItem48;
-    wxMenuItem* MenuItem49;
-    wxMenuItem* MenuItem4;
-    wxMenuItem* MenuItem50;
-    wxMenuItem* MenuItem51;
-    wxMenuItem* MenuItem52;
-    wxMenuItem* MenuItem53;
-    wxMenuItem* MenuItem54;
-    wxMenuItem* MenuItem55;
-    wxMenuItem* MenuItem56;
-    wxMenuItem* MenuItem57;
-    wxMenuItem* MenuItem58;
-    wxMenuItem* MenuItem59;
-    wxMenuItem* MenuItem5;
-    wxMenuItem* MenuItem60;
-    wxMenuItem* MenuItem61;
-    wxMenuItem* MenuItem62;
-    wxMenuItem* MenuItem63;
-    wxMenuItem* MenuItem64;
-    wxMenuItem* MenuItem65;
-    wxMenuItem* MenuItem66;
-    wxMenuItem* MenuItem67;
-    wxMenuItem* MenuItem68;
-    wxMenuItem* MenuItem69;
-    wxMenuItem* MenuItem6;
-    wxMenuItem* MenuItem70;
-    wxMenuItem* MenuItem71;
-    wxMenuItem* MenuItem72;
-    wxMenuItem* MenuItem73;
-    wxMenuItem* MenuItem74;
-    wxMenuItem* MenuItem75;
-    wxMenuItem* MenuItem76;
-    wxMenuItem* MenuItem77;
-    wxMenuItem* MenuItem79;
-    wxMenuItem* MenuItem7;
-    wxMenuItem* MenuItem80;
-    wxMenuItem* MenuItem81;
-    wxMenuItem* MenuItem82;
-    wxMenuItem* MenuItem83;
-    wxMenuItem* MenuItem84;
-    wxMenuItem* MenuItem85;
-    wxMenuItem* MenuItem86;
-    wxMenuItem* MenuItem87;
-    wxMenuItem* MenuItem88;
-    wxMenuItem* MenuItem89;
-    wxMenuItem* MenuItem8;
-    wxPanel* Canvas;
-    wxPanel* Panel1;
-    wxPanel* Panel3;
-    wxRadioBox* RadioBox1;
-    wxRadioButton* RadioButton1;
-    wxRadioButton* RadioButton2;
-    wxRadioButton* RadioButton3;
-    wxRadioButton* RadioButton4;
-    wxRadioButton* RadioButton5;
-    wxRadioButton* RadioButton6;
-    wxRadioButton* RadioButton7;
-    wxScrolledWindow* Scroll;
-    wxSpinCtrlDouble* PadSMDH;
-    wxSpinCtrlDouble* PadSMDW;
-    wxSpinCtrlDouble* PadSize1;
-    wxSpinCtrlDouble* PadSize2;
-    wxSpinCtrlDouble* TrackSizeV;
-    wxStaticText* StaticText1;
-    wxStaticText* StaticText2;
-    wxToggleButton* ToggleButton1;
-    wxToggleButton* ToggleButton2;
-    wxToggleButton* ToggleButton3;
-    wxToggleButton* ToggleButton4;
-    wxToggleButton* ToggleButton5;
-    wxToggleButton* ToggleButton6;
-    wxToggleButton* ToggleButton7;
-    wxToolBar* ToolBar;
-    wxToolBarToolBase* ToolBarItem10;
-    wxToolBarToolBase* ToolBarItem11;
-    wxToolBarToolBase* ToolBarItem12;
-    wxToolBarToolBase* ToolBarItem13;
-    wxToolBarToolBase* ToolBarItem14;
-    wxToolBarToolBase* ToolBarItem15;
-    wxToolBarToolBase* ToolBarItem16;
-    wxToolBarToolBase* ToolBarItem17;
-    wxToolBarToolBase* ToolBarItem18;
-    wxToolBarToolBase* ToolBarItem19;
-    wxToolBarToolBase* ToolBarItem1;
-    wxToolBarToolBase* ToolBarItem20;
-    wxToolBarToolBase* ToolBarItem21;
-    wxToolBarToolBase* ToolBarItem22;
-    wxToolBarToolBase* ToolBarItem2;
-    wxToolBarToolBase* ToolBarItem3;
-    wxToolBarToolBase* ToolBarItem4;
-    wxToolBarToolBase* ToolBarItem5;
-    wxToolBarToolBase* ToolBarItem6;
-    wxToolBarToolBase* ToolBarItem7;
-    wxToolBarToolBase* ToolBarItem8;
-    wxToolBarToolBase* ToolBarItem9;
-
-
-    float track_size;
-
-    float pad_r1;
-    float pad_r2;
-
-    float pad_smd_w;
-    float pad_smd_h;
-
-    void SetDefaults();
-    void SwapSMDSize();
 
     Settings s;
 
-    void SetGridSize(float,bool micro=false);
-    void SetTrackSize(float,bool set=false);
-    void SetPadSize1(float,bool set=false);
-    void SetPadSize2(float,bool set=false);
-    void SetPadSMDW(float,bool set=false);
-    void SetPadSMDH(float,bool set=false);
+    uint8_t tool;
 
     PCBFile file;
     void init_menu_bar();
+    void init_tool_bar();
+	void close(wxCommandEvent&);
+	void open_settings(wxCommandEvent&);
 
+	void select_tool(wxCommandEvent&);
 };
 
 #endif
