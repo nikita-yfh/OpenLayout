@@ -32,56 +32,21 @@ OpenLayoutFrame::OpenLayoutFrame()
 	wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
 	{
 		wxBoxSizer *content=new wxBoxSizer(wxHORIZONTAL);
-		{
-			{
-				wxPanel *left_panel=new wxPanel(this);
-				{
-					wxBoxSizer *left_box=new wxBoxSizer(wxVERTICAL);
-					{
-						wxBoxSizer *tools=new wxBoxSizer(wxVERTICAL);
-						const char**images[]={
-							tool_edit_xpm,
-							tool_zoom_xpm,
-							tool_track_xpm,
-							tool_pad_xpm,
-							tool_pad_smd_xpm,
-							tool_circle_xpm,
-							tool_rectangle_xpm,
-							tool_polygon_xpm,
-							tool_special_xpm,
-							tool_text_xpm,
-							tool_mask_xpm,
-							tool_connections_xpm,
-							tool_autoroute_xpm,
-							tool_test_xpm,
-							tool_measure_xpm,
-							tool_photoview_xpm,
-						};
-						for(int q=0;q<TOOL_COUNT;q++){
-							wxButton *button=new wxButton(left_panel,wxID_ANY,
-								Settings::tool_names[q],wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_LEFT);
-							button->SetBitmap(images[q],wxLEFT);
-							button->Bind(wxEVT_BUTTON,&OpenLayoutFrame::select_tool,this,wxID_ANY,wxID_ANY,(wxObject*)(intptr_t)q);
-							tools->Add(button,1,wxEXPAND);
-						}
-						left_box->Add(tools);
-					}
-					left_panel->SetSizerAndFit(left_box);
-				}
-				content->Add(left_panel);
-			}
-		}
+		init_left_panel(content);
 		all_box->Add(content);
 	}
 	SetSizerAndFit(all_box);
-	Bind(wxEVT_MENU,&OpenLayoutFrame::close,this,wxID_EXIT);
+	Bind(wxEVT_MENU,&OpenLayoutFrame::close,this, wxID_EXIT);
 	Bind(wxEVT_MENU,&OpenLayoutFrame::open_settings,this,wxID_PROPERTIES);
     init_menu_bar();
     init_tool_bar();
+
+    build_pad_menu();
+    build_smd_menu();
 }
 
 void OpenLayoutFrame::close(wxCommandEvent&){
-	Close();
+	Close(true);
 }
 void OpenLayoutFrame::open_settings(wxCommandEvent&){
 	SettingsDialog *settings=new SettingsDialog(this,s);
@@ -259,6 +224,136 @@ void OpenLayoutFrame::init_tool_bar(){
     tool_bar->Realize();
     SetToolBar(tool_bar);
 }
-void OpenLayoutFrame::select_tool(wxCommandEvent &e){
-	tool=(int)(intptr_t)e.GetEventUserData();
+void OpenLayoutFrame::init_left_panel(wxBoxSizer *content){
+	wxScrolledWindow *left_panel = new wxScrolledWindow(this,wxID_ANY,
+		wxDefaultPosition,wxDefaultSize,wxVSCROLL);
+	{
+		wxBoxSizer *left_box=new wxBoxSizer(wxVERTICAL);
+		{
+			wxBoxSizer *tools=new wxBoxSizer(wxVERTICAL);
+			const char**images[]={
+				tool_edit_xpm,
+				tool_zoom_xpm,
+				tool_track_xpm,
+				tool_pad_xpm,
+				tool_pad_smd_xpm,
+				tool_circle_xpm,
+				tool_rectangle_xpm,
+				tool_polygon_xpm,
+				tool_special_xpm,
+				tool_text_xpm,
+				tool_mask_xpm,
+				tool_connections_xpm,
+				tool_autoroute_xpm,
+				tool_test_xpm,
+				tool_measure_xpm,
+				tool_photoview_xpm
+			};
+			for(int q=0;q<TOOL_COUNT;q++){
+				wxButton *button=new wxButton(left_panel,ID_TOOL_EDIT+q,
+					Settings::tool_names[q],wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_LEFT);
+				button->SetBitmap(images[q],wxLEFT);
+				button->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e){
+					tool=e.GetId()-ID_TOOL_EDIT;
+				});
+				tools->Add(button,1,wxEXPAND);
+			}
+			left_box->Add(tools);
+		}
+		{
+			grid_button=new wxButton(left_panel,wxID_ANY,
+				"1.27 mm",wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_LEFT);
+			grid_button->SetBitmap(grid_xpm,wxLEFT);
+			left_box->Add(grid_button,0,wxEXPAND,5);
+		}
+		{
+			wxFlexGridSizer *sizer=new wxFlexGridSizer(3,2,1,1);
+			wxSize size(65,-1);
+			{
+				wxBitmapButton *track=new wxBitmapButton(left_panel,wxID_ANY,
+					track_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+				sizer->Add(track,0,wxEXPAND);
+				w_track_size=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
+					wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,track_size,0.05);
+				sizer->Add(w_track_size,0,wxSHAPED);
+			}
+			{
+				wxBitmapButton *pad=new wxBitmapButton(left_panel,wxID_ANY,
+					pad_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+				pad->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e){PopupMenu(pad_menu);});
+				sizer->Add(pad,0,wxEXPAND);
+				{
+					wxBoxSizer *sizer1=new wxBoxSizer(wxVERTICAL);
+					w_pad_size1=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
+						wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,pad_size.radius1,0.05);
+					w_pad_size2=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
+						wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,pad_size.radius2,0.05);
+					sizer1->Add(w_pad_size1, 0,wxSHAPED);
+					sizer1->Add(w_pad_size2, 0,wxSHAPED);
+					sizer->Add(sizer1);
+				}
+			}
+			{
+				wxBitmapButton *smd=new wxBitmapButton(left_panel,wxID_ANY,
+					smd_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+				smd->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e){PopupMenu(smd_menu);});
+				sizer->Add(smd,0,wxEXPAND);
+				{
+					wxBoxSizer *sizer1=new wxBoxSizer(wxVERTICAL);
+					w_smd_w=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
+						wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,smd_size.width,0.05);
+					w_smd_h=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
+						wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,smd_size.height,0.05);
+					wxBitmapButton *swap_smd=new wxBitmapButton(left_panel,wxID_ANY,
+						swap_smd_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+					swap_smd->Bind(wxEVT_BUTTON,&OpenLayoutFrame::swap_smd_size,this);
+					sizer1->Add(w_smd_w,0,wxSHAPED);
+					sizer1->Add(w_smd_h,0,wxSHAPED);
+					sizer1->Add(swap_smd,0,wxEXPAND);
+					sizer->Add(sizer1);
+				}
+			}
+
+			left_box->Add(sizer);
+
+		}
+		left_panel->SetSizerAndFit(left_box);
+		left_panel->SetScrollRate(10, 10);
+		left_panel->SetVirtualSize(left_box->GetSize());
+	}
+	content->Add(left_panel);
+}
+void OpenLayoutFrame::swap_smd_size(wxCommandEvent&e){
+	swap(smd_size.width,smd_size.height);
+	w_smd_w->SetValue(smd_size.width);
+	w_smd_h->SetValue(smd_size.height);
+	build_smd_menu();
+}
+void OpenLayoutFrame::build_pad_menu(){
+	if(pad_menu)delete pad_menu;
+	pad_menu=new wxMenu();
+	for(int q=0;q<s.pad_sizes.size();q++){
+		PadSize size=s.pad_sizes[q];
+		char text[128];
+		sprintf(text,"%.2f X %.2f %s",size.radius1,size.radius2,"mm");
+		wxMenuItem *item=new wxMenuItem(pad_menu,wxID_ANY,text);
+		if(pad_size.radius1==size.radius1&&pad_size.radius2==size.radius2)
+			item->SetBitmap(check_xpm);
+		pad_menu->Append(item);
+	}
+}
+void OpenLayoutFrame::build_smd_menu(){
+	if(smd_menu)delete smd_menu;
+	smd_menu=new wxMenu();
+	for(int q=0;q<s.smd_sizes.size();q++){
+		SMDSize size=s.smd_sizes[q];
+		char text[128];
+		sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
+		wxMenuItem *item=new wxMenuItem(smd_menu,wxID_ANY,text);
+		float e1=min(smd_size.width,smd_size.height);
+		float e2=max(smd_size.width,smd_size.height);
+		if(e1==size.width&&e2==size.height)
+			item->SetBitmap(check_xpm);
+		smd_menu->Append(item);
+	}
 }

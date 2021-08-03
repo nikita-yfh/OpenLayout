@@ -1,5 +1,5 @@
 /* XPM */
-static char * pad_smd_xpm[] = {
+static char * smd_xpm[] = {
 "32 32 3 1",
 " 	c None",
 ".	c #FFFFFF",

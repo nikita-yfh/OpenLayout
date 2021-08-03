@@ -8,6 +8,16 @@ using namespace std;
 enum class BoardType {
     Empty,Rectangle,Round
 };
+
+struct PadSize{
+	float radius1;
+	float radius2; //smaller then radius1
+};
+
+struct SMDSize{
+	float width;
+	float height; //bigger then width
+};
 class Board {
 public:
     Board();

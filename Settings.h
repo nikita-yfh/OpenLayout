@@ -2,6 +2,8 @@
 #define SETTINGS_H
 #include <wx/collpane.h>
 #include <string>
+#include <vector>
+#include "Board.h"
 
 using namespace std;
 
@@ -59,6 +61,7 @@ struct ColorScheme {
     void reset();
 };
 
+
 struct Settings {
     Settings();
     void SetDefault();
@@ -90,8 +93,6 @@ struct Settings {
 
     char tool_keys[TOOL_COUNT]; //key bindings for tools
 
-    static const char def_keys[TOOL_COUNT];
-
     static const char *tool_names[TOOL_COUNT];
 
     bool show_45_lines;
@@ -102,6 +103,10 @@ struct Settings {
 
     bool autosave;
     uint16_t autosave_timer;
+
+    vector<PadSize>pad_sizes;
+    vector<SMDSize>smd_sizes;
+    vector<float>track_sizes;
 };
 
 #endif // SETTINGS_H

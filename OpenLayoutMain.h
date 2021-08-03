@@ -102,7 +102,23 @@ enum{
 	ID_ZOOM_BOARD,
 	ID_ZOOM_OBJECTS,
 	ID_ZOOM_SELECTION,
-	ID_ZOOM_PREVIOUS
+	ID_ZOOM_PREVIOUS,
+	ID_TOOL_EDIT,
+	ID_TOOL_ZOOM,
+	ID_TOOL_TRACK,
+	ID_TOOL_PAD,
+	ID_TOOL_SMD_PAD,
+	ID_TOOL_CIRCLE,
+	ID_TOOL_RECTANGLE,
+	ID_TOOL_ZONE,
+	ID_TOOL_FORM,
+	ID_TOOL_TEXT,
+	ID_TOOL_SOLDER_MASK,
+	ID_TOOL_CONNECTIONS,
+	ID_TOOL_AUTOROUTE,
+	ID_TOOL_TEST,
+	ID_TOOL_MEASURE,
+	ID_TOOL_PHOTOVIEW
 };
 class OpenLayoutFrame: public wxFrame {
 public:
@@ -110,17 +126,37 @@ public:
     OpenLayoutFrame();
 private:
 
+	wxButton *grid_button;
+
     Settings s;
 
     uint8_t tool;
 
+    SMDSize smd_size{1.6f,0.9f};
+    PadSize pad_size{1.8f,0.6f};
+    float track_size=0.8f;
+
+    wxSpinCtrlDouble *w_smd_w;
+    wxSpinCtrlDouble *w_smd_h;
+    wxSpinCtrlDouble *w_pad_size1;
+    wxSpinCtrlDouble *w_pad_size2;
+    wxSpinCtrlDouble *w_track_size;
+
+    wxMenu *smd_menu=nullptr;
+    wxMenu *pad_menu=nullptr;
+    wxMenu *track_menu=nullptr;
+	void build_smd_menu();
+	void build_pad_menu();
+	void build_track_menu();
+
     PCBFile file;
     void init_menu_bar();
     void init_tool_bar();
+    void init_left_panel(wxBoxSizer*);
 	void close(wxCommandEvent&);
 	void open_settings(wxCommandEvent&);
 
-	void select_tool(wxCommandEvent&);
+	void swap_smd_size(wxCommandEvent&);
 };
 
 #endif

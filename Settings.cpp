@@ -20,24 +20,6 @@ const char* Settings::tool_names[TOOL_COUNT]= {
     "Photoview"
 };
 
-const char Settings::def_keys[TOOL_COUNT]= {
-    '\27', //escape
-    'Z',
-    'L',
-    'P',
-    'S',
-    'R',
-    'Q',
-    'F',
-    'N',
-    'T',
-    'C',
-    'A',
-    'X',
-    'M',
-    'V',
-    'O'
-};
 
 ColorScheme::ColorScheme() {
     reset();
@@ -67,6 +49,7 @@ Settings::Settings() {
     SetDefault();
 }
 void Settings::SetDefault() {
+	//Default settings from Sprint Layout
     for(int q=0; q<3; q++)
         colors[q].reset();
     s_color_scheme=0; //Default
@@ -108,7 +91,59 @@ void Settings::SetDefault() {
     autosave_timer=5;
 
 
+	const char def_keys[TOOL_COUNT]= {
+		'\27', //escape
+		'Z',
+		'L',
+		'P',
+		'S',
+		'R',
+		'Q',
+		'F',
+		'N',
+		'T',
+		'C',
+		'A',
+		'X',
+		'M',
+		'V',
+		'O'
+	};
     memcpy(tool_keys,def_keys,sizeof(def_keys));
+
+    smd_sizes={
+		{0.3f,0.3f},
+		{0.5f,0.6f},
+		{0.6f,0.9f},
+		{0.9f,1.6f},
+		{1.0f,1.2f},
+		{1.2f,1.7f},
+		{1.2f,2.7f},
+		{1.2f,3.2f}
+    };
+    pad_sizes={
+		{0.8f,0.4f},
+		{1.0f,0.5f},
+		{1.4f,0.8f},
+		{1.4f,1.0f},
+		{1.6f,0.8f},
+		{1.6f,1.0f},
+		{2.0f,0.8f},
+		{2.0f,1.0f},
+		{2.4f,1.2f},
+		{3.0f,1.4f}
+    };
+    track_sizes={
+		0.15f,
+		0.2f,
+		0.3f,
+		0.4f,
+		0.6f,
+		0.8f,
+		1.0f,
+		1.2f,
+		1.4f
+    };
 
 }
 bool Settings::get_gen(GenSettings t)const {
