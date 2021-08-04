@@ -332,7 +332,7 @@ void OpenLayoutFrame::swap_smd_size(wxCommandEvent&e){
 void OpenLayoutFrame::build_pad_menu(){
 	if(pad_menu)delete pad_menu;
 	pad_menu=new wxMenu();
-	for(int q=0;q<s.pad_sizes.size();q++){
+	/*for(int q=0;q<s.pad_sizes.size();q++){
 		PadSize size=s.pad_sizes[q];
 		char text[128];
 		sprintf(text,"%.2f X %.2f %s",size.radius1,size.radius2,"mm");
@@ -340,7 +340,13 @@ void OpenLayoutFrame::build_pad_menu(){
 		if(pad_size.radius1==size.radius1&&pad_size.radius2==size.radius2)
 			item->SetBitmap(check_xpm);
 		pad_menu->Append(item);
-	}
+	}*/
+}
+void add_submenu(wxMenu *parent,wxMenu *child,const wxString &name,const wxBitmap &bitmap){
+	wxMenuItem *item=new wxMenuItem(parent,wxID_ANY,_("Remove..."));
+	item->SetBitmap(bitmap);
+	item->SetSubMenu(child);
+	parent->Append(item);
 }
 void OpenLayoutFrame::build_smd_menu(){
 	if(smd_menu)delete smd_menu;
@@ -350,10 +356,39 @@ void OpenLayoutFrame::build_smd_menu(){
 		char text[128];
 		sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
 		wxMenuItem *item=new wxMenuItem(smd_menu,wxID_ANY,text);
-		float e1=min(smd_size.width,smd_size.height);
-		float e2=max(smd_size.width,smd_size.height);
-		if(e1==size.width&&e2==size.height)
+		if(smd_size.normal()==size)
 			item->SetBitmap(check_xpm);
 		smd_menu->Append(item);
+	}
+	smd_menu->AppendSeparator();
+	{
+		char text[128];
+		SMDSize size=smd_size.normal();
+		sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
+		wxMenuItem *item=new wxMenuItem(smd_menu,wxID_ANY,text);
+		item->SetBitmap(plus_xpm);
+		smd_menu->Append(item);
+	}
+	{
+		smd_menu->AppendSeparator();
+		wxMenu *del_menu=new wxMenu();
+		{
+			for(int q=0;q<s.smd_sizes.size();q++){
+				SMDSize size=s.smd_sizes[q];
+				char text[128];
+				sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
+				wxMenuItem *item=new wxMenuItem(del_menu,wxID_ANY,text);
+
+				struct DelUserData : wxObject{DelUserData(uint8_t d){data=d;}; uint8_t data;};
+
+				/*item->Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+
+					build_smd_menu();
+				},wxID_ANY,wxID_ANY);*/
+				item->SetBitmap(cross_xpm);
+				del_menu->Append(item);
+			}
+		}
+		add_submenu(smd_menu,del_menu,_("Remove..."),cross_xpm);
 	}
 }

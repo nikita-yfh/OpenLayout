@@ -17,6 +17,12 @@ struct PadSize{
 struct SMDSize{
 	float width;
 	float height; //bigger then width
+	SMDSize normal(){
+		return {min(width,height),max(width,height)};
+	}
+	bool operator==(SMDSize other){
+		return other.width==width && other.height==height;
+	}
 };
 class Board {
 public:
