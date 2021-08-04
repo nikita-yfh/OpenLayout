@@ -118,7 +118,17 @@ enum{
 	ID_TOOL_AUTOROUTE,
 	ID_TOOL_TEST,
 	ID_TOOL_MEASURE,
-	ID_TOOL_PHOTOVIEW
+	ID_TOOL_PHOTOVIEW,
+
+	ID_TRACK_SEL,
+	ID_TRACK_ADD=ID_TRACK_SEL+100,
+	ID_TRACK_DEL,
+	ID_PAD_SEL=ID_TRACK_DEL+100,
+	ID_PAD_ADD=ID_PAD_SEL+100,
+	ID_PAD_DEL,
+	ID_SMD_SEL=ID_PAD_DEL+100,
+	ID_SMD_ADD=ID_SMD_SEL+100,
+	ID_SMD_DEL
 };
 class OpenLayoutFrame: public wxFrame {
 public:
@@ -135,6 +145,9 @@ private:
     SMDSize smd_size{1.6f,0.9f};
     PadSize pad_size{1.8f,0.6f};
     float track_size=0.8f;
+    void set_smd_size(SMDSize size);
+    void set_pad_size(PadSize size);
+    void set_track_size(float size);
 
     wxSpinCtrlDouble *w_smd_w;
     wxSpinCtrlDouble *w_smd_h;
@@ -157,6 +170,7 @@ private:
 	void open_settings(wxCommandEvent&);
 
 	void swap_smd_size(wxCommandEvent&);
+
 };
 
 #endif

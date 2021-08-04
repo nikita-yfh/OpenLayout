@@ -12,6 +12,12 @@ enum class BoardType {
 struct PadSize{
 	float radius1;
 	float radius2; //smaller then radius1
+	bool operator==(PadSize other){
+		return other.radius1==radius1 && other.radius2==radius2;
+	}
+	bool operator<(PadSize other){
+		return !(radius1>=other.radius1 || radius2>=other.radius2);
+	}
 };
 
 struct SMDSize{
@@ -22,6 +28,9 @@ struct SMDSize{
 	}
 	bool operator==(SMDSize other){
 		return other.width==width && other.height==height;
+	}
+	bool operator<(SMDSize other){
+		return !(width>=other.width || height>=other.height);
 	}
 };
 class Board {
