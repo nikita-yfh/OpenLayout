@@ -5,6 +5,7 @@ include(${wxWidgets_USE_FILE})
 set(SOURCES
 	Board.cpp
 	LayerInfoDialog.cpp
+	AboutDialog.cpp
 	NewBoardDialog.cpp
 	OpenLayoutApp.cpp
 	OpenLayoutMain.cpp
@@ -16,6 +17,7 @@ set(SOURCES
 set(HEADERS
 	Board.h
 	LayerInfoDialog.h
+	AboutDialog.h
 	NewBoardDialog.h
 	OpenLayoutApp.h
 	OpenLayoutMain.h

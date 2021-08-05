@@ -4,15 +4,17 @@
 Board::Board() {
     grid_size=1.27f;
     type=BoardType::Empty;
-    border=200000;
-    width=160000;
-    height=100000;
+    border=20.0f;
+    size={160.0f,100.0f};
+
+    zoom=1.0f;
+
     strcpy(name,"New board");
 }
 bool Board::isValid() { //check size
-    if(width>=10000 && height>=10000 && width<=5000000 && height<=5000000) {
+    if(size.w>=1.0f && size.h>=1.0f && size.w<=500.0f && size.h<=500.0f) {
         if(type!=BoardType::Empty)
-            return width+border*2<=5000000 && height+border*2<=5000000;
+            return size.w+border*2<=500.0f && size.h+border*2<=500.0f;
         return true;
     }
     return false;

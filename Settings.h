@@ -88,6 +88,8 @@ struct Settings {
     ColorScheme colors[3]; //user color schemes
     uint8_t s_color_scheme; //0-Standart; 1-User1; 2-User2; 3-User3;
 
+    ColorScheme get_current_colors();
+
     uint16_t copper_thickness;
     uint16_t temp_enhance;
 
@@ -107,6 +109,8 @@ struct Settings {
     vector<PadSize>pad_sizes;
     vector<SMDSize>smd_sizes;
     vector<float>track_sizes;
+
+    uint8_t sub_grid;
 };
 
 #endif // SETTINGS_H
