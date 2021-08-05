@@ -25,18 +25,17 @@ static string to_str(T value) {
 
 NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     Create(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
-    wxFlexGridSizer *all_box = new wxFlexGridSizer(5, 1, 0, 0);
+    wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
     {
         auto RecalcSize=[&](wxCommandEvent &e) {
-            board.border=border->GetValue()*10000;
+            board.border=border->GetValue();
             if(board.type==BoardType::Round) {
-                board.width=board.height=diameter->GetValue()*10000;
+                board.size.w=board.size.h=diameter->GetValue();
             } else {
-                board.width=width->GetValue()*10000;
-                board.height=height->GetValue()*10000;
+                board.size={width->GetValue(),height->GetValue()};
             }
-            all_width->SetLabel(to_str((board.width+board.border*2)/10000.0));
-            all_height->SetLabel(to_str((board.height+board.border*2)/10000.0));
+            all_width->SetLabel(to_str(board.size.w+board.border*2));
+            all_height->SetLabel(to_str(board.size.h+board.border*2));
             Layout();
         };
         wxBoxSizer *content_box = new wxBoxSizer(wxHORIZONTAL);
@@ -165,6 +164,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     buttons->Realize();
     all_box->Add(buttons, 0, wxALL|wxEXPAND, 5);
     SetSizerAndFit(all_box);
+    SetAutoLayout(true);
 
     SetType(BoardType::Empty);
 }
@@ -188,7 +188,7 @@ void NewBoardDialog::SetType(const BoardType &type) {
     case BoardType::Round:
         panels[0]->Hide();
         panels[1]->Show();
-        panels[2]->Hide();
+        panels[2]->Show();
         panels[3]->Show();
         break;
     }
