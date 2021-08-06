@@ -19,6 +19,10 @@ enum class Drillings {
     bgr,white,black
 };
 
+enum class GridStyle{
+	lines,dots
+};
+
 enum class ColorType {
     c1,		// Copper-top
     c2,		// Copper-bottom
@@ -84,6 +88,7 @@ struct Settings {
 
     Unit units;
     Drillings drill;
+    GridStyle grid_style;
 
     ColorScheme colors[3]; //user color schemes
     uint8_t s_color_scheme; //0-Standart; 1-User1; 2-User2; 3-User3;
@@ -109,6 +114,8 @@ struct Settings {
     vector<PadSize>pad_sizes;
     vector<SMDSize>smd_sizes;
     vector<float>track_sizes;
+
+    vector<float>grids;
 
     uint8_t sub_grid;
 };

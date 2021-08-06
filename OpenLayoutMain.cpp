@@ -11,6 +11,7 @@
 #include "NewBoardDialog.h"
 #include "LayerInfoDialog.h"
 #include "ProjectInfoDialog.h"
+#include "InputGridDialog.h"
 #include "SettingsDialog.h"
 #include "AboutDialog.h"
 #include <wx/msgdlg.h>
@@ -27,8 +28,17 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+
+#include "Utils.h"
 using namespace std;
 
+template<typename T>
+struct Userdata :wxObject{
+	Userdata(T v){
+		value=v;
+	}
+	T value;
+};
 OpenLayoutFrame::OpenLayoutFrame()
     :wxFrame(0,wxID_ANY,"OpenLayout") {
     wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
@@ -38,6 +48,7 @@ OpenLayoutFrame::OpenLayoutFrame()
         {
             wxScrolledWindow *main_scroll = new wxScrolledWindow(this);
             main_scroll->SetScrollbars(1,1, get_canvas_size().x,get_canvas_size().y, 0, 0);
+            main_scroll->Bind(wxEVT_SCROLL_BOTTOM,[&](...){});
             content->Add(main_scroll,1,wxEXPAND,5);
             wxPanel *panel=new wxPanel(main_scroll,wxID_ANY,wxDefaultPosition,get_canvas_size());
             panel->Bind(wxEVT_PAINT,&OpenLayoutFrame::draw,this);
@@ -120,23 +131,22 @@ void OpenLayoutFrame::init_menu_bar() {
         menu->Append(wxID_PRINT,_("Print\tCtrl+P"));
         menu->AppendSeparator();
         menu->Append(wxID_EXIT,_("Exit\tCtrl+Q"));
-        menu_bar->Append(menu, _("File"));
+        menu_bar->Append(menu, _("&File"));
     }
-
     {
         //Edit
         wxMenu *menu = new wxMenu();
-        menu->Append(wxID_UNDO,_("Undo\tCtrl+Z"));
-        menu->Append(wxID_REDO,_("Redo\tCtrl+Y"));
+        menu->Append(wxID_UNDO,_("&Undo\tCtrl+Z"));
+        menu->Append(wxID_REDO,_("&Redo\tCtrl+Y"));
         menu->AppendSeparator();
-        menu->Append(wxID_COPY,_("Copy\tCtrl+C"));
-        menu->Append(wxID_CUT,_("Cut\tCtrl+X"));
-        menu->Append(wxID_PASTE,_("Paste\tCtrl+V"));
-        menu->Append(wxID_DUPLICATE,_("Duplicate\tCtrl+D"));
-        menu->Append(wxID_DELETE,_("Delete\tDelete"));
+        menu->Append(wxID_COPY,_("C&opy\tCtrl+C"));
+        menu->Append(wxID_CUT,_("&Cut\tCtrl+X"));
+        menu->Append(wxID_PASTE,_("&Paste\tCtrl+V"));
+        menu->Append(wxID_DUPLICATE,_("Dup&licate\tCtrl+D"));
+        menu->Append(wxID_DELETE,_("&Delete\tDelete"));
         menu->AppendSeparator();
-        menu->Append(wxID_SELECTALL,_("Select all\tCtrl+A"));
-        menu_bar->Append(menu, _("Edit"));
+        menu->Append(wxID_SELECTALL,_("Select &all\tCtrl+A"));
+        menu_bar->Append(menu, _("&Edit"));
     }
     {
         //Board
@@ -146,85 +156,85 @@ void OpenLayoutFrame::init_menu_bar() {
         menu->Append(ID_BOARD_COPY,_("Copy board"));
         menu->Append(ID_BOARD_DELETE,_("Delete board"));
         menu->AppendSeparator();
-        menu->Append(ID_BOARD_SET_RIGHT,_("Set board to right"));
-        menu->Append(ID_BOARD_SET_LEFT,_("Set board to left"));
+        menu->Append(ID_BOARD_SET_RIGHT,_("Set board to &right"));
+        menu->Append(ID_BOARD_SET_LEFT,_("Set board to &left"));
         menu->AppendSeparator();
-        menu->Append(ID_BOARD_MOVE_RIGHT,_("Move board to right"));
-        menu->Append(ID_BOARD_MOVE_LEFT,_("Move board to left"));
-        menu->Append(ID_BOARD_IMPORT,_("Import boards from file"));
-        menu->Append(ID_BOARD_SAVE,_("Save boards to file"));
-        menu_bar->Append(menu, _("Board"));
+        menu->Append(ID_BOARD_MOVE_RIGHT,_("&Move board to right"));
+        menu->Append(ID_BOARD_MOVE_LEFT,_("M&ove board to left"));
+        menu->Append(ID_BOARD_IMPORT,_("&Import boards from file"));
+        menu->Append(ID_BOARD_SAVE,_("&Save boards to file"));
+        menu_bar->Append(menu, _("&Board"));
     }
     {
         //Functions
         wxMenu *menu = new wxMenu();
-        menu->Append(ID_ROTATE,_("Rotate\tCtrl+R"));
+        menu->Append(ID_ROTATE,_("&Rotate\tCtrl+R"));
         menu->AppendSeparator();
-        menu->Append(ID_HMIRROR,_("Mirror horisontal\tCtrl+H"));
-        menu->Append(ID_VMIRROR,_("Mirror vertical\tCtrl+T"));
+        menu->Append(ID_HMIRROR,_("Mirror &horisontal\tCtrl+H"));
+        menu->Append(ID_VMIRROR,_("Mirror &vertical\tCtrl+T"));
         menu->AppendSeparator();
-        menu->Append(ID_GROUP,_("Build group\tCtrl+G"));
-        menu->Append(ID_UNGROUP,_("Split group\tCtrl+U"));
+        menu->Append(ID_GROUP,_("Build &group\tCtrl+G"));
+        menu->Append(ID_UNGROUP,_("Split gro&up\tCtrl+U"));
         menu->AppendSeparator();
-        menu->Append(ID_CHANGE_SIDE,_("Change board side\tCtrl+W"));
-        menu->Append(wxID_ANY,_("Set to layer"));
+        menu->Append(ID_CHANGE_SIDE,_("&Change board side\tCtrl+W"));
+        menu->Append(wxID_ANY,_("&Set to layer"));
         menu->AppendSeparator();
-        menu->Append(ID_SNAP_GRID,_("Snap to grid"));
-        menu->Append(ID_MASSIVE,_("Tile / Arrange circular"));
-        menu_bar->Append(menu, _("Functions"));
+        menu->Append(ID_SNAP_GRID,_("S&nap to grid"));
+        menu->Append(ID_MASSIVE,_("&Tile / Arrange circular"));
+        menu_bar->Append(menu, _("F&unctions"));
     }
     {
         //Extras
         wxMenu *menu = new wxMenu();
-        menu->Append(wxID_INFO,_("Project info"));
-        menu->Append(ID_LIST_DRILLINGS,_("List drillings"));
+        menu->Append(wxID_INFO,_("&Project info"));
+        menu->Append(ID_LIST_DRILLINGS,_("&List drillings"));
         menu->AppendSeparator();
-        menu->Append(ID_SCANNED_COPY,_("Scanned copy"));
+        menu->Append(ID_SCANNED_COPY,_("&Scanned copy"));
         menu->AppendSeparator();
-        menu->Append(ID_FOOTPRINT,_("Footprint-Wizard"));
+        menu->Append(ID_FOOTPRINT,_("&Footprint-Wizard"));
         menu->AppendSeparator();
-        menu->Append(ID_RESET_MASK,_("Reset solder mask"));
-        menu->Append(ID_REMOVE_CONNECTIONS,_("Remove connections (rubberbands)"));
-        menu->Append(ID_DELETE_OUTSIDE,_("Delete elements outside the board"));
+        menu->Append(ID_RESET_MASK,_("R&eset solder mask"));
+        menu->Append(ID_REMOVE_CONNECTIONS,_("&Remove connections (rubberbands)"));
+        menu->Append(ID_DELETE_OUTSIDE,_("&Delete elements outside the board"));
         menu->AppendSeparator();
-        menu->Append(ID_ELEMENT_IMPORT,_("Text-IO: Import elements"));
-        menu->Append(ID_ELEMENT_EXPORT,_("Text-IO: Export elements"));
+        menu->Append(ID_ELEMENT_IMPORT,_("&Text-IO: Import elements"));
+        menu->Append(ID_ELEMENT_EXPORT,_("Te&xt-IO: Export elements"));
         menu->AppendSeparator();
-        menu->Append(ID_DEFINE_PLUGIN,_("Define plugin"));
-        menu->Append(ID_RUN_PLUGIN,_("Run plugin"));
-        menu_bar->Append(menu, _("Extras"));
+        menu->Append(ID_DEFINE_PLUGIN,_("Def&ine plugin"));
+        menu->Append(ID_RUN_PLUGIN,_("R&un plugin"));
+        menu_bar->Append(menu, _("E&xtras"));
     }
     {
         //Options
         wxMenu *menu = new wxMenu();
-        menu->Append(wxID_PROPERTIES,_("General settings"));
+        menu->Append(wxID_PROPERTIES,_("&General settings"));
         menu->AppendSeparator();
-        menu->Append(ID_PANEL_MACRO,_("Macro-Library"), wxEmptyString, wxITEM_CHECK);
-        menu->Append(ID_PANEL_PROPERTIES,_("Properties-Panel"), wxEmptyString, wxITEM_CHECK);
-        menu->Append(ID_PANEL_DRC,_("DRC-Panel"), wxEmptyString, wxITEM_CHECK);
-        menu->Append(ID_PANEL_COMPONENTS,_("Components-Panel"), wxEmptyString, wxITEM_CHECK);
-        menu->Append(ID_PANEL_SELECTOR,_("Selector-Panel"));
+        menu->Append(ID_PANEL_MACRO,_("&Macro-Library"), wxEmptyString, wxITEM_CHECK);
+        menu->Append(ID_PANEL_PROPERTIES,_("&Properties-Panel"), wxEmptyString, wxITEM_CHECK);
+        menu->Append(ID_PANEL_DRC,_("&DRC-Panel"), wxEmptyString, wxITEM_CHECK);
+        menu->Append(ID_PANEL_COMPONENTS,_("&Components-Panel"), wxEmptyString, wxITEM_CHECK);
+        menu->Append(ID_PANEL_SELECTOR,_("S&elector-Panel"));
         menu->AppendSeparator();
-        menu->Append(ID_ZOOM_BOARD,_("Zoom board"));
-        menu->Append(ID_ZOOM_OBJECTS,_("Zoom objects"));
-        menu->Append(ID_ZOOM_SELECTION,_("Zoom selection"));
-        menu->Append(ID_ZOOM_PREVIOUS,_("Zoom previous"));
-        menu_bar->Append(menu, _("Options"));
+        menu->Append(ID_ZOOM_BOARD,_("Zoom &board"));
+        menu->Append(ID_ZOOM_OBJECTS,_("Zoom &objects"));
+        menu->Append(ID_ZOOM_SELECTION,_("Zoom &selection"));
+        menu->Append(ID_ZOOM_PREVIOUS,_("&Zoom previous"));
+        menu_bar->Append(menu, _("&Options"));
     }
     {
         //Help
         wxMenu *menu = new wxMenu();
-        menu->Append(wxID_ABOUT,_("About"));
-        menu_bar->Append(menu, _("Help"));
+        menu->Append(wxID_ABOUT,_("&About"));
+        menu_bar->Append(menu, _("&Help"));
     }
     SetMenuBar(menu_bar);
 }
 void OpenLayoutFrame::init_tool_bar() {
-    wxToolBar *tool_bar = new wxToolBar(this,wxID_ANY);
-    tool_bar->AddTool(wxID_NEW, _("New file"),new_xpm);
-    tool_bar->AddTool(wxID_OPEN, _("Open file"),open_xpm);
-    tool_bar->AddTool(wxID_SAVE, _("Save file"),save_xpm);
-    tool_bar->AddTool(wxID_PRINT, _("Print"), print_xpm);
+    wxToolBar *tool_bar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL);
+    tool_bar->AddRadioTool(wxID_NEW, _("New file"),new_xpm);
+    tool_bar->AddRadioTool(wxID_OPEN, _("Open file"),open_xpm);
+    tool_bar->AddRadioTool(wxID_SAVE, _("Save file"),save_xpm);
+    tool_bar->AddRadioTool(wxID_PRINT, _("Print"), print_xpm);
     tool_bar->AddSeparator();
     tool_bar->AddTool(wxID_UNDO, _("Undo"), undo_xpm);
     tool_bar->AddTool(wxID_REDO, _("Redo"), redo_xpm);
@@ -259,8 +269,8 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
     {
         wxBoxSizer *left_box=new wxBoxSizer(wxVERTICAL);
         {
-            //wxBoxSizer *tools=new wxBoxSizer(wxVERTICAL);
-            wxFlexGridSizer *tools=new wxFlexGridSizer(100,2,1,1);
+           // wxBoxSizer *tools=new wxBoxSizer(wxVERTICAL);
+			wxToolBar *tools=new wxToolBar(left_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_TEXT|wxTB_HORZ_LAYOUT);
             const char**images[]= {
                 tool_edit_xpm,
                 tool_zoom_xpm,
@@ -280,50 +290,48 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
                 tool_photoview_xpm
             };
             for(int q=0; q<TOOL_COUNT; q++) {
-                wxButton *button=new wxButton(left_panel,ID_TOOL_EDIT+q,
-                                              Settings::tool_names[q],wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_LEFT);
+                /*wxButton *button=new wxButton(left_panel,ID_TOOL_EDIT+q,
+                                              Settings::tool_names[q],wxDefaultPosition,wxDefaultSize,wxBORDER_NONE|wxBU_LEFT);
                 button->SetBitmap(images[q],wxLEFT);
                 button->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
                     tool=e.GetId()-ID_TOOL_EDIT;
                 });
-                tools->Add(button,1,wxEXPAND);
-                tools->Add(new wxButton(left_panel,wxID_ANY,"V",wxDefaultPosition,{20,20},wxNO_BORDER),0,wxEXPAND|wxALL,5);
+                tools->Add(button,1,wxEXPAND);*/
+                tools->AddRadioTool(ID_TOOL_EDIT+q,Settings::tool_names[q],images[q]);
             }
-            left_box->Add(tools);
+            left_box->Add(tools,0,wxEXPAND|wxALL,5);
         }
         {
             grid_button=new wxButton(left_panel,wxID_ANY,
-                                     "1.27 mm",wxDefaultPosition,wxDefaultSize,wxNO_BORDER|wxBU_LEFT);
+                                     "1.27 mm",wxDefaultPosition,wxDefaultSize,wxBU_LEFT);
             grid_button->SetBitmap(grid_xpm,wxLEFT);
-            grid_button->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
-                build_grid_menu();
-            });
-            left_box->Add(grid_button,0,wxEXPAND,5);
+            grid_button->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) { build_grid_menu(); });
+            left_box->Add(grid_button,0,wxEXPAND|wxLEFT|wxRIGHT,5);
         }
         {
             wxFlexGridSizer *sizer=new wxFlexGridSizer(3,2,1,1);
-            wxSize size(65,-1);
+            wxSize size(-1,-1);
             {
                 wxBitmapButton *track=new wxBitmapButton(left_panel,wxID_ANY,
-                        track_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+                        track_xpm);
                 track->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
                     build_track_menu();
                 });
-                sizer->Add(track,0,wxEXPAND);
+                sizer->Add(track,0,wxEXPAND|wxLEFT|wxRIGHT,5);
                 w_track_size=new wxSpinCtrlDouble(left_panel,wxID_ANY,wxEmptyString,
                                                   wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,track_size,0.05);
                 w_track_size->Bind(wxEVT_SPINCTRLDOUBLE,[&](wxSpinDoubleEvent&e) {
                     set_track_size(e.GetValue());
                 });
-                sizer->Add(w_track_size,0,wxSHAPED);
+                sizer->Add(w_track_size,0,wxEXPAND|wxLEFT|wxRIGHT,5);
             }
             {
                 wxBitmapButton *pad=new wxBitmapButton(left_panel,wxID_ANY,
-                                                       pad_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+                                                       pad_xpm);
                 pad->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
                     build_pad_menu();
                 });
-                sizer->Add(pad,0,wxEXPAND);
+                sizer->Add(pad,0,wxEXPAND|wxLEFT|wxRIGHT,5);
                 {
                     wxBoxSizer *sizer1=new wxBoxSizer(wxVERTICAL);
                     auto func=[&](wxSpinDoubleEvent&) {
@@ -335,18 +343,18 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
                                                      wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,pad_size.radius2,0.05);
                     w_pad_size1->Bind(wxEVT_SPINCTRLDOUBLE,func);
                     w_pad_size2->Bind(wxEVT_SPINCTRLDOUBLE,func);
-                    sizer1->Add(w_pad_size1, 0,wxSHAPED);
-                    sizer1->Add(w_pad_size2, 0,wxSHAPED);
+                    sizer1->Add(w_pad_size1, 0,wxEXPAND|wxLEFT|wxRIGHT,5);
+                    sizer1->Add(w_pad_size2, 0,wxEXPAND|wxLEFT|wxRIGHT,5);
                     sizer->Add(sizer1);
                 }
             }
             {
                 wxBitmapButton *smd=new wxBitmapButton(left_panel,wxID_ANY,
-                                                       smd_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+                                                       smd_xpm);
                 smd->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
                     build_smd_menu();
                 });
-                sizer->Add(smd,0,wxEXPAND);
+                sizer->Add(smd,0,wxEXPAND|wxLEFT|wxRIGHT,5);
                 {
                     wxBoxSizer *sizer1=new wxBoxSizer(wxVERTICAL);
                     auto func=[&](wxSpinDoubleEvent&) {
@@ -359,11 +367,11 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
                     w_smd_w->Bind(wxEVT_SPINCTRLDOUBLE,func);
                     w_smd_h->Bind(wxEVT_SPINCTRLDOUBLE,func);
                     wxBitmapButton *swap_smd=new wxBitmapButton(left_panel,wxID_ANY,
-                            swap_smd_xpm,wxDefaultPosition,wxDefaultSize,wxNO_BORDER);
+                            swap_smd_xpm);
                     swap_smd->Bind(wxEVT_BUTTON,&OpenLayoutFrame::swap_smd_size,this);
-                    sizer1->Add(w_smd_w,0,wxSHAPED);
-                    sizer1->Add(w_smd_h,0,wxSHAPED);
-                    sizer1->Add(swap_smd,0,wxEXPAND);
+                    sizer1->Add(w_smd_w,0,wxEXPAND|wxLEFT|wxRIGHT,5);
+                    sizer1->Add(w_smd_h,0,wxEXPAND|wxLEFT|wxRIGHT,5);
+                    sizer1->Add(swap_smd,0,wxEXPAND|wxLEFT|wxRIGHT,5);
                     sizer->Add(sizer1);
                 }
             }
@@ -381,7 +389,6 @@ void OpenLayoutFrame::swap_smd_size(wxCommandEvent&e) {
     swap(smd_size.width,smd_size.height);
     w_smd_w->SetValue(smd_size.width);
     w_smd_h->SetValue(smd_size.height);
-    build_smd_menu();
 }
 void OpenLayoutFrame::set_pad_size(PadSize size) {
     w_pad_size1->SetValue(size.radius1);
@@ -428,7 +435,7 @@ void OpenLayoutFrame::build_smd_menu() {
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             int id=e.GetId()-ID_SMD_SEL;
             set_smd_size(s.smd_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+100);
+        },ID_SMD_SEL,ID_SMD_SEL+99);
     }
     smd_menu->AppendSeparator();
     {
@@ -453,7 +460,7 @@ void OpenLayoutFrame::build_smd_menu() {
             Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
                 int id=e.GetId()-ID_SMD_DEL;
                 s.smd_sizes.erase(s.smd_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+100);
+            },ID_SMD_DEL,ID_SMD_DEL+99);
         }
         add_submenu(smd_menu,del_menu,_("Remove..."),cross_xpm,s.smd_sizes.size()!=0);
     }
@@ -478,7 +485,7 @@ void OpenLayoutFrame::build_pad_menu() {
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             int id=e.GetId()-ID_SMD_SEL;
             set_pad_size(s.pad_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+100);
+        },ID_SMD_SEL,ID_SMD_SEL+99);
     }
     pad_menu->AppendSeparator();
     {
@@ -502,7 +509,7 @@ void OpenLayoutFrame::build_pad_menu() {
             Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
                 int id=e.GetId()-ID_SMD_DEL;
                 s.pad_sizes.erase(s.pad_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+100);
+            },ID_SMD_DEL,ID_SMD_DEL+99);
         }
         add_submenu(pad_menu,del_menu,_("Remove..."),cross_xpm,s.pad_sizes.size()!=0);
     }
@@ -527,7 +534,7 @@ void OpenLayoutFrame::build_track_menu() {
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             int id=e.GetId()-ID_SMD_SEL;
             set_track_size(s.track_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+100);
+        },ID_SMD_SEL,ID_SMD_SEL+99);
     }
     track_menu->AppendSeparator();
     {
@@ -551,18 +558,117 @@ void OpenLayoutFrame::build_track_menu() {
             Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
                 int id=e.GetId()-ID_SMD_DEL;
                 s.track_sizes.erase(s.track_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+100);
+            },ID_SMD_DEL,ID_SMD_DEL+99);
         }
         add_submenu(track_menu,del_menu,_("Remove..."),cross_xpm,s.track_sizes.size()!=0);
     }
     PopupMenu(track_menu);
     delete track_menu;
 }
+float get_normal_grid(int n){
+	return 0.0396875f*pow(2,n);
+}
+wxString get_grid_str(float grid){
+	//39.6875µm, 79.375µm, 158.75µm, ..., 5.08mm
+	char mm[40];
+	if(to_str(grid).size()>6) //if µm more compact
+		sprintf(mm,"%g %s",grid*1000.0f,"um");
+	else
+		sprintf(mm,"%g %s",grid,"mm");
+	return mm;
+}
+float get_metric_grid(int n){
+	float grids[]={
+		0.01f,	0.02f,	0.025f,	0.05f,
+		0.1f,	0.2f,	0.25f,	0.5f,
+		1.0f,	2.0f,	2.5f
+	};
+	return grids[n];
+}
 void OpenLayoutFrame::build_grid_menu() {
     wxMenu *grid_menu=new wxMenu();
-
+	for(int item=0;item<8;item++){
+		float grid=get_normal_grid(item);
+		add_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,
+			file.GetSelectedBoard().grid_size==grid?red_checked_xpm:red_xpm);
+	}
+	grid_menu->AppendSeparator();
+	{
+		wxMenu *metric=new wxMenu();
+		for(int item=0;item<11;item++){
+			float grid=get_metric_grid(item);
+			add_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,file.GetSelectedBoard().grid_size==grid?blue_checked_xpm:blue_xpm);
+		}
+		add_submenu(grid_menu,metric,_("Metric grids:"),blue_xpm);
+	}
+	grid_menu->AppendSeparator();
+	{
+		wxMenu *user=new wxMenu();
+		for(int item=0;item<s.grids.size();item++){
+			float grid=s.grids[item];
+			add_item(user,get_grid_str(grid),ID_GRID_USER+item,file.GetSelectedBoard().grid_size==grid?green_checked_xpm:green_xpm);
+		}
+		if(s.grids.size())
+			user->AppendSeparator();
+		user->Append(ID_GRID_USER_NEW,_("Add new grid value"));
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+			InputGridDialog dialog(this);
+			if(dialog.ShowModal()==wxID_OK){
+				float grid=dialog.Get();
+				s.grids.push_back(grid);
+				sort(s.grids.begin(),s.grids.end());
+				set_grid(grid);
+			}
+		},ID_GRID_USER_NEW);
+		if(s.grids.size()){
+			wxMenu *user_del=new wxMenu();
+			for(int item=0;item<s.grids.size();item++){
+				float grid=s.grids[item];
+				add_item(user_del,get_grid_str(grid),ID_GRID_USER_DEL+item,wxBitmap());
+			}
+			add_submenu(user,user_del,_("Remove"),wxBitmap());
+		}
+		add_submenu(grid_menu,user,_("User grids:"),green_xpm);
+	}
+	Bind(wxEVT_MENU,[&](wxCommandEvent &e){
+		int id=e.GetId()-ID_GRID_NORMAL;
+		float grid;
+		if(id<8) //normal
+			grid=get_normal_grid(id);
+		else if(id<19) //metric
+			grid=get_metric_grid(id-8);
+		else //user grid
+			grid=s.grids[id-19];
+		set_grid(grid,id<8);
+	},ID_GRID_NORMAL,ID_GRID_NORMAL+118);
+	Bind(wxEVT_MENU,[&](wxCommandEvent &e){
+		int id=e.GetId()-ID_GRID_USER_DEL;
+		s.grids.erase(s.grids.begin()+id);
+	},ID_GRID_USER_DEL,ID_GRID_USER_DEL+99);
+	grid_menu->AppendSeparator();
+	grid_menu->Append(wxID_ANY,_("Hotkeys..."));
+	{
+		wxMenu *style=new wxMenu;
+		style->AppendRadioItem(ID_GRID_LINES,_("Lines"));
+		style->AppendRadioItem(ID_GRID_DOTS,_("Dots"));
+		grid_menu->Append(wxID_ANY,_("Grid style"),style);
+	}
+	{
+		wxMenu *sub=new wxMenu;
+		sub->AppendRadioItem(ID_SUBGRID_OFF,_("Off"));
+		sub->AppendRadioItem(ID_SUBGRID_2,_("2"));
+		sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
+		sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
+		sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
+		grid_menu->Append(wxID_ANY,_("Subdivisions"),sub);
+	}
+	grid_menu->AppendCheckItem(wxID_ANY,_("Show grid"));
     PopupMenu(grid_menu);
     delete grid_menu;
+}
+void OpenLayoutFrame::set_grid(float val,bool metric){
+	file.GetSelectedBoard().grid_size=val;
+	grid_button->SetLabel(get_grid_str(val));
 }
 void OpenLayoutFrame::draw(wxPaintEvent &e) {
     wxPanel *panel=static_cast<wxPanel*>(e.GetEventObject());

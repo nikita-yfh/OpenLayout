@@ -73,11 +73,13 @@ void Settings::SetDefault() {
     bmp_export.clear();
     hpgl_export.clear();
     scanned_copies.clear();
-
+    grids.clear();
+	grids={0.6,0.7,0.964};
     macro_dir=GetDefaultMacroPath();
 
     units=Unit::mm;
     drill=Drillings::bgr;
+    grid_style=GridStyle::lines;
 
     copper_thickness=35;
     temp_enhance=20;

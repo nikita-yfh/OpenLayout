@@ -129,7 +129,22 @@ enum {
     ID_PAD_DEL,
     ID_SMD_SEL=ID_PAD_DEL+100,
     ID_SMD_ADD=ID_SMD_SEL+100,
-    ID_SMD_DEL
+    ID_SMD_DEL,
+
+    ID_GRID_NORMAL,
+    ID_GRID_METRIC=ID_GRID_NORMAL+8,
+    ID_GRID_USER=ID_GRID_METRIC+11,
+    ID_GRID_USER_DEL=ID_GRID_USER+100,
+    ID_GRID_USER_NEW=ID_GRID_USER_DEL+100,
+
+    ID_GRID_LINES,
+    ID_GRID_DOTS,
+
+    ID_SUBGRID_OFF,
+    ID_SUBGRID_2,
+    ID_SUBGRID_4,
+    ID_SUBGRID_5,
+    ID_SUBGRID_10
 };
 class OpenLayoutFrame: public wxFrame {
 public:
@@ -179,6 +194,8 @@ private:
 
     float get_grid_step();
     wxSize get_canvas_size();
+
+    void set_grid(float val,bool metric=true);
 };
 
 #endif

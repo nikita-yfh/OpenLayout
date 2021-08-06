@@ -14,14 +14,7 @@
 
 #define CENTER wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL
 #define LEFT wxALIGN_LEFT
-
-
-template<typename T>
-static string to_str(T value) {
-    stringstream s;
-    s<<value;
-    return s.str();
-}
+#include "Utils.h"
 
 NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     Create(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));

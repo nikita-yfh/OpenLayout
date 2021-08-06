@@ -21,7 +21,7 @@ LayerInfoDialog::LayerInfoDialog(wxWindow* parent) {
     };
     for(int q=0; q<5; q++) {
         wxPanel *panel = new wxPanel(this, wxID_ANY);
-        new wxStaticBitmap(panel,wxID_ANY, images[q]);
+        new wxStaticBitmap(panel,wxID_ANY, wxBitmap(images[q]));
         all_box->Add(panel, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     }
     SetSizerAndFit(all_box);

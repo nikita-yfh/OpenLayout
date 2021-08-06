@@ -13,6 +13,8 @@ set(SOURCES
 	ProjectInfoDialog.cpp
 	Settings.cpp
 	SettingsDialog.cpp
+	InputGridDialog.cpp
+	Utils.cpp
 )
 set(HEADERS
 	Board.h
@@ -25,9 +27,11 @@ set(HEADERS
 	ProjectInfoDialog.h
 	Settings.h
 	SettingsDialog.h
+	InputGridDialog.h
+	Utils.h
 )
 add_custom_target(images ALL
-	COMMAND ${PYTHON_EXECUTABLE} /bin/bash genimages.sh
+	COMMAND /bin/bash genimages.sh
 	BYPRODUCTS images.h
 	COMMENT "Generating images.h file"
 )
