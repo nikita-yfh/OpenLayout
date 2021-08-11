@@ -65,7 +65,8 @@ OpenLayoutFrame::OpenLayoutFrame()
     Bind(wxEVT_MENU,&OpenLayoutFrame::show_project_info,this,wxID_INFO);
     Bind(wxEVT_MENU,&OpenLayoutFrame::new_board,this,ID_BOARD_NEW);
 
-    file.load("/home/nikita/2.lay6");
+    file.load("./1.lay6");
+    file.save("./2.lay6");
 }
 
 void OpenLayoutFrame::close(wxCommandEvent&) {

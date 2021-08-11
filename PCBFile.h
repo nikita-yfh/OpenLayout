@@ -71,6 +71,7 @@ enum {
 struct Connections {
     vector<int32_t>connections;
     void load(FILE *f);
+    void save(FILE *f);
 };
 
 struct Component {
@@ -131,7 +132,7 @@ struct Object {
     Component component;
 
     void load(FILE *f,bool text_child=false);
-    void save(FILE *f);
+    void save(FILE *f,bool text_child=false);
 };
 
 
