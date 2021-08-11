@@ -3,7 +3,7 @@
 #include <wx/collpane.h>
 #include <string>
 #include <vector>
-#include "Board.h"
+#include "PCBFile.h"
 
 using namespace std;
 
@@ -19,8 +19,8 @@ enum class Drillings {
     bgr,white,black
 };
 
-enum class GridStyle{
-	lines,dots
+enum class GridStyle {
+    lines,dots
 };
 
 enum class ColorType {
@@ -111,11 +111,11 @@ struct Settings {
     bool autosave;
     uint16_t autosave_timer;
 
-    vector<PadSize>pad_sizes;
-    vector<SMDSize>smd_sizes;
+    vector<Pair<float>>pad_sizes;
+    vector<Pair<float>>smd_sizes;
     vector<float>track_sizes;
 
-    vector<float>grids;
+    vector<double>grids;
 
     uint8_t sub_grid;
 };

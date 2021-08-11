@@ -31,7 +31,7 @@ set(HEADERS
 	Utils.h
 )
 add_custom_target(images ALL
-	COMMAND /bin/bash genimages.sh
+	COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
 	BYPRODUCTS images.h
 	COMMENT "Generating images.h file"
 )

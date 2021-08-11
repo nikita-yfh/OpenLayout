@@ -21,14 +21,15 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
     {
         auto RecalcSize=[&](wxCommandEvent &e) {
-            board.border=border->GetValue();
-            if(board.type==BoardType::Round) {
-                board.size.w=board.size.h=diameter->GetValue();
+            border_size=border->GetValue();
+            if(type==BoardType::Round) {
+                size_w=size_h=diameter->GetValue();
             } else {
-                board.size={width->GetValue(),height->GetValue()};
+                size_w=width->GetValue();
+                size_h=height->GetValue();
             }
-            all_width->SetLabel(to_str(board.size.w+board.border*2));
-            all_height->SetLabel(to_str(board.size.h+board.border*2));
+            all_width->SetLabel(to_str(size_w+border_size*2));
+            all_height->SetLabel(to_str(size_h+border_size*2));
             Layout();
         };
         wxBoxSizer *content_box = new wxBoxSizer(wxHORIZONTAL);
@@ -96,7 +97,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
                 box->Add(diameter, 0, wxALL|wxEXPAND, 5);
                 box->Add(new wxStaticText(panels[1],wxID_ANY, _("mm")), 0, CENTER, 5);
 
-                all->Add(new wxStaticText(panels[1],wxID_ANY, _("Round board outline:")), 0, LEFT, 5);
+                all->Add(new wxStaticText(panels[1],wxID_ANY, _("Round outline:")), 0, LEFT, 5);
                 all->Add(box,0,wxALL|wxEXPAND,0);
                 panels[1]->SetSizerAndFit(all);
                 all_panels->Add(panels[1],0,wxALL|wxEXPAND,0);
@@ -140,7 +141,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
             all_panels->Add(-1,-1,1, wxALL|wxEXPAND, 5);
             input_name=new wxTextCtrl(this,wxID_ANY,"New board");
             input_name->Bind(wxEVT_TEXT,[&](wxCommandEvent &e) {
-                strcpy(board.name,input_name->GetValue().c_str());
+                strcpy(name,input_name->GetValue().c_str());
             });
             all_panels->Add(input_name,0,wxEXPAND,5);
             content_box->Add(buttons,1,wxALL|wxEXPAND,5);
@@ -162,9 +163,9 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     SetType(BoardType::Empty);
 }
 
-void NewBoardDialog::SetType(const BoardType &type) {
-    types[(int)type]->SetValue(true);
-    board.type=type;
+void NewBoardDialog::SetType(const BoardType &t) {
+    types[(int)t]->SetValue(true);
+    type=t;
     switch(type) {
     case BoardType::Empty:
         panels[0]->Show();
@@ -186,4 +187,12 @@ void NewBoardDialog::SetType(const BoardType &type) {
         break;
     }
     Layout();
+}
+Board NewBoardDialog::build() {
+    return Board();
+}
+bool NewBoardDialog::isValid() {
+    if(type==BoardType::Empty)
+        return size_w<5000000 && size_h<5000000;
+    return border_size*2+size_w<5000000 && border_size*2+size_h<5000000;
 }

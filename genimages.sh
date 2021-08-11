@@ -1,8 +1,8 @@
-if [[ ! -d xpm ]]
+if [[ ! -d $1 ]]
 then
 	echo "xpm folder not found!"
 else
-	pushd xpm
+	pushd $1
 	> ../images.h
 	for dir in `find . -type d`
 	do

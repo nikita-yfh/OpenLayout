@@ -158,18 +158,18 @@ private:
 
     uint8_t tool;
 
-    SMDSize smd_size{1.6f,0.9f};
-    PadSize pad_size{1.8f,0.6f};
+    Pair<float> smd_size{1.6f,0.9f};
+    Pair<float> pad_size{1.8f,0.6f};
     float track_size=0.8f;
-    void set_smd_size(SMDSize size);
-    void set_pad_size(PadSize size);
+    void set_smd_size(Pair<float> size);
+    void set_pad_size(Pair<float> size);
     void set_track_size(float size);
-    void set_grid_size(float grid);
+    void set_grid_size(double grid);
 
     wxSpinCtrlDouble *w_smd_w;
     wxSpinCtrlDouble *w_smd_h;
-    wxSpinCtrlDouble *w_pad_size1;
-    wxSpinCtrlDouble *w_pad_size2;
+    wxSpinCtrlDouble *w_pad_outer;
+    wxSpinCtrlDouble *w_pad_inner;
     wxSpinCtrlDouble *w_track_size;
 
     void build_smd_menu();
@@ -179,7 +179,7 @@ private:
 
     PCBFile file;
     void init_menu_bar();
-    void init_tool_bar();
+    void init_tool_bar(wxBoxSizer*);
     void init_left_panel(wxBoxSizer*);
     void close(wxCommandEvent&);
     void show_settings(wxCommandEvent&);

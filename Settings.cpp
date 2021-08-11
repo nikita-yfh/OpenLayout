@@ -74,7 +74,7 @@ void Settings::SetDefault() {
     hpgl_export.clear();
     scanned_copies.clear();
     grids.clear();
-	grids={0.6,0.7,0.964};
+    grids= {0.6,0.7,0.964};
     macro_dir=GetDefaultMacroPath();
 
     units=Unit::mm;
