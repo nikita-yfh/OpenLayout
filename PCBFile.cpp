@@ -31,15 +31,16 @@ void readstr(FILE *file,string &sstr) {
     readv(file,length);
     char *str=new char[length+1];
     fread(str,length,1,file);
+    str[length]='\0';
     sstr=str;
     delete str;
 }
 void writestr(FILE *file,size_t size,const string&sstr){
-	writev(file,sstr.size());
+	writev(file,(uint8_t)sstr.size());
 	fwrite(sstr.c_str(),size,1,file);
 }
 void writestr(FILE *file,const string&sstr){
-	writev(file,sstr.size());
+	writev(file,(uint32_t)sstr.size());
 	fwrite(sstr.c_str(),sstr.size(),1,file);
 }
 void Component::load(FILE *file) {
@@ -141,14 +142,14 @@ void Object::save(FILE *file,bool text_child) {
     if(!text_child) {
         writestr(file,text);
         writestr(file,marker);
-        writev(file,groups.size());
+        writev(file,(uint32_t)groups.size());
         for(uint32_t q=0; q<groups.size(); q++)
             writev(file,groups[q]);
     }
     if(type==OBJ_CIRCLE)
         return;
     if(type==OBJ_TEXT) {
-        writev(file,text_objects.size());
+        writev(file,(uint32_t)text_objects.size());
         for (uint32_t q = 0; q < text_objects.size(); q++)
             text_objects[q].save(file, true);
 
@@ -158,7 +159,7 @@ void Object::save(FILE *file,bool text_child) {
         return;
     }
 
-    writev(file,poly_points.size());
+    writev(file,(uint32_t)poly_points.size());
     for(uint32_t q=0; q<poly_points.size(); q++) {
         writev(file,poly_points[q].x);
         writev(file,poly_points[q].y);
@@ -208,15 +209,12 @@ void Board::load(FILE* file) {
     readv(file,obj_count);
     objects.resize(obj_count);
 
-    vector<int32_t>con; 
-    for(uint32_t q=0; q<obj_count; q++){
+    vector<int32_t>con;
+    for(uint32_t q=0; q<obj_count; q++)
         objects[q].load(file);
+    for(uint32_t q=0;q<objects.size();q++){
         if(objects[q].type==OBJ_THT_PAD ||objects[q].type == OBJ_SMD_PAD)
-			con.push_back(q);
-    }
-    for(uint32_t q=0;q<con.size();q++){
-		Connections c;
-		c.load(file);
+			objects[q].load_con(file);
     }
 }
 
@@ -257,28 +255,24 @@ void Board::save(FILE* file) {
 
     writev(file,is_multilayer);
 
-    writev(file,objects.size());
+    writev(file,(uint32_t)objects.size());
 
-    vector<int32_t>con; 
-    for(uint32_t q=0; q<objects.size(); q++){
+    for(uint32_t q=0; q<objects.size(); q++)
         objects[q].save(file);
+    for(uint32_t q=0;q<objects.size();q++){
         if(objects[q].type==OBJ_THT_PAD ||objects[q].type == OBJ_SMD_PAD)
-			con.push_back(q);
-    }
-    for(uint32_t q=0;q<con.size();q++){
-		Connections c;
-		c.save(file);
+			objects[q].save_con(file);
     }
 }
-void Connections::load(FILE *file) {
+void Object::load_con(FILE *file) {
     uint32_t count;
     readv(file,count);
     connections.resize(count);
     for(uint32_t q=0; q<count; q++)
         readv(file,connections[q]);
 }
-void Connections::save(FILE *file) {
-    writev(file,connections.size());
+void Object::save_con(FILE *file) {
+    writev(file,(uint32_t)connections.size());
     for(uint32_t q=0; q<connections.size(); q++)
         writev(file,connections[q]);
 }
@@ -324,13 +318,13 @@ int PCBFile::save(const char *filename) {
 
     writev(file,magic);
 
-    writev(file,boards.size());
+    writev(file,(uint32_t)boards.size());
 
     for(uint32_t q=0; q<boards.size(); q++)
         boards[q].save(file);
 
-   // writev(file,active_board_tab);
-   // info.save(file);
+	writev(file,active_board_tab);
+    info.save(file);
     fclose(file);
     return 0;
 }

@@ -68,12 +68,6 @@ enum {
     TH_STYLE_I2,
 };
 
-struct Connections {
-    vector<int32_t>connections;
-    void load(FILE *f);
-    void save(FILE *f);
-};
-
 struct Component {
     Pair<float>offset;
     uint8_t center_mode;
@@ -127,12 +121,16 @@ struct Object {
     string text;
     string marker;
     vector<int32_t> groups;
+    vector<int32_t>connections;
     vector<Pair<float>> poly_points;
     vector<Object> text_objects;
     Component component;
 
     void load(FILE *f,bool text_child=false);
     void save(FILE *f,bool text_child=false);
+
+    void load_con(FILE *f);
+    void save_con(FILE *f);
 };
 
 
