@@ -1,181 +1,192 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
-	<FileVersion major="1" minor="6"/>
+	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="OpenLayout"/>
-		<Option makefile_is_custom="1"/>
-		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;"/>
+		<Option title="OpenLayout" />
+		<Option makefile_is_custom="1" />
+		<Option compiler="gcc" />
+		<Option virtualFolders="CMake Files/" />
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/nikita/c++/OpenLayout"/>
-				<Option type="4"/>
+				<Option type="4" />
+				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 all' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/nikita/c++/OpenLayout"/>
-				<Option type="4"/>
+				<Option type="4" />
+				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 rebuild_cache' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="edit_cache">
-				<Option working_dir="/home/nikita/c++/OpenLayout"/>
-				<Option type="4"/>
+				<Option type="4" />
+				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 edit_cache' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="OpenLayout">
-				<Option output="/home/nikita/c++/OpenLayout/OpenLayout" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option output="/home/nikita/c++/OpenLayout/OpenLayout" prefix_auto="0" extension_auto="0" />
+				<Option object_output="./" />
+				<Option type="0" />
+				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-D_FILE_OFFSET_BITS=64"/>
-					<Add option="-DWXUSINGDLL"/>
-					<Add option="-D__WXGTK__"/>
-					<Add directory="/usr/lib/wx/include/gtk2-unicode-3.0"/>
-					<Add directory="/usr/include/wx-3.0"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/x86_64-pc-linux-gnu"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed"/>
-					<Add directory="/usr/include"/>
+					<Add option="-D_FILE_OFFSET_BITS=64" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-D__WXGTK__" />
+					<Add directory="/usr/lib/wx/include/gtk2-unicode-3.0" />
+					<Add directory="/usr/include/wx-3.0" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/x86_64-pc-linux-gnu" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/backward" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include" />
+					<Add directory="/usr/local/include" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed" />
+					<Add directory="/usr/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 OpenLayout"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 OpenLayout' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="OpenLayout/fast">
-				<Option output="/home/nikita/c++/OpenLayout/OpenLayout" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir=""/>
-				<Option object_output="./"/>
-				<Option type="1"/>
-				<Option compiler="gcc"/>
+				<Option output="/home/nikita/c++/OpenLayout/OpenLayout" prefix_auto="0" extension_auto="0" />
+				<Option object_output="./" />
+				<Option type="1" />
+				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-D_FILE_OFFSET_BITS=64"/>
-					<Add option="-DWXUSINGDLL"/>
-					<Add option="-D__WXGTK__"/>
-					<Add directory="/usr/lib/wx/include/gtk2-unicode-3.0"/>
-					<Add directory="/usr/include/wx-3.0"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/x86_64-pc-linux-gnu"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/backward"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include"/>
-					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed"/>
-					<Add directory="/usr/include"/>
+					<Add option="-D_FILE_OFFSET_BITS=64" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-D__WXGTK__" />
+					<Add directory="/usr/lib/wx/include/gtk2-unicode-3.0" />
+					<Add directory="/usr/include/wx-3.0" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/x86_64-pc-linux-gnu" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/../../../../include/c++/11.1.0/backward" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include" />
+					<Add directory="/usr/local/include" />
+					<Add directory="/usr/lib/gcc/x86_64-pc-linux-gnu/11.1.0/include-fixed" />
+					<Add directory="/usr/include" />
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 OpenLayout/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 OpenLayout/fast' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 			<Target title="images">
-				<Option working_dir="/home/nikita/c++/OpenLayout"/>
-				<Option type="4"/>
+				<Option type="4" />
+				<Option compiler="gcc" />
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 images"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 images' />
+					<CompileFile command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 &quot;$file&quot;' />
+					<Clean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<DistClean command='/usr/bin/make -j4 -f &quot;/home/nikita/c++/OpenLayout/Makefile&quot;  VERBOSE=1 clean' />
+					<AskRebuildNeeded command="$make -q -f $makefile $target" />
+					<SilentBuild command="$make -f $makefile $target &gt; $(CMD_NULL)" />
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/nikita/c++/OpenLayout/AboutDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="AboutDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/AboutDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="AboutDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Board.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="Board.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Board.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="Board.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/InputGridDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="CMakeLists.txt">
+			<Option virtualFolder="CMake Files/" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/InputGridDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="InputGridDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/LayerInfoDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="InputGridDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/LayerInfoDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="LayerInfoDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/NewBoardDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="LayerInfoDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/NewBoardDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="NewBoardDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/OpenLayoutApp.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="NewBoardDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/OpenLayoutApp.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="OpenLayoutApp.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/OpenLayoutMain.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="OpenLayoutApp.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/OpenLayoutMain.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="OpenLayoutMain.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/PCBFile.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="OpenLayoutMain.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/PCBFile.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="PCBFile.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/ProjectInfoDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="PCBFile.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/ProjectInfoDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="ProjectInfoDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Settings.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="ProjectInfoDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Settings.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="Settings.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/SettingsDialog.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="Settings.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/SettingsDialog.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="SettingsDialog.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Utils.cpp">
-			<Option target="OpenLayout"/>
+		<Unit filename="SettingsDialog.h">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/Utils.h">
-			<Option target="OpenLayout"/>
+		<Unit filename="Utils.cpp">
+			<Option target="OpenLayout" />
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\"/>
+		<Unit filename="Utils.h">
+			<Option target="OpenLayout" />
 		</Unit>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

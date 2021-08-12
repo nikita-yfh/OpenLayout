@@ -196,6 +196,8 @@ private:
     wxSize get_canvas_size();
 
     void set_grid(float val,bool metric=true);
+
+    Color getcolor(const Object &o);
 };
 
 #endif

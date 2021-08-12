@@ -25,8 +25,8 @@ enum class GridStyle {
 
 enum class ColorType {
     c1,		// Copper-top
-    c2,		// Copper-bottom
     s1,		// Silkscreen-top
+    c2,		// Copper-bottom
     s2,		// Silkscreen
     i1,		// Copper-Inner 1
     i2,		// Copper-Inner 2
