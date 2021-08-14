@@ -186,6 +186,7 @@ private:
     void show_about(wxCommandEvent&);
     void show_project_info(wxCommandEvent&);
     void new_board(wxCommandEvent&);
+    void show_scan_properties(wxCommandEvent&);
 
     void swap_smd_size(wxCommandEvent&);
 

@@ -6,7 +6,7 @@
  * Copyright: Nikita-yfh (https://github.com/nikita-yfh)
  * License:
  **************************************************************/
-
+#include "ScannedCopyDialog.h"
 #include "OpenLayoutMain.h"
 #include "NewBoardDialog.h"
 #include "LayerInfoDialog.h"
@@ -61,6 +61,7 @@ OpenLayoutFrame::OpenLayoutFrame()
     Bind(wxEVT_MENU,&OpenLayoutFrame::show_about,this,wxID_ABOUT);
     Bind(wxEVT_MENU,&OpenLayoutFrame::show_project_info,this,wxID_INFO);
     Bind(wxEVT_MENU,&OpenLayoutFrame::new_board,this,ID_BOARD_NEW);
+    Bind(wxEVT_MENU,&OpenLayoutFrame::show_scan_properties,this,ID_SCANNED_COPY);
 
     file.load("./1.lay6");
     file.save("./2.lay6");
@@ -81,6 +82,11 @@ void OpenLayoutFrame::show_project_info(wxCommandEvent&) {
     ProjectInfoDialog dialog(this,file.info);
     if(dialog.ShowModal()==wxID_OK)
         dialog.Get(file.info);
+}
+void OpenLayoutFrame::show_scan_properties(wxCommandEvent&) {
+    ScannedCopyDialog dialog(this,file.GetSelectedBoard().images,s);
+    if(dialog.ShowModal()==wxID_OK)
+        dialog.Get(file.GetSelectedBoard().images);
 }
 void OpenLayoutFrame::new_board(wxCommandEvent&) {
     NewBoardDialog dialog(this);

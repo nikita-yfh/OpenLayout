@@ -3,7 +3,7 @@ project(OpenLayout)
 find_package(wxWidgets REQUIRED core base)
 include(${wxWidgets_USE_FILE})
 set(SOURCES
-	Board.cpp
+	ScannedCopyDialog.cpp
 	LayerInfoDialog.cpp
 	AboutDialog.cpp
 	NewBoardDialog.cpp
@@ -17,7 +17,7 @@ set(SOURCES
 	Utils.cpp
 )
 set(HEADERS
-	Board.h
+	ScannedCopyDialog.h
 	LayerInfoDialog.h
 	AboutDialog.h
 	NewBoardDialog.h
