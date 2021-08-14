@@ -26,24 +26,18 @@ ColorScheme::ColorScheme() {
 }
 
 void ColorScheme::reset() {
-    get(ColorType::c1)		= Color(30, 106,249);
-    get(ColorType::c2)		= Color(0,  186,0);
-    get(ColorType::s1)		= Color(255,0,  0);
-    get(ColorType::s2)		= Color(225,215,4);
-    get(ColorType::i1)		= Color(194,124,20);
-    get(ColorType::i2)		= Color(238,182,98);
-    get(ColorType::o)		= Color(255,255,255);
-    get(ColorType::bgr)		= Color(0,  0,  0);
-    get(ColorType::lines)	= Color(70, 70, 70);
-    get(ColorType::dots)	= Color(170,170,170);
-    get(ColorType::con) 	= Color(215,215,215);
-    get(ColorType::via)		= Color(81, 227,253);
-}
-Color ColorScheme::get(ColorType n) const {
-    return colors[static_cast<int>(n)];
-}
-Color &ColorScheme::get(ColorType n) {
-    return colors[static_cast<int>(n)];
+    colors[COLOR_C1]		= Color(30, 106,249);
+    colors[COLOR_C2]		= Color(0,  186,0);
+    colors[COLOR_S1]		= Color(255,0,  0);
+    colors[COLOR_S2]		= Color(225,215,4);
+    colors[COLOR_I1]		= Color(194,124,20);
+    colors[COLOR_I2]		= Color(238,182,98);
+    colors[COLOR_O]			= Color(255,255,255);
+    colors[COLOR_BGR]		= Color(0,  0,  0);
+    colors[COLOR_LINES]		= Color(70, 70, 70);
+    colors[COLOR_DOTS]		= Color(170,170,170);
+    colors[COLOR_CON]		= Color(215,215,215);
+    colors[COLOR_VIA]		= Color(81, 227,253);
 }
 Settings::Settings() {
     SetDefault();
@@ -55,17 +49,17 @@ void Settings::SetDefault() {
     s_color_scheme=0; //Default
 
     undo=50;
-    get_gen(GenSettings::board_zoom)			=false;
-    get_gen(GenSettings::dark_ground)			=true;
-    get_gen(GenSettings::all_ground)			=false;
-    get_gen(GenSettings::test_connections)		=false;
-    get_gen(GenSettings::test_blinking)			=true;
-    get_gen(GenSettings::ctrl_capture_size)		=true;
-    get_gen(GenSettings::limit_text_w)			=false;
-    get_gen(GenSettings::always_readable)		=true;
-    get_gen(GenSettings::optimize)				=true;
-    get_gen(GenSettings::anchor_left_top)		=false;
-    get_gen(GenSettings::anchor_export)			=false;
+    gen_settings[S_BOARD_ZOOM]			=false;
+    gen_settings[S_DARK_GROUND]			=true;
+    gen_settings[S_ALL_GROUND]			=false;
+    gen_settings[S_TEST_CONNECTIONS]	=false;
+    gen_settings[S_TEST_BLINKING]		=true;
+    gen_settings[S_CTRL_CAPTURE_SIZE]	=true;
+    gen_settings[S_LIMIT_TEXT_W]		=false;
+    gen_settings[S_ALWAYS_READABLE]		=true;
+    gen_settings[S_OPTIMIZE]			=true;
+    gen_settings[S_ANCHOR_LEFT_TOP]		=false;
+    gen_settings[S_ANCHOR_EXPORT]		=false;
 
     same_dir=true;
     lay_export.clear();
@@ -77,9 +71,9 @@ void Settings::SetDefault() {
     grids= {0.6,0.7,0.964};
     macro_dir=GetDefaultMacroPath();
 
-    units=Unit::mm;
-    drill=Drillings::bgr;
-    grid_style=GridStyle::lines;
+    units=UNITS_MM;
+    drill=DRILL_BGR;
+    grid_style=GRID_LINES;
 
     copper_thickness=35;
     temp_enhance=20;
@@ -150,12 +144,6 @@ void Settings::SetDefault() {
     };
 
 }
-bool Settings::get_gen(GenSettings t)const {
-    return gen_settings[static_cast<int>(t)];
-}
-bool &Settings::get_gen(GenSettings t) {
-    return gen_settings[static_cast<int>(t)];
-}
 string Settings::GetDefaultMacroPath() {
     // You can customize it there
     string macro_dir(wxGetCwd());
@@ -163,6 +151,10 @@ string Settings::GetDefaultMacroPath() {
     return macro_dir;
 }
 ColorScheme Settings::get_current_colors() {
-    if(s_color_scheme==0)return ColorScheme();
+	static ColorScheme def;
+    if(s_color_scheme==0)return def;
     else return colors[s_color_scheme-1];
+}
+Color Settings::get_color(uint8_t type) {
+    return get_current_colors().colors[type];
 }

@@ -30,6 +30,7 @@
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <wx/time.h>
 
 #include "Utils.h"
 using namespace std;
@@ -50,14 +51,8 @@ OpenLayoutFrame::OpenLayoutFrame()
         wxBoxSizer *content=new wxBoxSizer(wxHORIZONTAL);
         init_left_panel(content);
         {
-            wxScrolledWindow *main_scroll = new wxScrolledWindow(this);
-            main_scroll->SetScrollbars(1,1, get_canvas_size().x,get_canvas_size().y, 0, 0);
-            main_scroll->Bind(wxEVT_SCROLL_BOTTOM,[&](...) {});
-            content->Add(main_scroll,1,wxEXPAND,5);
-            wxPanel *panel=new wxPanel(main_scroll,wxID_ANY,wxDefaultPosition,get_canvas_size());
-            panel->Bind(wxEVT_PAINT,&OpenLayoutFrame::draw,this);
         }
-        all_box->Add(content);
+        all_box->Add(content,0,wxEXPAND);
     }
     SetSizer(all_box);
     SetAutoLayout(true);
@@ -235,7 +230,7 @@ void OpenLayoutFrame::init_menu_bar() {
     SetMenuBar(menu_bar);
 }
 void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
-    wxToolBar *tool_bar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL);
+    wxToolBar *tool_bar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxTB_FLAT);
     tool_bar->AddTool(wxID_NEW, _("New file"),new_xpm);
     tool_bar->AddTool(wxID_OPEN, _("Open file"),open_xpm);
     tool_bar->AddTool(wxID_SAVE, _("Save file"),save_xpm);
@@ -266,42 +261,40 @@ void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
     tool_bar->AddSeparator();
     tool_bar->AddTool(ID_SCANNED_COPY, _("Scanned copy"), bitmap_xpm);
     tool_bar->Realize();
-    //SetToolBar(tool_bar);
-    ////
-    wxToolBar *tools=new wxToolBar(this,wxID_ANY);//,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL);
-    const char**images[]= {
-        tool_edit_xpm,
-        tool_zoom_xpm,
-        tool_track_xpm,
-        tool_pad_xpm,
-        tool_pad_smd_xpm,
-        tool_circle_xpm,
-        tool_rectangle_xpm,
-        tool_polygon_xpm,
-        tool_special_xpm,
-        tool_text_xpm,
-        tool_mask_xpm,
-        tool_connections_xpm,
-        tool_autoroute_xpm,
-        tool_test_xpm,
-        tool_measure_xpm,
-        tool_photoview_xpm
-    };
-    for(int q=0; q<TOOL_COUNT; q++) {
-        int id=ID_TOOL_EDIT+q;
-        tools->AddRadioTool(id,Settings::tool_names[q],images[q]);
-    }
-    tools->Realize();
-
-    sizer->Add(tool_bar,0,wxEXPAND);
-    sizer->Add(tools,0,wxEXPAND);
+    SetToolBar(tool_bar);
 }
 void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
     wxScrolledWindow *left_panel = new wxScrolledWindow(this,wxID_ANY,
             wxDefaultPosition,wxDefaultSize,wxVSCROLL);
     {
         wxBoxSizer *left_box=new wxBoxSizer(wxVERTICAL);
-
+		{
+			wxToolBar *tools=new wxToolBar(left_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_TEXT|wxTB_HORZ_TEXT|wxTB_HORZ_LAYOUT|wxTB_NOALIGN|wxTB_NODIVIDER);
+			const char**images[]= {
+				tool_edit_xpm,
+				tool_zoom_xpm,
+				tool_track_xpm,
+				tool_pad_xpm,
+				tool_pad_smd_xpm,
+				tool_circle_xpm,
+				tool_rectangle_xpm,
+				tool_polygon_xpm,
+				tool_special_xpm,
+				tool_text_xpm,
+				tool_mask_xpm,
+				tool_connections_xpm,
+				tool_autoroute_xpm,
+				tool_test_xpm,
+				tool_measure_xpm,
+				tool_photoview_xpm
+			};
+			for(int q=0; q<TOOL_COUNT; q++) {
+				int id=ID_TOOL_EDIT+q;
+				tools->AddRadioTool(id,Settings::tool_names[q],images[q]);
+			}
+			tools->Realize();
+			left_box->Add(tools,0,wxEXPAND);
+		}
         {
             grid_button=new wxButton(left_panel,wxID_ANY,
                                      "1.27 mm",wxDefaultPosition,wxDefaultSize,wxBU_LEFT);
@@ -379,7 +372,7 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
                 }
             }
 
-            left_box->Add(sizer);
+            left_box->Add(sizer,0,wxEXPAND);
 
         }
         left_panel->SetSizerAndFit(left_box);
@@ -407,14 +400,14 @@ void OpenLayoutFrame::set_track_size(float size) {
     w_track_size->SetValue(size);
     track_size=size;
 }
-void add_submenu(wxMenu *parent,wxMenu *child,const wxString &name,const wxBitmap &bitmap,bool enabled=true) {
+void add_submenu(wxMenu *parent,wxMenu *child,const wxString &name,const wxBitmap &bitmap=wxNullBitmap,bool enabled=true) {
     wxMenuItem *item=new wxMenuItem(parent,wxID_ANY,name);
     item->SetBitmap(bitmap);
     item->SetSubMenu(child);
     parent->Append(item);
     item->Enable(enabled);
 }
-void add_item(wxMenu *parent,const wxString &text, int id, const wxBitmap &bitmap,bool enabled=true) {
+void add_item(wxMenu *parent,const wxString &text, int id, const wxBitmap &bitmap=wxNullBitmap,bool enabled=true) {
     wxMenuItem *item=new wxMenuItem(parent,id,text);
     item->SetBitmap(bitmap);
     parent->Append(item);
@@ -446,7 +439,7 @@ void OpenLayoutFrame::build_smd_menu() {
     {
         char text[128];
         sprintf(text,"%.2f X %.2f %s",smd_size.width,smd_size.height,"mm");
-		smd_menu->Append(ID_SMD_ADD,text)->Enable(!sel);
+        add_item(smd_menu,text,ID_SMD_ADD,plus_xpm,!sel);
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             s.smd_sizes.push_back(smd_size);
         },ID_SMD_ADD);
@@ -466,7 +459,7 @@ void OpenLayoutFrame::build_smd_menu() {
                 s.smd_sizes.erase(s.smd_sizes.begin()+id);
             },ID_SMD_DEL,ID_SMD_DEL+99);
         }
-        add_submenu(smd_menu,del_menu,_("Remove..."), wxNullBitmap,s.smd_sizes.size()!=0);
+        add_submenu(smd_menu,del_menu,_("Remove..."),cross_xpm,s.smd_sizes.size()!=0);
     }
     PopupMenu(smd_menu);
     delete smd_menu;
@@ -481,24 +474,24 @@ void OpenLayoutFrame::build_pad_menu() {
             char text[128];
             sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
             if(pad_size==size) {
-                add_check_item(pad_menu,text,ID_SMD_SEL+q,true);
+                add_check_item(pad_menu,text,ID_PAD_SEL+q,true);
                 sel=true;
             } else
-                add_check_item(pad_menu,text,ID_SMD_SEL+q,false);
+                add_check_item(pad_menu,text,ID_PAD_SEL+q,false);
         }
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            int id=e.GetId()-ID_SMD_SEL;
+            int id=e.GetId()-ID_PAD_SEL;
             set_pad_size(s.pad_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+99);
+        },ID_PAD_SEL,ID_PAD_SEL+99);
     }
     pad_menu->AppendSeparator();
     {
         char text[128];
         sprintf(text,"%.2f X %.2f %s",pad_size.outer,pad_size.inner,"mm");
-        add_item(pad_menu,text,ID_SMD_ADD,plus_xpm,!sel);
+        add_item(pad_menu,text,ID_PAD_ADD,plus_xpm,!sel);
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             s.pad_sizes.push_back(pad_size);
-        },ID_SMD_ADD);
+        },ID_PAD_ADD);
     }
     {
         pad_menu->AppendSeparator();
@@ -508,12 +501,12 @@ void OpenLayoutFrame::build_pad_menu() {
                 Pair<float> size=s.pad_sizes[q];
                 char text[128];
                 sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
-                add_item(del_menu,text,ID_SMD_DEL+q,cross_xpm);
+                add_item(del_menu,text,ID_PAD_DEL+q,cross_xpm);
             }
             Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-                int id=e.GetId()-ID_SMD_DEL;
+                int id=e.GetId()-ID_PAD_DEL;
                 s.pad_sizes.erase(s.pad_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+99);
+            },ID_PAD_DEL,ID_PAD_DEL+99);
         }
         add_submenu(pad_menu,del_menu,_("Remove..."),cross_xpm,s.pad_sizes.size()!=0);
     }
@@ -530,24 +523,24 @@ void OpenLayoutFrame::build_track_menu() {
             char text[128];
             sprintf(text,"%.2f %s",size,"mm");
             if(track_size==size) {
-                add_item(track_menu,text,ID_SMD_SEL+q,check_xpm);
+                add_check_item(track_menu,text,ID_TRACK_SEL+q,true);
                 sel=true;
             } else
-                add_item(track_menu,text,ID_SMD_SEL+q,wxNullBitmap);
+                add_check_item(track_menu,text,ID_TRACK_SEL+q,false);
         }
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            int id=e.GetId()-ID_SMD_SEL;
+            int id=e.GetId()-ID_TRACK_SEL;
             set_track_size(s.track_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+99);
+        },ID_TRACK_SEL,ID_TRACK_SEL+99);
     }
     track_menu->AppendSeparator();
     {
         char text[128];
         sprintf(text,"%.2f %s",track_size,"mm");
-        add_item(track_menu,text,ID_SMD_ADD,plus_xpm,!sel);
+        add_item(track_menu,text,ID_TRACK_ADD,plus_xpm,!sel);
         Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
             s.track_sizes.push_back(track_size);
-        },ID_SMD_ADD);
+        },ID_TRACK_ADD);
     }
     {
         track_menu->AppendSeparator();
@@ -557,12 +550,12 @@ void OpenLayoutFrame::build_track_menu() {
                 float size=s.track_sizes[q];
                 char text[128];
                 sprintf(text,"%.2f %s",size,"mm");
-                add_item(del_menu,text,ID_SMD_DEL+q,cross_xpm);
+                add_item(del_menu,text,ID_TRACK_DEL+q,cross_xpm);
             }
             Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-                int id=e.GetId()-ID_SMD_DEL;
+                int id=e.GetId()-ID_TRACK_DEL;
                 s.track_sizes.erase(s.track_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+99);
+            },ID_TRACK_DEL,ID_TRACK_DEL+99);
         }
         add_submenu(track_menu,del_menu,_("Remove..."),cross_xpm,s.track_sizes.size()!=0);
     }
@@ -593,24 +586,23 @@ void OpenLayoutFrame::build_grid_menu() {
     wxMenu *grid_menu=new wxMenu();
     for(int item=0; item<8; item++) {
         float grid=get_normal_grid(item);
-        add_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,
-                 file.GetSelectedBoard().active_grid_val==grid?red_checked_xpm:red_xpm);
+        add_check_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,file.GetSelectedBoard().active_grid_val==grid);
     }
     grid_menu->AppendSeparator();
     {
         wxMenu *metric=new wxMenu();
         for(int item=0; item<11; item++) {
             float grid=get_metric_grid(item);
-            add_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,file.GetSelectedBoard().active_grid_val==grid?blue_checked_xpm:blue_xpm);
+			add_check_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,file.GetSelectedBoard().active_grid_val==grid);
         }
-        add_submenu(grid_menu,metric,_("Metric grids:"),blue_xpm);
+        add_submenu(grid_menu,metric,_("Metric grids:"));
     }
     grid_menu->AppendSeparator();
     {
         wxMenu *user=new wxMenu();
         for(int item=0; item<s.grids.size(); item++) {
             float grid=s.grids[item];
-            add_item(user,get_grid_str(grid),ID_GRID_USER+item,file.GetSelectedBoard().active_grid_val==grid?green_checked_xpm:green_xpm);
+			add_check_item(user,get_grid_str(grid),ID_GRID_USER+item,file.GetSelectedBoard().active_grid_val==grid);
         }
         if(s.grids.size())
             user->AppendSeparator();
@@ -632,7 +624,7 @@ void OpenLayoutFrame::build_grid_menu() {
             }
             add_submenu(user,user_del,_("Remove"),wxNullBitmap);
         }
-        add_submenu(grid_menu,user,_("User grids:"),green_xpm);
+        add_submenu(grid_menu,user,_("User grids:"));
     }
     Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
         int id=e.GetId()-ID_GRID_NORMAL;
@@ -674,94 +666,3 @@ void OpenLayoutFrame::set_grid(float val,bool metric) {
     file.GetSelectedBoard().active_grid_val=val;
     grid_button->SetLabel(get_grid_str(val));
 }
-Color OpenLayoutFrame::getcolor(const Object &o){
-	if(o.metalisation && o.layer!=LAY_C1 && o.layer!=LAY_C2 && o.layer!=LAY_O)
-		return s.get_current_colors().get(ColorType::via);
-	return s.get_current_colors().colors[o.layer-1];
-}
-void OpenLayoutFrame::draw(wxPaintEvent &e) {
-    wxPanel *panel=static_cast<wxPanel*>(e.GetEventObject());
-    wxPaintDC dc(panel);
-	wxGraphicsContext *gc = wxGraphicsContext::Create(dc);
-	draw_grid(dc);
-	gc->Scale(file.GetSelectedBoard().zoom,file.GetSelectedBoard().zoom);
-	for(Object &o : file.GetSelectedBoard().objects){
-		if(o.type==OBJ_THT_PAD){
-			gc->SetPen(wxNullPen);
-			gc->SetBrush(wxBrush(getcolor(o)));
-			wxGraphicsPath path = gc->CreatePath();
-			path.AddCircle(o.pos.x,-o.pos.y,o.size.outer);
-			gc->FillPath(path);
-		}else if(o.type==OBJ_LINE||o.type==OBJ_POLY){
-			gc->SetPen(wxPen(getcolor(o),o.line_width));
-			gc->SetBrush(wxBrush(getcolor(o)));
-			wxGraphicsPath path=gc->CreatePath();
-			for(int q=0;q<o.poly_points.size()-1;q++){
-				Pair<float>&point1=o.poly_points[q];
-				Pair<float>&point2=o.poly_points[q+1];
-				path.MoveToPoint(point1.x,-point1.y);
-				path.AddLineToPoint(point2.x,-point2.y);
-			}
-			if(o.type==OBJ_LINE)
-				gc->StrokePath(path);
-			else
-				gc->FillPath(path);
-		}else if(o.type==OBJ_CIRCLE){
-			gc->SetPen(wxPen(getcolor(o),o.size.outer-o.size.inner));
-			wxGraphicsPath path=gc->CreatePath();
-			path.AddArc(o.pos.x,-o.pos.y,(o.size.outer+o.size.inner)/2.0,o.start_angle/57324.84,o.end_angle/57324.84,false);
-			gc->StrokePath(path);
-		}
-	}
-	gc->SetBrush(wxBrush(s.get_current_colors().get(ColorType::bgr)));
-	gc->SetPen(wxNullPen);
-	for(Object &o : file.GetSelectedBoard().objects){
-		if(o.type==OBJ_THT_PAD){
-			wxGraphicsPath path = gc->CreatePath();
-			path.AddCircle(o.pos.x,-o.pos.y,o.size.inner);
-			gc->FillPath(path);
-		}
-	}
-	gc->SetPen(wxPen(s.get_current_colors().get(ColorType::con),2));
-	bool start=false;
-	wxGraphicsPath path = gc->CreatePath();
-	for(Object &o : file.GetSelectedBoard().objects){
-		if(o.type==OBJ_THT_PAD||o.type==OBJ_SMD_PAD){
-			for(int32_t &n : o.connections){
-				wxGraphicsPath path=gc->CreatePath();
-				path.MoveToPoint(o.pos.x,-o.pos.y);
-				path.AddLineToPoint(file.GetSelectedBoard().objects[n].pos.x,-file.GetSelectedBoard().objects[n].pos.y);
-				gc->StrokePath(path);
-			}
-		}
-	}
-	delete gc;
-}
-
-void OpenLayoutFrame::draw_grid(wxPaintDC &dc) {
-    double step=file.GetSelectedBoard().zoom*file.GetSelectedBoard().active_grid_val;
-    if(step<8.0)return; //don't draw small grid
-    wxSize size=get_canvas_size();
-    dc.SetBrush(wxBrush(s.get_current_colors().get(ColorType::bgr)));
-    dc.DrawRectangle(0,0,size.x,size.y);
-    auto get_pen_size=[=](int d) {
-        if(s.sub_grid==0)return 1;
-        if(d%s.sub_grid==0)return 2;
-        return 1;
-    };
-    for(int d=0; d<file.GetSelectedBoard().size.width/file.GetSelectedBoard().active_grid_val;d++) {
-		float x=d*file.GetSelectedBoard().zoom*file.GetSelectedBoard().active_grid_val;
-        dc.SetPen(wxPen(s.get_current_colors().get(ColorType::lines),get_pen_size(d)));
-        dc.DrawLine(x,0,x,size.y);
-    }
-    for(int d=0; d<file.GetSelectedBoard().size.height/file.GetSelectedBoard().active_grid_val;d++) {
-		float y=d*file.GetSelectedBoard().zoom*file.GetSelectedBoard().active_grid_val;
-        dc.SetPen(wxPen(s.get_current_colors().get(ColorType::lines),get_pen_size(d)));
-        dc.DrawLine(0,y,size.x,y);
-    }
-}
-
-wxSize OpenLayoutFrame::get_canvas_size() {
-    return {2000,2000};
-}
-

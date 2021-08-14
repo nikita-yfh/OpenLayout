@@ -11,56 +11,57 @@ typedef wxColour Color;
 
 #define TOOL_COUNT 16
 
-enum class Unit {
-    mm,mil
+enum {
+	UNITS_MM,
+	UNITS_MIL
 };
 
-enum class Drillings {
-    bgr,white,black
+enum {
+	DRILL_BGR,
+	DRILL_WHITE,
+	DRILL_BLACK
 };
 
-enum class GridStyle {
-    lines,dots
+enum {
+	GRID_LINES,
+	GRID_DOTS
 };
 
-enum class ColorType {
-    c1,		// Copper-top
-    s1,		// Silkscreen-top
-    c2,		// Copper-bottom
-    s2,		// Silkscreen
-    i1,		// Copper-Inner 1
-    i2,		// Copper-Inner 2
-    o,		// Outline
-    bgr,	// Background
-    lines,	// Grid lines
-    dots,	// Grid dots
-    con,	// Connections
-    via,	// Metallization
-    COUNT
+enum {
+    COLOR_C1,	// Copper-top
+    COLOR_S1,	// Silkscreen-top
+    COLOR_C2,	// Copper-bottom
+    COLOR_S2,	// Silkscreen
+    COLOR_I1,	// Copper-Inner 1
+    COLOR_I2,	// Copper-Inner 2
+    COLOR_O,	// Outline
+    COLOR_BGR,	// Background
+    COLOR_LINES,// Grid lines
+	COLOR_DOTS,	// Grid dots
+    COLOR_CON,	// Connections
+    COLOR_VIA,	// Metallization
+    COLOR_COUNT
 };
 
-enum class GenSettings {
-    board_zoom,
-    dark_ground,
-    all_ground,
-    test_connections,
-    test_blinking,
-    ctrl_capture_size,
-    limit_text_w,
-    always_readable,
-    optimize,
-    anchor_left_top,
-    anchor_export,
-    COUNT
+enum {
+	S_BOARD_ZOOM,
+    S_DARK_GROUND,
+    S_ALL_GROUND,
+    S_TEST_CONNECTIONS,
+    S_TEST_BLINKING,
+    S_CTRL_CAPTURE_SIZE,
+    S_LIMIT_TEXT_W,
+    S_ALWAYS_READABLE,
+    S_OPTIMIZE,
+    S_ANCHOR_LEFT_TOP,
+    S_ANCHOR_EXPORT,
+    S_COUNT
 };
 
 struct ColorScheme {
     ColorScheme();
 
-    Color &get(ColorType t);
-    Color get(ColorType t) const;
-
-    Color colors[(int)ColorType::COUNT];
+    Color colors[COLOR_COUNT];
 
     void reset();
 };
@@ -70,10 +71,7 @@ struct Settings {
     Settings();
     void SetDefault();
     static string GetDefaultMacroPath();
-    bool gen_settings[(int)GenSettings::COUNT];
-
-    bool get_gen(GenSettings t) const;
-    bool &get_gen(GenSettings t);
+    bool gen_settings[S_COUNT];
 
     uint8_t undo;
 
@@ -86,14 +84,15 @@ struct Settings {
 
     string macro_dir;
 
-    Unit units;
-    Drillings drill;
-    GridStyle grid_style;
+    uint8_t units;
+    uint8_t drill;
+    uint8_t grid_style;
 
     ColorScheme colors[3]; //user color schemes
     uint8_t s_color_scheme; //0-Standart; 1-User1; 2-User2; 3-User3;
 
     ColorScheme get_current_colors();
+    Color get_color(uint8_t type);
 
     uint16_t copper_thickness;
     uint16_t temp_enhance;

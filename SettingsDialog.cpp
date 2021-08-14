@@ -2,6 +2,7 @@
 
 #include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/msgdlg.h>
 
 #define WIDGET(type,id)\
 	static_cast<type>(FindWindowById(id))
@@ -52,7 +53,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
             _("Use origin in CAM-export (Gerber/Excellon/HPGL)")
         };
 
-        for(int q=0; q<(int)GenSettings::COUNT; q++) {
+        for(int q=0; q<S_COUNT; q++) {
             checkboxes[q]=new wxCheckBox(tabs[0],wxID_ANY, buttons[q]);
             checkboxes[q]->SetValue(s.gen_settings[q]);
             all_box->Add(checkboxes[q], 0, wxEXPAND, 5);
@@ -335,10 +336,23 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
                 key_choice->Bind(wxEVT_CHOICE,[&](wxCommandEvent &e) {
                     int s1=static_cast<wxChoice*>(e.GetEventObject())->GetSelection();
                     int s2=key_list->GetFirstSelected();
+                    string text;
                     if(s1==0)
-                        key_list->SetItem(s2,1,"ESC");
+                        text="ESC";
                     else
-                        key_list->SetItem(s2,1,char(s1-1+'A'));
+                        text=char(s1-1+'A');
+					bool ok=true;
+					for(int q=0;q<TOOL_COUNT;q++){
+						if(key_list->GetItemText(q,1)==text)
+							ok=false;
+					}
+					if(ok)
+						key_list->SetItem(s2,1,text);
+					else{
+						char message[128];
+						sprintf(message,_("The hotkey %s is already in use"),text.c_str());
+						wxMessageBox(message,_("OpenLayout"),wxICON_ERROR);
+					}
                 });
                 key_choice->Disable();
                 hk_box->Add(key_choice, 0, wxALL|wxEXPAND, 5);
@@ -450,7 +464,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 SettingsDialog::~SettingsDialog() {}
 
 void SettingsDialog::Get(Settings &s) {
-    for(int q=0; q<(int)GenSettings::COUNT; q++)
+    for(int q=0; q<S_COUNT; q++)
         s.gen_settings[q]=checkboxes[q]->GetValue();
     for(int q=0; q<3; q++)
         s.colors[q]=colors[q];
@@ -461,8 +475,8 @@ void SettingsDialog::Get(Settings &s) {
         else
             s.tool_keys[q]=char(text[0]);
     }
-    s.units=(Unit)units_choice->GetSelection();
-    s.drill=(Drillings)drill_choice->GetSelection();
+    s.units=units_choice->GetSelection();
+    s.drill=drill_choice->GetSelection();
     s.s_color_scheme=colorselection->GetSelection();
 
     s.lay_export=dirs[0]->GetPath();

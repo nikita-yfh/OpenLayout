@@ -189,11 +189,6 @@ private:
 
     void swap_smd_size(wxCommandEvent&);
 
-    void draw(wxPaintEvent &e);
-    void draw_grid(wxPaintDC&);
-
-    float get_grid_step();
-    wxSize get_canvas_size();
 
     void set_grid(float val,bool metric=true);
 
