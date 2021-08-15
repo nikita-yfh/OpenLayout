@@ -2,33 +2,34 @@ project(OpenLayout)
 
 find_package(wxWidgets REQUIRED core base)
 include(${wxWidgets_USE_FILE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCES
-	ScannedCopyDialog.cpp
-	LayerInfoDialog.cpp
-	AboutDialog.cpp
-	NewBoardDialog.cpp
-	OpenLayoutApp.cpp
-	OpenLayoutMain.cpp
-	PCBFile.cpp
-	ProjectInfoDialog.cpp
-	Settings.cpp
-	SettingsDialog.cpp
-	InputGridDialog.cpp
-	Utils.cpp
+	src/ScannedCopyDialog.cpp
+	src/LayerInfoDialog.cpp
+	src/AboutDialog.cpp
+	src/NewBoardDialog.cpp
+	src/OpenLayoutApp.cpp
+	src/OpenLayoutMain.cpp
+	src/PCBFile.cpp
+	src/ProjectInfoDialog.cpp
+	src/Settings.cpp
+	src/SettingsDialog.cpp
+	src/InputGridDialog.cpp
+	src/Utils.cpp
 )
 set(HEADERS
-	ScannedCopyDialog.h
-	LayerInfoDialog.h
-	AboutDialog.h
-	NewBoardDialog.h
-	OpenLayoutApp.h
-	OpenLayoutMain.h
-	PCBFile.h
-	ProjectInfoDialog.h
-	Settings.h
-	SettingsDialog.h
-	InputGridDialog.h
-	Utils.h
+	src/ScannedCopyDialog.h
+	src/LayerInfoDialog.h
+	src/AboutDialog.h
+	src/NewBoardDialog.h
+	src/OpenLayoutApp.h
+	src/OpenLayoutMain.h
+	src/PCBFile.h
+	src/ProjectInfoDialog.h
+	src/Settings.h
+	src/SettingsDialog.h
+	src/InputGridDialog.h
+	src/Utils.h
 )
 add_custom_target(images ALL
 	COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm

@@ -15,7 +15,7 @@ else
 				str=`cat $file | grep _xpm`
 				str=${str#*\*}
 				str=${str%[*}
-				if grep -q $str ../*.cpp
+				if grep -q $str ../src/*.cpp
 				then
 					cat $file | sed 's/char/const char/g' >> ../images.h
 					echo "Progress:" $file
