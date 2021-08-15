@@ -669,7 +669,7 @@ void OpenLayoutFrame::build_grid_menu() {
     grid_menu->AppendSeparator();
     grid_menu->Append(ID_GRID_HOTKEYS,_("Hotkeys..."));
     Bind(wxEVT_MENU,[&](wxCommandEvent&e){
-		GridBinderDialog(this,s.grids_bind).ShowModal();
+		ShowGridBinderDialog(this,s.grids_bind);
 	},ID_GRID_HOTKEYS);
     {
         wxMenu *style=new wxMenu;

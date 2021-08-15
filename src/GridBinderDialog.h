@@ -11,12 +11,12 @@
 class GridBinderDialog : public wxDialog {
 public:
     GridBinderDialog(wxWindow* parent,const double keys[9]);
-private:
     void Get(double keys[9]);
+private:
     double keys[9];
     wxButton *buttons[9];
     wxStaticText *text[9];
 
 };
-
+void ShowGridBinderDialog(wxWindow *parent,double keys[9]);
 #endif
