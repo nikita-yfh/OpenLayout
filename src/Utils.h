@@ -16,5 +16,5 @@ static string to_str(T value) {
     return s.str();
 }
 
-
+string get_grid_str(float grid);
 #endif

@@ -5,6 +5,8 @@ include(${wxWidgets_USE_FILE})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCES
 	src/ScannedCopyDialog.cpp
+	src/InputNumberDialog.cpp
+	src/GridBinderDialog.cpp
 	src/LayerInfoDialog.cpp
 	src/AboutDialog.cpp
 	src/NewBoardDialog.cpp
@@ -19,6 +21,8 @@ set(SOURCES
 )
 set(HEADERS
 	src/ScannedCopyDialog.h
+	src/InputNumberDialog.h
+	src/GridBinderDialog.h
 	src/LayerInfoDialog.h
 	src/AboutDialog.h
 	src/NewBoardDialog.h

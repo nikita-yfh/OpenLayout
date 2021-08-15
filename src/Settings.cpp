@@ -86,7 +86,11 @@ void Settings::SetDefault() {
     autosave=true;
     autosave_timer=5;
 
-    sub_grid=4;
+    sub_grid=SUBGRID_4;
+    show_grid=true;
+
+    custom_rotation_angle=22.5f;
+    rotation_angle=45.0f;
 
 
     const char def_keys[TOOL_COUNT]= {
@@ -142,7 +146,15 @@ void Settings::SetDefault() {
         1.2f,
         1.4f
     };
-
+	grids_bind[0]=2.54;
+	grids_bind[1]=1.27;
+	grids_bind[2]=0.635;
+	grids_bind[3]=0.3175;
+	grids_bind[4]=0.15875;
+	grids_bind[5]=0.079375;
+	grids_bind[6]=0.0396875;
+	grids_bind[7]=1.0;
+	grids_bind[8]=0.1;
 }
 string Settings::GetDefaultMacroPath() {
     // You can customize it there

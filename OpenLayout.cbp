@@ -110,10 +110,22 @@
 		<Unit filename="/home/nikita/c++/OpenLayout/src/AboutDialog.h">
 			<Option target="OpenLayout"/>
 		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GridBinderDialog.cpp">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GridBinderDialog.h">
+			<Option target="OpenLayout"/>
+		</Unit>
 		<Unit filename="/home/nikita/c++/OpenLayout/src/InputGridDialog.cpp">
 			<Option target="OpenLayout"/>
 		</Unit>
 		<Unit filename="/home/nikita/c++/OpenLayout/src/InputGridDialog.h">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/InputNumberDialog.cpp">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/InputNumberDialog.h">
 			<Option target="OpenLayout"/>
 		</Unit>
 		<Unit filename="/home/nikita/c++/OpenLayout/src/LayerInfoDialog.cpp">

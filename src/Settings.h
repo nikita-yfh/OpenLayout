@@ -26,7 +26,13 @@ enum {
 	GRID_LINES,
 	GRID_DOTS
 };
-
+enum{
+	SUBGRID_OFF,
+	SUBGRID_2,
+	SUBGRID_4,
+	SUBGRID_5,
+	SUBGRID_10,
+};
 enum {
     COLOR_C1,	// Copper-top
     COLOR_S1,	// Silkscreen-top
@@ -115,8 +121,14 @@ struct Settings {
     vector<float>track_sizes;
 
     vector<double>grids;
+    double grids_bind[9]; //for keys 1-9
+
 
     uint8_t sub_grid;
+    bool show_grid;
+
+    float custom_rotation_angle;
+    float rotation_angle;
 };
 
 #endif // SETTINGS_H

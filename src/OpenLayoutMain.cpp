@@ -7,11 +7,13 @@
  * License:
  **************************************************************/
 #include "ScannedCopyDialog.h"
+#include "InputNumberDialog.h"
 #include "OpenLayoutMain.h"
 #include "NewBoardDialog.h"
 #include "LayerInfoDialog.h"
 #include "ProjectInfoDialog.h"
 #include "InputGridDialog.h"
+#include "GridBinderDialog.h"
 #include "SettingsDialog.h"
 #include "AboutDialog.h"
 #include <wx/msgdlg.h>
@@ -251,7 +253,23 @@ void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
     tool_bar->AddTool(wxID_DELETE, _("Delete"), delete_xpm);
     tool_bar->AddSeparator();
     tool_bar->AddTool(wxID_DUPLICATE, _("Duplicate"), duplicate_xpm);
-    tool_bar->AddTool(ID_ROTATE, _("Rotate"), rotate_xpm);
+    tool_bar->AddTool(ID_ROTATE, _("Rotate"), rotate_xpm,wxNullBitmap,wxITEM_DROPDOWN);
+    {//create menu for rotate button
+    	wxMenu *menu=new wxMenu();
+		menu->AppendRadioItem(ID_ANGLE_90,"90");
+		menu->AppendRadioItem(ID_ANGLE_45,"45");
+		menu->AppendRadioItem(ID_ANGLE_10,"10");
+		menu->AppendRadioItem(ID_ANGLE_5,"5");
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+			switch(e.GetId()){
+				case ID_ANGLE_90: s.rotation_angle=90.0f; break;
+				case ID_ANGLE_45: s.rotation_angle=45.0f; break;
+				case ID_ANGLE_10: s.rotation_angle=10.0f; break;
+				case ID_ANGLE_5:  s.rotation_angle=5.0f;  break;
+			}
+		},ID_ANGLE_90,ID_ANGLE_CUSTOM);
+		tool_bar->SetDropdownMenu(ID_ROTATE,menu);
+    }
     tool_bar->AddTool(ID_HMIRROR,_("Mirror horizontal"), mirror_h_xpm);
     tool_bar->AddTool(ID_VMIRROR, _("Mirror vertical"), mirror_v_xpm);
     tool_bar->AddTool(ID_ALIGN, _("Align elements"), align_xpm);
@@ -275,31 +293,41 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
     {
         wxBoxSizer *left_box=new wxBoxSizer(wxVERTICAL);
 		{
-			wxToolBar *tools=new wxToolBar(left_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_VERTICAL|wxTB_FLAT|wxTB_TEXT|wxTB_HORZ_TEXT|wxTB_HORZ_LAYOUT|wxTB_NOALIGN|wxTB_NODIVIDER);
-			const char**images[]= {
-				tool_edit_xpm,
-				tool_zoom_xpm,
-				tool_track_xpm,
-				tool_pad_xpm,
-				tool_pad_smd_xpm,
-				tool_circle_xpm,
-				tool_rectangle_xpm,
-				tool_polygon_xpm,
-				tool_special_xpm,
-				tool_text_xpm,
-				tool_mask_xpm,
-				tool_connections_xpm,
-				tool_autoroute_xpm,
-				tool_test_xpm,
-				tool_measure_xpm,
-				tool_photoview_xpm
-			};
-			for(int q=0; q<TOOL_COUNT; q++) {
-				int id=ID_TOOL_EDIT+q;
-				tools->AddRadioTool(id,Settings::tool_names[q],images[q]);
+			wxBoxSizer *hsizer=new wxBoxSizer(wxHORIZONTAL);
+			{
+				wxToolBar *tools=new wxToolBar(left_panel,wxID_ANY,wxDefaultPosition,wxDefaultSize,
+							wxTB_VERTICAL|wxTB_FLAT|wxTB_TEXT|wxTB_HORZ_TEXT|wxTB_HORZ_LAYOUT|wxTB_NOALIGN|wxTB_NODIVIDER);
+				const char**images[]= {
+					tool_edit_xpm,
+					tool_zoom_xpm,
+					tool_track_xpm,
+					tool_pad_xpm,
+					tool_pad_smd_xpm,
+					tool_circle_xpm,
+					tool_rectangle_xpm,
+					tool_polygon_xpm,
+					tool_special_xpm,
+					tool_text_xpm,
+					tool_mask_xpm,
+					tool_connections_xpm,
+					tool_autoroute_xpm,
+					tool_test_xpm,
+					tool_measure_xpm,
+					tool_photoview_xpm
+				};
+				for(int q=0; q<TOOL_COUNT; q++) {
+					tools->AddRadioTool(ID_TOOL_EDIT+q,wxEmptyString,images[q]);
+				}
+				tools->Realize();
+				hsizer->Add(tools,0,wxEXPAND|wxALL);
 			}
-			tools->Realize();
-			left_box->Add(tools,0,wxEXPAND);
+			{
+				wxBoxSizer *vsizer=new wxBoxSizer(wxVERTICAL);
+				for(int q=0; q<TOOL_COUNT; q++)
+					vsizer->Add(new wxStaticText(left_panel,wxID_ANY,Settings::tool_names[q]),1,wxEXPAND);
+				hsizer->Add(vsizer,1,wxEXPAND|wxUP,8);
+			}
+			left_box->Add(hsizer,1,wxEXPAND);
 		}
         {
             grid_button=new wxButton(left_panel,wxID_ANY,
@@ -571,15 +599,6 @@ void OpenLayoutFrame::build_track_menu() {
 float get_normal_grid(int n) {
     return 0.0396875f*pow(2,n);
 }
-wxString get_grid_str(float grid) {
-    //39.6875µm, 79.375µm, 158.75µm, ..., 5.08mm
-    char mm[40];
-    if(to_str(grid).size()>6) //if µm more compact
-        sprintf(mm,"%g %s",grid*1000.0f,"um");
-    else
-        sprintf(mm,"%g %s",grid,"mm");
-    return mm;
-}
 float get_metric_grid(int n) {
     float grids[]= {
         0.01f,	0.02f,	0.025f,	0.05f,
@@ -648,7 +667,10 @@ void OpenLayoutFrame::build_grid_menu() {
         s.grids.erase(s.grids.begin()+id);
     },ID_GRID_USER_DEL,ID_GRID_USER_DEL+99);
     grid_menu->AppendSeparator();
-    grid_menu->Append(wxID_ANY,_("Hotkeys..."));
+    grid_menu->Append(ID_GRID_HOTKEYS,_("Hotkeys..."));
+    Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+		GridBinderDialog(this,s.grids_bind).ShowModal();
+	},ID_GRID_HOTKEYS);
     {
         wxMenu *style=new wxMenu;
         style->AppendRadioItem(ID_GRID_LINES,_("Lines"));
@@ -657,7 +679,12 @@ void OpenLayoutFrame::build_grid_menu() {
 			style->Check(ID_GRID_DOTS,true);
 		else
 			style->Check(ID_GRID_LINES,true);
-
+		Bind(wxEVT_MENU,[&](wxCommandEvent &e){
+			if(e.GetId()==ID_GRID_DOTS)
+				s.grid_style=GRID_DOTS;
+			else
+				s.grid_style=GRID_LINES;
+		},ID_GRID_LINES,ID_GRID_DOTS);
         grid_menu->Append(wxID_ANY,_("Grid style"),style);
     }
     {
@@ -667,15 +694,17 @@ void OpenLayoutFrame::build_grid_menu() {
         sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
         sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
         sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
-        int n=0;
-        if(s.sub_grid==2)n=1;
-        else if(s.sub_grid==4)n=2;
-        else if(s.sub_grid==5)n=3;
-        else if(s.sub_grid==10)n=4;
-        sub->Check(ID_SUBGRID_OFF+n,true); //enable item
+
+        sub->Check(ID_SUBGRID_OFF+s.sub_grid,true); //enable item
+        sub->Bind(wxEVT_MENU,[&](wxCommandEvent &e){
+			s.sub_grid=e.GetId()-ID_SUBGRID_OFF;
+		},ID_SUBGRID_OFF,ID_SUBGRID_10);
         grid_menu->Append(wxID_ANY,_("Subdivisions"),sub);
     }
-    grid_menu->AppendCheckItem(wxID_ANY,_("Show grid"));
+    grid_menu->AppendCheckItem(ID_SHOW_GRID,_("Show grid"))->Check(s.show_grid);
+    Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+		s.show_grid=!s.show_grid;
+	},ID_SHOW_GRID);
     PopupMenu(grid_menu);
     delete grid_menu;
 }

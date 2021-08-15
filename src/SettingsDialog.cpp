@@ -212,10 +212,12 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
         panel_dirs->SetSizerAndFit(other_box);
         dir1_panel->SetSizerAndFit(dir1_box);
 
-        panel_dirs->Enable(!s.same_dir);
 
         all_box->Add(dir1_panel, 0, wxEXPAND, 5);
         all_box->Add(panel_dirs, 0, wxEXPAND, 5);
+
+
+        panel_dirs->Enable(!s.same_dir);
 
         all_box->Add(new wxStaticText(tabs[2], wxID_ANY,
                                       _("Leave this fields empty, if you want OpenLayout to remember\n"

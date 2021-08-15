@@ -137,6 +137,8 @@ enum {
     ID_GRID_USER_DEL=ID_GRID_USER+100,
     ID_GRID_USER_NEW=ID_GRID_USER_DEL+100,
 
+    ID_GRID_HOTKEYS,
+
     ID_GRID_LINES,
     ID_GRID_DOTS,
 
@@ -144,7 +146,16 @@ enum {
     ID_SUBGRID_2,
     ID_SUBGRID_4,
     ID_SUBGRID_5,
-    ID_SUBGRID_10
+    ID_SUBGRID_10,
+
+    ID_SHOW_GRID,
+
+    ID_ANGLE_90,
+    ID_ANGLE_45,
+    ID_ANGLE_10,
+    ID_ANGLE_5,
+    ID_ANGLE_CUSTOM,
+    ID_ANGLE_CUSTOM_CH
 };
 class OpenLayoutFrame: public wxFrame {
 public:
