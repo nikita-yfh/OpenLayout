@@ -21,7 +21,7 @@ ScannedCopyDialog::ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2
 		    			content->Add(sizer,0,wxEXPAND);
 			    		{
 			    			path[q]= new wxFilePickerCtrl(panel, wxID_ANY,images[q].path,_("Load bitmap"),
-			    _("Image files (*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp)|*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|All files (*)|*"),
+			    _("*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*|*"),
 			       wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL);
 							path[q]->SetPath(images[q].path);
 			                input->Add(path[q],0,wxEXPAND|wxALL,5);
@@ -43,10 +43,11 @@ ScannedCopyDialog::ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2
 	    			show[q]->SetValue(images[q].show);
 	    			content->Add(show[q],0,wxEXPAND|wxALL,5);
 	    		}
+	    		wxSize wsize(75,-1);
 	    		{
 	    			wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("Resolution")),1,wxALL,5);
-	    			dpi[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,1,10000,images[q].dpi);
+	    			dpi[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wsize,0,20,2400,images[q].dpi);
 	    			sizer->Add(dpi[q],1,wxEXPAND|wxALL,5);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("[dpi]")),1,wxALL,5);
 	    			content->Add(sizer,0,wxEXPAND);
@@ -54,7 +55,7 @@ ScannedCopyDialog::ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2
 	    		{
 	    			wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("X-Offset")),1,wxALL,5);
-	    			dx[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,-10000,10000,images[q].pos.x);
+	    			dx[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wsize,0,-3000,3000,images[q].pos.x);
 	    			sizer->Add(dx[q],1,wxEXPAND|wxALL,5);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("[1/10 mm]")),1,wxALL,5);
 	    			content->Add(sizer,0,wxEXPAND);
@@ -62,7 +63,7 @@ ScannedCopyDialog::ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2
 	    		{
 	    			wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("Y-Offset")),1,wxALL,5);
-	    			dy[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,-10000,10000,images[q].pos.y);
+	    			dy[q]=new wxSpinCtrl(panel,wxID_ANY,wxEmptyString,wxDefaultPosition,wsize,0,-3000,3000,images[q].pos.y);
 	    			sizer->Add(dy[q],1,wxEXPAND|wxALL,5);
 	    			sizer->Add(new wxStaticText(panel,wxID_ANY,_("[1/10 mm]")),1,wxALL,5);
 	    			content->Add(sizer,0,wxEXPAND);

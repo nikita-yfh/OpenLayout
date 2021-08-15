@@ -653,6 +653,11 @@ void OpenLayoutFrame::build_grid_menu() {
         wxMenu *style=new wxMenu;
         style->AppendRadioItem(ID_GRID_LINES,_("Lines"));
         style->AppendRadioItem(ID_GRID_DOTS,_("Dots"));
+        if(s.grid_style==GRID_DOTS)
+			style->Check(ID_GRID_DOTS,true);
+		else
+			style->Check(ID_GRID_LINES,true);
+
         grid_menu->Append(wxID_ANY,_("Grid style"),style);
     }
     {
@@ -662,6 +667,12 @@ void OpenLayoutFrame::build_grid_menu() {
         sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
         sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
         sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
+        int n=0;
+        if(s.sub_grid==2)n=1;
+        else if(s.sub_grid==4)n=2;
+        else if(s.sub_grid==5)n=3;
+        else if(s.sub_grid==10)n=4;
+        sub->Check(ID_SUBGRID_OFF+n,true); //enable item
         grid_menu->Append(wxID_ANY,_("Subdivisions"),sub);
     }
     grid_menu->AppendCheckItem(wxID_ANY,_("Show grid"));
