@@ -1,46 +1,40 @@
 #include "GridBinderDialog.h"
 #include "InputGridDialog.h"
-#include <wx/bitmap.h>
-#include <wx/image.h>
-#include <wx/intl.h>
-#include <wx/string.h>
 #include "Utils.h"
 #include "InputGridDialog.h"
 
-#define KEYBINDER_XPM
-#include "images.h"
-#undef KEYBINDER_XPM
-
-GridBinderDialog::GridBinderDialog(wxWindow* parent,const double k[9])
+GridBinderDialog::GridBinderDialog(wxWindow* parent,const double g[9])
     :wxDialog(parent, wxID_ANY, _("Grid values for Keys 1..9")) {
     wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
     {
-    	memcpy(keys,k,sizeof(keys));
-    	auto bind=[&](wxCommandEvent &e){
-    		wxButton *button=static_cast<wxButton*>(e.GetEventObject());
-    		for(int q=0;q<9;q++){
-    			if(buttons[q]==button){
-    				InputGridDialog input(this);
-    				if(input.ShowModal()==wxID_OK){
-    					double grid=input.Get();
-    					text[q]->SetLabel(get_grid_str(grid));
-    					keys[q]=grid;
-    					Layout();
-    				}
-    			}
-    		}
-    	};
-		wxGridSizer *sizer=new wxFlexGridSizer(9,3,0,20);
+    	memcpy(grids,g,sizeof(grids));
+		key_list=new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxBORDER_SIMPLE);
+
+		key_list->AppendColumn(_("Key"), wxLIST_FORMAT_LEFT, 50);
+		key_list->AppendColumn(_("Grid"), wxLIST_FORMAT_LEFT, 100);
 		for(int q=0;q<9;q++){
-			sizer->Add(new wxStaticText(this,wxID_ANY,char(q+'1')),0,wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL);
-			text[q]=new wxStaticText(this,wxID_ANY,get_grid_str(k[q]));
-			sizer->Add(text[q],1,wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL);
-			buttons[q]=new wxButton(this,wxID_ANY,"Change");
-		//	buttons[q]->SetBitmap(arrow_xpm);
-			buttons[q]->Bind(wxEVT_BUTTON,bind);
-			sizer->Add(buttons[q],1);
+			key_list->InsertItem(q,char(q+1));
+			key_list->SetItem(q,0,char(q+'1'));
+			key_list->SetItem(q,1,get_grid_str(g[q]));
 		}
-        all_box->Add(sizer,1,wxEXPAND|wxALL,10);
+        key_list->Bind(wxEVT_LIST_ITEM_SELECTED,[&](wxCommandEvent&){change->Enable(true);});
+        all_box->Add(key_list,1,wxEXPAND|wxALL,10);
+
+
+        change=new wxButton(this,wxID_ANY,_("Change grid"));
+        change->Enable(false);
+        all_box->Add(change,0,wxEXPAND|wxALL,10);
+        change->Bind(wxEVT_BUTTON,[&](wxCommandEvent &e){
+			int n=key_list->GetFirstSelected();
+			assert(n>=0 && n<9);
+			InputGridDialog input(this);
+			if(input.ShowModal()==wxID_OK){
+				double grid=input.Get();
+				key_list->SetItem(n,1,get_grid_str(grid));
+				grids[n]=grid;
+			}
+
+    	});
     }
     {
         wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
@@ -52,12 +46,12 @@ GridBinderDialog::GridBinderDialog(wxWindow* parent,const double k[9])
     SetSizerAndFit(all_box);
 }
 
-void GridBinderDialog::Get(double k[9]){
-	memcpy(k,keys,sizeof(keys));
+void GridBinderDialog::Get(double g[9]){
+	memcpy(g,grids,sizeof(grids));
 }
-void ShowGridBinderDialog(wxWindow *parent,double keys[9]){
-	GridBinderDialog dialog(parent,keys);
+void ShowGridBinderDialog(wxWindow *parent,double grids[9]){
+	GridBinderDialog dialog(parent,grids);
 	if(dialog.ShowModal()==wxID_OK)
-		dialog.Get(keys);
+		dialog.Get(grids);
 }
 

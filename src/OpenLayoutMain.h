@@ -12,7 +12,6 @@
 
 #include <vector>
 #include <wx/dcclient.h>
-#include "Board.h"
 #include "PCBFile.h"
 #include "Settings.h"
 

@@ -6,17 +6,16 @@
 #include <wx/spinctrl.h>
 #include <wx/choice.h>
 #include <wx/button.h>
-#include <wx/stattext.h>
+#include <wx/listctrl.h>
 
 class GridBinderDialog : public wxDialog {
 public:
     GridBinderDialog(wxWindow* parent,const double keys[9]);
-    void Get(double keys[9]);
+    void Get(double grids[9]);
 private:
-    double keys[9];
-    wxButton *buttons[9];
-    wxStaticText *text[9];
-
+    double grids[9];
+    wxButton *change;
+    wxListView *key_list;
 };
 void ShowGridBinderDialog(wxWindow *parent,double keys[9]);
 #endif
