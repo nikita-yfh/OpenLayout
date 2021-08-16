@@ -115,8 +115,8 @@ struct Settings {
     bool autosave;
     uint16_t autosave_timer;
 
-    vector<Pair<float>>pad_sizes;
-    vector<Pair<float>>smd_sizes;
+    vector<Vec2>pad_sizes;
+    vector<Vec2>smd_sizes;
     vector<float>track_sizes;
 
     vector<double>grids;
@@ -128,4 +128,7 @@ struct Settings {
 
     float custom_rotation_angle;
     float rotation_angle;
+
+    uint8_t circle_quality;
 };
+extern Settings s;

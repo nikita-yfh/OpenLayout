@@ -92,6 +92,8 @@ void Settings::SetDefault() {
     custom_rotation_angle=22.5f;
     rotation_angle=45.0f;
 
+    circle_quality=40;
+
 
     const char def_keys[TOOL_COUNT]= {
         '\27', //escape
@@ -170,3 +172,5 @@ ColorScheme Settings::get_current_colors() {
 Color Settings::get_color(uint8_t type) {
     return get_current_colors().colors[type];
 }
+
+Settings s;

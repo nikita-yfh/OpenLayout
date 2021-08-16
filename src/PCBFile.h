@@ -3,12 +3,13 @@
 #include <stdint.h>
 #include <vector>
 #include <string>
+#include "Utils.h"
 
 using namespace std;
 
 
 enum {
-    LAY_C1,
+    LAY_C1=1,
     LAY_S1,
     LAY_C2,
     LAY_S2,
@@ -17,31 +18,17 @@ enum {
     LAY_O,
 };
 
-template<typename T>
-struct Pair {
-    union {
-        T width;
-        T inner;
-        T x;
-    };
-    union {
-        T height;
-        T outer;
-        T y;
-    };
-    bool operator==(Pair<T>other) {
-        return x==other.x && y==other.y;
-    }
-    bool operator<(Pair<T>other) {
-        return x<other.x || y<other.y;
-    }
+enum{
+	END_ROUND,
+	END_SQUARE
 };
+
 
 struct ImageConfig {
     string path;
     uint32_t dpi;
     uint8_t show;
-    Pair<int32_t>pos;
+    Vec2i pos;
 };
 
 
@@ -69,7 +56,7 @@ enum {
 };
 
 struct Component {
-    Pair<float>offset;
+    Vec2 offset;
     uint8_t center_mode;
     double rotation;
     bool valid=false;
@@ -85,8 +72,8 @@ struct Component {
 
 struct Object {
     uint8_t type;
-    Pair<float>pos;
-    Pair<float>size;
+    Vec2 pos;
+    Vec2 size;
 
     union {
         uint32_t line_width;
@@ -94,8 +81,17 @@ struct Object {
     };
     uint8_t __pad1;
     uint8_t layer;
-    uint8_t tht_shape;
-
+    union{
+		uint8_t tht_shape;
+		uint8_t line_ending;
+		/*
+			Line ending styles:
+			0: O####O
+			1: #####O
+			2: O#####
+			3: ######
+		*/
+    };
     uint8_t __pad1_1[4];
     uint16_t component_id;
     uint8_t unk1;
@@ -108,7 +104,9 @@ struct Object {
     uint8_t __pad1_2[5];
     uint8_t th_style_custom; // also fill
 
-    uint8_t __pad2[9];
+
+    uint32_t ground_distance;
+    uint8_t __pad2[5];
     uint8_t thermobarier;
     uint8_t flip_vertical;
     uint8_t cutoff;
@@ -122,7 +120,7 @@ struct Object {
     string marker;
     vector<int32_t> groups;
     vector<int32_t>connections;
-    vector<Pair<float>> poly_points;
+    vector<Vec2> poly_points;
     vector<Object> text_objects;
     Component component;
 
@@ -131,6 +129,10 @@ struct Object {
 
     void load_con(FILE *f);
     void save_con(FILE *f);
+    bool is_copper() const;
+    bool can_connect() const;
+    uint8_t get_begin_style() const; //return style for line begin
+    uint8_t get_end_style() const; //return style for line end
 };
 
 
@@ -139,13 +141,13 @@ struct Board {
 
     uint8_t __pad0[4];
 
-    Pair<uint32_t>size;
+    Vec2i size;
 
     uint8_t ground_pane[7];
     double active_grid_val;
 
     double zoom;
-    Pair<uint32_t> camera;
+    Vec2i camera;
 
     uint32_t active_layer;
 
@@ -155,7 +157,7 @@ struct Board {
 
     uint8_t __pad1[8];
 
-    Pair<int32_t>anchor;
+    Vec2i anchor;
 
     uint8_t is_multilayer;
 
@@ -188,3 +190,5 @@ struct PCBFile {
     int load(const char *filename);
     int save(const char *filename);
 };
+
+extern PCBFile file;

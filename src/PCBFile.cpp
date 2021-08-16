@@ -75,7 +75,8 @@ void Object::load(FILE *file,bool text_child) {
     readv(file,th_style,4);
     readv(file,__pad1_2,5);
     readv(file,th_style_custom);
-    readv(file,__pad2,9);
+    readv(file,ground_distance);
+    readv(file,__pad2,5);
     readv(file,thermobarier);
     readv(file,flip_vertical);
     readv(file,cutoff);
@@ -131,7 +132,8 @@ void Object::save(FILE *file,bool text_child) {
     writev(file,th_style,4);
     writev(file,__pad1_2,5);
     writev(file,th_style_custom);
-    writev(file,__pad2,9);
+    writev(file,ground_distance);
+    writev(file,__pad2,5);
     writev(file,thermobarier);
     writev(file,flip_vertical);
     writev(file,cutoff);
@@ -276,6 +278,18 @@ void Object::save_con(FILE *file) {
     for(uint32_t q=0; q<connections.size(); q++)
         writev(file,connections[q]);
 }
+bool Object::is_copper() const{
+	return layer==LAY_C1 || layer==LAY_C2 || layer==LAY_I1 || layer==LAY_I2;
+}
+bool Object::can_connect() const{
+	return type==OBJ_THT_PAD || type==OBJ_SMD_PAD;
+}
+uint8_t Object::get_begin_style() const{
+	return line_ending%2;
+}
+uint8_t Object::get_end_style() const{
+	return line_ending>1;
+}
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);
     readstr(file,100,author);
@@ -332,3 +346,5 @@ Board &PCBFile::GetSelectedBoard() {
     assert(active_board_tab<boards.size());
     return boards[active_board_tab];
 }
+
+PCBFile file;

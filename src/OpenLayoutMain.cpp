@@ -16,6 +16,7 @@
 #include "GridBinderDialog.h"
 #include "SettingsDialog.h"
 #include "AboutDialog.h"
+#include "GLDraw.h"
 #include <wx/msgdlg.h>
 #include <wx/dcclient.h>
 #include <wx/graphics.h>
@@ -53,8 +54,10 @@ OpenLayoutFrame::OpenLayoutFrame()
         wxBoxSizer *content=new wxBoxSizer(wxHORIZONTAL);
         init_left_panel(content);
         {
+        	GLCanvas *canvas=new GLCanvas(this);
+        	content->Add(canvas,1,wxEXPAND|wxALL,5);
         }
-        all_box->Add(content,0,wxEXPAND);
+        all_box->Add(content,1,wxEXPAND);
     }
     SetSizer(all_box);
     SetAutoLayout(true);
@@ -327,7 +330,7 @@ void OpenLayoutFrame::init_left_panel(wxBoxSizer *content) {
 					vsizer->Add(new wxStaticText(left_panel,wxID_ANY,Settings::tool_names[q]),1,wxEXPAND);
 				hsizer->Add(vsizer,1,wxEXPAND|wxUP,8);
 			}
-			left_box->Add(hsizer,1,wxEXPAND);
+			left_box->Add(hsizer,0,wxEXPAND);
 		}
         {
             grid_button=new wxButton(left_panel,wxID_ANY,
@@ -420,12 +423,12 @@ void OpenLayoutFrame::swap_smd_size(wxCommandEvent&e) {
     w_smd_w->SetValue(smd_size.width);
     w_smd_h->SetValue(smd_size.height);
 }
-void OpenLayoutFrame::set_pad_size(Pair<float> size) {
+void OpenLayoutFrame::set_pad_size(Vec2 size) {
     w_pad_outer->SetValue(size.outer);
     w_pad_inner->SetValue(size.inner);
     pad_size=size;
 }
-void OpenLayoutFrame::set_smd_size(Pair<float> size) {
+void OpenLayoutFrame::set_smd_size(Vec2 size) {
     w_smd_w->SetValue(size.width);
     w_smd_h->SetValue(size.height);
     smd_size=size;
@@ -458,7 +461,7 @@ void OpenLayoutFrame::build_smd_menu() {
     bool sel=false;
     {
         for(int q=0; q<s.smd_sizes.size(); q++) {
-            Pair<float> size=s.smd_sizes[q];
+            Vec2 size=s.smd_sizes[q];
             char text[128];
             sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
             if(smd_size==size)sel=true;
@@ -483,7 +486,7 @@ void OpenLayoutFrame::build_smd_menu() {
         wxMenu *del_menu=new wxMenu();
         {
             for(int q=0; q<s.smd_sizes.size(); q++) {
-                Pair<float> size=s.smd_sizes[q];
+                Vec2 size=s.smd_sizes[q];
                 char text[128];
                 sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
                 del_menu->Append(ID_SMD_DEL+q,text);
@@ -504,7 +507,7 @@ void OpenLayoutFrame::build_pad_menu() {
     bool sel=false;
     {
         for(int q=0; q<s.pad_sizes.size(); q++) {
-            Pair<float> size=s.pad_sizes[q];
+            Vec2 size=s.pad_sizes[q];
             char text[128];
             sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
             if(pad_size==size) {
@@ -532,7 +535,7 @@ void OpenLayoutFrame::build_pad_menu() {
         wxMenu *del_menu=new wxMenu();
         {
             for(int q=0; q<s.pad_sizes.size(); q++) {
-                Pair<float> size=s.pad_sizes[q];
+                Vec2 size=s.pad_sizes[q];
                 char text[128];
                 sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
                 add_item(del_menu,text,ID_PAD_DEL+q,cross_xpm);

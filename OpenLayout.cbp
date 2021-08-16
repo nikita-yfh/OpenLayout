@@ -110,6 +110,12 @@
 		<Unit filename="/home/nikita/c++/OpenLayout/src/AboutDialog.h">
 			<Option target="OpenLayout"/>
 		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GLDraw.cpp">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GLDraw.h">
+			<Option target="OpenLayout"/>
+		</Unit>
 		<Unit filename="/home/nikita/c++/OpenLayout/src/GridBinderDialog.cpp">
 			<Option target="OpenLayout"/>
 		</Unit>

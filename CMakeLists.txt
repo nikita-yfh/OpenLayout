@@ -1,6 +1,8 @@
 project(OpenLayout)
 
-find_package(wxWidgets REQUIRED core base)
+find_package(wxWidgets REQUIRED core base gl)
+find_package(OpenGL REQUIRED)
+find_package(GLU REQUIRED)
 include(${wxWidgets_USE_FILE})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCES
@@ -18,6 +20,7 @@ set(SOURCES
 	src/SettingsDialog.cpp
 	src/InputGridDialog.cpp
 	src/Utils.cpp
+	src/GLDraw.cpp
 )
 set(HEADERS
 	src/ScannedCopyDialog.h
@@ -34,6 +37,7 @@ set(HEADERS
 	src/SettingsDialog.h
 	src/InputGridDialog.h
 	src/Utils.h
+	src/GLDraw.h
 )
 add_custom_target(images ALL
 	COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
@@ -42,4 +46,4 @@ add_custom_target(images ALL
 )
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
 add_dependencies(OpenLayout images)
-target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES})
+target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})

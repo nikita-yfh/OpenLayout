@@ -153,15 +153,13 @@ private:
 
     wxButton *grid_button;
 
-    Settings s;
-
     uint8_t tool;
 
-    Pair<float> smd_size{1.6f,0.9f};
-    Pair<float> pad_size{1.8f,0.6f};
+    Vec2 smd_size{1.6f,0.9f};
+    Vec2 pad_size{1.8f,0.6f};
     float track_size=0.8f;
-    void set_smd_size(Pair<float> size);
-    void set_pad_size(Pair<float> size);
+    void set_smd_size(Vec2 size);
+    void set_pad_size(Vec2 size);
     void set_track_size(float size);
     void set_grid_size(double grid);
 
@@ -175,8 +173,6 @@ private:
     void build_pad_menu();
     void build_track_menu();
     void build_grid_menu();
-
-    PCBFile file;
     void init_menu_bar();
     void init_tool_bar(wxBoxSizer*);
     void init_left_panel(wxBoxSizer*);
