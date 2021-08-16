@@ -1,6 +1,4 @@
-#ifndef GRID_BINDER_H
-#define GRID_BINDER_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -18,4 +16,3 @@ private:
     wxListView *key_list;
 };
 void ShowGridBinderDialog(wxWindow *parent,double keys[9]);
-#endif

@@ -1,5 +1,4 @@
-#ifndef PROJECTINFO_H
-#define PROJECTINFO_H
+#pragma once
 #include "PCBFile.h"
 
 #include <wx/dialog.h>
@@ -17,5 +16,3 @@ public:
     wxTextCtrl* TextCompany;
     wxTextCtrl* TextTitle;
 };
-
-#endif

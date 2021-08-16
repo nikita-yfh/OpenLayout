@@ -1,15 +1,4 @@
-/***************************************************************
- * Name:      OpenLayoutMain.h
- * Purpose:   Defines Application Frame
- * Author:    Nikita-yfh (nikita.yfh@gmail.com)
- * Created:   2021-07-21
- * Copyright: Nikita-yfh (https://github.com/nikita-yfh)
- * License:
- **************************************************************/
-
-#ifndef OPENLAYOUTMAIN_H
-#define OPENLAYOUTMAIN_H
-
+#pragma once
 #include <vector>
 #include <wx/dcclient.h>
 #include "PCBFile.h"
@@ -205,5 +194,3 @@ private:
 
     Color getcolor(const Object &o);
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef NEWBOARDDIALOG_H
-#define NEWBOARDDIALOG_H
+#pragma once
 #include "PCBFile.h"
 
 #include <wx/bmpbuttn.h>
@@ -50,4 +49,3 @@ private:
 
 };
 
-#endif

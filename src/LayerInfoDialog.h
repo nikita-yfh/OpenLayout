@@ -1,6 +1,4 @@
-#ifndef LAYERINFO_H
-#define LAYERINFO_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
@@ -11,4 +9,3 @@ public:
     LayerInfoDialog(wxWindow* parent);
 };
 
-#endif

@@ -1,5 +1,4 @@
-#ifndef SETTINGS_DIALOG_H
-#define SETTINGS_DIALOG_H
+#pragma once
 #include "Settings.h"
 
 #include <wx/button.h>
@@ -74,5 +73,3 @@ private:
     void OnResetMacroClick(wxCommandEvent& event);
     void OnFolderMacroClick(wxCommandEvent& event);
 };
-
-#endif

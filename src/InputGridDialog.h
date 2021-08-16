@@ -1,6 +1,4 @@
-#ifndef INPUT_GRID_H
-#define INPUT_GRID_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -15,4 +13,3 @@ public:
     wxChoice *units;
 };
 
-#endif

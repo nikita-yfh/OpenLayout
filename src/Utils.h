@@ -1,6 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
-
+#pragma once
 #include <string>
 #include <sstream>
 
@@ -17,4 +15,3 @@ static string to_str(T value) {
 }
 
 string get_grid_str(float grid);
-#endif

@@ -1,5 +1,4 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#pragma once
 #include <wx/collpane.h>
 #include <string>
 #include <vector>
@@ -130,5 +129,3 @@ struct Settings {
     float custom_rotation_angle;
     float rotation_angle;
 };
-
-#endif // SETTINGS_H

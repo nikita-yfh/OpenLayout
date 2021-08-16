@@ -1,6 +1,4 @@
-#ifndef SCANNEDCOPY_H
-#define SCANNEDCOPY_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/spinctrl.h>
 #include <wx/filepicker.h>
@@ -21,5 +19,3 @@ private:
 	wxCheckBox *show[2];
 	wxFilePickerCtrl *path[2];
 };
-
-#endif

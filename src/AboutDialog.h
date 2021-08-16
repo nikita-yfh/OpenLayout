@@ -1,6 +1,4 @@
-#ifndef ABOUT_H
-#define ABOUT_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
@@ -11,4 +9,3 @@ public:
     AboutDialog(wxWindow* parent);
 };
 
-#endif

@@ -1,6 +1,4 @@
-#ifndef INPUT_NUMBER_H
-#define INPUT_NUMBER_H
-
+#pragma once
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
@@ -16,4 +14,3 @@ public:
 
 float ShowInputNumberDialog(wxWindow* parent,float min,float max,float init,float step);
 
-#endif
