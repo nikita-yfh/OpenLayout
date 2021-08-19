@@ -14,19 +14,27 @@ string get_grid_str(float grid) {
         sprintf(mm,"%g %s",grid,"mm");
     return mm;
 }
-float Vec2::Normalize(){
+float Vec2::Normalize(float d){
 	float length = Length();
 	if (length < __FLT_MIN__)
 		return 0.0f;
-	float invLength = 1.0f / length;
+	float invLength = d / length;
 	x *= invLength;
 	y *= invLength;
 	return length;
 }
 
+Vec2i::Vec2i(Vec2 v){
+	x=v.x;
+	y=v.y;
+}
 Vec2::Vec2(float v1,float v2){
 	x=v1;
 	y=v2;
+}
+Vec2::Vec2(Vec2i v){
+	x=(float)v.x;
+	y=(float)v.y;
 }
 bool Vec2::operator==(Vec2 other) {
 	return x==other.x && y==other.y;
@@ -66,7 +74,16 @@ float Vec2::Length() const {
 Vec2 Vec2::Skew() const {
 	return Vec2(-y, x);
 }
-float get_angle(Vec2 v){
+Vec2 Vec2::SwapY() const {
+	return Vec2(x,-y);
+}
+float cosr(float v){
+	return cosf(v*M_PI/180.0f);
+}
+float sinr(float v){
+	return sinf(v*M_PI/180.0f);
+}
+float get_angle_v(Vec2 v){
 	float a;
 	if(v.x>=0)
 		a= M_PI+atanf(v.y/v.x);
@@ -74,8 +91,35 @@ float get_angle(Vec2 v){
 		a= 2*M_PI+atanf(v.y/v.x);
 	else
 		a= atanf(v.y/v.x);
-	return a;
+	return a/M_PI*180.0f; //degress only
 }
-float to_deg(float rad){
-	return rad/M_PI*180.0f;
+void rotate_v(Vec2 &v,float a){
+	v=Vec2(
+		v.x * cosr(a) + v.y * sinr(a),
+		-v.x * sinr(a) + v.y * cosr(a)
+   );
+}
+void rotate_v(Vec2 n,Vec2 &v,float angle){
+	Vec2 p=v-n;
+	rotate_v(p,angle);
+	v=p+n;
+}
+Vec2 bis(Vec2 v1,Vec2 v2,float length) {
+	v1.Normalize();
+	if(v1.Length()==0) {
+		v2=v2.Skew();
+		v2.Normalize();
+		return length*v2;
+	}
+	v2.Normalize();
+	if(v1==-v2)
+		v1+=0.001*v1.Skew();
+	Vec2 sum=v1+v2;
+	sum.Normalize();
+	if(v1.x*v2.y-v1.y*v2.x<0)
+		sum=-sum;
+
+	sum*=length;
+
+	return sum;
 }

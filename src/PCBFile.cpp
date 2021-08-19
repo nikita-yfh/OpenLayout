@@ -290,6 +290,39 @@ uint8_t Object::get_begin_style() const{
 uint8_t Object::get_end_style() const{
 	return line_ending>1;
 }
+float Object::get_angle() const{
+	if(type==OBJ_THT_PAD && tht_shape%3==1){
+		if(poly_points.size()==2){
+			Vec2 v=pos-poly_points[1];
+			return get_angle_v(v);
+		}
+	}else if(type==OBJ_THT_PAD && tht_shape%3==2){
+		if(poly_points.size()==8){
+			Vec2 v=pos-(poly_points[3]+poly_points[4])/2.0f;
+			return get_angle_v(v);
+		}
+	}else if((type==OBJ_THT_PAD && tht_shape%3==0) || type==OBJ_SMD_PAD){
+		if(poly_points.size()==4){
+			Vec2 v=pos-(poly_points[1]+poly_points[2])/2.0f;
+			return get_angle_v(v);
+		}
+	}
+	return 0.0f;
+}
+/*void Object::set_pad_shape(uint8_t shape,float angle){
+	poly_points.clear();
+	if(tht_shape%3==1){//circle shape
+		float
+		poly_points.emplace_back()
+	}
+}*/
+void Object::rotate(float angle){
+	if(type==OBJ_THT_PAD){
+		for(Vec2 &v : poly_points){
+			rotate_v(pos,v,angle);
+		}
+	}
+}
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);
     readstr(file,100,author);
