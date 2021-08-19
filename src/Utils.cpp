@@ -123,3 +123,8 @@ Vec2 bis(Vec2 v1,Vec2 v2,float length) {
 
 	return sum;
 }
+float delta_angle(float a1,float a2){
+	if(a2>a1)
+		return a2-a1;
+	return 360000.0f-a1+a2;
+}

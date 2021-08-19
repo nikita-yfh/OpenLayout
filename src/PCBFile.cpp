@@ -74,7 +74,7 @@ void Object::load(FILE *file,bool text_child) {
     readv(file,unk1);
     readv(file,th_style,4);
     readv(file,__pad1_2,5);
-    readv(file,th_style_custom);
+    readv(file,fill);
     readv(file,ground_distance);
     readv(file,__pad2,5);
     readv(file,thermobarier);
@@ -131,7 +131,7 @@ void Object::save(FILE *file,bool text_child) {
     writev(file,unk1);
     writev(file,th_style,4);
     writev(file,__pad1_2,5);
-    writev(file,th_style_custom);
+    writev(file,fill);
     writev(file,ground_distance);
     writev(file,__pad2,5);
     writev(file,thermobarier);

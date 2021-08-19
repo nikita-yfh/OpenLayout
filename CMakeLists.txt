@@ -39,11 +39,15 @@ set(HEADERS
 	src/Utils.h
 	src/GLDraw.h
 )
-add_custom_target(images ALL
-	COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
-	BYPRODUCTS images.h
-	COMMENT "Generating images.h file"
-)
+if(!WIN32)
+	add_custom_target(images ALL
+		COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
+		BYPRODUCTS images.h
+		COMMENT "Generating images.h file"
+	)
+else()
+    set(SOURCES ${SOURCES} src/resource.rc)
+endif()
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
 add_dependencies(OpenLayout images)
 target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})

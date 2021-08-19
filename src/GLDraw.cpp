@@ -104,6 +104,46 @@ void GLCanvas::DrawObject(const Object &o,float d){
 		if(styles[1]==END_ROUND)
 			DrawCircle(vend(o.poly_points),o.line_width/2.0f+d);
 		}break;
+	case OBJ_CIRCLE:{
+		/* Triangle strip:
+			0---2---4---6---8 ...
+			 \ / \ / \ / \ /  ...
+			  1---3---5---7   ...
+		*/
+		float total_angle=delta_angle(o.start_angle,o.end_angle)/1000.0f;
+		float r=(o.size.inner+o.size.outer)/2.0f;
+		float width=o.size.outer-o.size.inner+d*2.0f;
+		glPushMatrix();
+			glTranslatef(o.pos.x,-o.pos.y,0.0f);
+			glRotatef(360.0f-o.start_angle/1000.0f,0.0f,0.0f,1.0f);
+			{
+				if(o.fill){
+					glBegin(GL_TRIANGLE_FAN);
+					glVertex2f(0.0f,0.0f);
+				}else
+					glBegin(GL_TRIANGLE_STRIP);
+				for(float theta = 0; theta <= total_angle; theta+=(total_angle/s.circle_quality)) {
+					glVertex2f(
+						(o.size.outer+d) * cosr(-theta),
+						(o.size.outer+d) * sinr(-theta)
+					);
+					if(!o.fill)
+					glVertex2f(
+						(o.size.inner-d) * cosr(-theta),
+						(o.size.inner-d) * sinr(-theta)
+					);
+				}
+				if(o.fill)glVertex2f(r,0.0f);
+				glEnd();
+			}
+			if(o.fill)
+				DrawLine(Vec2(r,0.0f),Vec2(r*cosr(total_angle),r*sinr(total_angle)),width,false,false);
+
+			DrawCircle(Vec2(r,0.0f),width/2.0f);
+			glRotatef(-total_angle,0.0f,0.0f,1.0f);
+			DrawCircle(Vec2(r,0.0f),width/2.0f);
+		glPopMatrix();
+		}break;
 	}
 }
 void GLCanvas::DrawPad(const Object &o,float d){
@@ -113,7 +153,7 @@ void GLCanvas::DrawPad(const Object &o,float d){
 		case 1: //circle
 			DrawCircle(o.pos,o.size.outer+d);
 			break;
-		case 2: case 0:
+		case 2: case 0: //square and octagon
 			glBegin(GL_TRIANGLE_FAN);
 			glVertex2f(o.pos.x,-o.pos.y);
 			for(int q=0;q<=o.poly_points.size();q++){
@@ -140,7 +180,7 @@ void GLCanvas::DrawCircle(Vec2 pos,float r){
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex2f(pos.x,pos.y);
     for(int i = 0; i < s.circle_quality+1; i++) {
-        float theta = 2.0f * 3.1415926f * float(i) / float(s.circle_quality);
+        float theta = 2.0f * M_PI * float(i) / float(s.circle_quality);
         float x = r * cosf(theta);
         float y = r * sinf(theta);
         glVertex2f(x + pos.x, y + pos.y);
@@ -200,7 +240,10 @@ void GLCanvas::Draw(wxPaintEvent&){
 	for(Object &o : file.GetSelectedBoard().objects){
 		if(o.layer!=board.active_layer)continue;
 		SetColor(COLOR_BGR);
-		DrawObject(o,o.ground_distance);
+		if(o.cutoff)
+			DrawObject(o,0.0f);
+		else
+			DrawObject(o,o.ground_distance);
 	}
 
 	if(board.ground_pane[board.active_layer-1]){
@@ -223,7 +266,7 @@ void GLCanvas::Draw(wxPaintEvent&){
 			}
 		}
 	}
-	glDisable(GL_MULTISAMPLE);
+	//glDisable(GL_MULTISAMPLE);
 	DrawGrid(board);
 	glEnable(GL_MULTISAMPLE);
 
@@ -244,18 +287,18 @@ void GLCanvas::Draw(wxPaintEvent&){
 
 	for(int q=0;q<7;q++)
 		for(Object &o : file.GetSelectedBoard().objects)
-			if(o.layer==layers[n][q] && !o.can_connect()){
+			if(!o.cutoff && o.layer==layers[n][q] && !o.can_connect()){
 				SetLayerColor(o);
 				DrawObject(o,0.0f);
 			}
 	for(int q=0;q<7;q++)//pads are drawing after other objects
 		for(Object &o : file.GetSelectedBoard().objects)
-			if(o.layer==layers[n][q] && o.can_connect()){
+			if(!o.cutoff && o.layer==layers[n][q] && o.can_connect()){
 				SetLayerColor(o);
 				DrawPad(o,0.0f);
 			}
 	for(Object &o : file.GetSelectedBoard().objects)//draw drillings
-		if(o.type==OBJ_THT_PAD){
+		if(!o.cutoff &&o.type==OBJ_THT_PAD){
 			SetDrillingsColor();
 			DrawCircle(o.pos,o.size.inner);
 		}
@@ -265,14 +308,17 @@ void GLCanvas::Draw(wxPaintEvent&){
     glFlush();
     SwapBuffers();
 }
+
+///////////////////////////
+//        Events         //
+///////////////////////////
+
+
 void GLCanvas::OnMouseWheel(wxMouseEvent&e){ //zooming canvas
 	Vec2 mouse=GetMousePos(e);
     Board &board=file.GetSelectedBoard();
 
-    const float zoom_ratio=1.3f;
     float zoom_old=board.zoom;
-
-
 	if(e.GetWheelRotation()>0)
 		board.zoom*=zoom_ratio;
 	else

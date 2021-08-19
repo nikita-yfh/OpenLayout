@@ -102,7 +102,7 @@ struct Object {
     };
 
     uint8_t __pad1_2[5];
-    uint8_t th_style_custom; // also fill
+    uint8_t fill;
 
 
     uint32_t ground_distance;
@@ -126,13 +126,15 @@ struct Object {
 
     void load(FILE *f,bool text_child=false);
     void save(FILE *f,bool text_child=false);
+    void load_con(FILE *f);//load connections
+    void save_con(FILE *f);//save connections
 
-    void load_con(FILE *f);
-    void save_con(FILE *f);
     bool is_copper() const;
     bool can_connect() const;
     uint8_t get_begin_style() const; //return style for line begin
     uint8_t get_end_style() const; //return style for line end
+    float get_angle() const;
+    void rotate(float angle);
 };
 
 

@@ -18,7 +18,10 @@ static string to_str(T value) {
 
 string get_grid_str(float grid);
 
+struct Vec2;
 struct Vec2i{
+	Vec2i(){}
+	Vec2i(Vec2 v);
     union {
         int32_t width;
         int32_t x;
@@ -31,6 +34,7 @@ struct Vec2i{
 struct Vec2 {
 	Vec2(){}
 	Vec2(float v1,float v2);
+	Vec2(Vec2i v);
     bool operator==(Vec2 other);
     bool operator<(Vec2 other);
 	void SetZero();
@@ -41,7 +45,8 @@ struct Vec2 {
 	void operator *= (float a);
 	float Length() const;
 	Vec2 Skew() const;
-	float Normalize();
+	Vec2 SwapY() const;
+	float Normalize(float d=1.0f);
     union {
         float width;
         float inner;
@@ -62,6 +67,9 @@ inline Vec2 operator - (const Vec2& a, const Vec2& b) {
 inline Vec2 operator * (float s, const Vec2& a) {
 	return Vec2(s * a.x, s * a.y);
 }
+inline Vec2 operator * (const Vec2& a,float s) {
+	return Vec2(s * a.x, s * a.y);
+}
 inline Vec2 operator / (const Vec2& a,float s) {
 	return Vec2(a.x/s, a.y/s);
 }
@@ -80,6 +88,10 @@ template<typename T>
 T vend(vector<T>vec,int n=0){
 	return vec[vec.size()-1-n];
 }
-
-float get_angle(Vec2 vec);
-float to_deg(float rad);
+float cosr(float v);
+float sinr(float v);
+float get_angle_v(Vec2 vec);
+void rotate_v(Vec2 &v,float angle);
+void rotate_v(Vec2 n,Vec2 &v,float angle);
+Vec2 bis(Vec2 v1,Vec2 v2,float length);
+float delta_angle(float a1,float a2);
