@@ -136,6 +136,14 @@ struct Object {
     float get_angle() const;
     void rotate(float angle);
     bool point_in(Vec2) const;
+    bool rect_in(Rect4) const;
+
+    bool selected;
+
+    Vec2 get_position() const;
+    void set_position(Vec2);
+    void move(Vec2);
+
 };
 
 
@@ -168,6 +176,13 @@ struct Board {
 
     void load(FILE *f);
     void save(FILE *f);
+
+    Object &first_selected();
+    const Object &first_selected()const;
+
+    Vec2 to_grid(Vec2 v,bool shift,bool ctrl);
+    void select(Object &o);
+    void select(Rect4 r);
 };
 
 

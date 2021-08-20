@@ -82,7 +82,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
             panel_colors->Disable();
 
         wxBoxSizer *BoxSizer9 = new wxBoxSizer(wxVERTICAL);
-        const int color_ids[]= {0,7,1,8,2,9,3,-1,4,10,5,11,6};
+        const int color_ids[]= {0,7,1,8,2,9,3,10,4,11,5,12,6,13};
         for(int q=0; q<3; q++)
             colors[q]=s.colors[q];
         const char* color_names[]= {
@@ -93,14 +93,15 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
             _("C2 (Copper-Bottom)"),
             _("Grid-dots"),
             _("S2 (Silkscreen-Bottom)"),
-            nullptr,
-            _("I1 (Copper-Inner 1)"),
             _("Connections"),
-            _("I2 (Copper-Inner 2)"),
+            _("I1 (Copper-Inner 1)"),
             _("Via"),
-            _("O (Outline)")
+            _("I2 (Copper-Inner 2)"),
+            _("Selected object"),
+            _("O (Outline)"),
+            _("Selection zone")
         };
-        wxFlexGridSizer *FlexGridSizer1 = new wxFlexGridSizer(7, 4,0,0);
+        wxFlexGridSizer *FlexGridSizer1 = new wxFlexGridSizer(7,4,0,0);
 
 
         auto color_cb=[&](wxCommandEvent& event) {
@@ -109,18 +110,13 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
             GetColorScheme(colors[selected-1]);
         };
 
-        for(int q=0; q<13; q++) {
-            if(color_names[q]) {
-                c_colors[color_ids[q]]=new wxColourPickerCtrl(panel_colors,wxID_ANY);
-                c_colors[color_ids[q]]->Bind(wxEVT_COLOURPICKER_CHANGED,color_cb);
-                FlexGridSizer1->Add(c_colors[color_ids[q]],1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(
-                    new wxStaticText(panel_colors, wxID_ANY, color_names[q]),
-                    1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-            } else {
-                for(int q=0; q<2; q++)
-                    FlexGridSizer1->Add(-1,-1,1, wxEXPAND, 5);
-            }
+        for(int q=0; q<14; q++) {
+			c_colors[color_ids[q]]=new wxColourPickerCtrl(panel_colors,wxID_ANY);
+			c_colors[color_ids[q]]->Bind(wxEVT_COLOURPICKER_CHANGED,color_cb);
+			FlexGridSizer1->Add(c_colors[color_ids[q]],1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			FlexGridSizer1->Add(
+				new wxStaticText(panel_colors, wxID_ANY, color_names[q]),
+				1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
         }
         BoxSizer9->Add(FlexGridSizer1, 0, wxEXPAND, 5);
         wxButton *reset=new wxButton(panel_colors, wxID_ANY, _("Reset scheme to default"));
@@ -503,11 +499,11 @@ void SettingsDialog::Get(Settings &s) {
     s.autosave_timer=autosave_timer->GetValue();
 }
 void SettingsDialog::SetColorScheme(const ColorScheme c) {
-    for(int q=0; q<12; q++)
+    for(int q=0; q<14; q++)
         c_colors[q]->SetColour(c.colors[q]);
 }
 
 void SettingsDialog::GetColorScheme(ColorScheme &c) {
-    for(int q=0; q<12; q++)
+    for(int q=0; q<14; q++)
         c.colors[q]=c_colors[q]->GetColour();
 }

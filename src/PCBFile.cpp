@@ -1,6 +1,7 @@
 #include "PCBFile.h"
 #include <string.h>
 #include <assert.h>
+#include <cfloat>
 
 void PCBFile::AddBoard(Board b) {
     boards.push_back(b);
@@ -115,6 +116,7 @@ void Object::load(FILE *file,bool text_child) {
         readv(file,poly_points[q].x);
         readv(file,poly_points[q].y);
     }
+    selected=false;
 }
 void Object::save(FILE *file,bool text_child) {
     writev(file,type);
@@ -211,7 +213,6 @@ void Board::load(FILE* file) {
     readv(file,obj_count);
     objects.resize(obj_count);
 
-    vector<int32_t>con;
     for(uint32_t q=0; q<obj_count; q++)
         objects[q].load(file);
     for(uint32_t q=0; q<objects.size(); q++) {
@@ -337,6 +338,71 @@ bool Object::point_in(Vec2 point) const {
         }
         return c;
     }
+}
+bool Object::rect_in(Rect4 r) const {
+    if(type==OBJ_THT_PAD && tht_shape%3==1) {
+		return intersect_circle_rect(r,pos,size.outer);
+        //return (point-pos).Length()<=size.outer;
+    }
+}
+Vec2 Object::get_position() const{
+	if(type==OBJ_THT_PAD||type==OBJ_CIRCLE||type==OBJ_SMD_PAD)
+		return pos;
+	else if(type==OBJ_POLY){
+		Vec2 minv(FLT_MAX,FLT_MAX);
+		Vec2 maxv(-FLT_MAX,-FLT_MAX);
+		for(const Vec2 &v : poly_points){
+			minv.x=min(minv.x,v.x);
+			minv.y=min(minv.y,v.y);
+			maxv.x=max(maxv.x,v.x);
+			maxv.y=max(maxv.y,v.y);
+		}
+		Vec2 pos=(minv+maxv)/2.0f;
+		return pos;
+	}
+}
+void Object::move(Vec2 d){
+	if(type==OBJ_THT_PAD||type==OBJ_CIRCLE||type==OBJ_SMD_PAD)
+		pos+=d;
+	for(Vec2 &v : poly_points)
+		v+=d;
+}
+void Object::set_position(Vec2 p){
+	if(type==OBJ_THT_PAD||type==OBJ_CIRCLE||type==OBJ_SMD_PAD)
+		pos=p;
+	else if(type==OBJ_POLY||type==OBJ_LINE)
+		move(p-get_position());
+}
+Object &Board::first_selected(){
+	for(Object &o : objects)
+		if(o.selected)
+			return o;
+}
+const Object &Board::first_selected() const{
+	for(const Object &o : objects)
+		if(o.selected)
+			return o;
+}
+Vec2 Board::to_grid(Vec2 v,bool shift,bool ctrl){
+	if(ctrl)return v;
+	double grid=active_grid_val;
+	if(shift)grid/=2.0;
+	return Vec2(std::round(v.x/grid)*grid,
+				std::round(v.y/grid)*grid);
+}
+void Board::select(Object &o1){
+	o1.selected=true;
+	for(Object &o2 : objects)
+		for(uint32_t group2 : o2.groups)
+			for(uint32_t group1 : o1.groups)
+				if(group1==group2)
+					o2.selected=true;
+}
+void Board::select(Rect4 rect){
+	rect.Normalize();
+	for(Object &o : objects)
+		if(o.rect_in(rect))
+			select(o);
 }
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);

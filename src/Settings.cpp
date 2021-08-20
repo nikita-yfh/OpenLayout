@@ -38,6 +38,8 @@ void ColorScheme::reset() {
     colors[COLOR_DOTS]		= Color(170,170,170);
     colors[COLOR_CON]		= Color(215,215,215);
     colors[COLOR_VIA]		= Color(81, 227,253);
+    colors[COLOR_SELO]		= Color(255,170,255);
+    colors[COLOR_SELR]		= Color(0,	255,255);
 }
 Settings::Settings() {
     SetDefault();

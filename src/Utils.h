@@ -19,6 +19,19 @@ static string to_str(T value) {
 string get_grid_str(float grid);
 
 struct Vec2;
+struct Rect4{
+    Rect4() {}
+    Rect4(float xp1,float yp1,float xp2,float yp2);
+    Rect4(Vec2 v1,Vec2 v2);
+	float x1;
+	float y1;
+	float x2;
+	float y2;
+	void Normalize();
+	void SetP1(Vec2 p);
+	void SetP2(Vec2 p);
+};
+
 struct Vec2i {
     Vec2i() {}
     Vec2i(Vec2 v);
@@ -97,3 +110,5 @@ Vec2 bis(Vec2 v1,Vec2 v2,float length);
 float delta_angle(float a1,float a2);
 float deg(float v);
 float rad(float v);
+bool intersect_circle_rect(Rect4 rect, Vec2 c, float r);
+bool intersect_rect_rect(Rect4 r1,Rect4 r2);

@@ -45,6 +45,9 @@ enum {
 	COLOR_DOTS,	// Grid dots
     COLOR_CON,	// Connections
     COLOR_VIA,	// Metallization
+
+    COLOR_SELO,	// Selected object
+	COLOR_SELR,	// Rect of selection
     COLOR_COUNT
 };
 

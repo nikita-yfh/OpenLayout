@@ -14,6 +14,35 @@ string get_grid_str(float grid) {
         sprintf(mm,"%g %s",grid,"mm");
     return mm;
 }
+Rect4::Rect4(float xp1,float yp1,float xp2,float yp2){
+	x1=xp1;
+	x2=xp2;
+	y1=yp1;
+	y2=yp2;
+}
+Rect4::Rect4(Vec2 v1,Vec2 v2){
+	x1=v1.x;
+	x2=v2.x;
+	y1=v1.y;
+	y2=v2.y;
+}
+void Rect4::Normalize(){
+	*this=Rect4(
+		min(x1,x2),
+		min(y1,y2),
+		max(x1,x2),
+		max(y1,y2)
+	);
+
+}
+void Rect4::SetP1(Vec2 p){
+	x1=p.x;
+	y1=p.y;
+}
+void Rect4::SetP2(Vec2 p){
+	x2=p.x;
+	y2=p.y;
+}
 float Vec2::Normalize(float d) {
     float length = Length();
     if (length < __FLT_MIN__)
@@ -133,4 +162,25 @@ float delta_angle(float a1,float a2) {
     if(a2>a1)
         return a2-a1;
     return 360000.0f-a1+a2;
+}
+bool intersect_circle_rect(Rect4 rect, Vec2 c, float r) {
+    if(intersect_rect_rect(rect,Rect4(c-Vec2(r,r),c+Vec2(r,r))))
+		return true;
+
+	const Vec2 points[]={
+		Vec2(rect.x1,rect.y1),
+		Vec2(rect.x1,rect.y2),
+		Vec2(rect.x2,rect.y2),
+		Vec2(rect.x2,rect.y1)
+	};
+	for(const Vec2 &p : points){
+		if((p.x-c.x)*(p.x-c.x) + (p.y-c.y)*(p.y-c.y) <= r*r)
+			return true;
+	}
+	return false;
+
+}
+bool intersect_rect_rect(Rect4 r1,Rect4 r2){
+	return(r1.x2>r2.x1 && r1.y2>r2.y1&&
+		r1.x1<r2.x2 && r1.y1<r2.y2);
 }

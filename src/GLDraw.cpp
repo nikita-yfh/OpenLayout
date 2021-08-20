@@ -1,5 +1,9 @@
 #include "GLDraw.h"
 
+#ifndef GL_MULTISAMPLE
+#define GL_MULTISAMPLE  0x809D
+#endif
+
 GLCanvas::GLCanvas(wxWindow *parent)
 		:wxGLCanvas(parent, wxID_ANY, nullptr,  wxDefaultPosition, wxDefaultSize, 0){
 	Bind(wxEVT_PAINT,&GLCanvas::Draw,this);
@@ -8,6 +12,8 @@ GLCanvas::GLCanvas(wxWindow *parent)
 	Bind(wxEVT_LEFT_DOWN,&GLCanvas::OnLeftDown,this);
 	Bind(wxEVT_MOTION,&GLCanvas::OnMouseMotion,this);
 	Bind(wxEVT_LEFT_UP,&GLCanvas::OnLeftUp,this);
+	Bind(wxEVT_KEY_DOWN,&GLCanvas::OnKey,this);
+	Bind(wxEVT_KEY_UP,&GLCanvas::OnKey,this);
 
 	dragscroll_timer.Bind(wxEVT_TIMER, &GLCanvas::OnDragScroll, this);
 	dragscroll_timer.Stop();
@@ -49,7 +55,9 @@ void GLCanvas::SetDrillingsColor(){
 	}
 }
 void GLCanvas::DrawGrid(const Board &board){
-	if(board.active_grid_val*board.zoom<=6)return;
+	double grid=board.active_grid_val;
+	if(shift && selection==SEL_OBJECT)grid/=2.0;
+	if(grid<=6)return;
 	int subgrids_count=0;
 	switch(s.sub_grid){
 		case SUBGRID_2:subgrids_count=2;break;
@@ -57,6 +65,7 @@ void GLCanvas::DrawGrid(const Board &board){
 		case SUBGRID_5:subgrids_count=5;break;
 		case SUBGRID_10:subgrids_count=10;break;
 	}
+	if(shift && selection==SEL_OBJECT)subgrids_count*=2;
 	auto draw_line=[=](int n,float x1,float y1,float x2,float y2){
 		glLineWidth((n%subgrids_count==0)?2:1);
 		glBegin(GL_LINES);
@@ -66,16 +75,16 @@ void GLCanvas::DrawGrid(const Board &board){
 	};
 	SetColor(COLOR_LINES);
 	int n=0;
-	for(double x=board.anchor.x;x<board.size.width;x+=board.active_grid_val)
+	for(double x=board.anchor.x;x<board.size.width;x+=grid)
 		draw_line(n++,x,0,x,board.size.height);
 	n=0;
-	for(double y=-board.anchor.y;y<board.size.height;y+=board.active_grid_val)
+	for(double y=-board.anchor.y;y<board.size.height;y+=grid)
 		draw_line(n++,0,y,board.size.width,y);
 	n=0;
-	for(double x=board.anchor.x;x>=0.0;x-=board.active_grid_val)
+	for(double x=board.anchor.x;x>=0.0;x-=grid)
 		draw_line(n++,x,0,x,board.size.height);
 	n=0;
-	for(double y=-board.anchor.y;y>=0.0;y-=board.active_grid_val)
+	for(double y=-board.anchor.y;y>=0.0;y-=grid)
 		draw_line(n++,0,y,board.size.width,y);
 
 }
@@ -272,7 +281,7 @@ void GLCanvas::Draw(wxPaintEvent&){
 			}
 		}
 	}
-	//glDisable(GL_MULTISAMPLE);
+	glDisable(GL_MULTISAMPLE);
 	DrawGrid(board);
 	glEnable(GL_MULTISAMPLE);
 
@@ -294,13 +303,19 @@ void GLCanvas::Draw(wxPaintEvent&){
 	for(int q=0;q<7;q++)
 		for(Object &o : file.GetSelectedBoard().objects)
 			if(!o.cutoff && o.layer==layers[n][q] && !o.can_connect()){
-				SetLayerColor(o);
+				if(o.selected)
+					SetColor(COLOR_SELO);
+				else
+					SetLayerColor(o);
 				DrawObject(o,0.0f);
 			}
 	for(int q=0;q<7;q++)//pads are drawing after other objects
 		for(Object &o : file.GetSelectedBoard().objects)
 			if(!o.cutoff && o.layer==layers[n][q] && o.can_connect()){
-				SetLayerColor(o);
+				if(o.selected)
+					SetColor(COLOR_SELO);
+				else
+					SetLayerColor(o);
 				DrawPad(o,0.0f);
 			}
 	for(Object &o : file.GetSelectedBoard().objects)//draw drillings
@@ -311,18 +326,17 @@ void GLCanvas::Draw(wxPaintEvent&){
 
 	DrawConnections(board);
 
-	if(selection){
+	if(selection==SEL_RECT){
 		glDisable(GL_MULTISAMPLE);
 		glEnable(GL_LINE_STIPPLE);
-		glLineWidth (1);
+		glLineWidth (2);
 		glLineStipple(1, 0x0F0F);
-		glColor4f(0.0f,1.0f,1.0f,1.0f);
+		SetColor(COLOR_SELR);
 		glBegin(GL_LINE_LOOP);
-			printf("%g %g %g %g\n",sel1.x,sel1.y,sel2.x,sel2.y);
-			glVertex2f(sel1.x,-sel1.y);
-			glVertex2f(sel2.x,-sel1.y);
-			glVertex2f(sel2.x,-sel2.y);
-			glVertex2f(sel1.x,-sel2.y);
+			glVertex2f(sel_rect.x1,-sel_rect.y1);
+			glVertex2f(sel_rect.x1,-sel_rect.y2);
+			glVertex2f(sel_rect.x2,-sel_rect.y2);
+			glVertex2f(sel_rect.x2,-sel_rect.y1);
 		glEnd();
 		glDisable(GL_LINE_STIPPLE);
 		glEnable(GL_MULTISAMPLE);
@@ -350,26 +364,56 @@ void GLCanvas::OnMouseWheel(wxMouseEvent&e){ //zooming canvas
 		board.zoom=0.0001;
 
 	board.camera=((mouse+board.camera)/zoom_old*board.zoom)-mouse;
-
+	StabilizeCamera();
 	Refresh();
+	e.Skip();
 }
 void GLCanvas::OnMiddleDown(wxMouseEvent&e){
 	clickboardpos=file.GetSelectedBoard().camera;
 	clickmousepos=GetMousePos(e);
+	e.Skip();
 }
 void GLCanvas::OnLeftDown(wxMouseEvent&e){
-	selection=true;
-	clickmousepos=GetMousePos(e);
-	sel1=sel2=GetPos(clickmousepos);
+    Board &board=file.GetSelectedBoard();
+	Vec2 mouse=GetMousePos(e);
+	Vec2 board_pos=GetPos(mouse);
+	Object *firstsel=nullptr;
+
+	for(Object &o : board.objects)
+		if(o.point_in(board_pos))
+			firstsel=&o;
+	if((!firstsel || !firstsel->selected) && !shift)
+		for(Object &o : board.objects)
+			o.selected=false;
+
+	if(firstsel){
+		clickboardpos=firstsel->get_position();
+		board.select(*firstsel);
+		selection=SEL_OBJECT;
+	}
+	if(selection!=SEL_OBJECT){
+		sel_rect.SetP1(board_pos);
+		sel_rect.SetP2(board_pos);
+		selection=SEL_RECT;
+	}
+	clickmousepos=mouse;
 	dragscroll_timer.Start(5);
+	Refresh();
+	e.Skip();
 }
 void GLCanvas::OnLeftUp(wxMouseEvent&e){
-	selection=false;
+    Board &board=file.GetSelectedBoard();
+
+	if(selection==SEL_RECT)
+		board.select(sel_rect);
+
+	selection=SEL_NONE;
 	Refresh();
 	dragscroll_timer.Stop();
+	e.Skip();
 }
 void GLCanvas::OnDragScroll(wxTimerEvent&e){
-	if(selection){
+	if(selection!=SEL_NONE){
 		Board &board=file.GetSelectedBoard();
 		Vec2i wsize;
 		GetSize(&wsize.width,&wsize.height);
@@ -377,9 +421,10 @@ void GLCanvas::OnDragScroll(wxTimerEvent&e){
 		if(clickmousepos.y<0)board.camera.y-=10;
 		if(clickmousepos.x>wsize.x)board.camera.x+=10;
 		if(clickmousepos.y>wsize.y)board.camera.y+=10;
-		sel2=GetPos(clickmousepos);
+		sel_rect.SetP2(GetPos(clickmousepos));
 		Refresh();
 	}
+	e.Skip();
 }
 void GLCanvas::OnMouseMotion(wxMouseEvent&e){
     Board &board=file.GetSelectedBoard();
@@ -387,11 +432,24 @@ void GLCanvas::OnMouseMotion(wxMouseEvent&e){
 	Vec2 mouse=GetMousePos(e);
 	if(e.MiddleIsDown()){
 		board.camera=clickboardpos+(clickmousepos-mouse);
-	}else if(selection && e.LeftIsDown()){
-		clickmousepos=mouse;
-		sel2=GetPos(mouse);
+		StabilizeCamera();
+	}else if(e.LeftIsDown()){
+		if(selection==SEL_RECT){
+			clickmousepos=mouse;
+			sel_rect.SetP2(GetPos(mouse));
+		}else if(selection==SEL_OBJECT){
+			board.first_selected().set_position(clickboardpos+board.to_grid(GetPos(mouse)-clickboardpos,shift,ctrl));
+		}
 	}else refresh=false;
 	if(refresh)Refresh();
+	e.Skip();
+}
+void GLCanvas::OnKey(wxKeyEvent &e){
+	ctrl=e.ControlDown();
+	shift=e.ShiftDown();
+	if(selection==SEL_OBJECT)
+		Refresh();
+	e.Skip();
 }
 Vec2 GLCanvas::GetPos(Vec2 mouse){
     Board &board=file.GetSelectedBoard();
@@ -405,5 +463,15 @@ Vec2 GLCanvas::GetMousePos(wxMouseEvent&e){
 }
 void GLCanvas::StabilizeCamera(){
     Board &board=file.GetSelectedBoard();
+	Vec2i wsize;
+	GetSize(&wsize.width,&wsize.height);
+	if(board.camera.x<-wsize.width+100)
+		board.camera.x=-wsize.width+100;
+	if(board.camera.y<-wsize.height+100)
+		board.camera.y=-wsize.height+100;
+	if(board.camera.x>board.zoom*board.size.width-100)
+		board.camera.x=board.zoom*board.size.width-100;
+	if(board.camera.y>board.zoom*board.size.height-100)
+		board.camera.y=board.zoom*board.size.height-100;
 
 }

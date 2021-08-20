@@ -58,6 +58,7 @@ OpenLayoutFrame::OpenLayoutFrame()
         	content->Add(canvas,1,wxEXPAND|wxALL,5);
         }
         all_box->Add(content,1,wxEXPAND);
+        wxBoxSizer *bottom_panel=new wxBoxSizer(wxHORIZONTAL);
     }
     SetSizer(all_box);
     SetAutoLayout(true);
