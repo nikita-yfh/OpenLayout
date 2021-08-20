@@ -135,6 +135,7 @@ struct Object {
     uint8_t get_end_style() const; //return style for line end
     float get_angle() const;
     void rotate(float angle);
+    bool point_in(Vec2) const;
 };
 
 

@@ -130,5 +130,7 @@ struct Settings {
     float rotation_angle;
 
     uint8_t circle_quality;
+
+    uint8_t selected_tool;
 };
 extern Settings s;

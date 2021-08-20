@@ -35,13 +35,13 @@ void readstr(FILE *file,string &sstr) {
     sstr=str;
     delete str;
 }
-void writestr(FILE *file,size_t size,const string&sstr){
-	writev(file,(uint8_t)sstr.size());
-	fwrite(sstr.c_str(),size,1,file);
+void writestr(FILE *file,size_t size,const string&sstr) {
+    writev(file,(uint8_t)sstr.size());
+    fwrite(sstr.c_str(),size,1,file);
 }
-void writestr(FILE *file,const string&sstr){
-	writev(file,(uint32_t)sstr.size());
-	fwrite(sstr.c_str(),sstr.size(),1,file);
+void writestr(FILE *file,const string&sstr) {
+    writev(file,(uint32_t)sstr.size());
+    fwrite(sstr.c_str(),sstr.size(),1,file);
 }
 void Component::load(FILE *file) {
     readv(file,offset.x);
@@ -214,9 +214,9 @@ void Board::load(FILE* file) {
     vector<int32_t>con;
     for(uint32_t q=0; q<obj_count; q++)
         objects[q].load(file);
-    for(uint32_t q=0;q<objects.size();q++){
+    for(uint32_t q=0; q<objects.size(); q++) {
         if(objects[q].type==OBJ_THT_PAD ||objects[q].type == OBJ_SMD_PAD)
-			objects[q].load_con(file);
+            objects[q].load_con(file);
     }
 }
 
@@ -227,7 +227,7 @@ void Board::save(FILE* file) {
 
     writev(file,size.width);
     writev(file,size.height);
-	writev(file,ground_pane,7);
+    writev(file,ground_pane,7);
 
     writev(file,active_grid_val);
     writev(file,zoom);
@@ -261,9 +261,9 @@ void Board::save(FILE* file) {
 
     for(uint32_t q=0; q<objects.size(); q++)
         objects[q].save(file);
-    for(uint32_t q=0;q<objects.size();q++){
+    for(uint32_t q=0; q<objects.size(); q++) {
         if(objects[q].type==OBJ_THT_PAD ||objects[q].type == OBJ_SMD_PAD)
-			objects[q].save_con(file);
+            objects[q].save_con(file);
     }
 }
 void Object::load_con(FILE *file) {
@@ -278,36 +278,36 @@ void Object::save_con(FILE *file) {
     for(uint32_t q=0; q<connections.size(); q++)
         writev(file,connections[q]);
 }
-bool Object::is_copper() const{
-	return layer==LAY_C1 || layer==LAY_C2 || layer==LAY_I1 || layer==LAY_I2;
+bool Object::is_copper() const {
+    return layer==LAY_C1 || layer==LAY_C2 || layer==LAY_I1 || layer==LAY_I2;
 }
-bool Object::can_connect() const{
-	return type==OBJ_THT_PAD || type==OBJ_SMD_PAD;
+bool Object::can_connect() const {
+    return type==OBJ_THT_PAD || type==OBJ_SMD_PAD;
 }
-uint8_t Object::get_begin_style() const{
-	return line_ending%2;
+uint8_t Object::get_begin_style() const {
+    return line_ending%2;
 }
-uint8_t Object::get_end_style() const{
-	return line_ending>1;
+uint8_t Object::get_end_style() const {
+    return line_ending>1;
 }
-float Object::get_angle() const{
-	if(type==OBJ_THT_PAD && tht_shape%3==1){
-		if(poly_points.size()==2){
-			Vec2 v=pos-poly_points[1];
-			return get_angle_v(v);
-		}
-	}else if(type==OBJ_THT_PAD && tht_shape%3==2){
-		if(poly_points.size()==8){
-			Vec2 v=pos-(poly_points[3]+poly_points[4])/2.0f;
-			return get_angle_v(v);
-		}
-	}else if((type==OBJ_THT_PAD && tht_shape%3==0) || type==OBJ_SMD_PAD){
-		if(poly_points.size()==4){
-			Vec2 v=pos-(poly_points[1]+poly_points[2])/2.0f;
-			return get_angle_v(v);
-		}
-	}
-	return 0.0f;
+float Object::get_angle() const {
+    if(type==OBJ_THT_PAD && tht_shape%3==1) {
+        if(poly_points.size()==2) {
+            Vec2 v=pos-poly_points[1];
+            return deg(get_angle_v(v));
+        }
+    } else if(type==OBJ_THT_PAD && tht_shape%3==2) {
+        if(poly_points.size()==8) {
+            Vec2 v=pos-(poly_points[3]+poly_points[4])/2.0f;
+            return deg(get_angle_v(v));
+        }
+    } else if((type==OBJ_THT_PAD && tht_shape%3==0) || type==OBJ_SMD_PAD) {
+        if(poly_points.size()==4) {
+            Vec2 v=pos-(poly_points[1]+poly_points[2])/2.0f;
+            return deg(get_angle_v(v));
+        }
+    }
+    return 0.0f;
 }
 /*void Object::set_pad_shape(uint8_t shape,float angle){
 	poly_points.clear();
@@ -316,12 +316,27 @@ float Object::get_angle() const{
 		poly_points.emplace_back()
 	}
 }*/
-void Object::rotate(float angle){
-	if(type==OBJ_THT_PAD){
-		for(Vec2 &v : poly_points){
-			rotate_v(pos,v,angle);
-		}
-	}
+void Object::rotate(float angle) {
+    if(type==OBJ_THT_PAD) {
+        for(Vec2 &v : poly_points) {
+            rotate_v(pos,v,angle);
+        }
+    }
+}
+bool Object::point_in(Vec2 point) const {
+    if(type==OBJ_THT_PAD && tht_shape%3==1) {
+        return (point-pos).Length()<=size.outer;
+    } else if((type==OBJ_THT_PAD && tht_shape%3!=1) || type==OBJ_SMD_PAD) {
+        bool c = false;
+        for (int i = 0, j = poly_points.size() - 1; i < poly_points.size(); j = i++) {
+            if ((((poly_points[i].y <= point.y) && (point.y < poly_points[j].y)) ||
+				((poly_points[j].y <= point.y) && (point.y < poly_points[i].y))) &&
+				(((poly_points[j].y - poly_points[i].y) != 0) &&
+				(point.x > ((poly_points[j].x - poly_points[i].x) * (point.y - poly_points[i].y) /
+				(poly_points[j].y - poly_points[i].y) + poly_points[i].x)))) c = !c;
+        }
+        return c;
+    }
 }
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);
@@ -331,9 +346,9 @@ void ProjectInfo::load(FILE *file) {
 }
 void ProjectInfo::save(FILE *file) {
     writestr(file,100,title);
-	writestr(file,100,author);
+    writestr(file,100,author);
     writestr(file,100,company);
-	writestr(file,comment);
+    writestr(file,comment);
 }
 
 int PCBFile::load(const char *filename) {
@@ -370,7 +385,7 @@ int PCBFile::save(const char *filename) {
     for(uint32_t q=0; q<boards.size(); q++)
         boards[q].save(file);
 
-	writev(file,active_board_tab);
+    writev(file,active_board_tab);
     info.save(file);
     fclose(file);
     return 0;
