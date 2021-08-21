@@ -21,6 +21,7 @@ set(SOURCES
 	src/InputGridDialog.cpp
 	src/Utils.cpp
 	src/GLDraw.cpp
+	src/LeftPanel.cpp
 )
 set(HEADERS
 	src/ScannedCopyDialog.h
@@ -37,17 +38,18 @@ set(HEADERS
 	src/SettingsDialog.h
 	src/InputGridDialog.h
 	src/Utils.h
+	src/LeftPanel.h
 	src/GLDraw.h
 )
-if(!WIN32)
-	add_custom_target(images ALL
-		COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
-		BYPRODUCTS images.h
-		COMMENT "Generating images.h file"
-	)
-else()
+if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)
+#else()
+	#add_custom_target(images ALL
+	#	COMMAND /bin/bash ${CMAKE_CURRENT_SOURCE_DIR}/genimages.sh ${CMAKE_CURRENT_SOURCE_DIR}/xpm
+	#	BYPRODUCTS images.h
+	#	COMMENT "Generating images.h file"
+	#)
 endif()
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
-add_dependencies(OpenLayout images)
+#add_dependencies(OpenLayout images)
 target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})
