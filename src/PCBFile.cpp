@@ -485,6 +485,11 @@ int32_t Board::get_free_group() const{
 		if(!ok)return group+1;
 	}
 }
+void Board::set_sel_layer(uint8_t layer){
+	for(Object &o : objects)
+		if(o.selected)
+			o.layer=layer;
+}
 void Board::group(){
 	int32_t free_group=get_free_group();
 	for(Object &o : objects)

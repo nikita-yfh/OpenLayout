@@ -30,11 +30,13 @@ private:
     void new_board(wxCommandEvent&);
     void group(wxCommandEvent&);
     void ungroup(wxCommandEvent&);
+    void set_sel_layer(wxCommandEvent&);
     void del(wxCommandEvent&);
     void show_scan_properties(wxCommandEvent&);
 
     void updateui_edit(wxUpdateUIEvent&);
     void updateui_group(wxUpdateUIEvent&);
     void updateui_ungroup(wxUpdateUIEvent&);
+    void updateui_multilayer(wxUpdateUIEvent&);
     wxDECLARE_EVENT_TABLE();
 };

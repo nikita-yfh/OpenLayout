@@ -186,6 +186,7 @@ struct Board {
     bool can_ungroup()const;
     void group();
     void ungroup();
+    void set_sel_layer(uint8_t layer);
     int32_t get_free_group() const;
     void set_default();
     void build_empty(Vec2i wsize,string name,Vec2i size);

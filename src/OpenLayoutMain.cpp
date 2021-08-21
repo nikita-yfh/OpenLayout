@@ -60,6 +60,14 @@ enum {
     ID_GROUP,
     ID_UNGROUP,
     ID_CHANGE_SIDE,
+    ID_CHANGE_LAYER,
+    ID_LAYER_C1,
+    ID_LAYER_S1,
+    ID_LAYER_C2,
+    ID_LAYER_S2,
+    ID_LAYER_I1,
+    ID_LAYER_I2,
+    ID_LAYER_O,
     ID_SNAP_GRID,
     ID_MASSIVE,
     ID_LIST_DRILLINGS,
@@ -101,6 +109,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
     EVT_MENU(ID_SCANNED_COPY, OpenLayoutFrame::show_scan_properties)
     EVT_MENU(ID_GROUP, OpenLayoutFrame::group)
     EVT_MENU(ID_UNGROUP, OpenLayoutFrame::ungroup)
+    EVT_MENU_RANGE(ID_LAYER_C1, ID_LAYER_O, OpenLayoutFrame::set_sel_layer)
     EVT_UPDATE_UI(wxID_COPY,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(wxID_CUT,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(wxID_DELETE,OpenLayoutFrame::updateui_edit)
@@ -112,6 +121,9 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
     EVT_UPDATE_UI(ID_SNAP_GRID,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(ID_GROUP,OpenLayoutFrame::updateui_group)
     EVT_UPDATE_UI(ID_UNGROUP,OpenLayoutFrame::updateui_ungroup)
+    EVT_UPDATE_UI_RANGE(ID_LAYER_C1,ID_LAYER_S2,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI_RANGE(ID_LAYER_I1,ID_LAYER_I2,OpenLayoutFrame::updateui_multilayer)
+    EVT_UPDATE_UI(ID_LAYER_O,OpenLayoutFrame::updateui_edit)
 wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame()
@@ -253,7 +265,18 @@ void OpenLayoutFrame::init_menu_bar() {
         menu->Append(ID_UNGROUP,_("Split gro&up\tCtrl+U"));
         menu->AppendSeparator();
         menu->Append(ID_CHANGE_SIDE,_("&Change board side\tCtrl+W"));
-        menu->Append(wxID_ANY,_("&Set to layer"));
+		{
+            //Functions->Set to layer
+            wxMenu *submenu = new wxMenu();
+            submenu->Append(ID_LAYER_C1,_("&C1"));
+            submenu->Append(ID_LAYER_S1,_("S&1"));
+            submenu->Append(ID_LAYER_C2,_("C&2"));
+            submenu->Append(ID_LAYER_S2,_("&S2"));
+            submenu->Append(ID_LAYER_I1,_("I1"));
+            submenu->Append(ID_LAYER_I2,_("&I2"));
+            submenu->Append(ID_LAYER_O, _("&O"));
+            menu->Append(ID_CHANGE_LAYER, _("&Set to layer"), submenu);
+        }
         menu->AppendSeparator();
         menu->Append(ID_SNAP_GRID,_("S&nap to grid"));
         menu->Append(ID_MASSIVE,_("&Tile / Arrange circular"));
@@ -364,6 +387,9 @@ void OpenLayoutFrame::updateui_group(wxUpdateUIEvent &e){
 void OpenLayoutFrame::updateui_ungroup(wxUpdateUIEvent &e){
 	e.Enable(file.GetSelectedBoard().can_ungroup());
 }
+void OpenLayoutFrame::updateui_multilayer(wxUpdateUIEvent &e){
+	e.Enable(file.GetSelectedBoard().is_selected() && file.GetSelectedBoard().is_multilayer);
+}
 
 void OpenLayoutFrame::group(wxCommandEvent &e){
 	file.GetSelectedBoard().group();
@@ -373,4 +399,8 @@ void OpenLayoutFrame::ungroup(wxCommandEvent &e){
 }
 void OpenLayoutFrame::del(wxCommandEvent &e){
 	file.GetSelectedBoard().ungroup();
+}
+void OpenLayoutFrame::set_sel_layer(wxCommandEvent &e){
+	int id=e.GetId()-ID_LAYER_C1;
+	file.GetSelectedBoard().set_sel_layer(id+1);
 }

@@ -88,6 +88,7 @@ void Canvas::OnDragScroll(wxTimerEvent&e){
 	e.Skip();
 }
 void Canvas::OnMouseMotion(wxMouseEvent&e){
+
     Board &board=file.GetSelectedBoard();
 	bool refresh=true;
 	Vec2 mouse=GetMousePos(e);
