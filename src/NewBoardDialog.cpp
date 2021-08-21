@@ -20,18 +20,6 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
     Create(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
     wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
     {
-        auto RecalcSize=[&](wxCommandEvent &e) {
-            border_size=border->GetValue();
-            if(type==BoardType::Round) {
-                size_w=size_h=diameter->GetValue();
-            } else {
-                size_w=width->GetValue();
-                size_h=height->GetValue();
-            }
-            all_width->SetLabel(to_str(size_w+border_size*2));
-            all_height->SetLabel(to_str(size_h+border_size*2));
-            Layout();
-        };
         wxBoxSizer *content_box = new wxBoxSizer(wxHORIZONTAL);
         {
             wxFlexGridSizer *buttons=new wxFlexGridSizer(3, 2, 0, 0);
@@ -72,12 +60,12 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
 
                 box->Add(new wxStaticText(panels[0],wxID_ANY, _("Width: ")), 0, CENTER, 5);
                 width=new wxSpinCtrlDouble(panels[0],wxID_ANY,"160", wxDefaultPosition, wxDefaultSize, 0, 1, 500, 0, 0.05);
-                width->Bind(wxEVT_SPINCTRLDOUBLE,RecalcSize);
+                width->Bind(wxEVT_SPINCTRLDOUBLE,&NewBoardDialog::_RecalcSize,this);
                 box->Add(width, 0, wxALL|wxEXPAND, 5);
                 box->Add(new wxStaticText(panels[0],wxID_ANY, _("mm")), 0, CENTER, 5);
                 box->Add(new wxStaticText(panels[0],wxID_ANY, _("Heigth: ")), 0, CENTER, 5);
                 height=new wxSpinCtrlDouble(panels[0], wxID_ANY, "100", wxDefaultPosition, wxDefaultSize, 0, 1, 500, 0, 0.05);
-                height->Bind(wxEVT_SPINCTRLDOUBLE,RecalcSize);
+                height->Bind(wxEVT_SPINCTRLDOUBLE,&NewBoardDialog::_RecalcSize,this);
                 box->Add(height, 0, wxALL|wxEXPAND, 5);
                 box->Add(new wxStaticText(panels[0],wxID_ANY, _("mm")), 0, CENTER, 5);
 
@@ -93,7 +81,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
 
                 box->Add(new wxStaticText(panels[1],wxID_ANY, _("Diameter: ")), 0, CENTER, 5);
                 diameter=new wxSpinCtrlDouble(panels[1], wxID_ANY, "100", wxDefaultPosition, wxDefaultSize, 0, 0, 500, 0, 0.05);
-                diameter->Bind(wxEVT_SPINCTRLDOUBLE,RecalcSize);
+                diameter->Bind(wxEVT_SPINCTRLDOUBLE,&NewBoardDialog::_RecalcSize,this);
                 box->Add(diameter, 0, wxALL|wxEXPAND, 5);
                 box->Add(new wxStaticText(panels[1],wxID_ANY, _("mm")), 0, CENTER, 5);
 
@@ -109,7 +97,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
 
                 box->Add(new wxStaticText(panels[2],wxID_ANY, _("Distance: ")), 0, CENTER, 5);
                 border=new wxSpinCtrlDouble(panels[2], wxID_ANY, "20", wxDefaultPosition, wxDefaultSize, 0, 0, 500, 0, 0.05);
-                border->Bind(wxEVT_SPINCTRLDOUBLE,RecalcSize);
+                border->Bind(wxEVT_SPINCTRLDOUBLE,&NewBoardDialog::_RecalcSize,this);
                 box->Add(border, 0, wxALL|wxEXPAND, 5);
                 box->Add(new wxStaticText(panels[2],wxID_ANY, _("mm")), 0, CENTER, 5);
 
@@ -148,7 +136,11 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
             content_box->Add(all_panels,1,wxALL|wxEXPAND,5);
         }
         all_box->Add(content_box,1,wxALL|wxEXPAND,5);
-
+        size_w=160;
+        size_h=100;
+        border_size=20;
+        strcpy(name,"New board");
+        type=BoardType::Empty;
     }
 
 
@@ -189,10 +181,38 @@ void NewBoardDialog::SetType(const BoardType &t) {
     Layout();
 }
 Board NewBoardDialog::build() {
-    return Board();
+	RecalcSize();
+	Board board;
+	switch(type) {
+	case BoardType::Empty:
+		board.build_empty(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000));
+		break;
+	case BoardType::Round:
+		board.build_round(Vec2(1000,500),name,size_h*10000,border_size*10000);
+		break;
+	case BoardType::Rectangle:
+		board.build_rectangle(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000),border_size*10000);
+		break;
+	}
+	return board;
 }
 bool NewBoardDialog::isValid() {
     if(type==BoardType::Empty)
         return size_w<5000000 && size_h<5000000;
     return border_size*2+size_w<5000000 && border_size*2+size_h<5000000;
+}
+void NewBoardDialog::RecalcSize(){
+	border_size=border->GetValue();
+	if(type==BoardType::Round) {
+		size_w=size_h=diameter->GetValue();
+	} else {
+		size_w=width->GetValue();
+		size_h=height->GetValue();
+	}
+	all_width->SetLabel(to_str(size_w+border_size*2));
+	all_height->SetLabel(to_str(size_h+border_size*2));
+	Layout();
+}
+void NewBoardDialog::_RecalcSize(wxCommandEvent&){
+	RecalcSize();
 }

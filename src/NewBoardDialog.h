@@ -20,15 +20,6 @@ class NewBoardDialog: public wxDialog {
 public:
     NewBoardDialog(wxWindow* parent);
 
-    uint32_t size_w;
-    uint32_t size_h;
-
-    uint32_t border_size;
-
-    char name[20];
-
-    BoardType type;
-
     Board build();
     bool isValid();
 
@@ -47,5 +38,16 @@ private:
 
     void SetType(const BoardType &b);
 
+    uint32_t size_w;
+    uint32_t size_h;
+
+    uint32_t border_size;
+
+    char name[20];
+
+    BoardType type;
+
+    void RecalcSize();
+    void _RecalcSize(wxCommandEvent &e);
 };
 

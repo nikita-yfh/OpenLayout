@@ -29,8 +29,15 @@ struct ImageConfig {
     uint32_t dpi;
     uint8_t show;
     Vec2i pos;
+    void set_default();
 };
 
+enum{
+	POS_LEFT_UP,
+	POS_LEFT_BOTTOM,
+	POS_RIGHT_UP,
+	POS_RIGHT_BOTTOM
+};
 
 
 enum {
@@ -71,6 +78,7 @@ struct Component {
 
 
 struct Object {
+	Object();
     uint8_t type;
     Vec2 pos;
     Vec2 size;
@@ -149,29 +157,18 @@ struct Object {
 
 struct Board {
     string name;
-
     uint8_t __pad0[4];
-
     Vec2i size;
-
     uint8_t ground_pane[7];
     double active_grid_val;
-
     double zoom;
     Vec2i camera;
-
     uint32_t active_layer;
-
     uint8_t layer_visible[7];
-
     ImageConfig images[2];
-
     uint8_t __pad1[8];
-
     Vec2i anchor;
-
     uint8_t is_multilayer;
-
     vector<Object>objects;
 
     void load(FILE *f);
@@ -190,6 +187,12 @@ struct Board {
     void group();
     void ungroup();
     int32_t get_free_group() const;
+    void set_default();
+    void build_empty(Vec2i wsize,string name,Vec2i size);
+    void build_rectangle(Vec2i wsize,string name,Vec2i size,int distance);
+    void build_round(Vec2i wsize,string name,int diameter,int distance);
+    void fit(Vec2i wsize);
+    void set_anchor(uint8_t pos,int border=0);
 };
 
 
@@ -214,6 +217,8 @@ struct PCBFile {
 
     int load(const char *filename);
     int save(const char *filename);
+
+    void set_default();
 };
 
 extern PCBFile file;

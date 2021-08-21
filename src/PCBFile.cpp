@@ -45,6 +45,12 @@ void writestr(FILE *file,const string&sstr) {
     writev(file,(uint32_t)sstr.size());
     fwrite(sstr.c_str(),sstr.size(),1,file);
 }
+void ImageConfig::set_default(){
+	path="";
+	dpi=600;
+	show=false;
+	pos=Vec2i(0,0);
+}
 void Component::load(FILE *file) {
     readv(file,offset.x);
     readv(file,offset.y);
@@ -171,7 +177,25 @@ void Object::save(FILE *file,bool text_child) {
     }
 }
 
-
+Object::Object(){
+	type=0;
+	pos=Vec2(0,0);
+	size=Vec2(0,0);
+	line_width=0;
+	layer=0;
+	tht_shape=0;
+	component_id=0;
+	start_angle=0;
+	fill=0;
+	ground_distance=0;
+	thermobarier=0;
+	flip_vertical=0;
+	cutoff=0;
+	thsize=0;
+	metalisation=0;
+	soldermask=0;
+	selected=false;
+}
 void Board::load(FILE* file) {
     readstr(file,30,name);
 
@@ -487,6 +511,83 @@ void Board::ungroup(){
 					break;
 				}
 
+}
+void Board::set_default(){
+	name="New board";
+	size=Vec2i(1600000,1000000);
+	for(int q=0;q<7;q++){
+		ground_pane[q]=0;
+		layer_visible[q]=1;
+	}
+	active_grid_val=12700;
+	camera=Vec2i(0,0);
+	zoom=0.001;
+	active_layer=LAY_C2;
+	for(int q=0;q<2;q++)
+		images[q].set_default();
+	set_anchor(POS_LEFT_BOTTOM);
+	is_multilayer=false;
+	objects.clear();
+}
+void Board::build_empty(Vec2i wsize,string n,Vec2i s){
+	set_default();
+	size=s;
+	name=n;
+	set_anchor(POS_LEFT_BOTTOM);
+	fit(wsize);
+}
+void Board::build_round(Vec2i wsize,string n,int diameter,int distance){
+	set_default();
+	size=Vec2i(diameter+distance*2,diameter+distance*2);
+	name=n;
+	set_anchor(POS_LEFT_BOTTOM,distance);
+	fit(wsize);
+	Object object;
+	object.type=OBJ_CIRCLE;
+	object.layer=LAY_O;
+	object.pos=Vec2(diameter/2+distance,-diameter/2-distance);
+	object.size.inner=object.size.outer=diameter/2;
+	objects.push_back(object);
+}
+void Board::build_rectangle(Vec2i wsize,string n,Vec2i s,int distance){
+	set_default();
+	size=Vec2i(s.width+distance*2,s.height+distance*2);
+	name=n;
+	set_anchor(POS_LEFT_BOTTOM,distance);
+	fit(wsize);
+	Object object;
+	object.type=OBJ_LINE;
+	object.layer=LAY_O;
+	object.line_width=0;
+	object.poly_points={
+		Vec2(distance,-distance),
+		Vec2(distance,-distance-s.height),
+		Vec2(distance+s.width,-distance-s.height),
+		Vec2(distance+s.width,-distance),
+		Vec2(distance,-distance),
+	};
+	objects.push_back(object);
+}
+void Board::fit(Vec2i wsize){
+	camera=Vec2i(0,0);
+	zoom=double(wsize.width)/size.width;
+	zoom=min(zoom,double(wsize.width)/size.width);
+}
+void Board::set_anchor(uint8_t pos,int border){
+	switch(pos){
+	case POS_LEFT_UP:
+		anchor=Vec2i(border,-border);
+		break;
+	case POS_LEFT_BOTTOM:
+		anchor=Vec2i(border,-size.height+border);
+		break;
+	case POS_RIGHT_UP:
+		anchor=Vec2i(size.width-border,-border);
+		break;
+	case POS_RIGHT_BOTTOM:
+		anchor=Vec2i(size.width-border,-size.height+border);
+		break;
+	}
 }
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);

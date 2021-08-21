@@ -57,6 +57,10 @@ Vec2i::Vec2i(Vec2 v) {
     x=v.x;
     y=v.y;
 }
+Vec2i::Vec2i(int32_t xp,int32_t yp) {
+    x=xp;
+    y=yp;
+}
 Vec2::Vec2(float v1,float v2) {
     x=v1;
     y=v2;
@@ -138,25 +142,6 @@ void rotate_v(Vec2 n,Vec2 &v,float angle) {
     Vec2 p=v-n;
     rotate_v(p,angle);
     v=p+n;
-}
-Vec2 bis(Vec2 v1,Vec2 v2,float length) {
-    v1.Normalize();
-    /*if(v1.Length()==0) {
-    	v2=v2.Skew();
-    	v2.Normalize();
-    	return length*v2;
-    }*/
-    v2.Normalize();
-    if(v1==-v2)
-        v1+=0.001*v1.Skew();
-    Vec2 sum=v1+v2;
-    sum.Normalize();
-    if(v1.x*v2.y-v1.y*v2.x<0)
-        sum=-sum;
-    float angle=get_angle_v(v1)-get_angle_v(v2)-M_PI;
-    sum*=abs(length/cos(angle/2));
-
-    return sum;
 }
 float delta_angle(float a1,float a2) {
     if(a2>a1)

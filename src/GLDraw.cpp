@@ -57,7 +57,7 @@ void GLCanvas::SetDrillingsColor(){
 void GLCanvas::DrawGrid(const Board &board){
 	double grid=board.active_grid_val;
 	if(shift && selection==SEL_OBJECT)grid/=2.0;
-	if(grid<=6)return;
+	if(grid*board.zoom<=6.0)return;
 	int subgrids_count=0;
 	switch(s.sub_grid){
 		case SUBGRID_2:subgrids_count=2;break;
@@ -86,7 +86,6 @@ void GLCanvas::DrawGrid(const Board &board){
 	n=0;
 	for(double y=-board.anchor.y;y>=0.0;y-=grid)
 		draw_line(n++,0,y,board.size.width,y);
-
 }
 void GLCanvas::DrawConnections(const Board &board){
 	glLineWidth(2);
@@ -107,16 +106,19 @@ void GLCanvas::DrawObject(const Object &o,float d){
 	switch(o.type){
 	case OBJ_LINE:{
 		uint8_t styles[2]={o.get_begin_style(),o.get_end_style()};
+		float width=o.line_width;
+		if(width==0)
+			width=1/file.GetSelectedBoard().zoom;
 		for(int q=0;q<o.poly_points.size()-1;q++){
 			const Vec2&p1=o.poly_points[q];
 			const Vec2&p2=o.poly_points[q+1];
-			DrawLine(p1,p2,o.line_width+d*2.0f,q==0&&styles[0]==END_SQUARE,
+			DrawLine(p1,p2,width+d*2.0f,q==0&&styles[0]==END_SQUARE,
 				q==o.poly_points.size()-2 &&styles[1]==END_SQUARE);
 			if(q>0 || styles[0]==END_ROUND)
-				DrawCircle(p1,o.line_width/2.0f+d);
+				DrawCircle(p1,width/2.0f+d);
 		}
 		if(styles[1]==END_ROUND)
-			DrawCircle(vend(o.poly_points),o.line_width/2.0f+d);
+			DrawCircle(vend(o.poly_points),width/2.0f+d);
 		}break;
 	case OBJ_CIRCLE:{
 		/* Triangle strip:
@@ -125,8 +127,12 @@ void GLCanvas::DrawObject(const Object &o,float d){
 			  1---3---5---7   ...
 		*/
 		float total_angle=delta_angle(o.start_angle,o.end_angle)/1000.0f;
-		float r=(o.size.inner+o.size.outer)/2.0f;
-		float width=o.size.outer-o.size.inner+d*2.0f;
+		float inner=o.size.inner;
+		float outer=o.size.outer;
+		float r=(inner+outer)/2.0f;
+		float width=outer-inner+d*2.0f;
+		if(inner==outer)
+			outer=inner+1.0/file.GetSelectedBoard().zoom; //always 1 px width
 		glPushMatrix();
 			glTranslatef(o.pos.x,-o.pos.y,0.0f);
 			glRotatef(360.0f-o.start_angle/1000.0f,0.0f,0.0f,1.0f);
@@ -138,13 +144,13 @@ void GLCanvas::DrawObject(const Object &o,float d){
 					glBegin(GL_TRIANGLE_STRIP);
 				for(float theta = 0; theta <= total_angle; theta+=(total_angle/s.circle_quality)) {
 					glVertex2f(
-						(o.size.outer+d) * cosr(-theta),
-						(o.size.outer+d) * sinr(-theta)
+						(outer+d) * cosr(-theta),
+						(outer+d) * sinr(-theta)
 					);
 					if(!o.fill)
 					glVertex2f(
-						(o.size.inner-d) * cosr(-theta),
-						(o.size.inner-d) * sinr(-theta)
+						(inner-d) * cosr(-theta),
+						(inner-d) * sinr(-theta)
 					);
 				}
 				if(o.fill)glVertex2f(r,0.0f);

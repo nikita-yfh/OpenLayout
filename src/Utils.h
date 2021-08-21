@@ -35,6 +35,7 @@ struct Rect4{
 struct Vec2i {
     Vec2i() {}
     Vec2i(Vec2 v);
+    Vec2i(int32_t xp,int32_t yp);
     union {
         int32_t width;
         int32_t x;
@@ -101,13 +102,13 @@ template<typename T>
 T vend(vector<T>vec,int n=0) {
     return vec[vec.size()-1-n];
 }
+float delta_angle(float a1,float a2);
 float cosr(float v);
 float sinr(float v);
 float get_angle_v(Vec2 vec);
 void rotate_v(Vec2 &v,float angle);
 void rotate_v(Vec2 n,Vec2 &v,float angle);
 Vec2 bis(Vec2 v1,Vec2 v2,float length);
-float delta_angle(float a1,float a2);
 float deg(float v);
 float rad(float v);
 bool intersect_circle_rect(Rect4 rect, Vec2 c, float r);
