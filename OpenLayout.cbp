@@ -100,10 +100,16 @@
 		<Unit filename="/home/nikita/c++/OpenLayout/src/AboutDialog.h">
 			<Option target="OpenLayout"/>
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/src/GLDraw.cpp">
+		<Unit filename="/home/nikita/c++/OpenLayout/src/Canvas.cpp">
 			<Option target="OpenLayout"/>
 		</Unit>
-		<Unit filename="/home/nikita/c++/OpenLayout/src/GLDraw.h">
+		<Unit filename="/home/nikita/c++/OpenLayout/src/Canvas.h">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GLCanvas.cpp">
+			<Option target="OpenLayout"/>
+		</Unit>
+		<Unit filename="/home/nikita/c++/OpenLayout/src/GLCanvas.h">
 			<Option target="OpenLayout"/>
 		</Unit>
 		<Unit filename="/home/nikita/c++/OpenLayout/src/GridBinderDialog.cpp">

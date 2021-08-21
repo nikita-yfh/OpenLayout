@@ -20,7 +20,8 @@ set(SOURCES
 	src/SettingsDialog.cpp
 	src/InputGridDialog.cpp
 	src/Utils.cpp
-	src/GLDraw.cpp
+	src/GLCanvas.cpp
+	src/Canvas.cpp
 	src/LeftPanel.cpp
 )
 set(HEADERS
@@ -39,7 +40,8 @@ set(HEADERS
 	src/InputGridDialog.h
 	src/Utils.h
 	src/LeftPanel.h
-	src/GLDraw.h
+	src/GLCanvas.h
+	src/Canvas.h
 )
 if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)

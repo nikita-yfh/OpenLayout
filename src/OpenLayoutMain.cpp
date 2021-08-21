@@ -15,7 +15,7 @@
 #include "SettingsDialog.h"
 #include "AboutDialog.h"
 #include "LeftPanel.h"
-#include "GLDraw.h"
+#include "GLCanvas.h"
 #include <wx/msgdlg.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
