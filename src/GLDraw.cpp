@@ -331,39 +331,43 @@ void GLCanvas::Draw(wxPaintEvent&){
 		}
 
 	DrawConnections(board);
+	DrawAnchor(board);
+	DrawSelection(board);
 
-	{
-		glDisable(GL_MULTISAMPLE);
-		//const Vec2i &anchor=board.anchor;
-		Vec2i anchor=Vec2i(int(board.anchor.x*board.zoom)/board.zoom,
-							int(board.anchor.y*board.zoom)/board.zoom);
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		glLineWidth(3.0f);
-		glBegin(GL_LINES);
-			glVertex2f(anchor.x,-anchor.y-15.0f/board.zoom);
-			glVertex2f(anchor.x,-anchor.y+15.0f/board.zoom);
-			glVertex2f(anchor.x-15.0f/board.zoom,-anchor.y);
-			glVertex2f(anchor.x+15.0f/board.zoom,-anchor.y);
-		glEnd();
-		glLineWidth(1.0f);
-		glColor4f(1.0f,1.0f,1.0f,1.0f);
-		glBegin(GL_LINES);
-			glVertex2f(anchor.x,-anchor.y-14.0f/board.zoom);
-			glVertex2f(anchor.x,-anchor.y+14.0f/board.zoom);
-			glVertex2f(anchor.x-14.0f/board.zoom,-anchor.y);
-			glVertex2f(anchor.x+14.0f/board.zoom,-anchor.y);
-		glEnd();
-		DrawCircle(anchor,4.0/board.zoom);
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		glBegin(GL_QUADS);
-			glVertex2f(anchor.x-2.0f/board.zoom,-anchor.y-2.0f/board.zoom);
-			glVertex2f(anchor.x+2.0f/board.zoom,-anchor.y-2.0f/board.zoom);
-			glVertex2f(anchor.x+2.0f/board.zoom,-anchor.y+2.0f/board.zoom);
-			glVertex2f(anchor.x-2.0f/board.zoom,-anchor.y+2.0f/board.zoom);
-		glEnd();
-		glEnable(GL_MULTISAMPLE);
-	}
-
+    glFlush();
+    SwapBuffers();
+}
+void GLCanvas::DrawAnchor(const Board &board){
+	glDisable(GL_MULTISAMPLE);
+	Vec2i anchor=Vec2i(int(board.anchor.x*board.zoom)/board.zoom,
+						int(board.anchor.y*board.zoom)/board.zoom);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+		glVertex2f(anchor.x,-anchor.y-15.0f/board.zoom);
+		glVertex2f(anchor.x,-anchor.y+15.0f/board.zoom);
+		glVertex2f(anchor.x-15.0f/board.zoom,-anchor.y);
+		glVertex2f(anchor.x+15.0f/board.zoom,-anchor.y);
+	glEnd();
+	glLineWidth(1.0f);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glBegin(GL_LINES);
+		glVertex2f(anchor.x,-anchor.y-14.0f/board.zoom);
+		glVertex2f(anchor.x,-anchor.y+14.0f/board.zoom);
+		glVertex2f(anchor.x-14.0f/board.zoom,-anchor.y);
+		glVertex2f(anchor.x+14.0f/board.zoom,-anchor.y);
+	glEnd();
+	DrawCircle(anchor,4.0/board.zoom);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glBegin(GL_QUADS);
+		glVertex2f(anchor.x-2.0f/board.zoom,-anchor.y-2.0f/board.zoom);
+		glVertex2f(anchor.x+2.0f/board.zoom,-anchor.y-2.0f/board.zoom);
+		glVertex2f(anchor.x+2.0f/board.zoom,-anchor.y+2.0f/board.zoom);
+		glVertex2f(anchor.x-2.0f/board.zoom,-anchor.y+2.0f/board.zoom);
+	glEnd();
+	glEnable(GL_MULTISAMPLE);
+}
+void GLCanvas::DrawSelection(const Board &board){
 	if(selection==SEL_RECT){
 		glEnable(GL_LINE_STIPPLE);
 		glLineWidth (2);
@@ -378,10 +382,6 @@ void GLCanvas::Draw(wxPaintEvent&){
 		glDisable(GL_LINE_STIPPLE);
 		glEnable(GL_MULTISAMPLE);
 	}
-
-
-    glFlush();
-    SwapBuffers();
 }
 
 ///////////////////////////

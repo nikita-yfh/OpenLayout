@@ -28,6 +28,8 @@ private:
 	void DrawObject(const Object &o,float d);
 	void DrawPad(const Object &o,float d);
 	void Draw(wxPaintEvent&);
+	void DrawAnchor(const Board &board);
+	void DrawSelection(const Board &board);
 
 	void OnMouseWheel(wxMouseEvent&);
 	void OnMouseMotion(wxMouseEvent&);
