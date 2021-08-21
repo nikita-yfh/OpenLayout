@@ -1,6 +1,7 @@
 #include "PCBFile.h"
 #include <string.h>
 #include <assert.h>
+#include <algorithm>
 #include <cfloat>
 
 void PCBFile::AddBoard(Board b) {
@@ -403,6 +404,89 @@ void Board::select(Rect4 rect){
 	for(Object &o : objects)
 		if(o.rect_in(rect))
 			select(o);
+}
+bool Board::is_selected()const{
+	for(const Object &o : objects)
+		if(o.selected)
+			return true;
+	return false;
+}
+size_t Board::get_selected_count()const{
+	size_t count=0;
+	for(const Object &o : objects)
+		if(o.selected)
+			count++;
+	return count;
+}
+bool Board::can_group()const{
+	int selected_count=get_selected_count();
+	if(selected_count<=1)return false;
+	int32_t free_group=get_free_group();
+	for(int32_t group=1;group<free_group;group++){
+		int count=0;
+		for(const Object &o : objects)
+			if(o.selected)
+				for(const int32_t &g : o.groups)
+					if(g==group)count++;
+		if(count>1 && count==selected_count)
+			return false;
+	}
+	return true;
+}
+bool Board::can_ungroup()const{
+	int selected_count=get_selected_count();
+	if(selected_count<=1)return false;
+	int32_t free_group=get_free_group();
+	for(int32_t group=1;group<free_group;group++){
+		int count=0;
+		for(const Object &o : objects)
+			if(o.selected)
+				for(const int32_t &g : o.groups)
+					if(g==group)count++;
+		if(count>1)
+			return true;
+	}
+	return false;
+}
+int32_t Board::get_free_group() const{
+	for(int32_t group=1;;group++){
+		bool ok=false;
+		for(const Object &o : objects){
+			if(o.selected){
+				for(const int32_t &g : o.groups){
+					if(g==group+1)ok=true;
+				}
+			}
+		}
+		if(!ok)return group+1;
+	}
+}
+void Board::group(){
+	int32_t free_group=get_free_group();
+	for(Object &o : objects)
+		if(o.selected)
+			o.groups.push_back(free_group);
+}
+void Board::ungroup(){
+	int32_t free_group=get_free_group();
+	vector<int32_t>groups(free_group+1);
+	for(int32_t group=1;group<free_group;group++){
+		int count=0;
+		for(const Object &o : objects)
+			if(o.selected)
+				for(const int32_t &g : o.groups)
+					if(g==group)count++;
+		groups[group]=count;
+	}
+	int32_t max_group=*max_element(groups.begin(),groups.end());
+	for(Object &o : objects)
+		if(o.selected)
+			for(int q=0;q<o.groups.size();q++)
+				if(groups[o.groups[q]]==max_group){
+					o.groups.erase(o.groups.begin()+q);
+					break;
+				}
+
 }
 void ProjectInfo::load(FILE *file) {
     readstr(file,100,title);

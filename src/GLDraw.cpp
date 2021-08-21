@@ -342,6 +342,7 @@ void GLCanvas::Draw(wxPaintEvent&){
 		glEnable(GL_MULTISAMPLE);
 	}
 
+
     glFlush();
     SwapBuffers();
 }
@@ -434,8 +435,8 @@ void GLCanvas::OnMouseMotion(wxMouseEvent&e){
 		board.camera=clickboardpos+(clickmousepos-mouse);
 		StabilizeCamera();
 	}else if(e.LeftIsDown()){
+		clickmousepos=mouse;
 		if(selection==SEL_RECT){
-			clickmousepos=mouse;
 			sel_rect.SetP2(GetPos(mouse));
 		}else if(selection==SEL_OBJECT){
 			board.first_selected().set_position(clickboardpos+board.to_grid(GetPos(mouse)-clickboardpos,shift,ctrl));

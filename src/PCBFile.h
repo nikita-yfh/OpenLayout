@@ -183,6 +183,13 @@ struct Board {
     Vec2 to_grid(Vec2 v,bool shift,bool ctrl);
     void select(Object &o);
     void select(Rect4 r);
+    bool is_selected()const;
+    size_t get_selected_count()const;
+    bool can_group()const;
+    bool can_ungroup()const;
+    void group();
+    void ungroup();
+    int32_t get_free_group() const;
 };
 
 

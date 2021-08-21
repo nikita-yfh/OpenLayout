@@ -38,13 +38,28 @@
 #include "Utils.h"
 using namespace std;
 
-template<typename T>
-struct Userdata :wxObject {
-    Userdata(T v) {
-        value=v;
-    }
-    T value;
-};
+wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
+    EVT_MENU(wxID_EXIT, OpenLayoutFrame::close)
+    EVT_MENU(wxID_PROPERTIES, OpenLayoutFrame::show_settings)
+    EVT_MENU(wxID_ABOUT, OpenLayoutFrame::show_about)
+    EVT_MENU(wxID_INFO, OpenLayoutFrame::show_project_info)
+    EVT_MENU(ID_BOARD_NEW, OpenLayoutFrame::new_board)
+    EVT_MENU(ID_SCANNED_COPY, OpenLayoutFrame::show_scan_properties)
+    EVT_MENU(ID_GROUP, OpenLayoutFrame::group)
+    EVT_MENU(ID_UNGROUP, OpenLayoutFrame::ungroup)
+    EVT_UPDATE_UI(wxID_COPY,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(wxID_CUT,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(wxID_DELETE,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(wxID_DUPLICATE,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(wxID_SELECTALL,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(ID_ROTATE,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(ID_HMIRROR,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(ID_VMIRROR,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(ID_SNAP_GRID,OpenLayoutFrame::updateui_edit)
+    EVT_UPDATE_UI(ID_GROUP,OpenLayoutFrame::updateui_group)
+    EVT_UPDATE_UI(ID_UNGROUP,OpenLayoutFrame::updateui_ungroup)
+wxEND_EVENT_TABLE()
+
 OpenLayoutFrame::OpenLayoutFrame()
     :wxFrame(0,wxID_ANY,"OpenLayout") {
     wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
@@ -62,12 +77,6 @@ OpenLayoutFrame::OpenLayoutFrame()
     }
     SetSizer(all_box);
     SetAutoLayout(true);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::close,this, wxID_EXIT);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::show_settings,this,wxID_PROPERTIES);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::show_about,this,wxID_ABOUT);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::show_project_info,this,wxID_INFO);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::new_board,this,ID_BOARD_NEW);
-    Bind(wxEVT_MENU,&OpenLayoutFrame::show_scan_properties,this,ID_SCANNED_COPY);
 
     file.load("./1.lay6");
     file.save("./2.lay6");
@@ -715,4 +724,20 @@ void OpenLayoutFrame::build_grid_menu() {
 void OpenLayoutFrame::set_grid(float val,bool metric) {
     file.GetSelectedBoard().active_grid_val=val;
     grid_button->SetLabel(get_grid_str(val));
+}
+void OpenLayoutFrame::updateui_edit(wxUpdateUIEvent &e){
+	e.Enable(file.GetSelectedBoard().is_selected());
+}
+void OpenLayoutFrame::updateui_group(wxUpdateUIEvent &e){
+	e.Enable(file.GetSelectedBoard().can_group());
+}
+void OpenLayoutFrame::updateui_ungroup(wxUpdateUIEvent &e){
+	e.Enable(file.GetSelectedBoard().can_ungroup());
+}
+
+void OpenLayoutFrame::group(wxCommandEvent &e){
+	file.GetSelectedBoard().group();
+}
+void OpenLayoutFrame::ungroup(wxCommandEvent &e){
+	file.GetSelectedBoard().ungroup();
 }

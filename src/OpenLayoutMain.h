@@ -182,12 +182,14 @@ private:
     void show_about(wxCommandEvent&);
     void show_project_info(wxCommandEvent&);
     void new_board(wxCommandEvent&);
+    void group(wxCommandEvent&);
+    void ungroup(wxCommandEvent&);
     void show_scan_properties(wxCommandEvent&);
-
     void swap_smd_size(wxCommandEvent&);
-
-
     void set_grid(float val,bool metric=true);
 
-    Color getcolor(const Object &o);
+    void updateui_edit(wxUpdateUIEvent&);
+    void updateui_group(wxUpdateUIEvent&);
+    void updateui_ungroup(wxUpdateUIEvent&);
+    wxDECLARE_EVENT_TABLE();
 };
