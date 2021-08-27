@@ -1,6 +1,10 @@
 #include "Canvas.h"
+const int attribList[] = {WX_GL_RGBA,
+                    WX_GL_DOUBLEBUFFER,
+                    WX_GL_SAMPLE_BUFFERS, GL_TRUE,
+                    WX_GL_DEPTH_SIZE, 24, 0, 0};
 Canvas::Canvas(wxWindow *parent)
-		:wxGLCanvas(parent, wxID_ANY, nullptr,  wxDefaultPosition, wxDefaultSize, 0){
+		:wxGLCanvas(parent,(wxGLCanvas*)NULL,wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,L"GLCanvas",attribList){
 	Bind(wxEVT_MOUSEWHEEL,&Canvas::OnMouseWheel,this);
 	Bind(wxEVT_MIDDLE_DOWN,&Canvas::OnMiddleDown,this);
 	Bind(wxEVT_LEFT_DOWN,&Canvas::OnLeftDown,this);
@@ -46,7 +50,6 @@ void Canvas::OnLeftDown(wxMouseEvent&e){
 	if((!firstsel || !firstsel->selected) && !shift)
 		for(Object &o : board.objects)
 			o.selected=false;
-
 	if(firstsel){
 		clickboardpos=firstsel->get_position();
 		board.select(*firstsel);
@@ -57,7 +60,7 @@ void Canvas::OnLeftDown(wxMouseEvent&e){
 		sel_rect.SetP2(board_pos);
 		selection=SEL_RECT;
 	}
-	clickmousepos=mouse;
+	clickmousepos=mousepos=mouse;
 	dragscroll_timer.Start(5);
 	Refresh();
 	e.Skip();
@@ -78,17 +81,16 @@ void Canvas::OnDragScroll(wxTimerEvent&e){
 		Board &board=file.GetSelectedBoard();
 		Vec2i wsize;
 		GetSize(&wsize.width,&wsize.height);
-		if(clickmousepos.x<0)board.camera.x-=10;
-		if(clickmousepos.y<0)board.camera.y-=10;
-		if(clickmousepos.x>wsize.x)board.camera.x+=10;
-		if(clickmousepos.y>wsize.y)board.camera.y+=10;
-		sel_rect.SetP2(GetPos(clickmousepos));
+		if(mousepos.x<0)board.camera.x-=10;
+		if(mousepos.y<0)board.camera.y-=10;
+		if(mousepos.x>wsize.x)board.camera.x+=10;
+		if(mousepos.y>wsize.y)board.camera.y+=10;
+		sel_rect.SetP2(GetPos(mousepos));
 		Refresh();
 	}
 	e.Skip();
 }
 void Canvas::OnMouseMotion(wxMouseEvent&e){
-
     Board &board=file.GetSelectedBoard();
 	bool refresh=true;
 	Vec2 mouse=GetMousePos(e);
@@ -96,11 +98,20 @@ void Canvas::OnMouseMotion(wxMouseEvent&e){
 		board.camera=clickboardpos+(clickmousepos-mouse);
 		StabilizeCamera();
 	}else if(e.LeftIsDown()){
-		clickmousepos=mouse;
+		mousepos=mouse;
 		if(selection==SEL_RECT){
 			sel_rect.SetP2(GetPos(mouse));
+			///////////
+			/*for(Object &o : board.objects)
+				o.selected=false;
+			if(selection==SEL_RECT)
+				board.select(sel_rect);*/
+			//////////
 		}else if(selection==SEL_OBJECT){
-			board.first_selected().set_position(clickboardpos+board.to_grid(GetPos(mouse)-clickboardpos,shift,ctrl));
+			Vec2 delta=GetPos(mouse)-GetPos(clickmousepos)-board.first_selected().get_position()+clickboardpos;
+			for(Object &o : board.objects)
+				if(o.selected)
+					o.move(board.to_grid(delta,shift,ctrl));
 		}
 	}else refresh=false;
 	if(refresh)Refresh();

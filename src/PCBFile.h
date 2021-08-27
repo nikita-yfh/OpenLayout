@@ -144,14 +144,16 @@ struct Object {
     float get_angle() const;
     void rotate(float angle);
     bool point_in(Vec2) const;
-    bool rect_in(Rect4) const;
+    bool rect_cross(Rect4) const;
+    void get_ending_circles(Vec2 *c)const; //two ending circles for arcs
+    float get_radius()const; //radius of circles or mean radius of pads
 
     bool selected;
 
     Vec2 get_position() const;
     void set_position(Vec2);
     void move(Vec2);
-
+	Rect4 get_aabb()const;
 };
 
 
@@ -180,6 +182,7 @@ struct Board {
     Vec2 to_grid(Vec2 v,bool shift,bool ctrl);
     void select(Object &o);
     void select(Rect4 r);
+    void select_all();
     bool is_selected()const;
     size_t get_selected_count()const;
     bool can_group()const;

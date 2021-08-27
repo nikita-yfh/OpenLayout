@@ -3,6 +3,26 @@
 #ifndef GL_MULTISAMPLE
 #define GL_MULTISAMPLE  0x809D
 #endif
+#include "earcut.hpp"
+
+namespace mapbox {
+namespace util {
+
+template <>
+struct nth<0, Vec2> {
+    inline static auto get(const Vec2 &t) {
+        return t.x;
+    };
+};
+template <>
+struct nth<1, Vec2> {
+    inline static auto get(const Vec2 &t) {
+        return t.y;
+    };
+};
+
+}
+}
 
 GLCanvas::GLCanvas(wxWindow *parent)
 		:Canvas(parent){
@@ -78,7 +98,7 @@ void GLCanvas::DrawGrid(const Board &board){
 		draw_line(n++,0,y,board.size.width,y);
 }
 void GLCanvas::DrawConnections(const Board &board){
-	glLineWidth(2);
+	glLineWidth(1.5f);
 	SetColor(COLOR_CON);
 	for(const Object &o : board.objects){
 		if(o.can_connect()){
@@ -109,6 +129,7 @@ void GLCanvas::DrawObject(const Object &o,float d){
 		}
 		if(styles[1]==END_ROUND)
 			DrawCircle(vend(o.poly_points),width/2.0f+d);
+
 		}break;
 	case OBJ_CIRCLE:{
 		/* Triangle strip:
@@ -119,7 +140,7 @@ void GLCanvas::DrawObject(const Object &o,float d){
 		float total_angle=delta_angle(o.start_angle,o.end_angle)/1000.0f;
 		float inner=o.size.inner;
 		float outer=o.size.outer;
-		float r=(inner+outer)/2.0f;
+		float r=o.get_radius();
 		float width=outer-inner+d*2.0f;
 		if(inner==outer)
 			outer=inner+1.0/file.GetSelectedBoard().zoom; //always 1 px width
@@ -148,11 +169,30 @@ void GLCanvas::DrawObject(const Object &o,float d){
 			}
 			if(o.fill)
 				DrawLine(Vec2(r,0.0f),Vec2(r*cosr(total_angle),r*sinr(total_angle)),width,false,false);
-
-			DrawCircle(Vec2(r,0.0f),width/2.0f);
-			glRotatef(-total_angle,0.0f,0.0f,1.0f);
-			DrawCircle(Vec2(r,0.0f),width/2.0f);
 		glPopMatrix();
+		Vec2 circles[2];
+		o.get_ending_circles(circles);
+		for(int q=0;q<2;q++)
+			DrawCircle(circles[q],width/2.0f);
+		}break;
+	case OBJ_POLY:{
+		vector<vector<Vec2>> polygon;
+		polygon.push_back(o.poly_points);
+		vector<uint16_t> indices = mapbox::earcut<uint16_t>(polygon);
+		glBegin(GL_TRIANGLES);
+		for(int q=0;q<indices.size();q++){
+			const Vec2&p=o.poly_points[indices[q]];
+			glVertex2f(p.x,-p.y);
+		}
+		glEnd();
+		if(o.line_width){
+			for(int q=0;q<o.poly_points.size();q++){
+				const Vec2&p1=o.poly_points[q];
+				const Vec2&p2=o.poly_points[(q+1)%o.poly_points.size()];
+				DrawLine(p1,p2,o.line_width+d*2.0f,false,false);
+				DrawCircle(p1,o.line_width/2.0f+d);
+			}
+		}
 		}break;
 	}
 	DrawPad(o,d);
@@ -160,11 +200,27 @@ void GLCanvas::DrawObject(const Object &o,float d){
 void GLCanvas::DrawPad(const Object &o,float d){
 	switch(o.type){
 	case OBJ_THT_PAD:
-		switch(o.tht_shape%3){
+		switch(o.tht_shape){
 		case 1: //circle
 			DrawCircle(o.pos,o.size.outer+d);
 			break;
-		case 2: case 0: //square and octagon
+		case 4: case 7:{ //oval
+			for(const Vec2 &p : o.poly_points)
+				DrawCircle(p,o.size.outer+d);
+			Vec2 d=(o.poly_points[1]-o.poly_points[0]).Skew();
+			d.Normalize(o.size.outer);
+			const Vec2 points[]={
+				o.poly_points[0]-d,
+				o.poly_points[1]-d,
+				o.poly_points[1]+d,
+				o.poly_points[0]+d
+			};
+			glBegin(GL_QUADS);
+			for(const Vec2 &p : points)
+				glVertex2f(p.x,-p.y);
+			glEnd();
+			}break;
+		default: //square and octagon
 			glBegin(GL_TRIANGLE_FAN);
 			glVertex2f(o.pos.x,-o.pos.y);
 			for(int q=0;q<=o.poly_points.size();q++){
@@ -186,6 +242,36 @@ void GLCanvas::DrawPad(const Object &o,float d){
 		break;
 	}
 }
+void GLCanvas::DrawDrillings(const Object &o){
+	if(!o.cutoff &&o.type==OBJ_THT_PAD){
+		SetDrillingsColor();
+		DrawCircle(o.pos,o.size.inner);
+		if(o.size.inner==o.size.outer){
+			if(o.selected)
+				SetColor(COLOR_SELO);
+			else
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+			glLineWidth(1.5f);
+			glBegin(GL_LINE_LOOP);
+			for(int i = 0; i < s.circle_quality; i++) {
+				float theta = 2.0f * M_PI * float(i) / float(s.circle_quality);
+				float x = o.size.inner * cosf(theta);
+				float y = o.size.inner * sinf(theta);
+				glVertex2f(x + o.pos.x, y - o.pos.y);
+			}
+			glEnd();
+			if(!o.selected)
+				SetLayerColor(o);
+			float d=o.size.inner/1.6f;
+			glBegin(GL_LINES);
+				glVertex2f(o.pos.x+d,-o.pos.y+d);
+				glVertex2f(o.pos.x-d,-o.pos.y-d);
+				glVertex2f(o.pos.x+d,-o.pos.y-d);
+				glVertex2f(o.pos.x-d,-o.pos.y+d);
+			glEnd();
+		}
+	}
+}
 void GLCanvas::DrawCircle(Vec2 pos,float r){
 	pos.y=-pos.y;
 	glBegin(GL_TRIANGLE_FAN);
@@ -199,24 +285,8 @@ void GLCanvas::DrawCircle(Vec2 pos,float r){
     glEnd();
 }
 void GLCanvas::DrawLine(Vec2 p1,Vec2 p2,float width,bool s1,bool s2){
-	Vec2 c=(p2-p1);
-	c.Normalize(width/2.0f);
-
-	Vec2 d=c.Skew();
-
-	Vec2 c1(0.0f,0.0f);
-	Vec2 c2(0.0f,0.0f);
-
-	if(s1)c1=c;
-	if(s2)c2=c;
-
-
-	Vec2 points[]={
-		p1-d-c1,
-		p1+d-c1,
-		p2+d+c2,
-		p2-d+c2
-	};
+	Vec2 points[4];
+	expand_line(p1,p2,width,s1,s2,points);
 	glBegin(GL_QUADS);
 	for(int q=0;q<4;q++)
 		glVertex2f(points[q].x,-points[q].y);
@@ -248,7 +318,7 @@ void GLCanvas::Draw(wxPaintEvent&){
 	glRectf(0.0f,0.0f,board.size.x,board.size.y);
 
 	for(Object &o : file.GetSelectedBoard().objects){
-		if(o.layer==board.active_layer){
+		if(o.layer==board.active_layer && board.ground_pane[board.active_layer-1]){
 			SetColor(COLOR_BGR);
 			if(o.cutoff)
 				DrawObject(o,0.0f);
@@ -315,14 +385,12 @@ void GLCanvas::Draw(wxPaintEvent&){
 				DrawPad(o,0.0f);
 			}
 	for(Object &o : file.GetSelectedBoard().objects)//draw drillings
-		if(!o.cutoff &&o.type==OBJ_THT_PAD){
-			SetDrillingsColor();
-			DrawCircle(o.pos,o.size.inner);
-		}
+		DrawDrillings(o);
 
 	DrawConnections(board);
 	DrawAnchor(board);
 	DrawSelection(board);
+
 
     glFlush();
     SwapBuffers();

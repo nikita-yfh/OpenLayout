@@ -58,6 +58,7 @@ struct Vec2 {
     void operator -= (const Vec2& v);
     void operator *= (float a);
     float Length() const;
+    float LengthSq() const;
     Vec2 Skew() const;
     Vec2 SwapY() const;
     float Normalize(float d=1.0f);
@@ -112,4 +113,13 @@ Vec2 bis(Vec2 v1,Vec2 v2,float length);
 float deg(float v);
 float rad(float v);
 bool intersect_circle_rect(Rect4 rect, Vec2 c, float r);
-bool intersect_rect_rect(Rect4 r1,Rect4 r2);
+bool intersect_rect_rect(Rect4 a,Rect4 b);
+bool intersect_poly_rect(const Vec2 *points,int num,Rect4 r);
+bool rect_in_rect(Rect4 r1,Rect4 r2);
+bool intersect_line_line(Vec2 a,Vec2 b,Vec2 c,Vec2 d);
+bool point_in_poly(const Vec2 *points,int num,Vec2 p);
+bool point_in_poly_c(const Vec2 *points,int num,Vec2 p); //non-convex polygons
+bool point_in_rect(Rect4 r,Vec2 p);
+bool point_in_circle(Vec2 p, Vec2 c, float r);
+bool points_one_side(Vec2 a,Vec2 b,Vec2 c,Vec2 d);
+void expand_line(Vec2 p1,Vec2 p2,float width,bool s1,bool s2, Vec2 *res);

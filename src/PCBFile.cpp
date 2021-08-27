@@ -349,31 +349,185 @@ void Object::rotate(float angle) {
         }
     }
 }
-bool Object::point_in(Vec2 point) const {
-    if(type==OBJ_THT_PAD && tht_shape%3==1) {
-        return (point-pos).Length()<=size.outer;
-    } else if((type==OBJ_THT_PAD && tht_shape%3!=1) || type==OBJ_SMD_PAD) {
-        bool c = false;
-        for (int i = 0, j = poly_points.size() - 1; i < poly_points.size(); j = i++) {
-            if ((((poly_points[i].y <= point.y) && (point.y < poly_points[j].y)) ||
-				((poly_points[j].y <= point.y) && (point.y < poly_points[i].y))) &&
-				(((poly_points[j].y - poly_points[i].y) != 0) &&
-				(point.x > ((poly_points[j].x - poly_points[i].x) * (point.y - poly_points[i].y) /
-				(poly_points[j].y - poly_points[i].y) + poly_points[i].x)))) c = !c;
-        }
-        return c;
-    }
+float Object::get_radius()const{
+	return (size.inner+size.outer)/2.0f;
 }
-bool Object::rect_in(Rect4 r) const {
-    if(type==OBJ_THT_PAD && tht_shape%3==1) {
-		return intersect_circle_rect(r,pos,size.outer);
-        //return (point-pos).Length()<=size.outer;
+void Object::get_ending_circles(Vec2 *c)const{
+	float angles[2]{start_angle/1000.0f,end_angle/1000.0f};
+	float radius=get_radius();
+	for(int q=0;q<2;q++){
+		c[q].x=pos.x+cosr(angles[q])*radius;
+		c[q].y=pos.y+sinr(angles[q])*radius;
+	}
+}
+bool Object::point_in(Vec2 point) const {
+    if(type==OBJ_THT_PAD && tht_shape==1)
+        return point_in_circle(point,pos,size.outer);
+	else if(type==OBJ_THT_PAD && (tht_shape==4 || tht_shape==7)) {
+		for(int q=0;q<poly_points.size();q++)
+			if(point_in_circle(point,poly_points[q],size.outer))
+				return true;
+		Vec2 d=(poly_points[1]-poly_points[0]).Skew();
+		d.Normalize(size.outer);
+		const Vec2 points[]={
+			poly_points[0]-d,
+			poly_points[1]-d,
+			poly_points[1]+d,
+			poly_points[0]+d
+		};
+		if(point_in_poly(points,4,point))
+			return true;
+    } else if((type==OBJ_THT_PAD && tht_shape%3!=1) || type==OBJ_SMD_PAD) {
+		if(point_in_poly(poly_points.data(),poly_points.size(),point))
+			return true;
+    }else if(type==OBJ_LINE|| type==OBJ_POLY){
+    	if(type==OBJ_POLY)
+			if(point_in_poly_c(poly_points.data(),poly_points.size(),point))
+				return true;
+		if(line_width>0){
+			for(int q=0;q<poly_points.size()-1;q++){
+				const Vec2&p1=poly_points[q];
+				const Vec2&p2=poly_points[(q+1)%poly_points.size()];
+
+				Vec2 c=(p2-p1);
+				c.Normalize(line_width/2.0f);
+				Vec2 d=c.Skew();
+				Vec2 c1(0.0f,0.0f);
+				Vec2 c2(0.0f,0.0f);
+				if(get_begin_style()==END_SQUARE)c1=c;
+				if(get_end_style()==END_SQUARE)c2=c;
+				Vec2 points[]={
+					p1-d-c1,
+					p1+d-c1,
+					p2+d+c2,
+					p2-d+c2
+				};
+				if(point_in_poly(points,4,point))
+					return true;
+				if(point_in_circle(point,p1,line_width/2.0f))
+					return true;
+			}
+		}
+	}else if(type==OBJ_CIRCLE) {
+		float angle=deg(get_angle_v(pos-point))*1000.0f;
+		Vec2 circles[2];
+		get_ending_circles(circles);
+		for(int q=0;q<2;q++)
+			if(point_in_circle(point,circles[q],(size.outer-size.inner)/2.0f))
+				return true;
+		float arc_center_a=(start_angle+delta_angle(start_angle,end_angle))/1000.0f; //center between start and end
+		Vec2 arc_center=pos+Vec2(cosr(arc_center_a),sinr(arc_center_a))*size.outer;
+
+		if(!point_in_circle(point,pos,size.outer))
+			return false;
+		if(fill){
+			/*if(points_one_side(circles[0],circles[1],point,arc_center))
+				return false;*/
+        }else{
+			if(point_in_circle(point,pos,size.inner))
+				return false;
+			if(start_angle<end_angle){
+				if(angle<start_angle || angle>end_angle)
+					return false;
+			}else{
+				if(angle<start_angle && angle>end_angle)
+					return false;
+			}
+        }
+		return true;
     }
+    return false;
+}
+bool Object::rect_cross(Rect4 r) const {
+    if(type==OBJ_THT_PAD && tht_shape==1)
+		return intersect_circle_rect(r,pos,size.outer);
+    else if(type==OBJ_THT_PAD && (tht_shape==4 || tht_shape==7)){
+    	for(int q=0;q<poly_points.size();q++)
+			if(intersect_circle_rect(r,poly_points[q],size.outer))
+				return true;
+		Vec2 d=(poly_points[1]-poly_points[0]).Skew();
+		d.Normalize(size.outer);
+		const Vec2 points[]={
+			poly_points[0]-d,
+			poly_points[1]-d,
+			poly_points[1]+d,
+			poly_points[0]+d
+		};
+		if(intersect_poly_rect(points,4,r))
+			return true;
+
+	}else if((type==OBJ_THT_PAD && tht_shape%3!=1) || type==OBJ_SMD_PAD) {
+		if(intersect_poly_rect(poly_points.data(),poly_points.size(),r))
+			return true;
+	}else if(type==OBJ_POLY || type==OBJ_LINE){
+		if(type==OBJ_POLY && intersect_poly_rect(poly_points.data(),poly_points.size(),r))
+			return true;
+		uint8_t styles[2]={get_begin_style(),get_end_style()};
+		if(line_width>0){
+			for(int q=0;q<poly_points.size()-1;q++){
+				const Vec2 &p1 = poly_points[q];
+				const Vec2 &p2 = poly_points[(q+1)%poly_points.size()];
+				Vec2 points[4];
+				expand_line(p1,p2,line_width,q==0&&styles[0]==END_SQUARE,
+					q==poly_points.size()-2 &&styles[1]==END_SQUARE,points);
+				if(intersect_poly_rect(points,4,r))
+					return true;
+			}
+			for(int q=0;q<poly_points.size();q++){
+				const Vec2 &p = poly_points[q];
+				if((q==0 && styles[0]==END_ROUND ||
+					q==poly_points.size()-1 && styles[1]==END_ROUND ||
+					q!=0 && q!=poly_points.size()-1) &&
+							intersect_circle_rect(r,p,line_width/2.0f))
+					return true;
+			}
+		}
+	}
+    return false;
+}
+Rect4 Object::get_aabb()const{
+	if((type==OBJ_THT_PAD && tht_shape==1) || type==OBJ_CIRCLE){
+		return Rect4(pos.x-size.outer,
+					pos.y-size.outer,
+					pos.x+size.outer,
+					pos.y+size.outer);
+	}else if(type==OBJ_THT_PAD && (tht_shape==4 || tht_shape==7)){
+		return Rect4(min(poly_points[0].x,poly_points[1].x)-size.outer,
+					min(poly_points[0].y,poly_points[1].y)-size.outer,
+					max(poly_points[0].x,poly_points[1].x)+size.outer,
+					max(poly_points[0].y,poly_points[1].y)+size.outer);
+	}else if((type==OBJ_THT_PAD && tht_shape%3!=1) || type==OBJ_SMD_PAD) {
+		float minx=FLT_MAX;
+		float miny=FLT_MAX;
+		float maxx=-FLT_MAX;
+		float maxy=-FLT_MAX;
+		for(const Vec2 &p : poly_points){
+			minx=min(minx,p.x);
+			miny=min(miny,p.y);
+			maxx=max(maxx,p.x);
+			maxy=max(maxy,p.y);
+		}
+		return Rect4(minx,miny,maxx,maxy);
+	}else if(type==OBJ_POLY || type==OBJ_LINE){
+		float minx=FLT_MAX;
+		float miny=FLT_MAX;
+		float maxx=-FLT_MAX;
+		float maxy=-FLT_MAX;
+		for(const Vec2 &p : poly_points){
+			minx=min(minx,p.x);
+			miny=min(miny,p.y);
+			maxx=max(maxx,p.x);
+			maxy=max(maxy,p.y);
+		}
+		return Rect4(minx-line_width,
+					miny-line_width,
+					maxx+line_width,
+					maxy+line_width);
+	}
+	return Rect4(0.0f,0.0f,0.0f,0.0f);
 }
 Vec2 Object::get_position() const{
-	if(type==OBJ_THT_PAD||type==OBJ_CIRCLE||type==OBJ_SMD_PAD)
-		return pos;
-	else if(type==OBJ_POLY){
+	if(type==OBJ_POLY || type==OBJ_LINE){
 		Vec2 minv(FLT_MAX,FLT_MAX);
 		Vec2 maxv(-FLT_MAX,-FLT_MAX);
 		for(const Vec2 &v : poly_points){
@@ -382,9 +536,10 @@ Vec2 Object::get_position() const{
 			maxv.x=max(maxv.x,v.x);
 			maxv.y=max(maxv.y,v.y);
 		}
-		Vec2 pos=(minv+maxv)/2.0f;
-		return pos;
+		Vec2 p=(minv+maxv)/2.0f;
+		return p;
 	}
+	return pos;
 }
 void Object::move(Vec2 d){
 	if(type==OBJ_THT_PAD||type==OBJ_CIRCLE||type==OBJ_SMD_PAD)
@@ -425,9 +580,15 @@ void Board::select(Object &o1){
 }
 void Board::select(Rect4 rect){
 	rect.Normalize();
-	for(Object &o : objects)
-		if(o.rect_in(rect))
+	for(Object &o : objects){
+		const Rect4 aabb=o.get_aabb();
+		if(rect_in_rect(rect,aabb) ||(intersect_rect_rect(rect,aabb) && o.rect_cross(rect)))
 			select(o);
+	}
+}
+void Board::select_all(){
+	for(Object &o : objects)
+		o.selected=true;
 }
 bool Board::is_selected()const{
 	for(const Object &o : objects)

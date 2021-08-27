@@ -16,6 +16,7 @@ public:
 protected:
 	Vec2 clickmousepos;
 	Vec2 clickboardpos;
+	Vec2 mousepos;
 
     const float zoom_ratio=1.3f;
     uint8_t selection=SEL_NONE;

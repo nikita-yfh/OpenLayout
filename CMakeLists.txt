@@ -53,5 +53,7 @@ if(WIN32)
 	#)
 endif()
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s -ffunction-sections -fdata-sections")
 #add_dependencies(OpenLayout images)
 target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})

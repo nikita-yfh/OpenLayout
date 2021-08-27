@@ -18,6 +18,7 @@ private:
 	void DrawSquare(Vec2 pos,float r,float angle);
 	void DrawObject(const Object &o,float d);
 	void DrawPad(const Object &o,float d);
+	void DrawDrillings(const Object &o);
 	void Draw(wxPaintEvent&);
 	void DrawAnchor(const Board &board);
 	void DrawSelection(const Board &board);

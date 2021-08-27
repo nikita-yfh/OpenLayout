@@ -14,6 +14,7 @@
 #include <wx/toolbar.h>
 #include "PCBFile.h"
 #include "Settings.h"
+#include "wx/glcanvas.h"
 
 class OpenLayoutFrame: public wxFrame {
 public:
@@ -30,6 +31,9 @@ private:
     void new_board(wxCommandEvent&);
     void group(wxCommandEvent&);
     void ungroup(wxCommandEvent&);
+    void select_all(wxCommandEvent&);
+    void savefile(wxCommandEvent&);
+    void openfile(wxCommandEvent&);
     void set_sel_layer(wxCommandEvent&);
     void del(wxCommandEvent&);
     void show_scan_properties(wxCommandEvent&);
@@ -39,4 +43,6 @@ private:
     void updateui_ungroup(wxUpdateUIEvent&);
     void updateui_multilayer(wxUpdateUIEvent&);
     wxDECLARE_EVENT_TABLE();
+
+    wxGLCanvas *canvas;
 };

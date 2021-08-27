@@ -25,5 +25,5 @@ private:
     void set_track_size(float size);
     void set_grid_size(double grid);
     void swap_smd_size(wxCommandEvent&);
-    void set_grid(float val,bool metric=true);
+    void set_grid(float val);
 };

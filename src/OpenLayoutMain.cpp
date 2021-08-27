@@ -1,11 +1,3 @@
-/***************************************************************
- * Name:      OpenLayoutMain.cpp
- * Purpose:   Code for Application Frame
- * Author:    Nikita-yfh (nikita.yfh@gmail.com)
- * Created:   2021-07-21
- * Copyright: Nikita-yfh (https://github.com/nikita-yfh)
- * License:
- **************************************************************/
 #include "ScannedCopyDialog.h"
 #include "InputNumberDialog.h"
 #include "OpenLayoutMain.h"
@@ -21,6 +13,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/filedlg.h>
 
 #define MAIN_XPM
 #include "images.h"
@@ -109,12 +102,15 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
     EVT_MENU(ID_SCANNED_COPY, OpenLayoutFrame::show_scan_properties)
     EVT_MENU(ID_GROUP, OpenLayoutFrame::group)
     EVT_MENU(ID_UNGROUP, OpenLayoutFrame::ungroup)
+    EVT_MENU(wxID_SELECTALL, OpenLayoutFrame::select_all)
+    EVT_MENU(wxID_SAVE, OpenLayoutFrame::savefile)
+    EVT_MENU(wxID_SAVEAS, OpenLayoutFrame::savefile)
+    EVT_MENU(wxID_OPEN, OpenLayoutFrame::openfile)
     EVT_MENU_RANGE(ID_LAYER_C1, ID_LAYER_O, OpenLayoutFrame::set_sel_layer)
     EVT_UPDATE_UI(wxID_COPY,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(wxID_CUT,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(wxID_DELETE,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(wxID_DUPLICATE,OpenLayoutFrame::updateui_edit)
-    EVT_UPDATE_UI(wxID_SELECTALL,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(ID_ROTATE,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(ID_HMIRROR,OpenLayoutFrame::updateui_edit)
     EVT_UPDATE_UI(ID_VMIRROR,OpenLayoutFrame::updateui_edit)
@@ -136,7 +132,7 @@ OpenLayoutFrame::OpenLayoutFrame()
         wxScrolledWindow *left_panel=new LeftPanel(this);
         content->Add(left_panel,0,wxEXPAND);
         {
-        	GLCanvas *canvas=new GLCanvas(this);
+        	canvas=new GLCanvas(this);
         	content->Add(canvas,1,wxEXPAND|wxALL,5);
         }
         all_box->Add(content,1,wxEXPAND);
@@ -393,14 +389,40 @@ void OpenLayoutFrame::updateui_multilayer(wxUpdateUIEvent &e){
 
 void OpenLayoutFrame::group(wxCommandEvent &e){
 	file.GetSelectedBoard().group();
+	canvas->Refresh();
 }
 void OpenLayoutFrame::ungroup(wxCommandEvent &e){
 	file.GetSelectedBoard().ungroup();
+	canvas->Refresh();
 }
 void OpenLayoutFrame::del(wxCommandEvent &e){
-	file.GetSelectedBoard().ungroup();
+	//file.GetSelectedBoard().();
 }
 void OpenLayoutFrame::set_sel_layer(wxCommandEvent &e){
 	int id=e.GetId()-ID_LAYER_C1;
 	file.GetSelectedBoard().set_sel_layer(id+1);
+	canvas->Refresh();
+}
+void OpenLayoutFrame::select_all(wxCommandEvent &e){
+	file.GetSelectedBoard().select_all();
+	canvas->Refresh();
+}
+void OpenLayoutFrame::openfile(wxCommandEvent &e){
+	wxFileDialog dialog(this, _("Save layout file"), "", "",
+                       _("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_OPEN);
+
+    if (dialog.ShowModal() == wxID_CANCEL)
+        return;
+	wxString path=dialog.GetPath();
+	file.load(path.c_str());
+	canvas->Refresh();
+}
+void OpenLayoutFrame::savefile(wxCommandEvent &e){
+	wxFileDialog dialog(this, _("Save layout file"), "", "",
+                       _("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+
+    if (dialog.ShowModal() == wxID_CANCEL)
+        return;
+	wxString path=dialog.GetPath();
+	file.save(path.c_str());
 }

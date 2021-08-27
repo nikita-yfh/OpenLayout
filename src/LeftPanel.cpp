@@ -450,7 +450,7 @@ void LeftPanel::build_grid_menu() {
             grid=get_metric_grid(id-8);
         else //user grid
             grid=s.grids[id-19];
-        set_grid(grid,id<8);
+        set_grid(grid);
     },ID_GRID_NORMAL,ID_GRID_NORMAL+118);
     Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
         int id=e.GetId()-ID_GRID_USER_DEL;
@@ -498,7 +498,7 @@ void LeftPanel::build_grid_menu() {
     PopupMenu(grid_menu);
     delete grid_menu;
 }
-void LeftPanel::set_grid(float val,bool metric) {
-    file.GetSelectedBoard().active_grid_val=val;
+void LeftPanel::set_grid(float val) {
+    file.GetSelectedBoard().active_grid_val=val*10000.0;
     grid_button->SetLabel(get_grid_str(val));
 }
