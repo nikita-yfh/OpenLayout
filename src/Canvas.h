@@ -36,4 +36,6 @@ protected:
 	void OnKey(wxKeyEvent&e);
 	Vec2 GetPos(Vec2 mouse);
 	Vec2 GetMousePos(wxMouseEvent&);
+
+	void MoveObjects(Vec2 mouse);
 };
