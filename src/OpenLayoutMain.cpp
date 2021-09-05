@@ -122,7 +122,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
     EVT_UPDATE_UI(ID_LAYER_O,OpenLayoutFrame::updateui_edit)
 wxEND_EVENT_TABLE()
 
-OpenLayoutFrame::OpenLayoutFrame()
+OpenLayoutFrame::OpenLayoutFrame(const char *filename)
     :wxFrame(0,wxID_ANY,"OpenLayout") {
     wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
     init_menu_bar();
@@ -141,8 +141,8 @@ OpenLayoutFrame::OpenLayoutFrame()
     SetSizer(all_box);
     SetAutoLayout(true);
 
-    file.load("./1.lay6");
-    file.save("./2.lay6");
+    if(filename)
+		file.load(filename);
 }
 
 void OpenLayoutFrame::close(wxCommandEvent&) {

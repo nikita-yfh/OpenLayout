@@ -31,7 +31,8 @@ void Canvas::OnMouseWheel(wxMouseEvent&e){ //zooming canvas
 	board.camera=((mouse+board.camera)/zoom_old*board.zoom)-mouse;
 	StabilizeCamera();
 
-	clickboardpos=board.first_selected().get_position();
+	if(board.get_selected_count())
+		clickboardpos=board.first_selected().get_position();
 	clickmousepos=mousepos=mouse;
 
 	Refresh();
@@ -90,9 +91,10 @@ void Canvas::OnDragScroll(wxTimerEvent&e){
 		if(mousepos.y<0)board.camera.y-=10;
 		if(mousepos.x>wsize.x)board.camera.x+=10;
 		if(mousepos.y>wsize.y)board.camera.y+=10;
-		if(selection==SEL_OBJECT)
+		if(selection==SEL_OBJECT){
 			clickmousepos+=(camera_old-board.camera);
-		MoveObjects(mousepos);
+			MoveObjects(mousepos);
+		}
 		sel_rect.SetP2(GetPos(mousepos));
 		Refresh();
 	}

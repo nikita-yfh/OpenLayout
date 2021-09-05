@@ -18,8 +18,7 @@
 
 class OpenLayoutFrame: public wxFrame {
 public:
-
-    OpenLayoutFrame();
+    OpenLayoutFrame(const char *filename=nullptr);
 private:
 
     void init_menu_bar();
