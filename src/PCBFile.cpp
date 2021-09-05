@@ -574,6 +574,9 @@ void Object::set_position(Vec2 p){
 	else if(type==OBJ_POLY||type==OBJ_LINE)
 		move(p-get_position());
 }
+Board::Board(){
+	set_default();
+}
 Object &Board::first_selected(){
 	for(Object &o : objects)
 		if(o.selected)
@@ -826,5 +829,14 @@ Board &PCBFile::GetSelectedBoard() {
     assert(active_board_tab<boards.size());
     return boards[active_board_tab];
 }
-
+PCBFile::PCBFile(){
+	set_default();
+}
+void PCBFile::set_default(){
+	boards.clear();
+	active_board_tab=0;
+	boards.push_back(Board());
+	GetSelectedBoard().build_empty(Vec2i(1000,500),"New board",Vec2i(1600000,1000000));
+	info=ProjectInfo();
+}
 PCBFile file;

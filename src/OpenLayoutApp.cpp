@@ -12,8 +12,12 @@
 IMPLEMENT_APP(OpenLayoutApp);
 
 bool OpenLayoutApp::OnInit() {
-    OpenLayoutFrame* Frame = new OpenLayoutFrame();
-    Frame->Show();
-    SetTopWindow(Frame);
+    OpenLayoutFrame* frame;
+	if(argc>1)
+		frame=new OpenLayoutFrame(argv[1]);
+	else
+		frame=new OpenLayoutFrame();
+    frame->Show();
+    SetTopWindow(frame);
     return true;
 }

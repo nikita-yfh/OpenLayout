@@ -158,6 +158,7 @@ struct Object {
 
 
 struct Board {
+	Board();
     string name;
     uint8_t __pad0[4];
     Vec2i size;
@@ -210,6 +211,7 @@ struct ProjectInfo {
 };
 
 struct PCBFile {
+	PCBFile();
     const uint32_t magic=0xFFAA3306;
     vector<Board>boards;
     uint32_t active_board_tab;
