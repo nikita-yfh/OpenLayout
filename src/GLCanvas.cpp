@@ -133,9 +133,11 @@ void GLCanvas::DrawObject(const Object &o,float d){
 		}break;
 	case OBJ_CIRCLE:{
 		/* Triangle strip:
+				outer
 			0---2---4---6---8 ...
 			 \ / \ / \ / \ /  ...
 			  1---3---5---7   ...
+				inner
 		*/
 		float total_angle=delta_angle(o.start_angle,o.end_angle)/1000.0f;
 		float inner=o.size.inner;
@@ -391,7 +393,6 @@ void GLCanvas::Draw(wxPaintEvent&){
 	DrawAnchor(board);
 	DrawSelection(board);
 
-
     glFlush();
     SwapBuffers();
 }
@@ -399,21 +400,22 @@ void GLCanvas::DrawAnchor(const Board &board){
 	glDisable(GL_MULTISAMPLE);
 	Vec2i anchor=Vec2i(int(board.anchor.x*board.zoom)/board.zoom,
 						int(board.anchor.y*board.zoom)/board.zoom);
+	const float anchor_isize=anchor_size-1.0f;
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glLineWidth(3.0f);
 	glBegin(GL_LINES);
-		glVertex2f(anchor.x,-anchor.y-15.0f/board.zoom);
-		glVertex2f(anchor.x,-anchor.y+15.0f/board.zoom);
-		glVertex2f(anchor.x-15.0f/board.zoom,-anchor.y);
-		glVertex2f(anchor.x+15.0f/board.zoom,-anchor.y);
+		glVertex2f(anchor.x,-anchor.y-anchor_size/board.zoom);
+		glVertex2f(anchor.x,-anchor.y+anchor_size/board.zoom);
+		glVertex2f(anchor.x-anchor_size/board.zoom,-anchor.y);
+		glVertex2f(anchor.x+anchor_size/board.zoom,-anchor.y);
 	glEnd();
 	glLineWidth(1.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glBegin(GL_LINES);
-		glVertex2f(anchor.x,-anchor.y-14.0f/board.zoom);
-		glVertex2f(anchor.x,-anchor.y+14.0f/board.zoom);
-		glVertex2f(anchor.x-14.0f/board.zoom,-anchor.y);
-		glVertex2f(anchor.x+14.0f/board.zoom,-anchor.y);
+		glVertex2f(anchor.x,-anchor.y-anchor_isize/board.zoom);
+		glVertex2f(anchor.x,-anchor.y+anchor_isize/board.zoom);
+		glVertex2f(anchor.x-anchor_isize/board.zoom,-anchor.y);
+		glVertex2f(anchor.x+anchor_isize/board.zoom,-anchor.y);
 	glEnd();
 	DrawCircle(anchor,4.0/board.zoom);
 	glColor4f(0.0f,0.0f,0.0f,1.0f);

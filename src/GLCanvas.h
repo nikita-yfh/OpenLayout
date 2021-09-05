@@ -22,4 +22,6 @@ private:
 	void Draw(wxPaintEvent&);
 	void DrawAnchor(const Board &board);
 	void DrawSelection(const Board &board);
+
+	const float anchor_size=15.0f;
 };

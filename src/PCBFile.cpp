@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <cfloat>
+#include "Settings.h"
 
 void PCBFile::AddBoard(Board b) {
     boards.push_back(b);
@@ -409,23 +410,25 @@ bool Object::point_in(Vec2 point) const {
 			}
 		}
 	}else if(type==OBJ_CIRCLE) {
-		float angle=deg(get_angle_v(pos-point))*1000.0f;
-		Vec2 circles[2];
-		get_ending_circles(circles);
+		Vec2 circles[2]; get_ending_circles(circles);
+		float _line_width=size.outer-size.inner;
 		for(int q=0;q<2;q++)
-			if(point_in_circle(point,circles[q],(size.outer-size.inner)/2.0f))
+			if(point_in_circle(point,circles[q],_line_width/2.0f))
 				return true;
-		float arc_center_a=(start_angle+delta_angle(start_angle,end_angle))/1000.0f; //center between start and end
-		Vec2 arc_center=pos+Vec2(cosr(arc_center_a),sinr(arc_center_a))*size.outer;
 
 		if(!point_in_circle(point,pos,size.outer))
 			return false;
 		if(fill){
-			/*if(points_one_side(circles[0],circles[1],point,arc_center))
-				return false;*/
+			float arc_center_a=(start_angle+delta_angle(start_angle,end_angle)/2.0f)/1000.0f; //center between start and end
+			Vec2 arc_center=Vec2(cosr(arc_center_a),sinr(arc_center_a))*size.outer;
+			Vec2 d=arc_center; d.Normalize(_line_width/2.0f);
+
+			if(!points_one_side(circles[0]-d,circles[1]-d,point,pos+arc_center))
+				return false;
         }else{
 			if(point_in_circle(point,pos,size.inner))
 				return false;
+			float angle=deg(get_angle_v(pos-point))*1000.0f;
 			if(start_angle<end_angle){
 				if(angle<start_angle || angle>end_angle)
 					return false;
@@ -482,6 +485,24 @@ bool Object::rect_cross(Rect4 r) const {
 					return true;
 			}
 		}
+	}else if(type==OBJ_CIRCLE){
+		Vec2 circles[2]; get_ending_circles(circles);
+		Vec2 nearest(min(r.x2,max(r.x1,pos.x)),
+					min(r.y2,max(r.y1,pos.y)));
+		if(point_in(nearest))return true;
+
+		//WORKAROUND, need to fix
+		float total_angle=delta_angle(start_angle,end_angle)/1000.0f;
+		float radius=get_radius();
+		for(float theta = start_angle; theta <= start_angle+total_angle; theta+=(total_angle/s.circle_quality)) {
+			Vec2 point(pos.x+radius * cosr(-theta),
+						pos.y+radius * sinr(-theta));
+
+			Vec2 n(min(r.x2,max(r.x1,point.x)),
+						min(r.y2,max(r.y1,point.y)));
+			if(point_in(n))return true;
+		}
+		//end WORKAROUND
 	}
     return false;
 }
