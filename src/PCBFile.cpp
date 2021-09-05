@@ -655,17 +655,11 @@ bool Board::can_ungroup()const{
 	return false;
 }
 int32_t Board::get_free_group() const{
-	for(int32_t group=1;;group++){
-		bool ok=false;
-		for(const Object &o : objects){
-			if(o.selected){
-				for(const int32_t &g : o.groups){
-					if(g==group+1)ok=true;
-				}
-			}
-		}
-		if(!ok)return group+1;
-	}
+	int m=1;
+	for(const Object &o : objects)
+		for(const int32_t &g : o.groups)
+			m=max(m,g);
+	return m+1;
 }
 void Board::set_sel_layer(uint8_t layer){
 	for(Object &o : objects)
