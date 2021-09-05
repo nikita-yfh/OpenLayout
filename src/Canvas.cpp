@@ -30,6 +30,10 @@ void Canvas::OnMouseWheel(wxMouseEvent&e){ //zooming canvas
 
 	board.camera=((mouse+board.camera)/zoom_old*board.zoom)-mouse;
 	StabilizeCamera();
+
+	clickboardpos=board.first_selected().get_position();
+	clickmousepos=mousepos=mouse;
+
 	Refresh();
 	e.Skip();
 }
@@ -51,8 +55,8 @@ void Canvas::OnLeftDown(wxMouseEvent&e){
 		for(Object &o : board.objects)
 			o.selected=false;
 	if(firstsel){
-		clickboardpos=firstsel->get_position();
 		board.select(*firstsel);
+		clickboardpos=board.first_selected().get_position();
 		selection=SEL_OBJECT;
 	}
 	if(selection!=SEL_OBJECT){
@@ -81,14 +85,25 @@ void Canvas::OnDragScroll(wxTimerEvent&e){
 		Board &board=file.GetSelectedBoard();
 		Vec2i wsize;
 		GetSize(&wsize.width,&wsize.height);
+		Vec2 camera_old=board.camera;
 		if(mousepos.x<0)board.camera.x-=10;
 		if(mousepos.y<0)board.camera.y-=10;
 		if(mousepos.x>wsize.x)board.camera.x+=10;
 		if(mousepos.y>wsize.y)board.camera.y+=10;
+		if(selection==SEL_OBJECT)
+			clickmousepos+=(camera_old-board.camera);
+		MoveObjects(mousepos);
 		sel_rect.SetP2(GetPos(mousepos));
 		Refresh();
 	}
 	e.Skip();
+}
+void Canvas::MoveObjects(Vec2 mouse){
+    Board &board=file.GetSelectedBoard();
+	Vec2 delta=GetPos(mouse)-GetPos(clickmousepos)-board.first_selected().get_position()+clickboardpos;
+		for(Object &o : board.objects)
+			if(o.selected)
+				o.move(board.to_grid(delta,shift,ctrl));
 }
 void Canvas::OnMouseMotion(wxMouseEvent&e){
     Board &board=file.GetSelectedBoard();
@@ -107,12 +122,8 @@ void Canvas::OnMouseMotion(wxMouseEvent&e){
 			if(selection==SEL_RECT)
 				board.select(sel_rect);*/
 			//////////
-		}else if(selection==SEL_OBJECT){
-			Vec2 delta=GetPos(mouse)-GetPos(clickmousepos)-board.first_selected().get_position()+clickboardpos;
-			for(Object &o : board.objects)
-				if(o.selected)
-					o.move(board.to_grid(delta,shift,ctrl));
-		}
+		}else if(selection==SEL_OBJECT)
+			MoveObjects(mouse);
 	}else refresh=false;
 	if(refresh)Refresh();
 	e.Skip();
