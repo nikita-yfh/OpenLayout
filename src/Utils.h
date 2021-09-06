@@ -5,7 +5,7 @@
 #include <cmath>
 
 using namespace std;
-
+float range(float v,float a,float b);
 float to_mil(float v);
 float to_mm(float v);
 

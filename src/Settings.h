@@ -134,9 +134,4 @@ struct Settings {
 
 	uint8_t circle_quality;
 
-	uint8_t selected_tool;
-
-	Vec2 smd_size{1.6f,0.9f};
-	Vec2 pad_size{1.8f,0.6f};
-	float track_size=0.8f;
 };

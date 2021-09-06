@@ -1,6 +1,9 @@
 #include "Utils.h"
 #include <algorithm>
 #include <cfloat>
+float range(float v,float a,float b){
+	return max(a,min(b,v));
+}
 float to_mm(float v) {
 	return v*0.0254f;
 }
