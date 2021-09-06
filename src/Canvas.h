@@ -4,13 +4,13 @@
 #include "Settings.h"
 #include "PCBFile.h"
 
-enum{
+enum {
 	SEL_NONE,
 	SEL_RECT,
 	SEL_OBJECT
 };
 
-class Canvas : public wxGLCanvas{
+class Canvas : public wxGLCanvas {
 public:
 	Canvas(wxWindow *parent);
 protected:
@@ -18,16 +18,16 @@ protected:
 	Vec2 clickboardpos;
 	Vec2 mousepos;
 
-    const float zoom_ratio=1.3f;
-    uint8_t selection=SEL_NONE;
+	const float zoom_ratio=1.3f;
+	uint8_t selection=SEL_NONE;
 	Rect4 sel_rect;
 
-    void OnDragScroll(wxTimerEvent&);
-    wxTimer dragscroll_timer;
+	void OnDragScroll(wxTimerEvent&);
+	wxTimer dragscroll_timer;
 
-    void StabilizeCamera();
-    bool shift=false;
-    bool ctrl=false;
+	void StabilizeCamera();
+	bool shift=false;
+	bool ctrl=false;
 	void OnMouseWheel(wxMouseEvent&);
 	void OnMouseMotion(wxMouseEvent&);
 	void OnMiddleDown(wxMouseEvent&e);

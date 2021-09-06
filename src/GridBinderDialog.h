@@ -8,11 +8,11 @@
 
 class GridBinderDialog : public wxDialog {
 public:
-    GridBinderDialog(wxWindow* parent,const double keys[9]);
-    void Get(double grids[9]);
+	GridBinderDialog(wxWindow* parent,const double keys[9]);
+	void Get(double grids[9]);
 private:
-    double grids[9];
-    wxButton *change;
-    wxListView *key_list;
+	double grids[9];
+	wxButton *change;
+	wxListView *key_list;
 };
 void ShowGridBinderDialog(wxWindow *parent,double keys[9]);

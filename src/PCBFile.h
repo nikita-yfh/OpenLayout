@@ -227,4 +227,3 @@ struct PCBFile {
     void set_default();
 };
 
-extern PCBFile file;

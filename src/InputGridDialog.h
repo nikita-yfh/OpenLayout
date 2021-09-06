@@ -6,10 +6,10 @@
 
 class InputGridDialog: public wxDialog {
 public:
-    InputGridDialog(wxWindow* parent);
-    float Get(); //in mm
+	InputGridDialog(wxWindow* parent);
+	float Get(); //in mm
 
-    wxSpinCtrlDouble *input;
-    wxChoice *units;
+	wxSpinCtrlDouble *input;
+	wxChoice *units;
 };
 

@@ -6,6 +6,6 @@
 
 class AboutDialog: public wxDialog {
 public:
-    AboutDialog(wxWindow* parent);
+	AboutDialog(wxWindow* parent);
 };
 

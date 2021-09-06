@@ -182,19 +182,19 @@ void NewBoardDialog::SetType(const BoardType &t) {
 }
 Board NewBoardDialog::build() {
 	RecalcSize();
-	Board board;
+	Board b;
 	switch(type) {
 	case BoardType::Empty:
-		board.build_empty(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000));
+		b.build_empty(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000));
 		break;
 	case BoardType::Round:
-		board.build_round(Vec2(1000,500),name,size_h*10000,border_size*10000);
+		b.build_round(Vec2(1000,500),name,size_h*10000,border_size*10000);
 		break;
 	case BoardType::Rectangle:
-		board.build_rectangle(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000),border_size*10000);
+		b.build_rectangle(Vec2(1000,500),name,Vec2(size_w*10000,size_h*10000),border_size*10000);
 		break;
 	}
-	return board;
+	return b;
 }
 bool NewBoardDialog::isValid() {
     if(type==BoardType::Empty)
