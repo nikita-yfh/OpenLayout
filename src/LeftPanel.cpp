@@ -141,7 +141,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 			});
 			sizer->Add(track,0,wxEXPAND|wxLEFT|wxRIGHT,5);
 			w_track_size=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											  wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,SETTINGS.track_size,0.05);
+											  wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,APP.track_size,0.05);
 			w_track_size->Bind(wxEVT_SPINCTRLDOUBLE,[&](wxSpinDoubleEvent&e) {
 				set_track_size(e.GetValue());
 			});
@@ -160,9 +160,9 @@ LeftPanel::LeftPanel(wxWindow *parent):
 					set_pad_size({w_pad_outer->GetValue(),w_pad_inner->GetValue()});
 				};
 				w_pad_outer=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.pad_size.outer,0.05);
+												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.pad_size.outer,0.05);
 				w_pad_inner=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,SETTINGS.pad_size.inner,0.05);
+												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,APP.pad_size.inner,0.05);
 				w_pad_outer->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_pad_inner->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				sizer1->Add(w_pad_outer, 0,wxEXPAND|wxLEFT|wxRIGHT,5);
@@ -183,9 +183,9 @@ LeftPanel::LeftPanel(wxWindow *parent):
 					set_smd_size({w_smd_w->GetValue(),w_smd_h->GetValue()});
 				};
 				w_smd_w=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.smd_size.width,0.05);
+											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.smd_size.width,0.05);
 				w_smd_h=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.smd_size.height,0.05);
+											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.smd_size.height,0.05);
 				w_smd_w->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_smd_h->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				wxBitmapButton *swap_smd=new wxBitmapButton(this,wxID_ANY,
@@ -224,23 +224,23 @@ void add_check_item(wxMenu *parent,const wxString &text, int id,bool enabled=tru
 	item->Check(enabled);
 }
 void LeftPanel::swap_smd_size(wxCommandEvent&e) {
-	swap(SETTINGS.smd_size.width,SETTINGS.smd_size.height);
-	w_smd_w->SetValue(SETTINGS.smd_size.width);
-	w_smd_h->SetValue(SETTINGS.smd_size.height);
+	swap(APP.smd_size.width,APP.smd_size.height);
+	w_smd_w->SetValue(APP.smd_size.width);
+	w_smd_h->SetValue(APP.smd_size.height);
 }
 void LeftPanel::set_pad_size(Vec2 size) {
 	w_pad_outer->SetValue(size.outer);
 	w_pad_inner->SetValue(size.inner);
-	SETTINGS.pad_size=size;
+	APP.pad_size=size;
 }
 void LeftPanel::set_smd_size(Vec2 size) {
 	w_smd_w->SetValue(size.width);
 	w_smd_h->SetValue(size.height);
-	SETTINGS.smd_size=size;
+	APP.smd_size=size;
 }
 void LeftPanel::set_track_size(float size) {
 	w_track_size->SetValue(size);
-	SETTINGS.track_size=size;
+	APP.track_size=size;
 }
 
 void LeftPanel::build_smd_menu() {
@@ -252,8 +252,8 @@ void LeftPanel::build_smd_menu() {
 			Vec2 size=SETTINGS.smd_sizes[q];
 			char text[128];
 			sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
-			if(SETTINGS.smd_size==size)sel=true;
-			smd_menu->AppendCheckItem(ID_SMD_SEL+q,text,wxEmptyString)->Check(SETTINGS.smd_size==size);
+			if(APP.smd_size==size)sel=true;
+			smd_menu->AppendCheckItem(ID_SMD_SEL+q,text,wxEmptyString)->Check(APP.smd_size==size);
 		}
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
 			int id=e.GetId()-ID_SMD_SEL;
@@ -263,10 +263,10 @@ void LeftPanel::build_smd_menu() {
 	smd_menu->AppendSeparator();
 	{
 		char text[128];
-		sprintf(text,"%.2f X %.2f %s",SETTINGS.smd_size.width,SETTINGS.smd_size.height,"mm");
+		sprintf(text,"%.2f X %.2f %s",APP.smd_size.width,APP.smd_size.height,"mm");
 		add_item(smd_menu,text,ID_SMD_ADD,plus_xpm,!sel);
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-			SETTINGS.smd_sizes.push_back(SETTINGS.smd_size);
+			SETTINGS.smd_sizes.push_back(APP.smd_size);
 		},ID_SMD_ADD);
 	}
 	{
@@ -298,7 +298,7 @@ void LeftPanel::build_pad_menu() {
 			Vec2 size=SETTINGS.pad_sizes[q];
 			char text[128];
 			sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
-			if(SETTINGS.pad_size==size) {
+			if(APP.pad_size==size) {
 				add_check_item(pad_menu,text,ID_PAD_SEL+q,true);
 				sel=true;
 			} else
@@ -312,10 +312,10 @@ void LeftPanel::build_pad_menu() {
 	pad_menu->AppendSeparator();
 	{
 		char text[128];
-		sprintf(text,"%.2f X %.2f %s",SETTINGS.pad_size.outer,SETTINGS.pad_size.inner,"mm");
+		sprintf(text,"%.2f X %.2f %s",APP.pad_size.outer,APP.pad_size.inner,"mm");
 		add_item(pad_menu,text,ID_PAD_ADD,plus_xpm,!sel);
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-			SETTINGS.pad_sizes.push_back(SETTINGS.pad_size);
+			SETTINGS.pad_sizes.push_back(APP.pad_size);
 		},ID_PAD_ADD);
 	}
 	{
@@ -347,7 +347,7 @@ void LeftPanel::build_track_menu() {
 			float size=SETTINGS.track_sizes[q];
 			char text[128];
 			sprintf(text,"%.2f %s",size,"mm");
-			if(SETTINGS.track_size==size) {
+			if(APP.track_size==size) {
 				add_check_item(track_menu,text,ID_TRACK_SEL+q,true);
 				sel=true;
 			} else
@@ -361,10 +361,10 @@ void LeftPanel::build_track_menu() {
 	track_menu->AppendSeparator();
 	{
 		char text[128];
-		sprintf(text,"%.2f %s",SETTINGS.track_size,"mm");
+		sprintf(text,"%.2f %s",APP.track_size,"mm");
 		add_item(track_menu,text,ID_TRACK_ADD,plus_xpm,!sel);
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-			SETTINGS.track_sizes.push_back(SETTINGS.track_size);
+			SETTINGS.track_sizes.push_back(APP.track_size);
 		},ID_TRACK_ADD);
 	}
 	{

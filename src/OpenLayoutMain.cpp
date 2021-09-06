@@ -9,6 +9,7 @@
 #include "LeftPanel.h"
 #include "GLCanvas.h"
 #include "OpenLayoutApp.h"
+#include "BottomPanel.h"
 #include <wx/msgdlg.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
@@ -124,7 +125,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame(const char *filename)
-	:wxFrame(0,wxID_ANY,"OpenLayout") {
+	:wxFrame(0,wxID_ANY,"OpenLayout",wxDefaultPosition,{800,600}) {
 	wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
 	init_menu_bar();
 	init_tool_bar(all_box);
@@ -137,7 +138,7 @@ OpenLayoutFrame::OpenLayoutFrame(const char *filename)
 			content->Add(canvas,1,wxEXPAND|wxALL,5);
 		}
 		all_box->Add(content,1,wxEXPAND);
-		wxBoxSizer *bottom_panel=new wxBoxSizer(wxHORIZONTAL);
+		all_box->Add(new BottomPanel(this),0,wxEXPAND);
 	}
 	SetSizer(all_box);
 	SetAutoLayout(true);

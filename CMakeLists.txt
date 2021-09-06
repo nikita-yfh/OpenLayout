@@ -23,6 +23,7 @@ set(SOURCES
 	src/GLCanvas.cpp
 	src/Canvas.cpp
 	src/LeftPanel.cpp
+	src/BottomPanel.cpp
 )
 set(HEADERS
 	src/ScannedCopyDialog.h
@@ -40,6 +41,7 @@ set(HEADERS
 	src/InputGridDialog.h
 	src/Utils.h
 	src/LeftPanel.h
+	src/BottomPanel.h
 	src/GLCanvas.h
 	src/Canvas.h
 )

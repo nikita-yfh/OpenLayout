@@ -1,8 +1,8 @@
 #include "Canvas.h"
 #include "OpenLayoutApp.h"
 const int attribList[] = {WX_GL_RGBA,
-						  WX_GL_DOUBLEBUFFER,
-						  WX_GL_SAMPLE_BUFFERS, GL_TRUE,
+						  //WX_GL_DOUBLEBUFFER,
+						  WX_GL_SAMPLE_BUFFERS, GL_FALSE,
 						  WX_GL_DEPTH_SIZE, 24, 0, 0
 						 };
 Canvas::Canvas(wxWindow *parent)
@@ -113,6 +113,11 @@ void Canvas::OnMouseMotion(wxMouseEvent&e) {
 
 	bool refresh=true;
 	Vec2 mouse=GetMousePos(e);
+
+	Vec2 boardpos=GetPos(mouse);
+	APP.mouse_board_pos.x=abs(range(boardpos.x,0.0f,BOARD.size.width)-BOARD.anchor.x)/10000.0f;
+	APP.mouse_board_pos.y=abs(range(boardpos.y,-BOARD.size.height,0.0f)-BOARD.anchor.y)/10000.0f;
+
 	if(e.MiddleIsDown()) {
 		BOARD.camera=clickboardpos+(clickmousepos-mouse);
 		StabilizeCamera();
