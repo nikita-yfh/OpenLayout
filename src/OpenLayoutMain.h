@@ -18,30 +18,30 @@
 
 class OpenLayoutFrame: public wxFrame {
 public:
-    OpenLayoutFrame(const char *filename=nullptr);
+	OpenLayoutFrame(const char *filename=nullptr);
 private:
 
-    void init_menu_bar();
-    void init_tool_bar(wxBoxSizer*);
-    void close(wxCommandEvent&);
-    void show_settings(wxCommandEvent&);
-    void show_about(wxCommandEvent&);
-    void show_project_info(wxCommandEvent&);
-    void new_board(wxCommandEvent&);
-    void group(wxCommandEvent&);
-    void ungroup(wxCommandEvent&);
-    void select_all(wxCommandEvent&);
-    void savefile(wxCommandEvent&);
-    void openfile(wxCommandEvent&);
-    void set_sel_layer(wxCommandEvent&);
-    void del(wxCommandEvent&);
-    void show_scan_properties(wxCommandEvent&);
+	void init_menu_bar();
+	void init_tool_bar(wxBoxSizer*);
+	void close(wxCommandEvent&);
+	void show_settings(wxCommandEvent&);
+	void show_about(wxCommandEvent&);
+	void show_project_info(wxCommandEvent&);
+	void new_board(wxCommandEvent&);
+	void group(wxCommandEvent&);
+	void ungroup(wxCommandEvent&);
+	void select_all(wxCommandEvent&);
+	void savefile(wxCommandEvent&);
+	void openfile(wxCommandEvent&);
+	void set_sel_layer(wxCommandEvent&);
+	void del(wxCommandEvent&);
+	void show_scan_properties(wxCommandEvent&);
 
-    void updateui_edit(wxUpdateUIEvent&);
-    void updateui_group(wxUpdateUIEvent&);
-    void updateui_ungroup(wxUpdateUIEvent&);
-    void updateui_multilayer(wxUpdateUIEvent&);
-    wxDECLARE_EVENT_TABLE();
+	void updateui_edit(wxUpdateUIEvent&);
+	void updateui_group(wxUpdateUIEvent&);
+	void updateui_ungroup(wxUpdateUIEvent&);
+	void updateui_multilayer(wxUpdateUIEvent&);
+	wxDECLARE_EVENT_TABLE();
 
-    wxGLCanvas *canvas;
+	wxGLCanvas *canvas;
 };

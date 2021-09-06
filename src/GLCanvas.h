@@ -11,8 +11,8 @@ private:
 	void SetDrillingsColor();
 	void SetLayerColor(const Object &o);
 
-	void DrawGrid(const Board &board);
-	void DrawConnections(const Board &board);
+	void DrawGrid();
+	void DrawConnections();
 	void DrawCircle(Vec2 pos,float r);
 	void DrawLine(Vec2 p1,Vec2 p2,float width,bool s1,bool s2);
 	void DrawSquare(Vec2 pos,float r,float angle);
@@ -20,8 +20,8 @@ private:
 	void DrawPad(const Object &o,float d);
 	void DrawDrillings(const Object &o);
 	void Draw(wxPaintEvent&);
-	void DrawAnchor(const Board &board);
-	void DrawSelection(const Board &board);
+	void DrawAnchor();
+	void DrawSelection();
 
 	const float anchor_size=15.0f;
 };

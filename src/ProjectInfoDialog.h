@@ -8,11 +8,11 @@
 
 class ProjectInfoDialog: public wxDialog {
 public:
-    void Get(ProjectInfo &info);
-    ProjectInfoDialog(wxWindow* parent,const ProjectInfo &info);
+	void Get(ProjectInfo &info);
+	ProjectInfoDialog(wxWindow* parent,const ProjectInfo &info);
 
-    wxTextCtrl* TextAuthor;
-    wxTextCtrl* TextComment;
-    wxTextCtrl* TextCompany;
-    wxTextCtrl* TextTitle;
+	wxTextCtrl* TextAuthor;
+	wxTextCtrl* TextComment;
+	wxTextCtrl* TextCompany;
+	wxTextCtrl* TextTitle;
 };

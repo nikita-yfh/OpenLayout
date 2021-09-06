@@ -6,6 +6,6 @@
 
 class LayerInfoDialog: public wxDialog {
 public:
-    LayerInfoDialog(wxWindow* parent);
+	LayerInfoDialog(wxWindow* parent);
 };
 

@@ -11,43 +11,43 @@
 #include <wx/textctrl.h>
 
 enum class BoardType {
-    Empty,
-    Rectangle,
-    Round
+	Empty,
+	Rectangle,
+	Round
 };
 
 class NewBoardDialog: public wxDialog {
 public:
-    NewBoardDialog(wxWindow* parent);
+	NewBoardDialog(wxWindow* parent);
 
-    Board build();
-    bool isValid();
+	Board build();
+	bool isValid();
 
 private:
 
-    wxRadioButton *types[3];
-    wxPanel *panels[4];
+	wxRadioButton *types[3];
+	wxPanel *panels[4];
 
-    wxSpinCtrlDouble *width;
-    wxSpinCtrlDouble *height;
-    wxSpinCtrlDouble *diameter;
-    wxSpinCtrlDouble *border;
-    wxTextCtrl *input_name;
-    wxStaticText *all_width;
-    wxStaticText *all_height;
+	wxSpinCtrlDouble *width;
+	wxSpinCtrlDouble *height;
+	wxSpinCtrlDouble *diameter;
+	wxSpinCtrlDouble *border;
+	wxTextCtrl *input_name;
+	wxStaticText *all_width;
+	wxStaticText *all_height;
 
-    void SetType(const BoardType &b);
+	void SetType(const BoardType &b);
 
-    uint32_t size_w;
-    uint32_t size_h;
+	uint32_t size_w;
+	uint32_t size_h;
 
-    uint32_t border_size;
+	uint32_t border_size;
 
-    char name[20];
+	char name[20];
 
-    BoardType type;
+	BoardType type;
 
-    void RecalcSize();
-    void _RecalcSize(wxCommandEvent &e);
+	void RecalcSize();
+	void _RecalcSize(wxCommandEvent &e);
 };
 

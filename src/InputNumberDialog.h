@@ -7,9 +7,9 @@
 
 class InputNumberDialog: public wxDialog {
 public:
-    InputNumberDialog(wxWindow* parent,float min,float max,float init,float step);
-    float Get();
-    wxSpinCtrlDouble *input;
+	InputNumberDialog(wxWindow* parent,float min,float max,float init,float step);
+	float Get();
+	wxSpinCtrlDouble *input;
 };
 
 float ShowInputNumberDialog(wxWindow* parent,float min,float max,float init,float step);

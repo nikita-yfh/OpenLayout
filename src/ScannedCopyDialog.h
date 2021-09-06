@@ -9,9 +9,9 @@
 
 class ScannedCopyDialog: public wxDialog {
 public:
-    ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2],Settings &s);
+	ScannedCopyDialog(wxWindow* parent,const ImageConfig images[2],Settings &s);
 
-    void Get(ImageConfig images[2]);
+	void Get(ImageConfig images[2]);
 private:
 	wxSpinCtrl *dpi[2];
 	wxSpinCtrl *dx[2];

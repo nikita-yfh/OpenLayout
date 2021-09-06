@@ -12,72 +12,73 @@
 #undef LEFT_PANEL_XPM
 #include "InputGridDialog.h"
 #include "GridBinderDialog.h"
+#include "OpenLayoutApp.h"
 
 enum class Tool {
-    Edit,
-    Zoom,
-    Track,
-    Pad,
-    SMDPad,
-    Circle,
-    Rectangle,
-    Zone,
-    SpecialForm,
-    Text,
-    Connection,
-    Autoroute,
-    Test,
-    Measure,
-    Photoview,
-    SolderMask
+	Edit,
+	Zoom,
+	Track,
+	Pad,
+	SMDPad,
+	Circle,
+	Rectangle,
+	Zone,
+	SpecialForm,
+	Text,
+	Connection,
+	Autoroute,
+	Test,
+	Measure,
+	Photoview,
+	SolderMask
 };
 
-enum{
-    ID_TOOL_EDIT,
-    ID_TOOL_ZOOM,
-    ID_TOOL_TRACK,
-    ID_TOOL_PAD,
-    ID_TOOL_SMD_PAD,
-    ID_TOOL_CIRCLE,
-    ID_TOOL_RECTANGLE,
-    ID_TOOL_ZONE,
-    ID_TOOL_FORM,
-    ID_TOOL_TEXT,
-    ID_TOOL_SOLDER_MASK,
-    ID_TOOL_CONNECTIONS,
-    ID_TOOL_AUTOROUTE,
-    ID_TOOL_TEST,
-    ID_TOOL_MEASURE,
-    ID_TOOL_PHOTOVIEW,
+enum {
+	ID_TOOL_EDIT,
+	ID_TOOL_ZOOM,
+	ID_TOOL_TRACK,
+	ID_TOOL_PAD,
+	ID_TOOL_SMD_PAD,
+	ID_TOOL_CIRCLE,
+	ID_TOOL_RECTANGLE,
+	ID_TOOL_ZONE,
+	ID_TOOL_FORM,
+	ID_TOOL_TEXT,
+	ID_TOOL_SOLDER_MASK,
+	ID_TOOL_CONNECTIONS,
+	ID_TOOL_AUTOROUTE,
+	ID_TOOL_TEST,
+	ID_TOOL_MEASURE,
+	ID_TOOL_PHOTOVIEW,
 
-    ID_TRACK_SEL,
-    ID_TRACK_ADD=ID_TRACK_SEL+100,
-    ID_TRACK_DEL,
-    ID_PAD_SEL=ID_TRACK_DEL+100,
-    ID_PAD_ADD=ID_PAD_SEL+100,
-    ID_PAD_DEL,
-    ID_SMD_SEL=ID_PAD_DEL+100,
-    ID_SMD_ADD=ID_SMD_SEL+100,
-    ID_SMD_DEL,
+	ID_TRACK_SEL,
+	ID_TRACK_ADD=ID_TRACK_SEL+100,
+	ID_TRACK_DEL,
+	ID_PAD_SEL=ID_TRACK_DEL+100,
+	ID_PAD_ADD=ID_PAD_SEL+100,
+	ID_PAD_DEL,
+	ID_SMD_SEL=ID_PAD_DEL+100,
+	ID_SMD_ADD=ID_SMD_SEL+100,
+	ID_SMD_DEL,
 
-    ID_GRID_NORMAL,
-    ID_GRID_METRIC=ID_GRID_NORMAL+8,
-    ID_GRID_USER=ID_GRID_METRIC+11,
-    ID_GRID_USER_DEL=ID_GRID_USER+100,
-    ID_GRID_USER_NEW=ID_GRID_USER_DEL+100,
+	ID_GRID_NORMAL,
+	ID_GRID_METRIC=ID_GRID_NORMAL+8,
+	ID_GRID_USER=ID_GRID_METRIC+11,
+	ID_GRID_USER_DEL=ID_GRID_USER+100,
+	ID_GRID_USER_NEW=ID_GRID_USER_DEL+100,
 
-    ID_GRID_HOTKEYS,
+	ID_GRID_HOTKEYS,
 
-    ID_GRID_LINES,
-    ID_GRID_DOTS,
+	ID_GRID_LINES,
+	ID_GRID_DOTS,
 
-    ID_SUBGRID_OFF,
-    ID_SUBGRID_2,
-    ID_SUBGRID_4,
-    ID_SUBGRID_5,
-    ID_SUBGRID_10,
+	ID_SUBGRID_OFF,
+	ID_SUBGRID_2,
+	ID_SUBGRID_4,
+	ID_SUBGRID_5,
+	ID_SUBGRID_10,
 
-    ID_SHOW_GRID,
+	ID_SHOW_GRID,
 };
 
 LeftPanel::LeftPanel(wxWindow *parent):
@@ -87,7 +88,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		wxBoxSizer *hsizer=new wxBoxSizer(wxHORIZONTAL);
 		{
 			wxToolBar *tools=new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,
-						wxTB_VERTICAL|wxTB_FLAT|wxTB_TEXT|wxTB_HORZ_TEXT|wxTB_HORZ_LAYOUT|wxTB_NOALIGN|wxTB_NODIVIDER);
+										   wxTB_VERTICAL|wxTB_FLAT|wxTB_TEXT|wxTB_HORZ_TEXT|wxTB_HORZ_LAYOUT|wxTB_NOALIGN|wxTB_NODIVIDER);
 			const char**images[]= {
 				tool_edit_xpm,
 				tool_zoom_xpm,
@@ -140,7 +141,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 			});
 			sizer->Add(track,0,wxEXPAND|wxLEFT|wxRIGHT,5);
 			w_track_size=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											  wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,s.track_size,0.05);
+											  wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,SETTINGS.track_size,0.05);
 			w_track_size->Bind(wxEVT_SPINCTRLDOUBLE,[&](wxSpinDoubleEvent&e) {
 				set_track_size(e.GetValue());
 			});
@@ -159,9 +160,9 @@ LeftPanel::LeftPanel(wxWindow *parent):
 					set_pad_size({w_pad_outer->GetValue(),w_pad_inner->GetValue()});
 				};
 				w_pad_outer=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,s.pad_size.outer,0.05);
+												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.pad_size.outer,0.05);
 				w_pad_inner=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,s.pad_size.inner,0.05);
+												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,SETTINGS.pad_size.inner,0.05);
 				w_pad_outer->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_pad_inner->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				sizer1->Add(w_pad_outer, 0,wxEXPAND|wxLEFT|wxRIGHT,5);
@@ -182,9 +183,9 @@ LeftPanel::LeftPanel(wxWindow *parent):
 					set_smd_size({w_smd_w->GetValue(),w_smd_h->GetValue()});
 				};
 				w_smd_w=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,s.smd_size.width,0.05);
+											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.smd_size.width,0.05);
 				w_smd_h=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
-											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,s.smd_size.height,0.05);
+											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,SETTINGS.smd_size.height,0.05);
 				w_smd_w->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_smd_h->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				wxBitmapButton *swap_smd=new wxBitmapButton(this,wxID_ANY,
@@ -205,300 +206,300 @@ LeftPanel::LeftPanel(wxWindow *parent):
 	SetVirtualSize(left_box->GetSize());
 }
 void add_submenu(wxMenu *parent,wxMenu *child,const wxString &name,const wxBitmap &bitmap=wxNullBitmap,bool enabled=true) {
-    wxMenuItem *item=new wxMenuItem(parent,wxID_ANY,name);
-    item->SetBitmap(bitmap);
-    item->SetSubMenu(child);
-    parent->Append(item);
-    item->Enable(enabled);
+	wxMenuItem *item=new wxMenuItem(parent,wxID_ANY,name);
+	item->SetBitmap(bitmap);
+	item->SetSubMenu(child);
+	parent->Append(item);
+	item->Enable(enabled);
 }
 void add_item(wxMenu *parent,const wxString &text, int id, const wxBitmap &bitmap=wxNullBitmap,bool enabled=true) {
-    wxMenuItem *item=new wxMenuItem(parent,id,text);
-    item->SetBitmap(bitmap);
-    parent->Append(item);
-    item->Enable(enabled);
+	wxMenuItem *item=new wxMenuItem(parent,id,text);
+	item->SetBitmap(bitmap);
+	parent->Append(item);
+	item->Enable(enabled);
 }
 void add_check_item(wxMenu *parent,const wxString &text, int id,bool enabled=true) {
-    wxMenuItem *item=new wxMenuItem(parent,id,text,wxEmptyString,wxITEM_CHECK);
-    parent->Append(item);
-    item->Check(enabled);
+	wxMenuItem *item=new wxMenuItem(parent,id,text,wxEmptyString,wxITEM_CHECK);
+	parent->Append(item);
+	item->Check(enabled);
 }
 void LeftPanel::swap_smd_size(wxCommandEvent&e) {
-    swap(s.smd_size.width,s.smd_size.height);
-    w_smd_w->SetValue(s.smd_size.width);
-    w_smd_h->SetValue(s.smd_size.height);
+	swap(SETTINGS.smd_size.width,SETTINGS.smd_size.height);
+	w_smd_w->SetValue(SETTINGS.smd_size.width);
+	w_smd_h->SetValue(SETTINGS.smd_size.height);
 }
 void LeftPanel::set_pad_size(Vec2 size) {
-    w_pad_outer->SetValue(size.outer);
-    w_pad_inner->SetValue(size.inner);
-    s.pad_size=size;
+	w_pad_outer->SetValue(size.outer);
+	w_pad_inner->SetValue(size.inner);
+	SETTINGS.pad_size=size;
 }
 void LeftPanel::set_smd_size(Vec2 size) {
-    w_smd_w->SetValue(size.width);
-    w_smd_h->SetValue(size.height);
-    s.smd_size=size;
+	w_smd_w->SetValue(size.width);
+	w_smd_h->SetValue(size.height);
+	SETTINGS.smd_size=size;
 }
 void LeftPanel::set_track_size(float size) {
-    w_track_size->SetValue(size);
-    s.track_size=size;
+	w_track_size->SetValue(size);
+	SETTINGS.track_size=size;
 }
 
 void LeftPanel::build_smd_menu() {
-    wxMenu *smd_menu=new wxMenu();
-    sort(s.smd_sizes.begin(),s.smd_sizes.end());
-    bool sel=false;
-    {
-        for(int q=0; q<s.smd_sizes.size(); q++) {
-            Vec2 size=s.smd_sizes[q];
-            char text[128];
-            sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
-            if(s.smd_size==size)sel=true;
-			smd_menu->AppendCheckItem(ID_SMD_SEL+q,text,wxEmptyString)->Check(s.smd_size==size);
-        }
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            int id=e.GetId()-ID_SMD_SEL;
-            set_smd_size(s.smd_sizes[id]);
-        },ID_SMD_SEL,ID_SMD_SEL+99);
-    }
-    smd_menu->AppendSeparator();
-    {
-        char text[128];
-        sprintf(text,"%.2f X %.2f %s",s.smd_size.width,s.smd_size.height,"mm");
-        add_item(smd_menu,text,ID_SMD_ADD,plus_xpm,!sel);
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            s.smd_sizes.push_back(s.smd_size);
-        },ID_SMD_ADD);
-    }
-    {
-        smd_menu->AppendSeparator();
-        wxMenu *del_menu=new wxMenu();
-        {
-            for(int q=0; q<s.smd_sizes.size(); q++) {
-                Vec2 size=s.smd_sizes[q];
-                char text[128];
-                sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
-                del_menu->Append(ID_SMD_DEL+q,text);
-            }
-            Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-                int id=e.GetId()-ID_SMD_DEL;
-                s.smd_sizes.erase(s.smd_sizes.begin()+id);
-            },ID_SMD_DEL,ID_SMD_DEL+99);
-        }
-        add_submenu(smd_menu,del_menu,_("Remove..."),cross_xpm,s.smd_sizes.size()!=0);
-    }
-    PopupMenu(smd_menu);
-    delete smd_menu;
+	wxMenu *smd_menu=new wxMenu();
+	sort(SETTINGS.smd_sizes.begin(),SETTINGS.smd_sizes.end());
+	bool sel=false;
+	{
+		for(int q=0; q<SETTINGS.smd_sizes.size(); q++) {
+			Vec2 size=SETTINGS.smd_sizes[q];
+			char text[128];
+			sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
+			if(SETTINGS.smd_size==size)sel=true;
+			smd_menu->AppendCheckItem(ID_SMD_SEL+q,text,wxEmptyString)->Check(SETTINGS.smd_size==size);
+		}
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			int id=e.GetId()-ID_SMD_SEL;
+			set_smd_size(SETTINGS.smd_sizes[id]);
+		},ID_SMD_SEL,ID_SMD_SEL+99);
+	}
+	smd_menu->AppendSeparator();
+	{
+		char text[128];
+		sprintf(text,"%.2f X %.2f %s",SETTINGS.smd_size.width,SETTINGS.smd_size.height,"mm");
+		add_item(smd_menu,text,ID_SMD_ADD,plus_xpm,!sel);
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			SETTINGS.smd_sizes.push_back(SETTINGS.smd_size);
+		},ID_SMD_ADD);
+	}
+	{
+		smd_menu->AppendSeparator();
+		wxMenu *del_menu=new wxMenu();
+		{
+			for(int q=0; q<SETTINGS.smd_sizes.size(); q++) {
+				Vec2 size=SETTINGS.smd_sizes[q];
+				char text[128];
+				sprintf(text,"%.2f X %.2f %s",size.width,size.height,"mm");
+				del_menu->Append(ID_SMD_DEL+q,text);
+			}
+			Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+				int id=e.GetId()-ID_SMD_DEL;
+				SETTINGS.smd_sizes.erase(SETTINGS.smd_sizes.begin()+id);
+			},ID_SMD_DEL,ID_SMD_DEL+99);
+		}
+		add_submenu(smd_menu,del_menu,_("Remove..."),cross_xpm,SETTINGS.smd_sizes.size()!=0);
+	}
+	PopupMenu(smd_menu);
+	delete smd_menu;
 }
 void LeftPanel::build_pad_menu() {
-    wxMenu *pad_menu=new wxMenu();
-    sort(s.pad_sizes.begin(),s.pad_sizes.end());
-    bool sel=false;
-    {
-        for(int q=0; q<s.pad_sizes.size(); q++) {
-            Vec2 size=s.pad_sizes[q];
-            char text[128];
-            sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
-            if(s.pad_size==size) {
-                add_check_item(pad_menu,text,ID_PAD_SEL+q,true);
-                sel=true;
-            } else
-                add_check_item(pad_menu,text,ID_PAD_SEL+q,false);
-        }
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            int id=e.GetId()-ID_PAD_SEL;
-            set_pad_size(s.pad_sizes[id]);
-        },ID_PAD_SEL,ID_PAD_SEL+99);
-    }
-    pad_menu->AppendSeparator();
-    {
-        char text[128];
-        sprintf(text,"%.2f X %.2f %s",s.pad_size.outer,s.pad_size.inner,"mm");
-        add_item(pad_menu,text,ID_PAD_ADD,plus_xpm,!sel);
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            s.pad_sizes.push_back(s.pad_size);
-        },ID_PAD_ADD);
-    }
-    {
-        pad_menu->AppendSeparator();
-        wxMenu *del_menu=new wxMenu();
-        {
-            for(int q=0; q<s.pad_sizes.size(); q++) {
-                Vec2 size=s.pad_sizes[q];
-                char text[128];
-                sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
-                add_item(del_menu,text,ID_PAD_DEL+q,cross_xpm);
-            }
-            Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-                int id=e.GetId()-ID_PAD_DEL;
-                s.pad_sizes.erase(s.pad_sizes.begin()+id);
-            },ID_PAD_DEL,ID_PAD_DEL+99);
-        }
-        add_submenu(pad_menu,del_menu,_("Remove..."),cross_xpm,s.pad_sizes.size()!=0);
-    }
-    PopupMenu(pad_menu);
-    delete pad_menu;
+	wxMenu *pad_menu=new wxMenu();
+	sort(SETTINGS.pad_sizes.begin(),SETTINGS.pad_sizes.end());
+	bool sel=false;
+	{
+		for(int q=0; q<SETTINGS.pad_sizes.size(); q++) {
+			Vec2 size=SETTINGS.pad_sizes[q];
+			char text[128];
+			sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
+			if(SETTINGS.pad_size==size) {
+				add_check_item(pad_menu,text,ID_PAD_SEL+q,true);
+				sel=true;
+			} else
+				add_check_item(pad_menu,text,ID_PAD_SEL+q,false);
+		}
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			int id=e.GetId()-ID_PAD_SEL;
+			set_pad_size(SETTINGS.pad_sizes[id]);
+		},ID_PAD_SEL,ID_PAD_SEL+99);
+	}
+	pad_menu->AppendSeparator();
+	{
+		char text[128];
+		sprintf(text,"%.2f X %.2f %s",SETTINGS.pad_size.outer,SETTINGS.pad_size.inner,"mm");
+		add_item(pad_menu,text,ID_PAD_ADD,plus_xpm,!sel);
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			SETTINGS.pad_sizes.push_back(SETTINGS.pad_size);
+		},ID_PAD_ADD);
+	}
+	{
+		pad_menu->AppendSeparator();
+		wxMenu *del_menu=new wxMenu();
+		{
+			for(int q=0; q<SETTINGS.pad_sizes.size(); q++) {
+				Vec2 size=SETTINGS.pad_sizes[q];
+				char text[128];
+				sprintf(text,"%.2f X %.2f %s",size.outer,size.inner,"mm");
+				add_item(del_menu,text,ID_PAD_DEL+q,cross_xpm);
+			}
+			Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+				int id=e.GetId()-ID_PAD_DEL;
+				SETTINGS.pad_sizes.erase(SETTINGS.pad_sizes.begin()+id);
+			},ID_PAD_DEL,ID_PAD_DEL+99);
+		}
+		add_submenu(pad_menu,del_menu,_("Remove..."),cross_xpm,SETTINGS.pad_sizes.size()!=0);
+	}
+	PopupMenu(pad_menu);
+	delete pad_menu;
 }
 void LeftPanel::build_track_menu() {
-    wxMenu *track_menu=new wxMenu();
-    sort(s.track_sizes.begin(),s.track_sizes.end());
-    bool sel=false;
-    {
-        for(int q=0; q<s.track_sizes.size(); q++) {
-            float size=s.track_sizes[q];
-            char text[128];
-            sprintf(text,"%.2f %s",size,"mm");
-            if(s.track_size==size) {
-                add_check_item(track_menu,text,ID_TRACK_SEL+q,true);
-                sel=true;
-            } else
-                add_check_item(track_menu,text,ID_TRACK_SEL+q,false);
-        }
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            int id=e.GetId()-ID_TRACK_SEL;
-            set_track_size(s.track_sizes[id]);
-        },ID_TRACK_SEL,ID_TRACK_SEL+99);
-    }
-    track_menu->AppendSeparator();
-    {
-        char text[128];
-        sprintf(text,"%.2f %s",s.track_size,"mm");
-        add_item(track_menu,text,ID_TRACK_ADD,plus_xpm,!sel);
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            s.track_sizes.push_back(s.track_size);
-        },ID_TRACK_ADD);
-    }
-    {
-        track_menu->AppendSeparator();
-        wxMenu *del_menu=new wxMenu();
-        {
-            for(int q=0; q<s.track_sizes.size(); q++) {
-                float size=s.track_sizes[q];
-                char text[128];
-                sprintf(text,"%.2f %s",size,"mm");
-                add_item(del_menu,text,ID_TRACK_DEL+q,cross_xpm);
-            }
-            Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-                int id=e.GetId()-ID_TRACK_DEL;
-                s.track_sizes.erase(s.track_sizes.begin()+id);
-            },ID_TRACK_DEL,ID_TRACK_DEL+99);
-        }
-        add_submenu(track_menu,del_menu,_("Remove..."),cross_xpm,s.track_sizes.size()!=0);
-    }
-    PopupMenu(track_menu);
-    delete track_menu;
+	wxMenu *track_menu=new wxMenu();
+	sort(SETTINGS.track_sizes.begin(),SETTINGS.track_sizes.end());
+	bool sel=false;
+	{
+		for(int q=0; q<SETTINGS.track_sizes.size(); q++) {
+			float size=SETTINGS.track_sizes[q];
+			char text[128];
+			sprintf(text,"%.2f %s",size,"mm");
+			if(SETTINGS.track_size==size) {
+				add_check_item(track_menu,text,ID_TRACK_SEL+q,true);
+				sel=true;
+			} else
+				add_check_item(track_menu,text,ID_TRACK_SEL+q,false);
+		}
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			int id=e.GetId()-ID_TRACK_SEL;
+			set_track_size(SETTINGS.track_sizes[id]);
+		},ID_TRACK_SEL,ID_TRACK_SEL+99);
+	}
+	track_menu->AppendSeparator();
+	{
+		char text[128];
+		sprintf(text,"%.2f %s",SETTINGS.track_size,"mm");
+		add_item(track_menu,text,ID_TRACK_ADD,plus_xpm,!sel);
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			SETTINGS.track_sizes.push_back(SETTINGS.track_size);
+		},ID_TRACK_ADD);
+	}
+	{
+		track_menu->AppendSeparator();
+		wxMenu *del_menu=new wxMenu();
+		{
+			for(int q=0; q<SETTINGS.track_sizes.size(); q++) {
+				float size=SETTINGS.track_sizes[q];
+				char text[128];
+				sprintf(text,"%.2f %s",size,"mm");
+				add_item(del_menu,text,ID_TRACK_DEL+q,cross_xpm);
+			}
+			Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+				int id=e.GetId()-ID_TRACK_DEL;
+				SETTINGS.track_sizes.erase(SETTINGS.track_sizes.begin()+id);
+			},ID_TRACK_DEL,ID_TRACK_DEL+99);
+		}
+		add_submenu(track_menu,del_menu,_("Remove..."),cross_xpm,SETTINGS.track_sizes.size()!=0);
+	}
+	PopupMenu(track_menu);
+	delete track_menu;
 }
 float get_normal_grid(int n) {
-    return 0.0396875f*pow(2,n);
+	return 0.0396875f*pow(2,n);
 }
 float get_metric_grid(int n) {
-    float grids[]= {
-        0.01f,	0.02f,	0.025f,	0.05f,
-        0.1f,	0.2f,	0.25f,	0.5f,
-        1.0f,	2.0f,	2.5f
-    };
-    return grids[n];
+	float grids[]= {
+		0.01f,	0.02f,	0.025f,	0.05f,
+		0.1f,	0.2f,	0.25f,	0.5f,
+		1.0f,	2.0f,	2.5f
+	};
+	return grids[n];
 }
 void LeftPanel::build_grid_menu() {
-    wxMenu *grid_menu=new wxMenu();
-    for(int item=0; item<8; item++) {
-        float grid=get_normal_grid(item);
-        add_check_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,file.GetSelectedBoard().active_grid_val==grid);
-    }
-    grid_menu->AppendSeparator();
-    {
-        wxMenu *metric=new wxMenu();
-        for(int item=0; item<11; item++) {
-            float grid=get_metric_grid(item);
-			add_check_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,file.GetSelectedBoard().active_grid_val==grid);
-        }
-        add_submenu(grid_menu,metric,_("Metric grids:"));
-    }
-    grid_menu->AppendSeparator();
-    {
-        wxMenu *user=new wxMenu();
-        for(int item=0; item<s.grids.size(); item++) {
-            float grid=s.grids[item];
-			add_check_item(user,get_grid_str(grid),ID_GRID_USER+item,file.GetSelectedBoard().active_grid_val==grid);
-        }
-        if(s.grids.size())
-            user->AppendSeparator();
-        user->Append(ID_GRID_USER_NEW,_("Add new grid value"));
-        Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
-            InputGridDialog dialog(this);
-            if(dialog.ShowModal()==wxID_OK) {
-                float grid=dialog.Get();
-                s.grids.push_back(grid);
-                sort(s.grids.begin(),s.grids.end());
-                set_grid(grid);
-            }
-        },ID_GRID_USER_NEW);
-        if(s.grids.size()) {
-            wxMenu *user_del=new wxMenu();
-            for(int item=0; item<s.grids.size(); item++) {
-                float grid=s.grids[item];
-                add_item(user_del,get_grid_str(grid),ID_GRID_USER_DEL+item,wxNullBitmap);
-            }
-            add_submenu(user,user_del,_("Remove"),wxNullBitmap);
-        }
-        add_submenu(grid_menu,user,_("User grids:"));
-    }
-    Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
-        int id=e.GetId()-ID_GRID_NORMAL;
-        float grid;
-        if(id<8) //normal
-            grid=get_normal_grid(id);
-        else if(id<19) //metric
-            grid=get_metric_grid(id-8);
-        else //user grid
-            grid=s.grids[id-19];
-        set_grid(grid);
-    },ID_GRID_NORMAL,ID_GRID_NORMAL+118);
-    Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
-        int id=e.GetId()-ID_GRID_USER_DEL;
-        s.grids.erase(s.grids.begin()+id);
-    },ID_GRID_USER_DEL,ID_GRID_USER_DEL+99);
-    grid_menu->AppendSeparator();
-    grid_menu->Append(ID_GRID_HOTKEYS,_("Hotkeys..."));
-    Bind(wxEVT_MENU,[&](wxCommandEvent&e){
-		ShowGridBinderDialog(this,s.grids_bind);
+	wxMenu *grid_menu=new wxMenu();
+	for(int item=0; item<8; item++) {
+		float grid=get_normal_grid(item);
+		add_check_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,BOARD.active_grid_val==grid);
+	}
+	grid_menu->AppendSeparator();
+	{
+		wxMenu *metric=new wxMenu();
+		for(int item=0; item<11; item++) {
+			float grid=get_metric_grid(item);
+			add_check_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,BOARD.active_grid_val==grid);
+		}
+		add_submenu(grid_menu,metric,_("Metric grids:"));
+	}
+	grid_menu->AppendSeparator();
+	{
+		wxMenu *user=new wxMenu();
+		for(int item=0; item<SETTINGS.grids.size(); item++) {
+			float grid=SETTINGS.grids[item];
+			add_check_item(user,get_grid_str(grid),ID_GRID_USER+item,BOARD.active_grid_val==grid);
+		}
+		if(SETTINGS.grids.size())
+			user->AppendSeparator();
+		user->Append(ID_GRID_USER_NEW,_("Add new grid value"));
+		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+			InputGridDialog dialog(this);
+			if(dialog.ShowModal()==wxID_OK) {
+				float grid=dialog.Get();
+				SETTINGS.grids.push_back(grid);
+				sort(SETTINGS.grids.begin(),SETTINGS.grids.end());
+				set_grid(grid);
+			}
+		},ID_GRID_USER_NEW);
+		if(SETTINGS.grids.size()) {
+			wxMenu *user_del=new wxMenu();
+			for(int item=0; item<SETTINGS.grids.size(); item++) {
+				float grid=SETTINGS.grids[item];
+				add_item(user_del,get_grid_str(grid),ID_GRID_USER_DEL+item,wxNullBitmap);
+			}
+			add_submenu(user,user_del,_("Remove"),wxNullBitmap);
+		}
+		add_submenu(grid_menu,user,_("User grids:"));
+	}
+	Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
+		int id=e.GetId()-ID_GRID_NORMAL;
+		float grid;
+		if(id<8) //normal
+			grid=get_normal_grid(id);
+		else if(id<19) //metric
+			grid=get_metric_grid(id-8);
+		else //user grid
+			grid=SETTINGS.grids[id-19];
+		set_grid(grid);
+	},ID_GRID_NORMAL,ID_GRID_NORMAL+118);
+	Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
+		int id=e.GetId()-ID_GRID_USER_DEL;
+		SETTINGS.grids.erase(SETTINGS.grids.begin()+id);
+	},ID_GRID_USER_DEL,ID_GRID_USER_DEL+99);
+	grid_menu->AppendSeparator();
+	grid_menu->Append(ID_GRID_HOTKEYS,_("Hotkeys..."));
+	Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+		ShowGridBinderDialog(this,SETTINGS.grids_bind);
 	},ID_GRID_HOTKEYS);
-    {
-        wxMenu *style=new wxMenu;
-        style->AppendRadioItem(ID_GRID_LINES,_("Lines"));
-        style->AppendRadioItem(ID_GRID_DOTS,_("Dots"));
-        if(s.grid_style==GRID_DOTS)
+	{
+		wxMenu *style=new wxMenu;
+		style->AppendRadioItem(ID_GRID_LINES,_("Lines"));
+		style->AppendRadioItem(ID_GRID_DOTS,_("Dots"));
+		if(SETTINGS.grid_style==GRID_DOTS)
 			style->Check(ID_GRID_DOTS,true);
 		else
 			style->Check(ID_GRID_LINES,true);
-		Bind(wxEVT_MENU,[&](wxCommandEvent &e){
+		Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
 			if(e.GetId()==ID_GRID_DOTS)
-				s.grid_style=GRID_DOTS;
+				SETTINGS.grid_style=GRID_DOTS;
 			else
-				s.grid_style=GRID_LINES;
+				SETTINGS.grid_style=GRID_LINES;
 		},ID_GRID_LINES,ID_GRID_DOTS);
-        grid_menu->Append(wxID_ANY,_("Grid style"),style);
-    }
-    {
-        wxMenu *sub=new wxMenu;
-        sub->AppendRadioItem(ID_SUBGRID_OFF,_("Off"));
-        sub->AppendRadioItem(ID_SUBGRID_2,_("2"));
-        sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
-        sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
-        sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
+		grid_menu->Append(wxID_ANY,_("Grid style"),style);
+	}
+	{
+		wxMenu *sub=new wxMenu;
+		sub->AppendRadioItem(ID_SUBGRID_OFF,_("Off"));
+		sub->AppendRadioItem(ID_SUBGRID_2,_("2"));
+		sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
+		sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
+		sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
 
-        sub->Check(ID_SUBGRID_OFF+s.sub_grid,true); //enable item
-        sub->Bind(wxEVT_MENU,[&](wxCommandEvent &e){
-			s.sub_grid=e.GetId()-ID_SUBGRID_OFF;
+		sub->Check(ID_SUBGRID_OFF+SETTINGS.sub_grid,true); //enable item
+		sub->Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
+			SETTINGS.sub_grid=e.GetId()-ID_SUBGRID_OFF;
 		},ID_SUBGRID_OFF,ID_SUBGRID_10);
-        grid_menu->Append(wxID_ANY,_("Subdivisions"),sub);
-    }
-    grid_menu->AppendCheckItem(ID_SHOW_GRID,_("Show grid"))->Check(s.show_grid);
-    Bind(wxEVT_MENU,[&](wxCommandEvent&e){
-		s.show_grid=!s.show_grid;
+		grid_menu->Append(wxID_ANY,_("Subdivisions"),sub);
+	}
+	grid_menu->AppendCheckItem(ID_SHOW_GRID,_("Show grid"))->Check(SETTINGS.show_grid);
+	Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
+		SETTINGS.show_grid=!SETTINGS.show_grid;
 	},ID_SHOW_GRID);
-    PopupMenu(grid_menu);
-    delete grid_menu;
+	PopupMenu(grid_menu);
+	delete grid_menu;
 }
 void LeftPanel::set_grid(float val) {
-    file.GetSelectedBoard().active_grid_val=val*10000.0;
-    grid_button->SetLabel(get_grid_str(val));
+	BOARD.active_grid_val=val*10000.0;
+	grid_button->SetLabel(get_grid_str(val));
 }
