@@ -135,7 +135,7 @@ OpenLayoutFrame::OpenLayoutFrame(const char *filename)
 		content->Add(left_panel,0,wxEXPAND);
 		{
 			canvas=new GLCanvas(this);
-			content->Add(canvas,1,wxEXPAND|wxALL,5);
+			content->Add(canvas,1,wxEXPAND|wxALL,2);
 		}
 		all_box->Add(content,1,wxEXPAND);
 		all_box->Add(new BottomPanel(this),0,wxEXPAND);
