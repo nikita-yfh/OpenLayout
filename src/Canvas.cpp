@@ -6,7 +6,7 @@ const int attribList[] = {WX_GL_RGBA,
 						  WX_GL_DEPTH_SIZE, 24, 0, 0
 						 };
 Canvas::Canvas(wxWindow *parent)
-	:wxGLCanvas(parent,(wxGLCanvas*)NULL,wxID_ANY, wxDefaultPosition, wxDefaultSize, 0,L"GLCanvas",attribList) {
+	:wxGLCanvas(parent,wxID_ANY,attribList) {
 	Bind(wxEVT_MOUSEWHEEL,&Canvas::OnMouseWheel,this);
 	Bind(wxEVT_MIDDLE_DOWN,&Canvas::OnMiddleDown,this);
 	Bind(wxEVT_LEFT_DOWN,&Canvas::OnLeftDown,this);

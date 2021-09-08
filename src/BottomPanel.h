@@ -13,13 +13,13 @@ enum{
 	ID_I1,
 	ID_I2,
 	ID_O,
-	ID_C1_SHOW,
-	ID_S1_SHOW,
-	ID_C2_SHOW,
-	ID_S2_SHOW,
-	ID_I1_SHOW,
-	ID_I2_SHOW,
-	ID_O_SHOW,
+	ID_C1_TEXT,
+	ID_S1_TEXT,
+	ID_C2_TEXT,
+	ID_S2_TEXT,
+	ID_I1_TEXT,
+	ID_I2_TEXT,
+	ID_O_TEXT,
 };
 
 class BottomPanel : public wxPanel {
@@ -28,4 +28,5 @@ public:
 	wxDECLARE_EVENT_TABLE();
 private:
 	void UpdateCoords(wxUpdateUIEvent &e);
+	void UpdateMultilayer(wxUpdateUIEvent &e);
 };
