@@ -481,10 +481,10 @@ void LeftPanel::build_grid_menu() {
 	{
 		wxMenu *sub=new wxMenu;
 		sub->AppendRadioItem(ID_SUBGRID_OFF,_("Off"));
-		sub->AppendRadioItem(ID_SUBGRID_2,_("2"));
-		sub->AppendRadioItem(ID_SUBGRID_4,_("4"));
-		sub->AppendRadioItem(ID_SUBGRID_5,_("5"));
-		sub->AppendRadioItem(ID_SUBGRID_10,_("10"));
+		sub->AppendRadioItem(ID_SUBGRID_2,"2");
+		sub->AppendRadioItem(ID_SUBGRID_4,"4");
+		sub->AppendRadioItem(ID_SUBGRID_5,"5");
+		sub->AppendRadioItem(ID_SUBGRID_10,"10");
 
 		sub->Check(ID_SUBGRID_OFF+SETTINGS.sub_grid,true); //enable item
 		sub->Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
