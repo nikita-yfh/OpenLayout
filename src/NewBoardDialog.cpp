@@ -112,11 +112,11 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent) {
                 wxFlexGridSizer *box=new wxFlexGridSizer(2,3,0,0);
 
                 box->Add(new wxStaticText(panels[3],wxID_ANY, _("Width:")), 0, CENTER, 5);
-                all_width=new wxStaticText(panels[3],wxID_ANY, _("200"));
+                all_width=new wxStaticText(panels[3],wxID_ANY, "200");
                 box->Add(all_width, 0, CENTER, 5);
                 box->Add(new wxStaticText(panels[3],wxID_ANY, _("mm")), 0, CENTER, 5);
                 box->Add(new wxStaticText(panels[3],wxID_ANY, _("Height:")), 0, CENTER, 5);
-                all_height=new wxStaticText(panels[3],wxID_ANY, _("140"));
+                all_height=new wxStaticText(panels[3],wxID_ANY, "140");
                 box->Add(all_height, 0, CENTER, 5);
                 box->Add(new wxStaticText(panels[3],wxID_ANY, _("mm")), 0, CENTER, 5);
 
