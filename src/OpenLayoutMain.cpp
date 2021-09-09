@@ -93,7 +93,7 @@ enum {
 	ID_ANGLE_10,
 	ID_ANGLE_5,
 	ID_ANGLE_CUSTOM,
-	ID_ANGLE_CUSTOM_CH
+	ID_ANGLE_CUSTOM_CH,
 };
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, OpenLayoutFrame::close)
@@ -138,7 +138,9 @@ OpenLayoutFrame::OpenLayoutFrame(const char *filename)
 			content->Add(canvas,1,wxEXPAND|wxALL,2);
 		}
 		all_box->Add(content,1,wxEXPAND);
-		all_box->Add(new BottomPanel(this),0,wxEXPAND);
+
+		bottom_panel=new BottomPanel(this);
+		all_box->Add(bottom_panel,0,wxEXPAND);
 	}
 	SetSizer(all_box);
 	SetAutoLayout(true);
@@ -153,8 +155,10 @@ void OpenLayoutFrame::close(wxCommandEvent&) {
 }
 void OpenLayoutFrame::show_settings(wxCommandEvent&) {
 	SettingsDialog settings(this,SETTINGS);
-	if(settings.ShowModal()==wxID_OK)
+	if(settings.ShowModal()==wxID_OK){
 		settings.Get(SETTINGS);
+		static_cast<BottomPanel*>(bottom_panel)->UpdateColors();
+	}
 }
 void OpenLayoutFrame::show_about(wxCommandEvent&) {
 	AboutDialog(this).ShowModal();
