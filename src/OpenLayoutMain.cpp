@@ -2,7 +2,6 @@
 #include "InputNumberDialog.h"
 #include "OpenLayoutMain.h"
 #include "NewBoardDialog.h"
-#include "LayerInfoDialog.h"
 #include "ProjectInfoDialog.h"
 #include "SettingsDialog.h"
 #include "AboutDialog.h"

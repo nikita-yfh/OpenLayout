@@ -5,6 +5,7 @@
 #include <wx/toolbar.h>
 #include "OpenLayoutApp.h"
 #include "OpenLayoutMain.h"
+#include "LayerInfoDialog.h"
 
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSX,BottomPanel::UpdateCoords)
@@ -71,6 +72,14 @@ BottomPanel::BottomPanel(wxWindow *parent):
 			},ID_C1,ID_O);
 		}
 		all_box->Add(table,0,wxEXPAND);
+	}
+	{
+		wxButton *help_layer=new wxButton(this,wxID_ANY,"?",wxDefaultPosition,{20,-1});
+		help_layer->Bind(wxEVT_BUTTON,[&](wxCommandEvent&){
+			LayerInfoDialog dialog(this);
+			dialog.ShowModal();
+		});
+		all_box->Add(help_layer,0,wxEXPAND);
 	}
 	SetSizerAndFit(all_box);
 	SetAutoLayout(true);
