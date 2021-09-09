@@ -4,12 +4,14 @@
 #include <wx/radiobut.h>
 #include <wx/toolbar.h>
 #include "OpenLayoutApp.h"
+#include "OpenLayoutMain.h"
 
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSX,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI(ID_POSY,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI_RANGE(ID_I1,     ID_I2,     BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_I1_TEXT,ID_I2_TEXT,BottomPanel::UpdateMultilayer)
+	EVT_UPDATE_UI_RANGE(ID_C1,ID_O,BottomPanel::UpdateLayers)
 wxEND_EVENT_TABLE()
 
 BottomPanel::BottomPanel(wxWindow *parent):
@@ -66,11 +68,13 @@ BottomPanel::BottomPanel(wxWindow *parent):
 			table->Add(sizer,1,wxEXPAND);
 			Bind(wxEVT_RADIOBUTTON,[&](wxCommandEvent&e){
 				BOARD.active_layer=e.GetId()-ID_C1+1;
+				static_cast<OpenLayoutFrame*>(GetParent())->RefreshCanvas();
 			},ID_C1,ID_O);
 		}
 		all_box->Add(table,0,wxEXPAND);
 	}
 	SetSizerAndFit(all_box);
+	SetAutoLayout(true);
 }
 void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 	wxString text;
@@ -78,9 +82,14 @@ void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 		text=wxString::Format("X:\t%.3f\t%s",APP.mouse_board_pos.x,_("mm"));
 	else
 		text=wxString::Format("Y:\t%.3f\t%s",APP.mouse_board_pos.y,_("mm"));
-
-	static_cast<wxStaticText*>(e.GetEventObject())->SetLabel(text);
+	e.SetText(text);
 }
 void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e){
-	e.Show(BOARD.is_multilayer);
+	if(static_cast<wxWindow*>(e.GetEventObject())->IsShown()!=BOARD.is_multilayer){
+		static_cast<wxWindow*>(e.GetEventObject())->Show(BOARD.is_multilayer);
+		Layout();
+	}
+}
+void BottomPanel::UpdateLayers(wxUpdateUIEvent &e){
+	e.Check(e.GetId()-ID_C1==BOARD.active_layer-1);
 }

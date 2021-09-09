@@ -29,4 +29,5 @@ public:
 private:
 	void UpdateCoords(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
+	void UpdateLayers(wxUpdateUIEvent &e);
 };
