@@ -19,6 +19,7 @@
 class OpenLayoutFrame: public wxFrame {
 public:
 	OpenLayoutFrame(const char *filename=nullptr);
+	void RefreshCanvas();
 private:
 
 	void init_menu_bar();
@@ -42,6 +43,6 @@ private:
 	void updateui_ungroup(wxUpdateUIEvent&);
 	void updateui_multilayer(wxUpdateUIEvent&);
 	wxDECLARE_EVENT_TABLE();
-
 	wxGLCanvas *canvas;
+
 };

@@ -145,6 +145,7 @@ OpenLayoutFrame::OpenLayoutFrame(const char *filename)
 
 	if(filename)
 		PCB.load(filename);
+	wxUpdateUIEvent::SetUpdateInterval(40);
 }
 
 void OpenLayoutFrame::close(wxCommandEvent&) {
@@ -436,4 +437,7 @@ void OpenLayoutFrame::savefile(wxCommandEvent &e) {
 		return;
 	wxString path=dialog.GetPath();
 	PCB.save(path.c_str());
+}
+void OpenLayoutFrame::RefreshCanvas(){
+	canvas->Refresh();
 }
