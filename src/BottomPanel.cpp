@@ -7,12 +7,35 @@
 #include "OpenLayoutMain.h"
 #include "LayerInfoDialog.h"
 
+
+enum{
+	ID_POSX=1,
+	ID_POSY,
+
+	ID_C1,
+	ID_S1,
+	ID_C2,
+	ID_S2,
+	ID_I1,
+	ID_I2,
+	ID_O,
+	ID_C1_TEXT,
+	ID_S1_TEXT,
+	ID_C2_TEXT,
+	ID_S2_TEXT,
+	ID_I1_TEXT,
+	ID_I2_TEXT,
+	ID_O_TEXT,
+
+	ID_HELP
+};
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSX,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI(ID_POSY,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI_RANGE(ID_I1,     ID_I2,     BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_I1_TEXT,ID_I2_TEXT,BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_C1,ID_O,BottomPanel::UpdateLayers)
+	EVT_BUTTON(ID_HELP,BottomPanel::ShowLayerInfo)
 wxEND_EVENT_TABLE()
 
 BottomPanel::BottomPanel(wxWindow *parent):
@@ -74,11 +97,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 		all_box->Add(table,0,wxEXPAND);
 	}
 	{
-		wxButton *help_layer=new wxButton(this,wxID_ANY,"?",wxDefaultPosition,{20,-1});
-		help_layer->Bind(wxEVT_BUTTON,[&](wxCommandEvent&){
-			LayerInfoDialog dialog(this);
-			dialog.ShowModal();
-		});
+		wxButton *help_layer=new wxButton(this,ID_HELP,"?",wxDefaultPosition,{20,-1});
 		all_box->Add(help_layer,0,wxEXPAND);
 	}
 	SetSizerAndFit(all_box);
@@ -108,4 +127,8 @@ void BottomPanel::UpdateColors(){
 		wxStaticText *text=static_cast<wxStaticText*>(FindWindowById(ID_C1_TEXT+q));
 		text->SetForegroundColour(SETTINGS.get_color(q));
 	}
+}
+void BottomPanel::ShowLayerInfo(wxCommandEvent&){
+	LayerInfoDialog dialog(this);
+	dialog.ShowModal();
 }
