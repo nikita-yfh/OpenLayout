@@ -11,5 +11,7 @@ private:
 	void UpdateCoords(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
 	void UpdateLayers(wxUpdateUIEvent &e);
+	void UpdateGround(wxUpdateUIEvent &e);
 	void ShowLayerInfo(wxCommandEvent&);
+	void ToggleGround(wxCommandEvent&);
 };

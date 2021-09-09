@@ -3,10 +3,14 @@
 #include <wx/stattext.h>
 #include <wx/radiobut.h>
 #include <wx/toolbar.h>
+#include <wx/bmpbuttn.h>
 #include "OpenLayoutApp.h"
 #include "OpenLayoutMain.h"
 #include "LayerInfoDialog.h"
 
+#define BOTTOM_PANEL
+#include "images.h"
+#undef BOTTOM_PANEL
 
 enum{
 	ID_POSX=1,
@@ -27,15 +31,18 @@ enum{
 	ID_I2_TEXT,
 	ID_O_TEXT,
 
-	ID_HELP
+	ID_HELP,
+	ID_GROUND
 };
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSX,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI(ID_POSY,BottomPanel::UpdateCoords)
+	EVT_UPDATE_UI(ID_GROUND,BottomPanel::UpdateGround)
 	EVT_UPDATE_UI_RANGE(ID_I1,     ID_I2,     BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_I1_TEXT,ID_I2_TEXT,BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_C1,ID_O,BottomPanel::UpdateLayers)
 	EVT_BUTTON(ID_HELP,BottomPanel::ShowLayerInfo)
+	EVT_TOGGLEBUTTON(ID_GROUND,BottomPanel::ToggleGround)
 wxEND_EVENT_TABLE()
 
 BottomPanel::BottomPanel(wxWindow *parent):
@@ -100,6 +107,10 @@ BottomPanel::BottomPanel(wxWindow *parent):
 		wxButton *help_layer=new wxButton(this,ID_HELP,"?",wxDefaultPosition,{20,-1});
 		all_box->Add(help_layer,0,wxEXPAND);
 	}
+	{
+		wxBitmapToggleButton *ground=new wxBitmapToggleButton(this,ID_GROUND,ground_xpm);
+		all_box->Add(ground,0,wxEXPAND);
+	}
 	SetSizerAndFit(all_box);
 	SetAutoLayout(true);
 
@@ -112,6 +123,15 @@ void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 	else
 		text=wxString::Format("Y:\t%.3f\t%s",APP.mouse_board_pos.y,_("mm"));
 	e.SetText(text);
+}
+void BottomPanel::UpdateGround(wxUpdateUIEvent &e){
+	e.Check(BOARD.ground_pane[BOARD.active_layer-1]);
+	e.Enable(BOARD.active_layer==LAY_C1 || BOARD.active_layer==LAY_C2 ||
+			BOARD.active_layer==LAY_I1 || BOARD.active_layer==LAY_I2);
+}
+void BottomPanel::ToggleGround(wxCommandEvent &e){
+	BOARD.ground_pane[BOARD.active_layer-1]=static_cast<wxToggleButton*>(e.GetEventObject())->GetValue();
+	static_cast<OpenLayoutFrame*>(GetParent())->RefreshCanvas();
 }
 void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e){
 	if(static_cast<wxWindow*>(e.GetEventObject())->IsShown()!=BOARD.is_multilayer){
