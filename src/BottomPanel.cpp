@@ -51,7 +51,6 @@ BottomPanel::BottomPanel(wxWindow *parent):
 				};
 				for(int q=0;q<7;q++){
 					wxStaticText *text=new wxStaticText(panel,ID_C1_TEXT+q,color_names[q]);
-					text->SetForegroundColour(SETTINGS.get_color(q));
 					sizer->Add(text,1,wxCENTER|wxEXPAND);
 				}
 				panel->SetSizerAndFit(sizer);
@@ -75,6 +74,8 @@ BottomPanel::BottomPanel(wxWindow *parent):
 	}
 	SetSizerAndFit(all_box);
 	SetAutoLayout(true);
+
+	UpdateColors();
 }
 void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 	wxString text;
@@ -92,4 +93,10 @@ void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e){
 }
 void BottomPanel::UpdateLayers(wxUpdateUIEvent &e){
 	e.Check(e.GetId()-ID_C1==BOARD.active_layer-1);
+}
+void BottomPanel::UpdateColors(){
+	for(int q=0;q<7;q++){
+		wxStaticText *text=static_cast<wxStaticText*>(FindWindowById(ID_C1_TEXT+q));
+		text->SetForegroundColour(SETTINGS.get_color(q));
+	}
 }

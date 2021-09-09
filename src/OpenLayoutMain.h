@@ -44,5 +44,5 @@ private:
 	void updateui_multilayer(wxUpdateUIEvent&);
 	wxDECLARE_EVENT_TABLE();
 	wxGLCanvas *canvas;
-
+	wxPanel *bottom_panel;
 };

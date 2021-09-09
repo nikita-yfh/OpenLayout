@@ -25,6 +25,7 @@ enum{
 class BottomPanel : public wxPanel {
 public:
 	BottomPanel(wxWindow *parent);
+	void UpdateColors();
 	wxDECLARE_EVENT_TABLE();
 private:
 	void UpdateCoords(wxUpdateUIEvent &e);
