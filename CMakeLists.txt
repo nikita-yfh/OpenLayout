@@ -24,6 +24,7 @@ set(SOURCES
 	src/Canvas.cpp
 	src/LeftPanel.cpp
 	src/BottomPanel.cpp
+	src/Tooltips.cpp
 )
 set(HEADERS
 	src/ScannedCopyDialog.h
@@ -44,6 +45,7 @@ set(HEADERS
 	src/BottomPanel.h
 	src/GLCanvas.h
 	src/Canvas.h
+	src/Tooltips.h
 )
 if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)

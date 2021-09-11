@@ -1,5 +1,6 @@
 #include "Canvas.h"
 #include "OpenLayoutApp.h"
+#include <wx/sizer.h>
 const int attribList[] = {WX_GL_RGBA,
 						  //WX_GL_DOUBLEBUFFER,
 						  WX_GL_SAMPLE_BUFFERS, GL_FALSE,
@@ -17,6 +18,7 @@ Canvas::Canvas(wxWindow *parent)
 
 	dragscroll_timer.Bind(wxEVT_TIMER, &Canvas::OnDragScroll, this);
 	dragscroll_timer.Stop();
+	tip=new TextTooltip(this);
 }
 void Canvas::OnMouseWheel(wxMouseEvent&e) { //zooming canvas
 	Vec2 mouse=GetMousePos(e);
@@ -136,6 +138,16 @@ void Canvas::OnMouseMotion(wxMouseEvent&e) {
 	} else refresh=false;
 	if(refresh)Refresh();
 	e.Skip();
+
+	bool ok=false;
+	int x,y;wxGetMousePosition(&x,&y);
+	for(Object &o : BOARD.objects)
+		if(o.point_in(boardpos) && !o.marker.empty()){
+			tip->Show(x+20,y+20,o.marker);
+			ok=true;
+		}
+	if(!ok)tip->Hide();
+
 }
 void Canvas::OnKey(wxKeyEvent &e) {
 	ctrl=e.ControlDown();
@@ -145,8 +157,6 @@ void Canvas::OnKey(wxKeyEvent &e) {
 	e.Skip();
 }
 Vec2 Canvas::GetPos(Vec2 mouse) {
-
-
 	return ((mouse+Vec2(BOARD.camera.x,BOARD.camera.y))/BOARD.zoom).SwapY();
 }
 Vec2 Canvas::GetMousePos(wxMouseEvent&e) {

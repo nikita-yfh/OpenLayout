@@ -1,8 +1,11 @@
 #pragma once
 #include <wx/glcanvas.h>
+#include <wx/dialog.h>
 #include <wx/timer.h>
+#include <wx/stattext.h>
 #include "Settings.h"
 #include "PCBFile.h"
+#include "Tooltips.h"
 
 enum {
 	SEL_NONE,
@@ -38,4 +41,6 @@ protected:
 	Vec2 GetMousePos(wxMouseEvent&);
 
 	void MoveObjects(Vec2 mouse);
+	TextTooltip *tip;
+
 };
