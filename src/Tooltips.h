@@ -12,3 +12,14 @@ public:
 private:
 	wxStaticText *text;
 };
+
+class MeasureTooltip : wxDialog{
+public:
+	MeasureTooltip(wxWindow *parent);
+	void Show(int mousex,int mousey,float x,float y);
+	void Show(int mousex,int mousey,float x,float y,float dx,float dy);
+	void Hide();
+	void UpdateTheme(bool light);
+private:
+	wxStaticText *texts[6];
+};
