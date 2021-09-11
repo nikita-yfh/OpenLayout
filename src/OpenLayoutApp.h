@@ -3,6 +3,12 @@
 #include "PCBFile.h"
 #include "Settings.h"
 
+enum{
+	RUBBERBAND_DISABLED,
+	RUBBERBAND_SMALL_RANGE,
+	RUBBERBAND_BIG_RANGE
+};
+
 class OpenLayoutApp : public wxApp {
 public:
 	virtual bool OnInit();
@@ -15,6 +21,8 @@ public:
 	Vec2 pad_size{1.8f,0.6f};
 	float track_size=0.8f;
 	Vec2 mouse_board_pos;
+	bool capture=true;
+	uint8_t rubberband=RUBBERBAND_DISABLED;
 private:
 	wxLocale m_Locale;
 };

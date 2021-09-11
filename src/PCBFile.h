@@ -198,6 +198,7 @@ struct Board {
     void build_round(Vec2i wsize,string name,int diameter,int distance);
     void fit(Vec2i wsize);
     void set_anchor(uint8_t pos,int border=0);
+    bool ground_allow()const;
 };
 
 
