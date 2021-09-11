@@ -79,22 +79,32 @@ BottomPanel::BottomPanel(wxWindow *parent):
 	}
 	{
 		wxBoxSizer *table=new wxBoxSizer(wxVERTICAL);
+		const char* color_names[]= {
+			_("C1"),
+			_("S1"),
+			_("C2"),
+			_("S2"),
+			_("I1"),
+			_("I2"),
+			_("O")
+		};
+		const char* color_help[]= {
+			_("C1 = Copper - Top"),
+			_("S1 = Silkscreen - Top"),
+			_("C2 = Copper - Bottom"),
+			_("S2 = Silkscreen - Bottom"),
+			_("I1 = Inner Layer 1 (multilayer)"),
+			_("I2 = Inner Layer 1 (multilayer)"),
+			_("O = PCB-Outline")
+		};
 		{
 			wxPanel *panel=new wxPanel(this);
 			panel->SetBackgroundColour({0,0,0});
 			{
 				wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
-				const char* color_names[]= {
-					_("C1"),
-					_("S1"),
-					_("C2"),
-					_("S2"),
-					_("I1"),
-					_("I2"),
-					_("O")
-				};
 				for(int q=0;q<7;q++){
 					wxStaticText *text=new wxStaticText(panel,ID_C1_TEXT+q,color_names[q]);
+					text->SetToolTip(color_help[q]);
 					sizer->Add(text,1,wxCENTER|wxEXPAND);
 				}
 				panel->SetSizerAndFit(sizer);
@@ -106,6 +116,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 			wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 			for(int q=0;q<7;q++){
 				wxRadioButton *button=new wxRadioButton(this,ID_C1+q,"");
+				button->SetToolTip(color_help[q]);
 				sizer->Add(button,1,wxEXPAND);
 			}
 			table->Add(sizer,1,wxEXPAND);
@@ -118,18 +129,22 @@ BottomPanel::BottomPanel(wxWindow *parent):
 	}
 	{
 		wxButton *help_layer=new wxButton(this,ID_HELP,"?",wxDefaultPosition,{20,-1});
+		help_layer->SetToolTip(_("Show the layer-colors and their meaning"));
 		all_box->Add(help_layer,0,wxEXPAND);
 	}
 	{
 		wxBitmapButton *ground=new wxBitmapButton(this,ID_GROUND,ground_disabled_xpm);
+		ground->SetToolTip(_("Enable or disable the automatic ground plane for the active copper layer"));
 		all_box->Add(ground,0,wxEXPAND);
 	}
 	{
 		wxBitmapButton *capture=new wxBitmapButton(this,ID_CAPTURE,capture_disabled_xpm);
+		capture->SetToolTip(_("Enable or disable the automatic capture mode"));
 		all_box->Add(capture,0,wxEXPAND);
 	}
 	{
 		wxBitmapButton *rubberband=new wxBitmapButton(this,ID_RUBBERBAND,rubberband_0_xpm);
+		rubberband->SetToolTip(_("Toggle the level of Rubberband function (small range / big range / off)"));
 		all_box->Add(rubberband,0,wxEXPAND);
 	}
 	SetSizerAndFit(all_box);

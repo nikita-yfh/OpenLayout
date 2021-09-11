@@ -332,21 +332,21 @@ void OpenLayoutFrame::init_menu_bar() {
 }
 void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
 	wxToolBar *tool_bar = new wxToolBar(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxTB_HORIZONTAL|wxTB_FLAT);
-	tool_bar->AddTool(wxID_NEW, _("New file"),new_xpm);
-	tool_bar->AddTool(wxID_OPEN, _("Open file"),open_xpm);
-	tool_bar->AddTool(wxID_SAVE, _("Save file"),save_xpm);
-	tool_bar->AddTool(wxID_PRINT, _("Print"), print_xpm);
+	tool_bar->AddTool(wxID_NEW, _("New"),new_xpm,_("New file"));
+	tool_bar->AddTool(wxID_OPEN, _("Open"),open_xpm,_("Open file"));
+	tool_bar->AddTool(wxID_SAVE, _("Save"),save_xpm,_("Save file"));
+	tool_bar->AddTool(wxID_PRINT, _("Print"), print_xpm,_("Print"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(wxID_UNDO, _("Undo"), undo_xpm);
-	tool_bar->AddTool(wxID_REDO, _("Redo"), redo_xpm);
+	tool_bar->AddTool(wxID_UNDO, _("Undo"), undo_xpm,_("Undo"));
+	tool_bar->AddTool(wxID_REDO, _("Redo"), redo_xpm,_("Redo"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(wxID_CUT, _("Cut"), cut_xpm);
-	tool_bar->AddTool(wxID_COPY, _("Copy"), copy_xpm);
-	tool_bar->AddTool(wxID_PASTE, _("Paste"), paste_xpm);
-	tool_bar->AddTool(wxID_DELETE, _("Delete"), delete_xpm);
+	tool_bar->AddTool(wxID_CUT, _("Cut"), cut_xpm,_("Cut to clipboard"));
+	tool_bar->AddTool(wxID_COPY, _("Copy"), copy_xpm,_("Copy to clipboard"));
+	tool_bar->AddTool(wxID_PASTE, _("Paste"), paste_xpm,_("Paste from clipboard"));
+	tool_bar->AddTool(wxID_DELETE, _("Delete"), delete_xpm,_("Delete"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(wxID_DUPLICATE, _("Duplicate"), duplicate_xpm);
-	tool_bar->AddTool(ID_ROTATE, _("Rotate"), rotate_xpm,wxNullBitmap,wxITEM_DROPDOWN);
+	tool_bar->AddTool(wxID_DUPLICATE, _("Duplicate"), duplicate_xpm,_("Duplicate"));
+	tool_bar->AddTool(ID_ROTATE, _("Rotate"), rotate_xpm,_("Rotate"),wxITEM_DROPDOWN);
 	{
 		//create menu for rotate button
 		wxMenu *menu=new wxMenu();
@@ -372,20 +372,20 @@ void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
 		},ID_ANGLE_90,ID_ANGLE_CUSTOM);
 		tool_bar->SetDropdownMenu(ID_ROTATE,menu);
 	}
-	tool_bar->AddTool(ID_HMIRROR,_("Mirror horizontal"), mirror_h_xpm);
-	tool_bar->AddTool(ID_VMIRROR, _("Mirror vertical"), mirror_v_xpm);
-	tool_bar->AddTool(ID_ALIGN, _("Align elements"), align_xpm);
-	tool_bar->AddTool(ID_SNAP_GRID, _("Snap to grid"), to_grid_xpm);
+	tool_bar->AddTool(ID_HMIRROR,_("Mirror horizontal"), mirror_h_xpm,_("Mirror horisontal"));
+	tool_bar->AddTool(ID_VMIRROR, _("Mirror vertical"), mirror_v_xpm,_("Mirror vertical"));
+	tool_bar->AddTool(ID_ALIGN, _("Align elements..."), align_xpm,_("Align elements..."));
+	tool_bar->AddTool(ID_SNAP_GRID, _("Snap to grid"), to_grid_xpm,_("Snap to grid"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(ID_GROUP, _("Build group"), group_on_xpm);
-	tool_bar->AddTool(ID_UNGROUP, _("Split group"), group_off_xpm);
+	tool_bar->AddTool(ID_GROUP, _("Build group"), group_on_xpm,_("Build group"));
+	tool_bar->AddTool(ID_UNGROUP, _("Split group"), group_off_xpm,_("Split group"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(ID_ZOOM, _("Zoom"), zoom_any_xpm);
+	tool_bar->AddTool(ID_ZOOM, _("Zoom"), zoom_any_xpm,_("Zoom functions"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(ID_TRANSPARENT, _("Transparent"),transparent_xpm);
-	tool_bar->AddTool(ID_PANEL_PROPERTIES, _("Info"), info_xpm);
+	tool_bar->AddTool(ID_TRANSPARENT, _("Transparent"),transparent_xpm,_("Toggle transparent mode"));
+	tool_bar->AddTool(ID_PANEL_PROPERTIES, _("Info"), info_xpm,_("Show project info"));
 	tool_bar->AddSeparator();
-	tool_bar->AddTool(ID_SCANNED_COPY, _("Scanned copy"), bitmap_xpm);
+	tool_bar->AddTool(ID_SCANNED_COPY, _("Scanned copy"), bitmap_xpm,_("Scanned copy"));
 	tool_bar->Realize();
 	SetToolBar(tool_bar);
 }

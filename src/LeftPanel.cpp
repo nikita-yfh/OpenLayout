@@ -107,9 +107,26 @@ LeftPanel::LeftPanel(wxWindow *parent):
 				tool_measure_xpm,
 				tool_photoview_xpm
 			};
-			for(int q=0; q<TOOL_COUNT; q++) {
-				tools->AddRadioTool(ID_TOOL_EDIT+q,wxEmptyString,images[q]);
-			}
+			const char *tooltips[]={
+				_("Edit mode to select. move. copy. cut, paste or delete elements"),
+				_("Zoom mode"),
+				_("Draw tracks"),
+				_("Add pads, click on the arrow to select a pad shape"),
+				_("Add SMD-Pads"),
+				_("Draw circles or arcs"),
+				_("Draw rectangles"),
+				_("Draw filled areas"),
+				_("Wizard for equilateral polygons, apirals, etc."),
+				_("Add text label"),
+				_("Edit solder mask, include or exclude elements from solder mask"),
+				_("Draw rubberbands to define connections"),
+				_("Autorouter for routing rubberband connections"),
+				_("Test mode to check connected elements"),
+				_("Measure mode to distance and angles"),
+				_("Display the board as WYSIWYG"),
+			};
+			for(int q=0; q<TOOL_COUNT; q++)
+				tools->AddRadioTool(ID_TOOL_EDIT+q,wxEmptyString,images[q],wxNullBitmap,tooltips[q]);
 			tools->Realize();
 			hsizer->Add(tools,0,wxEXPAND|wxALL);
 		}
@@ -125,6 +142,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		grid_button=new wxButton(this,wxID_ANY,
 								 "1.27 mm",wxDefaultPosition,wxDefaultSize,wxBU_LEFT);
 		grid_button->SetBitmap(grid_xpm,wxLEFT);
+		grid_button->SetToolTip(_("Snap to grid"));
 		grid_button->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
 			build_grid_menu();
 		});
@@ -136,12 +154,14 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		{
 			wxBitmapButton *track=new wxBitmapButton(this,wxID_ANY,
 					track_xpm);
+			track->SetToolTip(_("Favorite list for Tracks"));
 			track->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
 				build_track_menu();
 			});
 			sizer->Add(track,0,wxEXPAND|wxLEFT|wxRIGHT,5);
 			w_track_size=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
 											  wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,APP.track_size,0.05);
+			w_track_size->SetToolTip(_("Track width"));
 			w_track_size->Bind(wxEVT_SPINCTRLDOUBLE,[&](wxSpinDoubleEvent&e) {
 				set_track_size(e.GetValue());
 			});
@@ -150,6 +170,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		{
 			wxBitmapButton *pad=new wxBitmapButton(this,wxID_ANY,
 												   pad_xpm);
+			pad->SetToolTip(_("Favorite list for Pads"));
 			pad->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
 				build_pad_menu();
 			});
@@ -163,6 +184,8 @@ LeftPanel::LeftPanel(wxWindow *parent):
 												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.pad_size.outer,0.05);
 				w_pad_inner=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
 												 wxDefaultPosition,size,wxSP_ARROW_KEYS,0,99.99,APP.pad_size.inner,0.05);
+				w_pad_outer->SetToolTip(_("Pad outside diameter"));
+				w_pad_inner->SetToolTip(_("Pad drilling diameter"));
 				w_pad_outer->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_pad_inner->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				sizer1->Add(w_pad_outer, 0,wxEXPAND|wxLEFT|wxRIGHT,5);
@@ -173,6 +196,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		{
 			wxBitmapButton *smd=new wxBitmapButton(this,wxID_ANY,
 												   smd_xpm);
+			smd->SetToolTip(_("Favorite list for SMD-Pads"));
 			smd->Bind(wxEVT_BUTTON,[&](wxCommandEvent&e) {
 				build_smd_menu();
 			});
@@ -186,10 +210,13 @@ LeftPanel::LeftPanel(wxWindow *parent):
 											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.smd_size.width,0.05);
 				w_smd_h=new wxSpinCtrlDouble(this,wxID_ANY,wxEmptyString,
 											 wxDefaultPosition,size,wxSP_ARROW_KEYS,0.05,99.99,APP.smd_size.height,0.05);
+				w_smd_w->SetToolTip(_("SMD-Pad size"));
+				w_smd_h->SetToolTip(_("SMD-Pad size"));
 				w_smd_w->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				w_smd_h->Bind(wxEVT_SPINCTRLDOUBLE,func);
 				wxBitmapButton *swap_smd=new wxBitmapButton(this,wxID_ANY,
 						swap_smd_xpm);
+				swap_smd->SetToolTip(_("Swap smd sizes"));
 				swap_smd->Bind(wxEVT_BUTTON,&LeftPanel::swap_smd_size,this);
 				sizer1->Add(w_smd_w,0,wxEXPAND|wxLEFT|wxRIGHT,5);
 				sizer1->Add(w_smd_h,0,wxEXPAND|wxLEFT|wxRIGHT,5);
