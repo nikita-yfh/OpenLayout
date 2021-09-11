@@ -12,6 +12,9 @@
 #include "images.h"
 #undef BOTTOM_PANEL
 
+#define WIDGET(type,e)\
+	static_cast<type>(e.GetEventObject())
+
 enum{
 	ID_POSX=1,
 	ID_POSY,
@@ -32,18 +35,28 @@ enum{
 	ID_O_TEXT,
 
 	ID_HELP,
-	ID_GROUND
+	ID_GROUND,
+	ID_CAPTURE,
+	ID_RUBBERBAND
 };
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSX,BottomPanel::UpdateCoords)
 	EVT_UPDATE_UI(ID_POSY,BottomPanel::UpdateCoords)
-	EVT_UPDATE_UI(ID_GROUND,BottomPanel::UpdateGround)
 	EVT_UPDATE_UI_RANGE(ID_I1,     ID_I2,     BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_I1_TEXT,ID_I2_TEXT,BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_C1,ID_O,BottomPanel::UpdateLayers)
 	EVT_BUTTON(ID_HELP,BottomPanel::ShowLayerInfo)
-	EVT_TOGGLEBUTTON(ID_GROUND,BottomPanel::ToggleGround)
+	EVT_UPDATE_UI	(ID_GROUND,BottomPanel::UpdateGround)
+	EVT_BUTTON		(ID_GROUND,BottomPanel::ToggleGround)
+	EVT_UPDATE_UI	(ID_CAPTURE,BottomPanel::UpdateCapture)
+	EVT_BUTTON		(ID_CAPTURE,BottomPanel::ToggleCapture)
+	EVT_UPDATE_UI	(ID_RUBBERBAND,BottomPanel::UpdateRubberband)
+	EVT_BUTTON		(ID_RUBBERBAND,BottomPanel::ToggleRubberband)
 wxEND_EVENT_TABLE()
+
+static void set_bitmap(wxCommandEvent&e,const wxBitmap &bitmap){
+	static_cast<wxBitmapButton*>(e.GetEventObject())->SetBitmap(bitmap);
+}
 
 BottomPanel::BottomPanel(wxWindow *parent):
 	wxPanel(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxVSCROLL) {
@@ -108,8 +121,16 @@ BottomPanel::BottomPanel(wxWindow *parent):
 		all_box->Add(help_layer,0,wxEXPAND);
 	}
 	{
-		wxBitmapToggleButton *ground=new wxBitmapToggleButton(this,ID_GROUND,ground_xpm);
+		wxBitmapButton *ground=new wxBitmapButton(this,ID_GROUND,ground_disabled_xpm);
 		all_box->Add(ground,0,wxEXPAND);
+	}
+	{
+		wxBitmapButton *capture=new wxBitmapButton(this,ID_CAPTURE,capture_disabled_xpm);
+		all_box->Add(capture,0,wxEXPAND);
+	}
+	{
+		wxBitmapButton *rubberband=new wxBitmapButton(this,ID_RUBBERBAND,rubberband_0_xpm);
+		all_box->Add(rubberband,0,wxEXPAND);
 	}
 	SetSizerAndFit(all_box);
 	SetAutoLayout(true);
@@ -125,13 +146,33 @@ void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 	e.SetText(text);
 }
 void BottomPanel::UpdateGround(wxUpdateUIEvent &e){
-	e.Check(BOARD.ground_pane[BOARD.active_layer-1]);
-	e.Enable(BOARD.active_layer==LAY_C1 || BOARD.active_layer==LAY_C2 ||
-			BOARD.active_layer==LAY_I1 || BOARD.active_layer==LAY_I2);
+	e.Enable(BOARD.ground_allow());
+	uint8_t &state=BOARD.ground_pane[BOARD.active_layer-1];
+	set_bitmap(e,state?ground_enabled_xpm:ground_disabled_xpm);
 }
 void BottomPanel::ToggleGround(wxCommandEvent &e){
-	BOARD.ground_pane[BOARD.active_layer-1]=static_cast<wxToggleButton*>(e.GetEventObject())->GetValue();
+	uint8_t &state=BOARD.ground_pane[BOARD.active_layer-1];
+	state=!state;
+	set_bitmap(e,state?ground_enabled_xpm:ground_disabled_xpm);
 	static_cast<OpenLayoutFrame*>(GetParent())->RefreshCanvas();
+}
+void BottomPanel::UpdateCapture(wxUpdateUIEvent &e){
+	set_bitmap(e,APP.capture?capture_enabled_xpm:capture_disabled_xpm);
+}
+void BottomPanel::ToggleCapture(wxCommandEvent &e){
+	APP.capture=!APP.capture;
+	set_bitmap(e,APP.capture?capture_enabled_xpm:capture_disabled_xpm);
+}
+void BottomPanel::UpdateRubberband(wxUpdateUIEvent &e){
+	set_bitmap(e,APP.rubberband==RUBBERBAND_DISABLED?rubberband_0_xpm:
+				 APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
+														rubberband_2_xpm);
+}
+void BottomPanel::ToggleRubberband(wxCommandEvent &e){
+	APP.rubberband=(APP.rubberband+1)%3;
+	set_bitmap(e,APP.rubberband==RUBBERBAND_DISABLED?rubberband_0_xpm:
+				 APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
+														rubberband_2_xpm);
 }
 void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e){
 	if(static_cast<wxWindow*>(e.GetEventObject())->IsShown()!=BOARD.is_multilayer){

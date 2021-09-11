@@ -777,6 +777,10 @@ void Board::set_anchor(uint8_t pos,int border) {
 		break;
 	}
 }
+bool Board::ground_allow()const{
+	return active_layer==LAY_C1 || active_layer==LAY_C2 ||
+			active_layer==LAY_I1 || active_layer==LAY_I2;
+}
 void ProjectInfo::load(FILE *file) {
 	readstr(file,100,title);
 	readstr(file,100,author);
