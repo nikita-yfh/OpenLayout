@@ -127,6 +127,9 @@ LeftPanel::LeftPanel(wxWindow *parent):
 			};
 			for(int q=0; q<TOOL_COUNT; q++)
 				tools->AddRadioTool(ID_TOOL_EDIT+q,wxEmptyString,images[q],wxNullBitmap,tooltips[q]);
+			Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+				APP.selected_tool=e.GetId()-ID_TOOL_EDIT;
+			},ID_TOOL_EDIT,ID_TOOL_PHOTOVIEW);
 			tools->Realize();
 			hsizer->Add(tools,0,wxEXPAND|wxALL);
 		}

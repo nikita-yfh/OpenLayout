@@ -15,7 +15,7 @@ public:
 	PCBFile file;
 	Settings settings;
 
-	uint8_t selected_tool;
+	uint8_t selected_tool=TOOL_EDIT;
 
 	Vec2 smd_size{1.6f,0.9f};
 	Vec2 pad_size{1.8f,0.6f};

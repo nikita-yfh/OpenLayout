@@ -6,7 +6,6 @@ class BottomPanel : public wxPanel {
 public:
 	BottomPanel(wxWindow *parent);
 	void UpdateColors();
-	wxDECLARE_EVENT_TABLE();
 private:
 	void UpdateCoords(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
@@ -18,4 +17,5 @@ private:
 	void ToggleCapture(wxCommandEvent&);
 	void UpdateRubberband(wxUpdateUIEvent &e);
 	void ToggleRubberband(wxCommandEvent&);
+	wxDECLARE_EVENT_TABLE();
 };

@@ -781,6 +781,10 @@ bool Board::ground_allow()const{
 	return active_layer==LAY_C1 || active_layer==LAY_C2 ||
 			active_layer==LAY_I1 || active_layer==LAY_I2;
 }
+Vec2 Board::readable_coord(Vec2 pos)const{
+	return Vec2(abs(range(pos.x,0.0f,size.width)-anchor.x)/10000.0f,
+				abs(range(pos.y,-size.height,0.0f)-anchor.y)/10000.0f);
+}
 void ProjectInfo::load(FILE *file) {
 	readstr(file,100,title);
 	readstr(file,100,author);
