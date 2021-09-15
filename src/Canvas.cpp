@@ -19,6 +19,7 @@ Canvas::Canvas(wxWindow *parent)
 	dragscroll_timer.Bind(wxEVT_TIMER, &Canvas::OnDragScroll, this);
 	dragscroll_timer.Stop();
 	tip=new TextTooltip(this);
+	measure=new MeasureTooltip(this);
 }
 void Canvas::OnMouseWheel(wxMouseEvent&e) { //zooming canvas
 	Vec2 mouse=GetMousePos(e);
@@ -71,8 +72,12 @@ void Canvas::OnLeftDown(wxMouseEvent&e) {
 	}
 	clickmousepos=mousepos=mouse;
 	dragscroll_timer.Start(5);
-	Refresh();
 	e.Skip();
+	tip->Hide();
+	if(selection==SEL_OBJECT){
+		Vec2i m=GetGlobalMousePos();
+		measure->Show(m,BOARD.readable_coord(board_pos));
+	}
 }
 void Canvas::OnLeftUp(wxMouseEvent&e) {
 
@@ -112,13 +117,15 @@ void Canvas::MoveObjects(Vec2 mouse) {
 			o.move(BOARD.to_grid(delta,shift,ctrl));
 }
 void Canvas::OnMouseMotion(wxMouseEvent&e) {
-
 	bool refresh=true;
 	Vec2 mouse=GetMousePos(e);
-
 	Vec2 boardpos=GetPos(mouse);
-	APP.mouse_board_pos.x=abs(range(boardpos.x,0.0f,BOARD.size.width)-BOARD.anchor.x)/10000.0f;
-	APP.mouse_board_pos.y=abs(range(boardpos.y,-BOARD.size.height,0.0f)-BOARD.anchor.y)/10000.0f;
+
+	if(selection==SEL_OBJECT)
+		boardpos=BOARD.to_grid(2*boardpos-clickboardpos,shift,ctrl)+clickboardpos; //mouse to grid
+
+
+	APP.mouse_board_pos=BOARD.readable_coord(boardpos);
 
 	if(e.MiddleIsDown()) {
 		BOARD.camera=clickboardpos+(clickmousepos-mouse);
@@ -127,12 +134,6 @@ void Canvas::OnMouseMotion(wxMouseEvent&e) {
 		mousepos=mouse;
 		if(selection==SEL_RECT) {
 			sel_rect.SetP2(GetPos(mouse));
-			///////////
-			/*for(Object &o : BOARD.objects)
-				o.selected=false;
-			if(selection==SEL_RECT)
-				BOARD.select(sel_rect);*/
-			//////////
 		} else if(selection==SEL_OBJECT)
 			MoveObjects(mouse);
 	} else refresh=false;
@@ -140,13 +141,18 @@ void Canvas::OnMouseMotion(wxMouseEvent&e) {
 	e.Skip();
 
 	bool ok=false;
-	int x,y;wxGetMousePosition(&x,&y);
-	for(Object &o : BOARD.objects)
-		if(o.point_in(boardpos) && !o.marker.empty()){
-			tip->Show(x+20,y+20,o.marker);
-			ok=true;
-		}
+	Vec2i m=GetGlobalMousePos();
+	if(selection==SEL_NONE && !BOARD.is_selected())
+		for(Object &o : BOARD.objects)
+			if(o.point_in(boardpos) && !o.marker.empty()){
+				tip->Show(m,o.marker);
+				ok=true;
+				break;
+			}
 	if(!ok)tip->Hide();
+	if(selection==SEL_OBJECT)
+		measure->Show(m,BOARD.readable_coord(boardpos));
+	else measure->Hide();
 
 }
 void Canvas::OnKey(wxKeyEvent &e) {
@@ -156,13 +162,18 @@ void Canvas::OnKey(wxKeyEvent &e) {
 		Refresh();
 	e.Skip();
 }
-Vec2 Canvas::GetPos(Vec2 mouse) {
+Vec2 Canvas::GetPos(Vec2i mouse) {
 	return ((mouse+Vec2(BOARD.camera.x,BOARD.camera.y))/BOARD.zoom).SwapY();
 }
-Vec2 Canvas::GetMousePos(wxMouseEvent&e) {
+Vec2i Canvas::GetMousePos(wxMouseEvent&e) {
 	long mx,my;
 	e.GetPosition(&mx,&my);
-	return Vec2(mx,my);
+	return Vec2i(mx,my);
+}
+Vec2i Canvas::GetGlobalMousePos() {
+	int mx,my;
+	wxGetMousePosition(&mx,&my);
+	return Vec2i(mx,my);
 }
 void Canvas::StabilizeCamera() {
 
@@ -177,4 +188,7 @@ void Canvas::StabilizeCamera() {
 	if(BOARD.camera.y>BOARD.zoom*BOARD.size.height-100)
 		BOARD.camera.y=BOARD.zoom*BOARD.size.height-100;
 
+}
+void Canvas::UpdateColors(){
+	measure->UpdateColors();
 }

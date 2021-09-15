@@ -157,6 +157,8 @@ void OpenLayoutFrame::show_settings(wxCommandEvent&) {
 	if(settings.ShowModal()==wxID_OK){
 		settings.Get(SETTINGS);
 		static_cast<BottomPanel*>(bottom_panel)->UpdateColors();
+		static_cast<Canvas*>(canvas)->UpdateColors();
+		canvas->Refresh();
 	}
 }
 void OpenLayoutFrame::show_about(wxCommandEvent&) {

@@ -199,6 +199,7 @@ struct Board {
     void fit(Vec2i wsize);
     void set_anchor(uint8_t pos,int border=0);
     bool ground_allow()const;
+    Vec2 readable_coord(Vec2 pos)const;
 };
 
 

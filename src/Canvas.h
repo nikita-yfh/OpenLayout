@@ -16,6 +16,7 @@ enum {
 class Canvas : public wxGLCanvas {
 public:
 	Canvas(wxWindow *parent);
+	void UpdateColors();
 protected:
 	Vec2 clickmousepos;
 	Vec2 clickboardpos;
@@ -37,10 +38,12 @@ protected:
 	void OnLeftDown(wxMouseEvent&e);
 	void OnLeftUp(wxMouseEvent&e);
 	void OnKey(wxKeyEvent&e);
-	Vec2 GetPos(Vec2 mouse);
-	Vec2 GetMousePos(wxMouseEvent&);
+	Vec2 GetPos(Vec2i mouse);
+	Vec2i GetMousePos(wxMouseEvent&);
+	Vec2i GetGlobalMousePos();
 
 	void MoveObjects(Vec2 mouse);
 	TextTooltip *tip;
+	MeasureTooltip *measure;
 
 };
