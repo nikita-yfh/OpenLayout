@@ -312,6 +312,9 @@ void GLCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);
 	SetCurrent(context);
 
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
 	glMatrixMode(GL_PROJECTION);
 
 	glClearColor(1.0f,1.0f,1.0f,1.0f);
@@ -447,8 +450,27 @@ void GLCanvas::DrawAnchor() {
 	glEnd();
 	glEnable(GL_MULTISAMPLE);
 }
+void GLCanvas::DrawCross(Vec2 point,float size,bool lines_45) {
+	size/=BOARD.zoom;
+	glLineWidth (1);
+	glBegin(GL_LINES);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	glVertex2f(point.x+size,-point.y);
+	glVertex2f(point.x-size,-point.y);
+	glVertex2f(point.x,-point.y+size);
+	glVertex2f(point.x,-point.y-size);
+	if(lines_45) {
+		glColor4f(0.5f,0.5f,0.5f,1.0f);
+		glVertex2f(point.x+size,-point.y+size);
+		glVertex2f(point.x-size,-point.y-size);
+		glVertex2f(point.x-size,-point.y+size);
+		glVertex2f(point.x+size,-point.y-size);
+	}
+	glEnd();
+}
 void GLCanvas::DrawSelection() {
 	if(selection==SEL_RECT) {
+		glDisable(GL_MULTISAMPLE);
 		glEnable(GL_LINE_STIPPLE);
 		glLineWidth (2);
 		glLineStipple(1, 0x0F0F);
@@ -461,5 +483,57 @@ void GLCanvas::DrawSelection() {
 		glEnd();
 		glDisable(GL_LINE_STIPPLE);
 		glEnable(GL_MULTISAMPLE);
+	} else if(selection==SEL_MEASURE) {
+		//draw rect outline
+		glDisable(GL_MULTISAMPLE);
+		glEnable(GL_LINE_STIPPLE);
+		glLineStipple(1, 0x0F0F);
+		glLineWidth (1);
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		glBegin(GL_LINES);
+		glVertex2f(sel_rect.x1,-sel_rect.y1);
+		glVertex2f(sel_rect.x1,-sel_rect.y2);
+		glVertex2f(sel_rect.x1,-sel_rect.y1);
+		glVertex2f(sel_rect.x2,-sel_rect.y1);
+		glEnd();
+		glDisable(GL_LINE_STIPPLE);
+
+		//draw rect
+		glColor4f(1.0f,1.0f,1.0f,0.25f);
+		glBegin(GL_QUADS);
+		glVertex2f(sel_rect.x1,-sel_rect.y1);
+		glVertex2f(sel_rect.x1,-sel_rect.y2);
+		glVertex2f(sel_rect.x2,-sel_rect.y2);
+		glVertex2f(sel_rect.x2,-sel_rect.y1);
+		glEnd();
+
+		const float cross_size=20.0f;
+		DrawCross({sel_rect.x1,sel_rect.y1},cross_size,false);
+
+		glEnable(GL_MULTISAMPLE);
+
+		//draw diagonal
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+		glLineWidth (2);
+		glBegin(GL_LINES);
+		glVertex2f(sel_rect.x1,-sel_rect.y1);
+		glVertex2f(sel_rect.x2,-sel_rect.y2);
+		glEnd();
+
+		//draw angle
+		float angle=abs(atan((sel_rect.y2-sel_rect.y1)/(sel_rect.x2-sel_rect.x1)));
+		glBegin(GL_LINE_STRIP);
+		for(float theta = 0; theta < angle; theta+=angle/(SETTINGS.circle_quality)) {
+			float x = cross_size/BOARD.zoom * cosf(theta);
+			float y = cross_size/BOARD.zoom * sinf(theta);
+			if(sel_rect.y2<sel_rect.y1)y=-y;
+			if(sel_rect.x2<sel_rect.x1)x=-x;
+			glVertex2f(x + sel_rect.x1, -y - sel_rect.y1);
+		}
+		glEnd();
+
 	}
+
+	if(APP.selected_tool==TOOL_MEASURE)
+		DrawCross({sel_rect.x2,sel_rect.y2},max(GetSize().x,GetSize().y),SETTINGS.measure_45_lines);//cross bigger then screen
 }

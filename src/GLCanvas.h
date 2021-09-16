@@ -1,7 +1,7 @@
 #pragma once
 #include "Canvas.h"
 
-class GLCanvas : public Canvas{
+class GLCanvas : public Canvas {
 public:
 	GLCanvas(wxWindow *parent);
 private:
@@ -16,6 +16,7 @@ private:
 	void DrawCircle(Vec2 pos,float r);
 	void DrawLine(Vec2 p1,Vec2 p2,float width,bool s1,bool s2);
 	void DrawSquare(Vec2 pos,float r,float angle);
+	void DrawCross(Vec2 point,float size,bool lines_45);
 	void DrawObject(const Object &o,float d);
 	void DrawPad(const Object &o,float d);
 	void DrawDrillings(const Object &o);

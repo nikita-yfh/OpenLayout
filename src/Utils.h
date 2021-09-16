@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <wx/string.h>
 #include <sstream>
 #include <vector>
 #include <cmath>
@@ -16,7 +16,7 @@ static string to_str(T value) {
 	return s.str();
 }
 
-string get_grid_str(float grid);
+wxString get_grid_str(float grid);
 
 struct Vec2;
 struct Rect4 {
@@ -30,6 +30,8 @@ struct Rect4 {
 	void Normalize();
 	void SetP1(Vec2 p);
 	void SetP2(Vec2 p);
+	Vec2 GetP1() const;
+	Vec2 GetP2() const;
 };
 
 struct Vec2i {

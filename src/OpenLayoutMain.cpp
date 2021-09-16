@@ -124,7 +124,9 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame(const char *filename)
-	:wxFrame(0,wxID_ANY,"OpenLayout",wxDefaultPosition,{800,600}) {
+	:wxFrame(0,wxID_ANY,"OpenLayout",wxDefaultPosition, {
+	800,600
+}) {
 	wxBoxSizer *all_box=new wxBoxSizer(wxVERTICAL);
 	init_menu_bar();
 	init_tool_bar(all_box);
@@ -154,10 +156,10 @@ void OpenLayoutFrame::close(wxCommandEvent&) {
 }
 void OpenLayoutFrame::show_settings(wxCommandEvent&) {
 	SettingsDialog settings(this,SETTINGS);
-	if(settings.ShowModal()==wxID_OK){
+	if(settings.ShowModal()==wxID_OK) {
 		settings.Get(SETTINGS);
 		static_cast<BottomPanel*>(bottom_panel)->UpdateColors();
-		static_cast<Canvas*>(canvas)->UpdateColors();
+		static_cast<Canvas*>(canvas)->UpdateSettings();
 		canvas->Refresh();
 	}
 }
@@ -352,10 +354,10 @@ void OpenLayoutFrame::init_tool_bar(wxBoxSizer *sizer) {
 	{
 		//create menu for rotate button
 		wxMenu *menu=new wxMenu();
-		menu->AppendRadioItem(ID_ANGLE_90,"90");
-		menu->AppendRadioItem(ID_ANGLE_45,"45");
-		menu->AppendRadioItem(ID_ANGLE_10,"10");
-		menu->AppendRadioItem(ID_ANGLE_5,"5");
+		menu->AppendRadioItem(ID_ANGLE_90,L"90\x00b0");
+		menu->AppendRadioItem(ID_ANGLE_45,L"45\x00b0");
+		menu->AppendRadioItem(ID_ANGLE_10,L"10\x00b0");
+		menu->AppendRadioItem(ID_ANGLE_5,L"5\x00b0");
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
 			switch(e.GetId()) {
 			case ID_ANGLE_90:
@@ -443,6 +445,6 @@ void OpenLayoutFrame::savefile(wxCommandEvent &e) {
 	wxString path=dialog.GetPath();
 	PCB.save(path.c_str());
 }
-void OpenLayoutFrame::RefreshCanvas(){
+void OpenLayoutFrame::RefreshCanvas() {
 	canvas->Refresh();
 }

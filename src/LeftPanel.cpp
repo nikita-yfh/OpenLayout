@@ -107,7 +107,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 				tool_measure_xpm,
 				tool_photoview_xpm
 			};
-			const char *tooltips[]={
+			const char *tooltips[]= {
 				_("Edit mode to select. move. copy. cut, paste or delete elements"),
 				_("Zoom mode"),
 				_("Draw tracks"),
@@ -127,7 +127,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 			};
 			for(int q=0; q<TOOL_COUNT; q++)
 				tools->AddRadioTool(ID_TOOL_EDIT+q,wxEmptyString,images[q],wxNullBitmap,tooltips[q]);
-			Bind(wxEVT_MENU,[&](wxCommandEvent&e){
+			Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
 				APP.selected_tool=e.GetId()-ID_TOOL_EDIT;
 			},ID_TOOL_EDIT,ID_TOOL_PHOTOVIEW);
 			tools->Realize();

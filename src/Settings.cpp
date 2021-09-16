@@ -80,11 +80,11 @@ void Settings::SetDefault() {
 	copper_thickness=35;
 	temp_enhance=20;
 
-	show_45_lines=true;
-	ccoord_show=true;
-	ccoord_big=true;
-	ccoord_light=false;
-	ccoord_tp=true;
+	measure_45_lines=true;
+	measure_show=true;
+	measure_big=true;
+	measure_light=false;
+	measure_tp=true;
 	autosave=true;
 	autosave_timer=5;
 

@@ -7,16 +7,17 @@
 #include "PCBFile.h"
 #include "Tooltips.h"
 
-enum {
+enum { //selection
 	SEL_NONE,
 	SEL_RECT,
-	SEL_OBJECT
+	SEL_OBJECT,
+	SEL_MEASURE
 };
 
 class Canvas : public wxGLCanvas {
 public:
 	Canvas(wxWindow *parent);
-	void UpdateColors();
+	void UpdateSettings();
 protected:
 	Vec2 clickmousepos;
 	Vec2 clickboardpos;
@@ -32,6 +33,8 @@ protected:
 	void StabilizeCamera();
 	bool shift=false;
 	bool ctrl=false;
+
+	void OnKillFocus(wxFocusEvent&);
 	void OnMouseWheel(wxMouseEvent&);
 	void OnMouseMotion(wxMouseEvent&);
 	void OnMiddleDown(wxMouseEvent&e);
@@ -40,7 +43,6 @@ protected:
 	void OnKey(wxKeyEvent&e);
 	Vec2 GetPos(Vec2i mouse);
 	Vec2i GetMousePos(wxMouseEvent&);
-	Vec2i GetGlobalMousePos();
 
 	void MoveObjects(Vec2 mouse);
 	TextTooltip *tip;

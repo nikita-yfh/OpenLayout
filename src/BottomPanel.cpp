@@ -15,7 +15,7 @@
 #define WIDGET(type,e)\
 	static_cast<type>(e.GetEventObject())
 
-enum{
+enum {
 	ID_POSX=1,
 	ID_POSY,
 
@@ -54,7 +54,7 @@ wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_BUTTON		(ID_RUBBERBAND,BottomPanel::ToggleRubberband)
 wxEND_EVENT_TABLE()
 
-static void set_bitmap(wxCommandEvent&e,const wxBitmap &bitmap){
+static void set_bitmap(wxCommandEvent&e,const wxBitmap &bitmap) {
 	static_cast<wxBitmapButton*>(e.GetEventObject())->SetBitmap(bitmap);
 }
 
@@ -64,7 +64,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 	wxBoxSizer *all_box=new wxBoxSizer(wxHORIZONTAL);
 	{
 		wxBoxSizer *coord=new wxBoxSizer(wxVERTICAL);
-		for(int q=0;q<2;q++){
+		for(int q=0; q<2; q++) {
 			wxStaticText *text=new wxStaticText(this,ID_POSX+q,"sometext");
 			coord->Add(text,1,wxEXPAND);
 		}
@@ -102,7 +102,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 			panel->SetBackgroundColour({0,0,0});
 			{
 				wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
-				for(int q=0;q<7;q++){
+				for(int q=0; q<7; q++) {
 					wxStaticText *text=new wxStaticText(panel,ID_C1_TEXT+q,color_names[q]);
 					text->SetToolTip(color_help[q]);
 					sizer->Add(text,1,wxCENTER|wxEXPAND);
@@ -114,13 +114,13 @@ BottomPanel::BottomPanel(wxWindow *parent):
 		}
 		{
 			wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
-			for(int q=0;q<7;q++){
+			for(int q=0; q<7; q++) {
 				wxRadioButton *button=new wxRadioButton(this,ID_C1+q,"");
 				button->SetToolTip(color_help[q]);
 				sizer->Add(button,1,wxEXPAND);
 			}
 			table->Add(sizer,1,wxEXPAND);
-			Bind(wxEVT_RADIOBUTTON,[&](wxCommandEvent&e){
+			Bind(wxEVT_RADIOBUTTON,[&](wxCommandEvent&e) {
 				BOARD.active_layer=e.GetId()-ID_C1+1;
 				static_cast<OpenLayoutFrame*>(GetParent())->RefreshCanvas();
 			},ID_C1,ID_O);
@@ -128,7 +128,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 		all_box->Add(table,0,wxEXPAND);
 	}
 	{
-		wxButton *help_layer=new wxButton(this,ID_HELP,"?",wxDefaultPosition,{20,-1});
+		wxButton *help_layer=new wxButton(this,ID_HELP,"?",wxDefaultPosition, {20,-1});
 		help_layer->SetToolTip(_("Show the layer-colors and their meaning"));
 		all_box->Add(help_layer,0,wxEXPAND);
 	}
@@ -152,7 +152,7 @@ BottomPanel::BottomPanel(wxWindow *parent):
 
 	UpdateColors();
 }
-void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
+void BottomPanel::UpdateCoords(wxUpdateUIEvent &e) {
 	wxString text;
 	if(e.GetId()==ID_POSX)
 		text=wxString::Format("X:\t%.3f\t%s",APP.mouse_board_pos.x,_("mm"));
@@ -160,51 +160,51 @@ void BottomPanel::UpdateCoords(wxUpdateUIEvent &e){
 		text=wxString::Format("Y:\t%.3f\t%s",APP.mouse_board_pos.y,_("mm"));
 	e.SetText(text);
 }
-void BottomPanel::UpdateGround(wxUpdateUIEvent &e){
+void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
 	e.Enable(BOARD.ground_allow());
 	uint8_t &state=BOARD.ground_pane[BOARD.active_layer-1];
 	set_bitmap(e,state?ground_enabled_xpm:ground_disabled_xpm);
 }
-void BottomPanel::ToggleGround(wxCommandEvent &e){
+void BottomPanel::ToggleGround(wxCommandEvent &e) {
 	uint8_t &state=BOARD.ground_pane[BOARD.active_layer-1];
 	state=!state;
 	set_bitmap(e,state?ground_enabled_xpm:ground_disabled_xpm);
 	static_cast<OpenLayoutFrame*>(GetParent())->RefreshCanvas();
 }
-void BottomPanel::UpdateCapture(wxUpdateUIEvent &e){
+void BottomPanel::UpdateCapture(wxUpdateUIEvent &e) {
 	set_bitmap(e,APP.capture?capture_enabled_xpm:capture_disabled_xpm);
 }
-void BottomPanel::ToggleCapture(wxCommandEvent &e){
+void BottomPanel::ToggleCapture(wxCommandEvent &e) {
 	APP.capture=!APP.capture;
 	set_bitmap(e,APP.capture?capture_enabled_xpm:capture_disabled_xpm);
 }
-void BottomPanel::UpdateRubberband(wxUpdateUIEvent &e){
+void BottomPanel::UpdateRubberband(wxUpdateUIEvent &e) {
 	set_bitmap(e,APP.rubberband==RUBBERBAND_DISABLED?rubberband_0_xpm:
-				 APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
-														rubberband_2_xpm);
+			   APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
+			   rubberband_2_xpm);
 }
-void BottomPanel::ToggleRubberband(wxCommandEvent &e){
+void BottomPanel::ToggleRubberband(wxCommandEvent &e) {
 	APP.rubberband=(APP.rubberband+1)%3;
 	set_bitmap(e,APP.rubberband==RUBBERBAND_DISABLED?rubberband_0_xpm:
-				 APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
-														rubberband_2_xpm);
+			   APP.rubberband==RUBBERBAND_SMALL_RANGE?rubberband_1_xpm:
+			   rubberband_2_xpm);
 }
-void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e){
-	if(static_cast<wxWindow*>(e.GetEventObject())->IsShown()!=BOARD.is_multilayer){
+void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e) {
+	if(static_cast<wxWindow*>(e.GetEventObject())->IsShown()!=BOARD.is_multilayer) {
 		static_cast<wxWindow*>(e.GetEventObject())->Show(BOARD.is_multilayer);
 		Layout();
 	}
 }
-void BottomPanel::UpdateLayers(wxUpdateUIEvent &e){
+void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
 	e.Check(e.GetId()-ID_C1==BOARD.active_layer-1);
 }
-void BottomPanel::UpdateColors(){
-	for(int q=0;q<7;q++){
+void BottomPanel::UpdateColors() {
+	for(int q=0; q<7; q++) {
 		wxStaticText *text=static_cast<wxStaticText*>(FindWindowById(ID_C1_TEXT+q));
 		text->SetForegroundColour(SETTINGS.get_color(q));
 	}
 }
-void BottomPanel::ShowLayerInfo(wxCommandEvent&){
+void BottomPanel::ShowLayerInfo(wxCommandEvent&) {
 	LayerInfoDialog dialog(this);
 	dialog.ShowModal();
 }

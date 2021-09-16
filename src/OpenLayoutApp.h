@@ -3,7 +3,7 @@
 #include "PCBFile.h"
 #include "Settings.h"
 
-enum{
+enum {
 	RUBBERBAND_DISABLED,
 	RUBBERBAND_SMALL_RANGE,
 	RUBBERBAND_BIG_RANGE
