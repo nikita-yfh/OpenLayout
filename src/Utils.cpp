@@ -1,7 +1,7 @@
 #include "Utils.h"
 #include <algorithm>
 #include <cfloat>
-float range(float v,float a,float b){
+float range(float v,float a,float b) {
 	return max(a,min(b,v));
 }
 float to_mm(float v) {
@@ -10,14 +10,12 @@ float to_mm(float v) {
 float to_mil(float v) {
 	return v/0.0254f;
 }
-string get_grid_str(float grid) {
+wxString get_grid_str(float grid) {
 	//39.6875µm, 79.375µm, 158.75µm, ..., 5.08mm
-	char mm[40];
 	if(to_str(grid).size()>6) //if µm more compact
-		sprintf(mm,"%g %s",grid*1000.0f,"um");
+		return wxString::Format("%g %s",grid*1000.0f,L"\x00b5m");
 	else
-		sprintf(mm,"%g %s",grid,"mm");
-	return mm;
+		return wxString::Format("%g %s",grid,"mm");
 }
 Rect4::Rect4(float xp1,float yp1,float xp2,float yp2) {
 	x1=xp1;
@@ -47,6 +45,12 @@ void Rect4::SetP1(Vec2 p) {
 void Rect4::SetP2(Vec2 p) {
 	x2=p.x;
 	y2=p.y;
+}
+Vec2 Rect4::GetP1()const {
+	return Vec2(x1,y1);
+}
+Vec2 Rect4::GetP2()const {
+	return Vec2(x2,y2);
 }
 float Vec2::Normalize(float d) {
 	float length = Length();

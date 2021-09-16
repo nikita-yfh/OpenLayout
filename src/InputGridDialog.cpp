@@ -17,7 +17,7 @@ InputGridDialog::InputGridDialog(wxWindow* parent)
 			content->Add(input,1,wxEXPAND|wxALL,5);
 		}
 		{
-			wxString list[]= {_("mm"),_("um"),_("mil")};
+			wxString list[]= {_("mm"),_(L"\x00b5m"),_("mil")};
 			units=new wxChoice(this,wxID_ANY,wxDefaultPosition,wxDefaultSize,3,list);
 			units->SetSelection(0);
 			content->Add(units,0,wxEXPAND|wxALL,5);

@@ -279,7 +279,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 		{
 			wxBoxSizer *box1 = new wxBoxSizer(wxHORIZONTAL);
-			box1->Add(new wxStaticText(tabs[5], wxID_ANY, _("Copper-Thickness in um:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			box1->Add(new wxStaticText(tabs[5], wxID_ANY, _(L"Copper-Thickness in \x00b5m:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			copper_thickness=new wxSpinCtrl(tabs[5], wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, 0,0, 299,0);
 			copper_thickness->SetValue(s.copper_thickness);
 			box1->Add(copper_thickness, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -287,7 +287,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		}
 		{
 			wxBoxSizer *box2 = new wxBoxSizer(wxHORIZONTAL);
-			box2->Add(new wxStaticText(tabs[5], wxID_ANY, _("Temperature enchance in C:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+			box2->Add(new wxStaticText(tabs[5], wxID_ANY, _(L"Temperature enchance in \x00b0""C:")), 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 			temp_enhance=new wxSpinCtrl(tabs[5], wxID_ANY, "0", wxDefaultPosition, wxDefaultSize, 0,0,299,0);
 			temp_enhance->SetValue(s.temp_enhance);
 			box2->Add(temp_enhance, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -303,8 +303,8 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		{
 			key_list=new wxListView(tabs[6], wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxBORDER_SIMPLE);
 
-			key_list->AppendColumn("Mode", wxLIST_FORMAT_LEFT, 150);
-			key_list->AppendColumn("Key", wxLIST_FORMAT_LEFT, 50);
+			key_list->AppendColumn(_("Mode"), wxLIST_FORMAT_LEFT, 150);
+			key_list->AppendColumn(_("Key"), wxLIST_FORMAT_LEFT, 50);
 			for(int q=0; q<TOOL_COUNT; q++) {
 				key_list->InsertItem(q,Settings::tool_names[q]);
 				key_list->SetItem(q,0,Settings::tool_names[q]);
@@ -364,40 +364,40 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 		wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
 
 		show_45 = new wxCheckBox(tabs[7], wxID_ANY, _("Show 45 lines"));
-		show_45->SetValue(s.show_45_lines);
+		show_45->SetValue(s.measure_45_lines);
 		all_box->Add(show_45, 0, wxALL|wxALIGN_LEFT, 5);
 
-		ccoord_show = new wxCheckBox(tabs[7], wxID_ANY,_("Show coordinates of crosshair"));
-		ccoord_show->SetValue(s.ccoord_show);
-		ccoord_show->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e) {
+		measure_show = new wxCheckBox(tabs[7], wxID_ANY,_("Show coordinates of crosshair"));
+		measure_show->SetValue(s.measure_show);
+		measure_show->Bind(wxEVT_CHECKBOX,[&](wxCommandEvent &e) {
 			panel_crosshair->Enable(
 				static_cast<wxCheckBox*>(e.GetEventObject())->GetValue());
 		});
-		all_box->Add(ccoord_show, 0, wxALL|wxALIGN_LEFT, 5);
+		all_box->Add(measure_show, 0, wxALL|wxALIGN_LEFT, 5);
 		{
 			panel_crosshair = new wxPanel(tabs[7]);
-			panel_crosshair->Enable(s.ccoord_show);
+			panel_crosshair->Enable(s.measure_show);
 			wxBoxSizer *box = new wxBoxSizer(wxVERTICAL);
 			{
-				ccoord_tp = new wxCheckBox(panel_crosshair, wxID_ANY,_("Transparent"));
-				ccoord_tp->SetValue(s.ccoord_tp);
-				box->Add(ccoord_tp, 0, wxALL|wxALIGN_LEFT, 5);
+				measure_tp = new wxCheckBox(panel_crosshair, wxID_ANY,_("Transparent"));
+				measure_tp->SetValue(s.measure_tp);
+				box->Add(measure_tp, 0, wxALL|wxALIGN_LEFT, 5);
 			}
 			{
-				ccoord_big = new wxCheckBox(panel_crosshair, wxID_ANY, _("Big text"));
-				ccoord_big->SetValue(s.ccoord_big);
-				box->Add(ccoord_big, 0, wxALL|wxALIGN_LEFT, 5);
+				measure_big = new wxCheckBox(panel_crosshair, wxID_ANY, _("Big text"));
+				measure_big->SetValue(s.measure_big);
+				box->Add(measure_big, 0, wxALL|wxALIGN_LEFT, 5);
 			}
 			{
 				wxStaticBoxSizer *radio_box = new wxStaticBoxSizer(wxVERTICAL, panel_crosshair, _("Textbox"));
 				{
 					rb_black=new wxRadioButton(panel_crosshair, wxID_ANY, _("Black background"));
-					rb_black->SetValue(!s.ccoord_light);
+					rb_black->SetValue(!s.measure_light);
 					radio_box->Add(rb_black, 0, wxALIGN_LEFT, 5);
 				}
 				{
 					rb_white=new wxRadioButton(panel_crosshair, wxID_ANY, _("White background"));
-					rb_white->SetValue(s.ccoord_light);
+					rb_white->SetValue(s.measure_light);
 					radio_box->Add(rb_white, 0, wxALIGN_LEFT, 5);
 				}
 				box->Add(radio_box,0,wxLEFT,30);
@@ -489,11 +489,11 @@ void SettingsDialog::Get(Settings &s) {
 	s.copper_thickness=copper_thickness->GetValue();
 	s.temp_enhance=temp_enhance->GetValue();
 
-	s.ccoord_big=ccoord_big->GetValue();
-	s.ccoord_tp=ccoord_tp->GetValue();
-	s.ccoord_show=ccoord_show->GetValue();
-	s.ccoord_light=rb_white->GetValue();
-	s.show_45_lines=show_45->GetValue();
+	s.measure_big=measure_big->GetValue();
+	s.measure_tp=measure_tp->GetValue();
+	s.measure_show=measure_show->GetValue();
+	s.measure_light=rb_white->GetValue();
+	s.measure_45_lines=show_45->GetValue();
 
 	s.autosave=autosave_enable->GetValue();
 	s.autosave_timer=autosave_timer->GetValue();

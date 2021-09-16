@@ -42,9 +42,9 @@ protected:
 	wxChoice *drill_choice;
 	wxSpinCtrl *undo_depth;
 	wxCheckBox *show_45;
-	wxCheckBox *ccoord_show;
-	wxCheckBox *ccoord_tp;
-	wxCheckBox *ccoord_big;
+	wxCheckBox *measure_show;
+	wxCheckBox *measure_tp;
+	wxCheckBox *measure_big;
 	wxSpinCtrl *copper_thickness;
 	wxSpinCtrl *temp_enhance;
 	wxChoice *key_choice;

@@ -8,7 +8,7 @@ using namespace std;
 
 typedef wxColour Color;
 
-enum{
+enum {
 	TOOL_EDIT,
 	TOOL_ZOOM,
 	TOOL_TRACK,
@@ -127,11 +127,11 @@ struct Settings {
 
 	static const char *tool_names[TOOL_COUNT];
 
-	bool show_45_lines;
-	bool ccoord_show;
-	bool ccoord_big;
-	bool ccoord_tp;
-	bool ccoord_light;
+	bool measure_45_lines;
+	bool measure_show;
+	bool measure_big;
+	bool measure_tp;
+	bool measure_light;
 
 	bool autosave;
 	uint16_t autosave_timer;
