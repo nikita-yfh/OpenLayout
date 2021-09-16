@@ -98,7 +98,7 @@ void Settings::SetDefault() {
 
 
 	const char def_keys[TOOL_COUNT]= {
-		'\27', //escape
+		27, //escape
 		'Z',
 		'L',
 		'P',

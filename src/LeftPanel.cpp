@@ -14,25 +14,6 @@
 #include "GridBinderDialog.h"
 #include "OpenLayoutApp.h"
 
-enum class Tool {
-	Edit,
-	Zoom,
-	Track,
-	Pad,
-	SMDPad,
-	Circle,
-	Rectangle,
-	Zone,
-	SpecialForm,
-	Text,
-	Connection,
-	Autoroute,
-	Test,
-	Measure,
-	Photoview,
-	SolderMask
-};
-
 enum {
 	ID_TOOL_EDIT,
 	ID_TOOL_ZOOM,
@@ -80,6 +61,11 @@ enum {
 
 	ID_SHOW_GRID,
 };
+
+
+wxBEGIN_EVENT_TABLE(LeftPanel,wxPanel)
+	EVT_UPDATE_UI_RANGE(ID_TOOL_EDIT,ID_TOOL_PHOTOVIEW,LeftPanel::update_tools)
+wxEND_EVENT_TABLE()
 
 LeftPanel::LeftPanel(wxWindow *parent):
 	wxScrolledWindow(parent,wxID_ANY,wxDefaultPosition,wxDefaultSize,wxVSCROLL) {
@@ -532,4 +518,8 @@ void LeftPanel::build_grid_menu() {
 void LeftPanel::set_grid(float val) {
 	BOARD.active_grid_val=val*10000.0;
 	grid_button->SetLabel(get_grid_str(val));
+}
+
+void LeftPanel::update_tools(wxUpdateUIEvent&e){
+	e.Check(e.GetId()-ID_TOOL_EDIT==APP.selected_tool);
 }

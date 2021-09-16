@@ -8,6 +8,7 @@ const int attribList[] = {WX_GL_RGBA,
 						 };
 Canvas::Canvas(wxWindow *parent)
 	:wxGLCanvas(parent,wxID_ANY,attribList) {
+	SetFocus();
 	Bind(wxEVT_MOUSEWHEEL,&Canvas::OnMouseWheel,this);
 	Bind(wxEVT_MIDDLE_DOWN,&Canvas::OnMiddleDown,this);
 	Bind(wxEVT_LEFT_DOWN,&Canvas::OnLeftDown,this);
@@ -181,6 +182,18 @@ void Canvas::OnKey(wxKeyEvent &e) {
 	shift=e.ShiftDown();
 	if(selection==SEL_OBJECT)
 		Refresh();
+	if(!shift && !ctrl){
+		const char keycode=e.GetKeyCode();
+		for(int q=0;q<TOOL_COUNT;q++){
+			const char &key=SETTINGS.tool_keys[q];
+			if(key==keycode){
+				APP.selected_tool=q;
+				Refresh();
+				break;
+			}
+		}
+
+	}
 	e.Skip();
 }
 Vec2 Canvas::GetPos(Vec2i mouse) {

@@ -308,7 +308,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 			for(int q=0; q<TOOL_COUNT; q++) {
 				key_list->InsertItem(q,Settings::tool_names[q]);
 				key_list->SetItem(q,0,Settings::tool_names[q]);
-				if(s.tool_keys[q]=='\27')
+				if(s.tool_keys[q]==27)
 					key_list->SetItem(q,1,"ESC");
 				else
 					key_list->SetItem(q,1,s.tool_keys[q]);
@@ -328,7 +328,7 @@ SettingsDialog::SettingsDialog(wxWindow* parent,const Settings &s) {
 			wxStaticBoxSizer *hk_box = new wxStaticBoxSizer(wxHORIZONTAL, tabs[6], _("Change hotkey"));
 			{
 				key_choice = new wxChoice(tabs[6], wxID_ANY);
-				key_choice->Append("ESC",reinterpret_cast<void*>('\27'));
+				key_choice->Append("ESC",reinterpret_cast<void*>(27));
 				for(char q='A'; q<='Z'; q++)
 					key_choice->Append(q,reinterpret_cast<void*>(q));
 				key_choice->Bind(wxEVT_CHOICE,[&](wxCommandEvent &e) {
@@ -469,7 +469,7 @@ void SettingsDialog::Get(Settings &s) {
 	for(int q=0; q<TOOL_COUNT; q++) {
 		wxString text=key_list->GetItemText(q,1);
 		if(text=="ESC")
-			s.tool_keys[q]='\27';
+			s.tool_keys[q]=27;
 		else
 			s.tool_keys[q]=char(text[0]);
 	}
