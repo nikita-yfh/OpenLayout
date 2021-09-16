@@ -22,5 +22,7 @@ make -j$(nproc)
 
 **Installing**
 
-It is not possible to install it yet, because this project is in active development.
+```
+sudo make install
+```
 
