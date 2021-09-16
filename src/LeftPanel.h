@@ -26,4 +26,7 @@ private:
 	void set_grid_size(double grid);
 	void swap_smd_size(wxCommandEvent&);
 	void set_grid(float val);
+
+	void update_tools(wxUpdateUIEvent &);
+	wxDECLARE_EVENT_TABLE();
 };
