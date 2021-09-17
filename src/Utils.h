@@ -16,7 +16,7 @@ static string to_str(T value) {
 	return s.str();
 }
 
-wxString get_grid_str(float grid);
+wxString get_grid_str(double grid);
 
 struct Vec2;
 struct Rect4 {

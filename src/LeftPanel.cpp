@@ -32,6 +32,8 @@ enum {
 	ID_TOOL_MEASURE,
 	ID_TOOL_PHOTOVIEW,
 
+	ID_GRID,
+
 	ID_TRACK_SEL,
 	ID_TRACK_ADD=ID_TRACK_SEL+100,
 	ID_TRACK_DEL,
@@ -65,6 +67,7 @@ enum {
 
 wxBEGIN_EVENT_TABLE(LeftPanel,wxPanel)
 	EVT_UPDATE_UI_RANGE(ID_TOOL_EDIT,ID_TOOL_PHOTOVIEW,LeftPanel::update_tools)
+	EVT_UPDATE_UI(ID_GRID,LeftPanel::update_grid)
 wxEND_EVENT_TABLE()
 
 LeftPanel::LeftPanel(wxWindow *parent):
@@ -128,7 +131,7 @@ LeftPanel::LeftPanel(wxWindow *parent):
 		left_box->Add(hsizer,0,wxEXPAND);
 	}
 	{
-		grid_button=new wxButton(this,wxID_ANY,
+		grid_button=new wxButton(this,ID_GRID,
 								 "1.27 mm",wxDefaultPosition,wxDefaultSize,wxBU_LEFT);
 		grid_button->SetBitmap(grid_xpm,wxLEFT);
 		grid_button->SetToolTip(_("Snap to grid"));
@@ -403,28 +406,28 @@ void LeftPanel::build_track_menu() {
 	PopupMenu(track_menu);
 	delete track_menu;
 }
-float get_normal_grid(int n) {
-	return 0.0396875f*pow(2,n);
+double get_normal_grid(int n) {
+	return 396.875*pow(2,n);
 }
-float get_metric_grid(int n) {
-	float grids[]= {
-		0.01f,	0.02f,	0.025f,	0.05f,
-		0.1f,	0.2f,	0.25f,	0.5f,
-		1.0f,	2.0f,	2.5f
+double get_metric_grid(int n) {
+	double grids[]= {
+		100.0,	200.0,	250.0,	500.0,
+		1000.0,	2000.0,	2500.0,	5000.0,
+		10000.0,20000.0,25000.0
 	};
 	return grids[n];
 }
 void LeftPanel::build_grid_menu() {
 	wxMenu *grid_menu=new wxMenu();
 	for(int item=0; item<8; item++) {
-		float grid=get_normal_grid(item);
+		double grid=get_normal_grid(item);
 		add_check_item(grid_menu,get_grid_str(grid),ID_GRID_NORMAL+item,BOARD.active_grid_val==grid);
 	}
 	grid_menu->AppendSeparator();
 	{
 		wxMenu *metric=new wxMenu();
 		for(int item=0; item<11; item++) {
-			float grid=get_metric_grid(item);
+			double grid=get_metric_grid(item);
 			add_check_item(metric,get_grid_str(grid),ID_GRID_METRIC+item,BOARD.active_grid_val==grid);
 		}
 		add_submenu(grid_menu,metric,_("Metric grids:"));
@@ -433,7 +436,7 @@ void LeftPanel::build_grid_menu() {
 	{
 		wxMenu *user=new wxMenu();
 		for(int item=0; item<SETTINGS.grids.size(); item++) {
-			float grid=SETTINGS.grids[item];
+			double grid=SETTINGS.grids[item];
 			add_check_item(user,get_grid_str(grid),ID_GRID_USER+item,BOARD.active_grid_val==grid);
 		}
 		if(SETTINGS.grids.size())
@@ -442,16 +445,16 @@ void LeftPanel::build_grid_menu() {
 		Bind(wxEVT_MENU,[&](wxCommandEvent&e) {
 			InputGridDialog dialog(this);
 			if(dialog.ShowModal()==wxID_OK) {
-				float grid=dialog.Get();
+				double grid=dialog.Get();
 				SETTINGS.grids.push_back(grid);
 				sort(SETTINGS.grids.begin(),SETTINGS.grids.end());
-				set_grid(grid);
+				BOARD.active_grid_val=grid;
 			}
 		},ID_GRID_USER_NEW);
 		if(SETTINGS.grids.size()) {
 			wxMenu *user_del=new wxMenu();
 			for(int item=0; item<SETTINGS.grids.size(); item++) {
-				float grid=SETTINGS.grids[item];
+				double grid=SETTINGS.grids[item];
 				add_item(user_del,get_grid_str(grid),ID_GRID_USER_DEL+item,wxNullBitmap);
 			}
 			add_submenu(user,user_del,_("Remove"),wxNullBitmap);
@@ -460,14 +463,14 @@ void LeftPanel::build_grid_menu() {
 	}
 	Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
 		int id=e.GetId()-ID_GRID_NORMAL;
-		float grid;
+		double grid;
 		if(id<8) //normal
 			grid=get_normal_grid(id);
 		else if(id<19) //metric
 			grid=get_metric_grid(id-8);
 		else //user grid
 			grid=SETTINGS.grids[id-19];
-		set_grid(grid);
+		BOARD.active_grid_val=grid;
 	},ID_GRID_NORMAL,ID_GRID_NORMAL+118);
 	Bind(wxEVT_MENU,[&](wxCommandEvent &e) {
 		int id=e.GetId()-ID_GRID_USER_DEL;
@@ -515,9 +518,9 @@ void LeftPanel::build_grid_menu() {
 	PopupMenu(grid_menu);
 	delete grid_menu;
 }
-void LeftPanel::set_grid(float val) {
-	BOARD.active_grid_val=val*10000.0;
-	grid_button->SetLabel(get_grid_str(val));
+
+void LeftPanel::update_grid(wxUpdateUIEvent&e){
+	e.SetText(get_grid_str(BOARD.active_grid_val));
 }
 
 void LeftPanel::update_tools(wxUpdateUIEvent&e){

@@ -70,7 +70,6 @@ void Settings::SetDefault() {
 	hpgl_export.clear();
 	scanned_copies.clear();
 	grids.clear();
-	grids= {0.6,0.7,0.964};
 	macro_dir=GetDefaultMacroPath();
 
 	units=UNITS_MM;
@@ -150,15 +149,15 @@ void Settings::SetDefault() {
 		1.2f,
 		1.4f
 	};
-	grids_bind[0]=2.54;
-	grids_bind[1]=1.27;
-	grids_bind[2]=0.635;
-	grids_bind[3]=0.3175;
-	grids_bind[4]=0.15875;
-	grids_bind[5]=0.079375;
-	grids_bind[6]=0.0396875;
-	grids_bind[7]=1.0;
-	grids_bind[8]=0.1;
+	grids_bind[0]=25400.0;
+	grids_bind[1]=12700.0;
+	grids_bind[2]=6350.0;
+	grids_bind[3]=3175.0;
+	grids_bind[4]=1587.5;
+	grids_bind[5]=793.75;
+	grids_bind[6]=396.875;
+	grids_bind[7]=10000.0;
+	grids_bind[8]=1000.0;
 }
 string Settings::GetDefaultMacroPath() {
 	// You can customize it there
