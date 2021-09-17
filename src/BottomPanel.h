@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/panel.h>
 #include <wx/event.h>
+#include <wx/stattext.h>
 
 class BottomPanel : public wxPanel {
 public:
@@ -18,4 +19,6 @@ private:
 	void UpdateRubberband(wxUpdateUIEvent &e);
 	void ToggleRubberband(wxCommandEvent&);
 	wxDECLARE_EVENT_TABLE();
+
+	wxStaticText *texts[7];
 };

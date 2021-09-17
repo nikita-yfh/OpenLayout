@@ -34,13 +34,13 @@ InputGridDialog::InputGridDialog(wxWindow* parent)
 	SetSizerAndFit(all_box);
 }
 
-float InputGridDialog::Get() {
+double InputGridDialog::Get() {
 	int sel=units->GetSelection();
 	float val=input->GetValue();
 	if(sel==0) //mm
-		return val;
+		return val*10000.0;
 	else if(sel==1) //um
-		return val/1000.0f;
+		return val*10.0;
 	else //mil
-		return to_mm(val);
+		return to_mm(val)*10000.0;
 }

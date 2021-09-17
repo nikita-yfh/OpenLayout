@@ -53,6 +53,7 @@ void Canvas::OnMouseWheel(wxMouseEvent&e) { //zooming canvas
 void Canvas::OnMiddleDown(wxMouseEvent&e) {
 	clickboardpos=BOARD.camera;
 	clickmousepos=GetMousePos(e);
+	SetFocus();
 	e.Skip();
 }
 void Canvas::OnLeftDown(wxMouseEvent&e) {
@@ -184,12 +185,17 @@ void Canvas::OnKey(wxKeyEvent &e) {
 		Refresh();
 	if(!shift && !ctrl){
 		const char keycode=e.GetKeyCode();
-		for(int q=0;q<TOOL_COUNT;q++){
-			const char &key=SETTINGS.tool_keys[q];
-			if(key==keycode){
-				APP.selected_tool=q;
-				Refresh();
-				break;
+		if(keycode>='1' && keycode<='9'){
+			BOARD.active_grid_val=SETTINGS.grids_bind[keycode-'1'];
+			Refresh();
+		}else{
+			for(int q=0;q<TOOL_COUNT;q++){
+				const char &key=SETTINGS.tool_keys[q];
+				if(key==keycode){
+					APP.selected_tool=q;
+					Refresh();
+					break;
+				}
 			}
 		}
 

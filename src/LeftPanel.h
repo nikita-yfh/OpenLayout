@@ -25,8 +25,8 @@ private:
 	void set_track_size(float size);
 	void set_grid_size(double grid);
 	void swap_smd_size(wxCommandEvent&);
-	void set_grid(float val);
 
 	void update_tools(wxUpdateUIEvent &);
+	void update_grid(wxUpdateUIEvent &);
 	wxDECLARE_EVENT_TABLE();
 };

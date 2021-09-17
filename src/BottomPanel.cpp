@@ -1,6 +1,5 @@
 #include "BottomPanel.h"
 #include <wx/sizer.h>
-#include <wx/stattext.h>
 #include <wx/radiobut.h>
 #include <wx/toolbar.h>
 #include <wx/bmpbuttn.h>
@@ -103,9 +102,9 @@ BottomPanel::BottomPanel(wxWindow *parent):
 			{
 				wxBoxSizer *sizer=new wxBoxSizer(wxHORIZONTAL);
 				for(int q=0; q<7; q++) {
-					wxStaticText *text=new wxStaticText(panel,ID_C1_TEXT+q,color_names[q]);
-					text->SetToolTip(color_help[q]);
-					sizer->Add(text,1,wxCENTER|wxEXPAND);
+					texts[q]=new wxStaticText(panel,ID_C1_TEXT+q,color_names[q]);
+					texts[q]->SetToolTip(color_help[q]);
+					sizer->Add(texts[q],1,wxCENTER|wxEXPAND);
 				}
 				panel->SetSizerAndFit(sizer);
 			}
@@ -199,10 +198,8 @@ void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
 	e.Check(e.GetId()-ID_C1==BOARD.active_layer-1);
 }
 void BottomPanel::UpdateColors() {
-	for(int q=0; q<7; q++) {
-		wxStaticText *text=static_cast<wxStaticText*>(FindWindowById(ID_C1_TEXT+q));
-		text->SetForegroundColour(SETTINGS.get_color(q));
-	}
+	for(int q=0; q<7; q++)
+		texts[q]->SetForegroundColour(SETTINGS.get_color(q));
 }
 void BottomPanel::ShowLayerInfo(wxCommandEvent&) {
 	LayerInfoDialog dialog(this);

@@ -10,12 +10,12 @@ float to_mm(float v) {
 float to_mil(float v) {
 	return v/0.0254f;
 }
-wxString get_grid_str(float grid) {
+wxString get_grid_str(double grid) {
 	//39.6875µm, 79.375µm, 158.75µm, ..., 5.08mm
-	if(to_str(grid).size()>6) //if µm more compact
-		return wxString::Format("%g %s",grid*1000.0f,L"\x00b5m");
+	if(to_str(grid/10000.0).size()>6) //if µm more compact
+		return wxString::Format("%g %s",grid/10.0,L"\x00b5m");
 	else
-		return wxString::Format("%g %s",grid,"mm");
+		return wxString::Format("%g %s",grid/10000.0,"mm");
 }
 Rect4::Rect4(float xp1,float yp1,float xp2,float yp2) {
 	x1=xp1;
