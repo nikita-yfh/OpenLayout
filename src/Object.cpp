@@ -1,6 +1,13 @@
 #include "Object.h"
 #include "THTPad.h"
 
+Object::Object() {
+	prev = nullptr;
+	next = nullptr;
+	*marker = '\0';
+	componentID = 0;
+	groundDistance = 0.0f;
+}
 void Object::Save(File &file) const{
 	SaveObject(file);
 }

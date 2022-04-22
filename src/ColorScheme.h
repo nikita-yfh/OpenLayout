@@ -3,6 +3,7 @@
 #include "File.h"
 
 typedef wxColour Color;
+
 enum {
 	COLOR_C1,	// Copper-top
 	COLOR_S1,	// Silkscreen-top
@@ -22,16 +23,28 @@ enum {
 	COLOR_COUNT
 };
 
-struct ColorScheme {
+class ColorScheme {
+public:
 	ColorScheme();
 
-	Color colors[COLOR_COUNT];
-
-	void ReadColor(File &file, Color &color);
-	void WriteColor(File &file, const Color &color)const;
+	const Color &operator[](uint8_t id) const;
+	Color &operator[](uint8_t id);
 
 	void Save(File &file) const;
 	void Load(File &file);
 
 	void SetDefault();
+
+private:
+	void ReadColor(File &file, Color &color);
+	void WriteColor(File &file, const Color &color) const;
+
+	Color colors[COLOR_COUNT];
 };
+
+inline const Color &ColorScheme::operator[](uint8_t id) const {
+	return colors[id];
+}
+inline Color &ColorScheme::operator[](uint8_t id) {
+	return colors[id];
+}

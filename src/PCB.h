@@ -16,13 +16,14 @@ public:
 	uint32_t GetBoardCount() const;
 	void SetBoard(uint32_t n);
 	Board *GetSelectedBoard();
+
+	ProjectInfo info;
 private:
 	Board *GetLastBoard();
 
 	const uint32_t magic=0xFFAA3306;
 	Board *boards;
 	uint32_t activeTab;
-	ProjectInfo info;
 
 	Board *current;
 };

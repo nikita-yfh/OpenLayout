@@ -1,5 +1,6 @@
 #pragma once
 #include <wx/window.h>
+#include "ColorScheme.h"
 #include "File.h"
 #include "Vec2.h"
 
@@ -12,7 +13,7 @@ struct ImageConfig{
 };
 class ImageConfigs {
 public:
-	void ShowDialog(wxWindow *parent);
+	void ShowDialog(wxWindow *parent, const ColorScheme &colors);
 
 	virtual void Save(File &file) const;
 	virtual void Load(File &file);

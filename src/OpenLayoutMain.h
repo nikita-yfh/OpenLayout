@@ -1,4 +1,5 @@
 #pragma once
+#include "PCB.h"
 #include <wx/frame.h>
 
 enum {
@@ -99,5 +100,7 @@ private:
 	void UpdateUIGroup(wxUpdateUIEvent&);
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
+
+	PCB pcb;
 	wxDECLARE_EVENT_TABLE();
 };
