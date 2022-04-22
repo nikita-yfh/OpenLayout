@@ -4,6 +4,7 @@ PCB::PCB(){
 	boards = nullptr;
 	current = nullptr;
 	activeTab = 0;
+	AddBoard(new Board(Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f));
 }
 PCB::~PCB(){
 	while(boards){
@@ -34,8 +35,8 @@ Board *PCB::GetLastBoard(){
 	return tmp;
 }
 void PCB::AddBoard(Board *board){
-	Board *last = GetLastBoard();
-	last->next = board;
+	board->next = boards;
+	current = boards = board;
 }
 
 void PCB::Save(File &file) const{

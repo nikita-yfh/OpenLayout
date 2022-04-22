@@ -4,11 +4,16 @@
 
 class Object {
 public:
+	Object();
+
 	virtual void SaveObject(File &file) const = 0;
 	virtual void LoadObject(File &file) = 0;
 
 	void Save(File &file) const;
 	static Object *Load(File &file);
+
+	Object *GetNext();
+	const Object *GetNext() const;
 protected:
 	enum {
 		THT_PAD = 2,
@@ -25,4 +30,16 @@ protected:
 	uint16_t componentID;
 
 	bool selected;
+private:
+	Object *prev;
+	Object *next;
+
+	friend class Board;
 };
+
+inline Object *Object::GetNext() {
+	return next;
+}
+inline const Object *Object::GetNext() const {
+	return next;
+}

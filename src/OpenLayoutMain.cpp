@@ -44,7 +44,9 @@ OpenLayoutFrame::OpenLayoutFrame()
 void OpenLayoutFrame::Close(wxCommandEvent&){}
 void OpenLayoutFrame::ShowSettings(wxCommandEvent&){}
 void OpenLayoutFrame::ShowAbout(wxCommandEvent&){}
-void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&){}
+void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&){
+	pcb.info.ShowDialog(this);
+}
 void OpenLayoutFrame::NewBoard(wxCommandEvent&){
 	NewBoardDialog dialog(this);
 	dialog.ShowModal();
@@ -57,7 +59,9 @@ void OpenLayoutFrame::SaveFileAs(wxCommandEvent&){}
 void OpenLayoutFrame::OpenFile(wxCommandEvent&){}
 void OpenLayoutFrame::SetSelectionLayer(wxCommandEvent&){}
 void OpenLayoutFrame::Delete(wxCommandEvent&){}
-void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&){}
+void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&){
+	pcb.GetSelectedBoard()->images.ShowDialog(this, ColorScheme());
+}
 
 void OpenLayoutFrame::UpdateUIEdit(wxUpdateUIEvent&){}
 void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent&){}

@@ -11,7 +11,7 @@
 
 ImageConfig::ImageConfig(){
 	enabled = false;
-	path[0] = '\0';
+	*path = '\0';
 	dpi = 600;
 	shift.SetZero();
 }
@@ -36,99 +36,93 @@ void ImageConfigs::Load(File &file){
 	images[1].shift.Load<float>(file);
 }
 
-void ImageConfigs::ShowDialog(wxWindow *parent){
+void ImageConfigs::ShowDialog(wxWindow *parent, const ColorScheme &colors){
 	wxDialog *dialog = new wxDialog(parent, wxID_ANY, _("Scanned copy"));
 	wxSpinCtrl *dpi[2];
 	wxSpinCtrl *dx[2];
 	wxSpinCtrl *dy[2];
 	wxCheckBox *enabled[2];
 	wxFilePickerCtrl *path[2];
-	wxBoxSizer *all_box = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	{
 		wxNotebook *notebook = new wxNotebook(dialog, wxID_ANY);
-		for(int q = 0; q<2; q++) {
+		for(int i = 0; i<2; i++) {
 			wxPanel *panel = new wxPanel(notebook);
 			{
-				wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
+				wxBoxSizer *page = new wxBoxSizer(wxVERTICAL);
 				{
 					wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 					{
 						wxBoxSizer *input = new wxBoxSizer(wxVERTICAL);
 						input->Add(new wxStaticText(panel, wxID_ANY, _("Load bitmap:")), 1, wxALL, 5);
-						content->Add(sizer, 0, wxEXPAND);
+						page->Add(sizer, 0, wxEXPAND);
 						{
-							path[q]= new wxFilePickerCtrl(panel, wxID_ANY, images[q].path, _("Load bitmap"),
-						 _("*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*|*"),
-						 wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL);
-							path[q]->SetPath(images[q].path);
-							input->Add(path[q], 0, wxEXPAND|wxALL, 5);
+							path[i] = new wxFilePickerCtrl(panel, wxID_ANY, images[i].path, _("Load bitmap"),
+								 _("*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*.png;*.bmp;*.jpg;*.jpeg;*.tga;*.bmp|*|*"),
+								 wxDefaultPosition, wxDefaultSize, wxFLP_DEFAULT_STYLE|wxFLP_SMALL|wxFLP_USE_TEXTCTRL);
+							path[i]->SetPath(images[i].path);
+							input->Add(path[i], 0, wxEXPAND|wxALL, 5);
 						}
 						sizer->Add(input, 1, wxEXPAND);
 					}
 					{
-						wxPanel *tp = new wxPanel(panel);
-						wxStaticText *text = new wxStaticText(tp, wxID_ANY, char(q+'1'));
+						wxPanel *tp = new wxPanel(panel, wxID_ANY, wxDefaultPosition, wxSize(50, 50));
+						wxStaticText *text = new wxStaticText(tp, wxID_ANY, wxString::Format(" %d ", i + 1));
 						wxFont myFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 						text->SetFont(myFont);
-						//tp->SetBackgroundColour(SETTINGS.get_color(COLOR_BGR));
-						//text->SetForegroundColour(SETTINGS.get_color(q?COLOR_C2:COLOR_C1));
-						sizer->Add(tp, 0, wxEXPAND|wxALL, 5);
+						tp->SetBackgroundColour(colors[COLOR_BGR]);
+						text->SetForegroundColour(colors[i ? COLOR_C2 : COLOR_C1]);
+						sizer->Add(tp, 0, wxALL, 5);
 					}
 				}
 				{
-					enabled[q] = new wxCheckBox(panel, wxID_ANY, _("Show bitmap"));
-					enabled[q]->SetValue(images[q].enabled);
-					content->Add(enabled[q], 0, wxEXPAND|wxALL, 5);
+					enabled[i] = new wxCheckBox(panel, wxID_ANY, _("Show bitmap"));
+					enabled[i]->SetValue(images[i].enabled);
+					page->Add(enabled[i], 0, wxEXPAND|wxALL, 5);
 				}
-				wxSize wsize(75, -1);
+				wxSize size(75, -1);
+				wxGridSizer *sizer = new wxGridSizer(3, 3, 3, 10);
 				{
-					wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("Resolution")), 1, wxALL, 5);
-					dpi[q] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wsize, 0, 20, 2400, images[q].dpi);
-					sizer->Add(dpi[q], 1, wxEXPAND|wxALL, 5);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[dpi]")), 1, wxALL, 5);
-					content->Add(sizer, 0, wxEXPAND);
-				}
-				{
-					wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("X-Offset")), 1, wxALL, 5);
-					dx[q] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wsize, 0, -3000, 3000, images[q].shift.x);
-					sizer->Add(dx[q], 1, wxEXPAND|wxALL, 5);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[1/10 mm]")), 1, wxALL, 5);
-					content->Add(sizer, 0, wxEXPAND);
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("Resolution")), 1, wxALIGN_CENTER_VERTICAL);
+					dpi[i] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, size, 0, 20, 2400, images[i].dpi);
+					sizer->Add(dpi[i], 1, wxEXPAND|wxALL);
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[dpi]")), 1, wxALIGN_CENTER_VERTICAL);
 				}
 				{
-					wxBoxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("Y-Offset")), 1, wxALL, 5);
-					dy[q] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, wsize, 0, -3000, 3000, images[q].shift.y);
-					sizer->Add(dy[q], 1, wxEXPAND|wxALL, 5);
-					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[1/10 mm]")), 1, wxALL, 5);
-					content->Add(sizer, 0, wxEXPAND);
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("X-Offset")), 1, wxALIGN_CENTER_VERTICAL);
+					dx[i] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, size, 0, -3000, 3000, images[i].shift.x);
+					sizer->Add(dx[i], 1, wxEXPAND|wxALL);
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[1/10 mm]")), 1, wxALIGN_CENTER_VERTICAL);
 				}
-				panel->SetSizerAndFit(content);
+				{
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("Y-Offset")), 1, wxALIGN_CENTER_VERTICAL);
+					dy[i] = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString, wxDefaultPosition, size, 0, -3000, 3000, images[i].shift.y);
+					sizer->Add(dy[i], 1, wxEXPAND|wxALL);
+					sizer->Add(new wxStaticText(panel, wxID_ANY, _("[1/10 mm]")), 1, wxALIGN_CENTER_VERTICAL);
+				}
+				page->Add(sizer);
+				panel->SetSizerAndFit(page);
 			}
-			char name[128];
-			sprintf(name, _("Board side %d"), q+1);
-			notebook->AddPage(panel, name);
+			notebook->AddPage(panel, wxString::Format(_("Board side %d"), i+1));
 		}
 		notebook->SetSelection(1);
-		all_box->Add(notebook, 1, wxALL|wxEXPAND, 5);
+		content->Add(notebook, 1, wxALL|wxEXPAND, 5);
 	}
 	{
 		wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
 		buttons->AddButton(new wxButton(dialog, wxID_OK));
 		buttons->AddButton(new wxButton(dialog, wxID_CANCEL));
 		buttons->Realize();
-		all_box->Add(buttons, 0, wxALL|wxEXPAND, 5);
+		content->Add(buttons, 0, wxALL|wxEXPAND, 5);
 	}
-	dialog->SetSizerAndFit(all_box);
-	dialog->ShowModal();
-	for(int q = 0; q < 2; q++) {
-		images[q].shift.x = dx[q]->GetValue();
-		images[q].shift.y = dy[q]->GetValue();
-		images[q].dpi = dpi[q]->GetValue();
-		images[q].enabled = enabled[q]->GetValue();
-		strncpy(images[q].path, path[q]->GetPath().c_str(), 200);
+	dialog->SetSizerAndFit(content);
+	dialog->Show();
+	for(int i = 0; i < 2; i++) {
+		images[i].shift.x = dx[i]->GetValue();
+		images[i].shift.y = dy[i]->GetValue();
+		images[i].dpi = dpi[i]->GetValue();
+		images[i].enabled = enabled[i]->GetValue();
+		strncpy(images[i].path, path[i]->GetPath().c_str(), 200);
 	}
 }
 

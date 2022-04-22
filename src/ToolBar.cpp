@@ -84,7 +84,7 @@ ToolBar::ToolBar(wxWindow *parent)
 	AddTool(ID_ZOOM, _("Zoom"), zoom_any_xpm, _("Zoom functions"));
 	AddSeparator();
 	AddTool(ID_TRANSPARENT, _("Transparent"), transparent_xpm, _("Toggle transparent mode"));
-	AddTool(ID_PANEL_PROPERTIES, _("Info"), info_xpm, _("Show project info"));
+	AddTool(wxID_INFO, _("Info"), info_xpm, _("Show project info"));
 	AddSeparator();
 	AddTool(ID_SCANNED_COPY, _("Scanned copy"), bitmap_xpm, _("Scanned copy"));
 	AddStretchableSpace();
