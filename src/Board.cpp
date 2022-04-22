@@ -1,5 +1,12 @@
 #include "Board.h"
 
+Board::Board(Type type, Vec2 innerSize, float border) {
+	if(type != Type::Empty)
+		size.Set(innerSize.x + border * 2.0f, innerSize.y + border * 2.0f);
+	else
+		size = innerSize;
+}
+
 void Board::Save(File &file) const{
 	file.WriteString(name,30);
 	file.Write(__pad0,4);

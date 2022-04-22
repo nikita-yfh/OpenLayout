@@ -5,11 +5,19 @@
 
 class Board {
 public:
+	enum class Type{
+		Empty,
+		Rectangle,
+		Round
+	};
+
+	Board() {};
+	Board(Type type, Vec2 innerSize, float border);
+
 	void Load(File &file);
 	void Save(File &file) const;
-
 private:
-	enum {
+	enum Layer {
 		LAYER_C1=1,
 		LAYER_S1,
 		LAYER_C2,

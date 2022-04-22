@@ -19,6 +19,7 @@ set(SOURCES
 	src/MenuBar.cpp
 	src/ToolBar.cpp
 	src/OpenLayoutMain.cpp
+	src/NewBoardDialog.cpp
 	src/Object.cpp
 )
 set(HEADERS
@@ -36,6 +37,7 @@ set(HEADERS
 	src/MenuBar.h
 	src/ToolBar.h
 	src/OpenLayoutMain.h
+	src/NewBoardDialog.h
 	src/Object.h
 	src/Pad.h
 	src/THTPad.h

@@ -1,6 +1,7 @@
 #include "OpenLayoutMain.h"
 #include "MenuBar.h"
 #include "ToolBar.h"
+#include "NewBoardDialog.h"
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, OpenLayoutFrame::Close)
@@ -44,7 +45,10 @@ void OpenLayoutFrame::Close(wxCommandEvent&){}
 void OpenLayoutFrame::ShowSettings(wxCommandEvent&){}
 void OpenLayoutFrame::ShowAbout(wxCommandEvent&){}
 void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&){}
-void OpenLayoutFrame::NewBoard(wxCommandEvent&){}
+void OpenLayoutFrame::NewBoard(wxCommandEvent&){
+	NewBoardDialog dialog(this);
+	dialog.ShowModal();
+}
 void OpenLayoutFrame::Group(wxCommandEvent&){}
 void OpenLayoutFrame::Ungroup(wxCommandEvent&){}
 void OpenLayoutFrame::SelectAll(wxCommandEvent&){}
