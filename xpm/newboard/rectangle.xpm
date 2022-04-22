@@ -1,5 +1,5 @@
 /* XPM */
-static char * board2_xpm[] = {
+static char * rectangle_xpm[] = {
 "59 59 3 1",
 " 	c #000000",
 ".	c #808080",
