@@ -35,6 +35,7 @@ set(HEADERS
 	src/ProjectInfo.h
 	src/File.h
 	src/Vec2.h
+	src/AABB.h
 	src/ColorScheme.h
 	src/Settings.h
 	src/MenuBar.h
