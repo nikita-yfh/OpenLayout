@@ -2,6 +2,8 @@
 #include "MenuBar.h"
 #include "ToolBar.h"
 #include "NewBoardDialog.h"
+#include "MacroPanel.h"
+#include "ComponentPanel.h"
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT, OpenLayoutFrame::Close)
@@ -39,6 +41,12 @@ OpenLayoutFrame::OpenLayoutFrame()
 	SetMenuBar(menubar);
 	ToolBar *toolbar = new ToolBar(this);
 	SetToolBar(toolbar);
+
+	wxSplitterWindow *split = new wxSplitterWindow(this, wxID_ANY);
+	MacroPanel *macros = new MacroPanel(split);
+	ComponentPanel *components = new ComponentPanel(split, pcb);
+	split->SetSashGravity(0.5);
+	split->SplitVertically(macros, components);
 }
 
 void OpenLayoutFrame::Close(wxCommandEvent&){}

@@ -20,6 +20,9 @@ set(SOURCES
 	src/ToolBar.cpp
 	src/OpenLayoutMain.cpp
 	src/NewBoardDialog.cpp
+	src/MacroPanel.cpp
+	src/MacroPreview.cpp
+	src/ComponentPanel.cpp
 	src/Object.cpp
 )
 set(HEADERS
@@ -38,6 +41,9 @@ set(HEADERS
 	src/ToolBar.h
 	src/OpenLayoutMain.h
 	src/NewBoardDialog.h
+	src/MacroPanel.h
+	src/MacroPreview.h
+	src/ComponentPanel.h
 	src/Object.h
 	src/Pad.h
 	src/THTPad.h

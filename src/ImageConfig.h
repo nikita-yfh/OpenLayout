@@ -6,11 +6,13 @@
 
 struct ImageConfig{
 	ImageConfig();
+
 	uint8_t enabled;
 	char path[200];
 	uint32_t dpi;
 	Vec2 shift;
 };
+
 class ImageConfigs {
 public:
 	void ShowDialog(wxWindow *parent, const ColorScheme &colors);
