@@ -2,7 +2,6 @@ project(OpenLayout)
 
 find_package(wxWidgets REQUIRED core base gl)
 find_package(OpenGL REQUIRED)
-find_package(GLU REQUIRED)
 include(${wxWidgets_USE_FILE})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(xpm)
@@ -23,6 +22,7 @@ set(SOURCES
 	src/MacroPanel.cpp
 	src/MacroPreview.cpp
 	src/ComponentPanel.cpp
+	src/SelectorPanel.cpp
 	src/Object.cpp
 )
 set(HEADERS
@@ -44,6 +44,7 @@ set(HEADERS
 	src/MacroPanel.h
 	src/MacroPreview.h
 	src/ComponentPanel.h
+	src/SelectorPanel.h
 	src/Object.h
 	src/Pad.h
 	src/THTPad.h

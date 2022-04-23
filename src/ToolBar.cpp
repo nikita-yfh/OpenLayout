@@ -88,11 +88,11 @@ ToolBar::ToolBar(wxWindow *parent)
 	AddSeparator();
 	AddTool(ID_SCANNED_COPY, _("Scanned copy"), bitmap_xpm, _("Scanned copy"));
 	AddStretchableSpace();
-	AddTool(ID_PANEL_SELECTOR, _("Selector-Panel"), selector_xpm, _("Show/hide Selector-Panel"));
-	AddTool(ID_PANEL_COMPONENTS, _("Component-Panel"), components_xpm, _("Show/hide Component-Panel"));
-	AddTool(ID_PANEL_SELECTOR, _("Properties-Panel"), properties_xpm, _("Show/hide Properties-Panel"));
-	AddTool(ID_PANEL_DRC, _("DRC-Panel"), drc_xpm, _("Show/hide DRC-Panel"));
-	AddTool(ID_PANEL_MACRO, _("Macro-Library"), macro_xpm, _("Show/hide Macro-Library"));
+	AddCheckTool(ID_PANEL_SELECTOR,		_("Selector-Panel"), selector_xpm, wxNullBitmap, _("Show/hide Selector-Panel"));
+	AddCheckTool(ID_PANEL_COMPONENTS,	_("Component-Panel"), components_xpm, wxNullBitmap, _("Show/hide Component-Panel"));
+	AddCheckTool(ID_PANEL_PROPERTIES,	_("Properties-Panel"), properties_xpm, wxNullBitmap, _("Show/hide Properties-Panel"));
+	AddCheckTool(ID_PANEL_DRC,			_("DRC-Panel"), drc_xpm, wxNullBitmap, _("Show/hide DRC-Panel"));
+	AddCheckTool(ID_PANEL_MACRO,		_("Macro-Library"), macro_xpm, wxNullBitmap, _("Show/hide Macro-Library"));
 	Realize();
 }
 

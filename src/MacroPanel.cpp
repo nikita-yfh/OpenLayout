@@ -27,7 +27,8 @@ wxBEGIN_EVENT_TABLE(MacroPanel, wxSplitterWindow)
 	EVT_MENU(ID_MACRO_SIDE, MacroPanel::ToggleSide)
 wxEND_EVENT_TABLE()
 
-MacroPanel::MacroPanel(wxWindow *parent) : wxSplitterWindow(parent, wxID_ANY) {
+MacroPanel::MacroPanel(wxWindow *parent)
+		: wxSplitterWindow(parent, wxID_ANY, wxDefaultPosition, wxSize(200, -1), wxSP_LIVE_UPDATE | wxBORDER_SUNKEN) {
 	tree = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT | wxTR_DEFAULT_STYLE);
 	wxTreeItemId root = tree->AddRoot("Root");
 	ScanDir(root, "macros");

@@ -10,12 +10,7 @@ MenuBar::MenuBar(){
 		menu->Append(wxID_SAVE, _("Save\tCtrl+S"));
 		menu->Append(wxID_SAVEAS, _("Save as\tCtrl+Shift+S"));
 		menu->AppendSeparator();
-		menu->Append(ID_SAVE_MACRO, _("Save as macro"));
-		menu->AppendSeparator();
-		menu->Append(ID_AUTOSAVE, _("AutoSave"));
-		menu->AppendSeparator();
-		menu->Append(ID_GERBER_IMPORT, _("Gerber-Import"));
-		menu->AppendSeparator();
+		menu->Append(ID_SAVE_MACRO, _("Save as macro")); menu->AppendSeparator(); menu->Append(ID_AUTOSAVE, _("AutoSave")); menu->AppendSeparator(); menu->Append(ID_GERBER_IMPORT, _("Gerber-Import")); menu->AppendSeparator();
 		{
 			//File->Export
 			wxMenu *submenu = new wxMenu();
@@ -131,7 +126,7 @@ MenuBar::MenuBar(){
 		menu->Append(ID_PANEL_PROPERTIES, _("&Properties-Panel"), wxEmptyString, wxITEM_CHECK);
 		menu->Append(ID_PANEL_DRC, _("&DRC-Panel"), wxEmptyString, wxITEM_CHECK);
 		menu->Append(ID_PANEL_COMPONENTS, _("&Components-Panel"), wxEmptyString, wxITEM_CHECK);
-		menu->Append(ID_PANEL_SELECTOR, _("S&elector-Panel"));
+		menu->Append(ID_PANEL_SELECTOR, _("S&elector-Panel"), wxEmptyString, wxITEM_CHECK);
 		menu->AppendSeparator();
 		menu->Append(ID_ZOOM_BOARD, _("Zoom &board"));
 		menu->Append(ID_ZOOM_OBJECTS, _("Zoom &objects"));
