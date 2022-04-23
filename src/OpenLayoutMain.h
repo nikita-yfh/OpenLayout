@@ -1,5 +1,9 @@
 #pragma once
+
 #include "PCB.h"
+#include "MacroPanel.h"
+#include "ComponentPanel.h"
+#include "SelectorPanel.h"
 #include <wx/frame.h>
 
 enum {
@@ -96,11 +100,27 @@ private:
 	void Delete(wxCommandEvent&);
 	void ShowImagesConfig(wxCommandEvent&);
 
+	void ToggleSelectorPanel(wxCommandEvent&);
+	void ToggleComponentsPanel(wxCommandEvent&);
+	void TogglePropertiesPanel(wxCommandEvent&);
+	void ToggleDRCPanel(wxCommandEvent&);
+	void ToggleMacrosPanel(wxCommandEvent&);
+
+	void UpdateSelectorPanel(wxUpdateUIEvent&);
+	void UpdateComponentsPanel(wxUpdateUIEvent&);
+	void UpdatePropertiesPanel(wxUpdateUIEvent&);
+	void UpdateDRCPanel(wxUpdateUIEvent&);
+	void UpdateMacrosPanel(wxUpdateUIEvent&);
+
 	void UpdateUIEdit(wxUpdateUIEvent&);
 	void UpdateUIGroup(wxUpdateUIEvent&);
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
 
 	PCB pcb;
+
+	SelectorPanel *selector;
+	ComponentPanel *components;
+	MacroPanel *macros;
 	wxDECLARE_EVENT_TABLE();
 };

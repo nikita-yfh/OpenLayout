@@ -23,7 +23,7 @@ wxBEGIN_EVENT_TABLE(ComponentPanel, wxPanel)
 wxEND_EVENT_TABLE()
 
 ComponentPanel::ComponentPanel(wxWindow *parent, const PCB &_pcb)
-					: wxPanel(parent, wxID_ANY), pcb(_pcb) {
+		: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(200, -1), wxBORDER_SUNKEN), pcb(_pcb) {
 	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	list = new wxListView(this, wxID_ANY);
 	
