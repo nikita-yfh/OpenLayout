@@ -1,6 +1,28 @@
 #pragma once
 #include <stdint.h>
 #include "File.h"
+#include "AABB.h"
+
+class Object;
+
+class Connections {
+public:
+	Connections();
+	~Connections();
+
+	void Add(Object *object);
+	void Remove(const Object *object);
+	bool Has(const Object *object) const;
+
+	void Save(const Object *objects, File &file) const;
+	void Load(Object *objects, File &file);
+
+private:
+	Object **Find(const Object *object);
+	uint32_t count;
+	Object **connections;
+};
+
 
 class Object {
 public:
@@ -14,6 +36,11 @@ public:
 
 	Object *GetNext();
 	const Object *GetNext() const;
+	uint32_t GetNumber() const;
+
+	virtual AABB GetAABB() const = 0;
+
+	Connections connections;
 protected:
 	enum {
 		THT_PAD = 2,
@@ -30,6 +57,12 @@ protected:
 	uint16_t componentID;
 
 	bool selected;
+protected:
+	static void WriteArray(File &file, const Vec2 *arr, uint32_t count);
+	static uint32_t ReadArray(File &file, Vec2 *arr);
+
+	void LoadGroups(File &file);
+	void SaveGroups(File &file) const;
 private:
 	Object *prev;
 	Object *next;

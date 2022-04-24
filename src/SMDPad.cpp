@@ -1,19 +1,17 @@
-#include "THTPad.h"
+#include "SMDPad.h"
 
-AABB THTPad::GetAABB() const {
-	Vec2 radius(outDiameter * 0.5f, outDiameter * 0.5f);
-	return AABB(position - radius, position + radius);
+AABB SMDPad::GetAABB() const {
+	Vec2 halfSize(size * 0.5f);
+	return AABB(position - halfSize, position + halfSize);
 }
 
-void THTPad::SaveObject(File &file) const {
-	file.Write<uint8_t>(THT_PAD);
+void SMDPad::SaveObject(File &file) const {
+	file.Write<uint8_t>(SMD_PAD);
 	position.Save<float>(file);
-	file.WriteMm(outDiameter / 2.0f);
-	file.WriteMm(inDiameter / 2.0f);
+	size.Save<float>(file);
 	file.WriteNull(5);
 	file.Write<uint8_t>(layer);
-	file.Write<uint8_t>(shape);
-	file.WriteNull(4);
+	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(1);
 	file.Write(thermalStyle, 4);
@@ -23,20 +21,31 @@ void THTPad::SaveObject(File &file) const {
 	file.Write<uint8_t>(thermal);
 	file.WriteNull(2);
 	file.WriteMm<uint32_t>(thermalSize);
-	file.Write<uint8_t>(through);
+	file.WriteNull(1);
 	file.Write<uint8_t>(soldermask);
 	file.WriteNull(22);
 	file.WriteString(marker);
+
+	file.Write<uint32_t>(0);
+
+	Vec2 point2 = (Vec2(-size.x, size.y) * 0.5).Rotate(angle);
+	Vec2 point1 = (size * 0.5).Rotate(angle);
+
+	Vec2 points[4] = {
+		position + point1,
+		position + point2,
+		position - point1,
+		position - point2
+	};
+	WriteArray(file, points, 4);
 }
 
-void THTPad::LoadObject(File &file) {
+void SMDPad::LoadObject(File &file) {
 	position.Load<float>(file);
-	inDiameter = file.ReadMm<float>() * 2.0f;
-	outDiameter = file.ReadMm<float>() * 2.0f;
+	size.Load<float>(file);
 	file.ReadNull(5);
 	layer = file.Read<uint8_t>();
-	shape = file.Read<uint8_t>();
-	file.ReadNull(4);
+	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(1);
 	file.Read(thermalStyle, 4);
@@ -46,10 +55,19 @@ void THTPad::LoadObject(File &file) {
 	thermal = file.Read<uint8_t>();
 	file.ReadNull(2);
 	thermalSize = file.ReadMm<uint32_t>();
-	through = file.Read<uint8_t>();
+	file.ReadNull(1);
 	soldermask = file.Read<uint8_t>();
 	file.ReadNull(22);
 	file.ReadString(marker);
+
+	file.Read<uint32_t>();
+
+	Vec2 points[4];
+	ReadArray(file, points);
+
+	Vec2 dx = points[1] - points[0];
+	Vec2 dy = points[1] - points[2];
+
+	angle = dx.Angle();
+	size.Set(dx.Length(), dy.Length());
 }
-
-
