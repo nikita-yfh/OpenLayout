@@ -36,7 +36,7 @@ public:
 	}
 	template<typename T>
 	void WriteMm(const T &value){
-		Write<T>(value);
+		Write<T>(value * 10000.0f);
 	}
 
 	void Write(const void *ptr, size_t size);

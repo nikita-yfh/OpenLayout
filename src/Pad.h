@@ -14,6 +14,7 @@ protected:
 	bool thermal;
 	uint8_t thermalStyle[4];
 	float thermalSize;
+	float angle;
 };
 
 	

@@ -1,46 +1,46 @@
 #include "File.h"
 #include <string.h>
 
-File::File(const char *path, const char *mode){
+File::File(const char *path, const char *mode) {
 	file = fopen(path, mode);
 }
-File::~File(){
+File::~File() {
 	if(IsOk())
 		fclose(file);
 }
 bool File::IsOk() const{
 	return file != nullptr;
 }
-void File::Write(const void *ptr, size_t size){
-	fwrite(ptr,size,1,file);
+void File::Write(const void *ptr, size_t size) {
+	fwrite(ptr, size, 1,file);
 }
-void File::Read(void *ptr, size_t size){
-	fread(ptr,size,1,file);
+void File::Read(void *ptr, size_t size) {
+	fread(ptr, size, 1,file);
 }
-void File::WriteString(const char *str, uint8_t n){
+void File::WriteString(const char *str, uint8_t n) {
 	Write<uint8_t>(strlen(str));
-	fwrite(str,n,1,file);
+	fwrite(str, n,1, file);
 }
-void File::ReadString(char *str, uint8_t n){
+void File::ReadString(char *str, uint8_t n) {
 	Read<uint8_t>();
-	fread(str,200,1,file);
+	fread(str, n,1, file);
 }
-void File::WriteString(const char *str){
-	uint32_t len=strlen(str);
+void File::WriteString(const char *str) {
+	uint32_t len = strlen(str);
 	Write<uint32_t>(len);
-	fwrite(str,len,1,file);
+	fwrite(str, len, 1,file);
 }
-void File::ReadString(char *str){
-	uint32_t len=Read<uint32_t>();
-	fread(str,len,1,file);
+void File::ReadString(char *str) {
+	uint32_t len = Read<uint32_t>();
+	fread(str, len, 1,file);
 }
-void File::WriteNull(size_t num){
+void File::WriteNull(size_t num) {
 	uint8_t null = 0x00;
-	for(int i=0;i<num;i++)
-		putc(null,file);
+	for(int i = 0; i < num; i++)
+		putc(null, file);
 }
-void File::ReadNull(size_t num){
-	for(int i=0;i<num;i++)
+void File::ReadNull(size_t num) {
+	for(int i = 0; i < num; i++)
 		fgetc(file);
 }
 

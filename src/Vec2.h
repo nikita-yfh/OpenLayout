@@ -24,6 +24,20 @@ struct Vec2 {
 	float LengthSq() const {
 		return x*x + y*y;
 	}
+	float Angle() const {
+		if(x < 0)
+			return M_PI + atan2(y, x);
+		else if(y < 0)
+			return 2 * M_PI + atan2(y, x);
+		else
+			return atan2(y, x);
+	}
+	Vec2 Rotate(float angle) const {
+		return Vec2(
+			x * cosf(angle) - y * sinf(angle),
+			x * sinf(angle) + y * cosf(angle)
+		);
+	}
 
 	Vec2 operator-() const {
 		return Vec2(-x, -y);

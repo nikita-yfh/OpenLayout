@@ -1,10 +1,12 @@
 #pragma once
 #include "Pad.h"
 
-class THTPad : public Pad{
+class THTPad : public Pad {
 public:
 	void SaveObject(File &file) const;
 	void LoadObject(File &file);
+
+	virtual AABB GetAABB() const override;
 private:
 	float inDiameter;
 	float outDiameter;

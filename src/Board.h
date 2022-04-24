@@ -23,6 +23,8 @@ public:
 	Board *GetNext();
 	const Board *GetNext() const;
 
+	void AddObject(Object *object);
+
 	ImageConfigs images;
 private:
 	enum Layer {
@@ -46,6 +48,7 @@ private:
 	Vec2 anchor;
 
 	Object *objects;
+	uint32_t GetObjectCount() const;
 
 	Board *next;
 

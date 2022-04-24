@@ -14,7 +14,7 @@ PCB::~PCB(){
 	}
 }
 uint32_t PCB::GetBoardCount() const{
-	int n = 1;
+	uint32_t n = 1;
 	Board *tmp = boards;
 	while(tmp = tmp->next) n++;
 	return n;
@@ -22,6 +22,8 @@ uint32_t PCB::GetBoardCount() const{
 void PCB::SetBoard(uint32_t n){
 	activeTab = n;
 	current = boards;
+	if(!n)
+		return;
 	while(--n) current = current->next;
 }
 Board *PCB::GetSelectedBoard(){
@@ -48,7 +50,8 @@ void PCB::Save(File &file) const{
 	info.Save(file);
 }
 bool PCB::Load(File &file){
-	if(file.Read<uint32_t>()!=magic)
+	this->~PCB();
+	if(file.Read<uint32_t>() != magic)
 		return false;
 	uint32_t count = file.Read<uint32_t>();
 	for(int i = 0; i < count; i++){
