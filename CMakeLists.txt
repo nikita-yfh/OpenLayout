@@ -13,6 +13,7 @@ set(SOURCES
 	src/Pad.cpp
 	src/THTPad.cpp
 	src/SMDPad.cpp
+	src/Track.cpp
 	src/ProjectInfo.cpp
 	src/File.cpp
 	src/ColorScheme.cpp
@@ -52,6 +53,7 @@ set(HEADERS
 	src/Pad.h
 	src/THTPad.h
 	src/SMDPad.h
+	src/Track.h
 )
 if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)

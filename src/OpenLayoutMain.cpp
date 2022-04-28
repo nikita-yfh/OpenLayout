@@ -65,10 +65,10 @@ OpenLayoutFrame::OpenLayoutFrame()
 	SetSizer(content);
 	SetAutoLayout(true);
 
-	File file("/home/nikita/Documents/test/pad.lay6", "rb");
+	File file("/home/nikita/Documents/test/track.lay6", "rb");
 	pcb.Load(file);
 
-	File file2("/home/nikita/Documents/test/pad-d.lay6", "wb");
+	File file2("/home/nikita/Documents/test/track-d.lay6", "wb");
 	pcb.Save(file2);
 }
 

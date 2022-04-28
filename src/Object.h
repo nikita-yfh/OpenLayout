@@ -3,33 +3,15 @@
 #include "File.h"
 #include "AABB.h"
 
-class Object;
-
-class Connections {
-public:
-	Connections();
-	~Connections();
-
-	void Add(Object *object);
-	void Remove(const Object *object);
-	bool Has(const Object *object) const;
-
-	void Save(const Object *objects, File &file) const;
-	void Load(Object *objects, File &file);
-
-private:
-	Object **Find(const Object *object);
-	uint32_t count;
-	Object **connections;
-};
-
-
 class Object {
 public:
 	Object();
 
 	virtual void SaveObject(File &file) const = 0;
 	virtual void LoadObject(File &file) = 0;
+
+	virtual void SaveConnections(const Object *objects, File &file) const {}
+	virtual void LoadConnections(Object *objects, File &file) {}
 
 	void Save(File &file) const;
 	static Object *Load(File &file);
@@ -39,14 +21,12 @@ public:
 	uint32_t GetNumber() const;
 
 	virtual AABB GetAABB() const = 0;
-
-	Connections connections;
 protected:
 	enum {
 		THT_PAD = 2,
 		POLY = 4,
 		CIRCLE = 5,
-		LINE = 6,
+		TRACK = 6,
 		TEXT = 7,
 		SMD_PAD = 8
 	};

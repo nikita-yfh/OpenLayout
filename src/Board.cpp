@@ -52,7 +52,7 @@ void Board::Save(File &file) const {
 	for(Object *object = objects; object; object = object->GetNext())
 		object->Save(file);
 	for(Object *object = objects; object; object = object->GetNext())
-		object->connections.Save(objects, file);
+		object->SaveConnections(objects, file);
 }
 
 
@@ -75,7 +75,7 @@ void Board::Load(File &file) {
 	for(int i = 0; i < objectCount; i++)
 		AddObject(Object::Load(file));
 	for(Object *object = objects; object; object = object->GetNext())
-		object->connections.Load(objects, file);
+		object->SaveConnections(objects, file);
 }
 
 void Board::AddObject(Object *object) {
