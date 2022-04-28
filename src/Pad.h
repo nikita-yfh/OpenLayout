@@ -4,6 +4,11 @@
 
 class Pad : public Object{
 protected:
+	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
+	static uint32_t ReadArray(File &file, Vec2 *arr, const Vec2 &shift);
+
+	static void WriteSymmetricalArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
+
 	Vec2 position;
 	enum{
 		TH_STYLE_C1,

@@ -10,6 +10,7 @@ set(SOURCES
 	src/Board.cpp
 	src/ImageConfig.cpp
 	src/PCB.cpp
+	src/Pad.cpp
 	src/THTPad.cpp
 	src/SMDPad.cpp
 	src/ProjectInfo.cpp

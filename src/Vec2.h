@@ -24,19 +24,39 @@ struct Vec2 {
 	float LengthSq() const {
 		return x*x + y*y;
 	}
+	Vec2 InvY() const {
+		return Vec2(x, -y);
+	}
+	Vec2 InvX() const {
+		return Vec2(-x, y);
+	}
 	float Angle() const {
-		if(x < 0)
-			return M_PI + atan2(y, x);
-		else if(y < 0)
-			return 2 * M_PI + atan2(y, x);
-		else
-			return atan2(y, x);
+		if(y < 0)
+			return 2.0f * M_PI + atan2f(y, x);
+		return atan2f(y, x);
 	}
 	Vec2 Rotate(float angle) const {
 		return Vec2(
 			x * cosf(angle) - y * sinf(angle),
 			x * sinf(angle) + y * cosf(angle)
 		);
+	}
+
+	static inline void Rotate(Vec2 *array, int count, float angle) {
+		float s = sinf(angle);
+		float c = cosf(angle);
+
+		for(int i = 0; i < count; i++) {
+			Vec2 result(
+				array[i].x * c - array[i].y * s,
+				array[i].x * s + array[i].y * c
+			);
+			array[i] = result;
+		}
+	}
+
+	static inline Vec2 Mean(const Vec2 &a, const Vec2 &b) {
+		return (a + b) * 0.5f;
 	}
 
 	Vec2 operator-() const {
@@ -84,3 +104,4 @@ struct Vec2 {
 		y = file.ReadMm<T>();
 	}
 };
+

@@ -58,8 +58,6 @@ protected:
 
 	bool selected;
 protected:
-	static void WriteArray(File &file, const Vec2 *arr, uint32_t count);
-	static uint32_t ReadArray(File &file, Vec2 *arr);
 
 	void LoadGroups(File &file);
 	void SaveGroups(File &file) const;

@@ -105,16 +105,4 @@ Object *Object::Load(File &file){
 	object->LoadObject(file);
 	return object;
 }
-void Object::WriteArray(File &file, const Vec2 *arr, uint32_t count) {
-	file.Write<uint32_t>(count);
-	for(int i = 0; i < count; i++)
-		arr[i].Save<float>(file);
-}
-uint32_t Object::ReadArray(File &file, Vec2 *arr) {
-	uint32_t count = file.Read<uint32_t>();
-	for(int i = 0; i < count; i++)
-		arr[i].Load<float>(file);
-	return count;
-}
-
 
