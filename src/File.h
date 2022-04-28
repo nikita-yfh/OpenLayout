@@ -31,11 +31,11 @@ public:
 	}
 
 	template<typename T>
-	T ReadMm(){
+	float ReadMm(){
 		return Read<T>() / 10000.0f;
 	}
 	template<typename T>
-	void WriteMm(const T &value){
+	void WriteMm(float value){
 		Write<T>(value * 10000.0f);
 	}
 

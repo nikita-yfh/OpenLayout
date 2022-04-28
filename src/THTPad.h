@@ -11,12 +11,12 @@ private:
 	float inDiameter;
 	float outDiameter;
 	enum{
-		CIRCLE,
+		CIRCLE = 1,
 		OCTAGON,
 		SQUARE,
 		CIRCLE_E,
 		OCTAGON_E,
-		SQUARE_E
+		SQUARE_E,
 	};
 	uint8_t shape;
 	bool through;
