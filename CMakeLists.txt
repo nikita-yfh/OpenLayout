@@ -8,52 +8,54 @@ include_directories(xpm)
 set(SOURCES
 	src/App.cpp
 	src/Board.cpp
-	src/ImageConfig.cpp
-	src/PCB.cpp
-	src/Pad.cpp
-	src/THTPad.cpp
-	src/SMDPad.cpp
-	src/Track.cpp
-	src/ProjectInfo.cpp
-	src/File.cpp
 	src/ColorScheme.cpp
-	src/Settings.cpp
-	src/MenuBar.cpp
-	src/ToolBar.cpp
-	src/OpenLayoutMain.cpp
-	src/NewBoardDialog.cpp
+	src/ComponentPanel.cpp
+	src/File.cpp
+	src/ImageConfig.cpp
 	src/MacroPanel.cpp
 	src/MacroPreview.cpp
-	src/ComponentPanel.cpp
-	src/SelectorPanel.cpp
+	src/MenuBar.cpp
+	src/NewBoardDialog.cpp
 	src/Object.cpp
+	src/OpenLayoutMain.cpp
+	src/Pad.cpp
+	src/PCB.cpp
+	src/Poly.cpp
+	src/PolygonBase.cpp
+	src/ProjectInfo.cpp
+	src/SelectorPanel.cpp
+	src/Settings.cpp
+	src/SMDPad.cpp
+	src/THTPad.cpp
+	src/ToolBar.cpp
+	src/Track.cpp
 )
 set(HEADERS
+	src/AABB.h
 	src/App.h
 	src/Board.h
-	src/ImageConfig.h
-	src/PCB.h
-	src/Pad.h
-	src/THTPad.h
-	src/ProjectInfo.h
-	src/File.h
-	src/Vec2.h
-	src/AABB.h
 	src/ColorScheme.h
-	src/Settings.h
-	src/MenuBar.h
-	src/ToolBar.h
-	src/OpenLayoutMain.h
-	src/NewBoardDialog.h
+	src/ComponentPanel.h
+	src/File.h
+	src/ImageConfig.h
 	src/MacroPanel.h
 	src/MacroPreview.h
-	src/ComponentPanel.h
-	src/SelectorPanel.h
+	src/MenuBar.h
+	src/NewBoardDialog.h
 	src/Object.h
+	src/OpenLayoutMain.h
 	src/Pad.h
-	src/THTPad.h
+	src/PCB.h
+	src/PolygonBase.h
+	src/Poly.h
+	src/ProjectInfo.h
+	src/SelectorPanel.h
+	src/Settings.h
 	src/SMDPad.h
+	src/THTPad.h
+	src/ToolBar.h
 	src/Track.h
+	src/Vec2.h
 )
 if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)

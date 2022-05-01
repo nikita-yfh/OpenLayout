@@ -1,15 +1,14 @@
 #pragma once
-#include "Pad.h"
+#include "Object.h"
 
-class SMDPad : public Pad {
+class Arc : public Object {
 public:
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
 	virtual AABB GetAABB() const override;
-private:
-	Vec2 size;
+protected:
+	float width;
+	uint8_t style;
+	uint8_t cutoff;
 };
-
-	
-

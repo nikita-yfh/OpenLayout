@@ -1,20 +1,29 @@
 #pragma once
-#include "Object.h"
+#include "PolygonBase.h"
 
-class Track : public Object {
+class Track : public PolygonBase {
 public:
-	Track();
-	~Track();
-
-	void SaveObject(File &file) const;
-	void LoadObject(File &file);
+	virtual void SaveObject(File &file) const override;
+	virtual void LoadObject(File &file) override;
 
 	virtual AABB GetAABB() const override;
 private:
-	float width;
-	uint8_t shape;
-	uint8_t cutoff;
+	inline bool GetBeginStyle() const {
+		return style & 1;
+	}
+	inline bool GetEndStyle() const {
+		return style & 2;
+	}
+	inline void SetBeginStyle(bool s) {
+		if(s ^ GetBeginStyle())
+			style ^= 1;
+	}
+	inline void SetEndStyle(bool s) {
+		if(s ^ GetEndStyle())
+			style ^= 2;
+	}
 
-	uint32_t count;
-	Vec2 *points;
+	float width;
+	uint8_t style;
+	uint8_t cutoff;
 };

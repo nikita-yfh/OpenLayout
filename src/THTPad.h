@@ -3,8 +3,8 @@
 
 class THTPad : public Pad {
 public:
-	void SaveObject(File &file) const;
-	void LoadObject(File &file);
+	virtual void SaveObject(File &file) const override;
+	virtual void LoadObject(File &file) override;
 
 	virtual AABB GetAABB() const override;
 private:

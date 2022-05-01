@@ -1,6 +1,6 @@
-#include "Track.h"
+#include "Poly.h"
 
-AABB Track::GetAABB() const {
+AABB Poly::GetAABB() const {
 	Vec2 min( 1000000.0f,  1000000.0f);
 	Vec2 max(-1000000.0f, -1000000.0f);
 
@@ -19,50 +19,58 @@ AABB Track::GetAABB() const {
 	return AABB(min - size, max + size);
 }
 
-void Track::SaveObject(File &file) const {
-	file.Write<uint8_t>(Object::TRACK);
+void Poly::SaveObject(File &file) const {
+	file.Write<uint8_t>(Object::POLY);
 	file.WriteNull(16);
 	file.WriteMm<uint32_t>(width);
 	file.WriteNull(1);
 	file.Write<uint8_t>(layer);
-	file.Write<uint8_t>(style);
-	file.WriteNull(4);
+	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(11);
 	file.WriteMm<uint32_t>(groundDistance);
-	file.WriteNull(7);
-	file.Write<uint8_t>(cutoff);
 	file.WriteNull(5);
+	file.Write<uint8_t>(hatched);
+	file.Write<uint8_t>(customHatch);
+	file.Write<uint8_t>(cutoff);
+	file.WriteMm<uint32_t>(hatchSize);
+	file.WriteNull(1);
 	file.Write<uint8_t>(soldermask);
-	file.WriteNull(22);
+	file.WriteNull(15);
+	file.Write<uint8_t>(onlySoldermask);
+	file.WriteNull(6);
 	file.WriteString(marker);
 
 	file.Write<uint32_t>(0);
 
-	SavePoints(file);
+	SavePoints(file, onlySoldermask);
 }
 
 
-void Track::LoadObject(File &file) {
+void Poly::LoadObject(File &file) {
 	file.ReadNull(16);
 	width = file.ReadMm<uint32_t>();
 	file.ReadNull(1);
 	layer = file.Read<uint8_t>();
-	style = file.Read<uint8_t>();
-	file.ReadNull(4);
+	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(11);
 	groundDistance = file.ReadMm<uint32_t>();
-	file.ReadNull(7);
-	cutoff = file.Read<uint8_t>();
 	file.ReadNull(5);
-	soldermask = file.Read<uint8_t>();
-	file.ReadNull(22);
+	hatched = file.Read<uint8_t>();
+	customHatch = file.Read<uint8_t>();
+	cutoff = file.Read<uint8_t>();
+	hatchSize = file.ReadMm<uint32_t>();
+	file.ReadNull(1);
+	soldermask = file.ReadMm<uint8_t>();
+	file.ReadNull(15);
+	onlySoldermask = file.Read<uint8_t>();
+	file.ReadNull(6);
 	file.ReadString(marker);
 
 	file.Read<uint32_t>();
 
-	LoadPoints(file);
+	LoadPoints(file, onlySoldermask);
 }
 
 

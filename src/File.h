@@ -58,7 +58,7 @@ public:
 
 	void WriteNull(size_t num);
 	void ReadNull(size_t num);
-private:
+//private:
 	FILE *file;
 
 	File(const File&) = delete;
