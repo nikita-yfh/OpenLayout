@@ -37,7 +37,7 @@ void Track::SaveObject(File &file) const {
 	file.WriteNull(22);
 	file.WriteString(marker);
 
-	file.Write<uint32_t>(0);
+	groups.Save(file);
 
 	SavePoints(file);
 }
@@ -60,7 +60,7 @@ void Track::LoadObject(File &file) {
 	file.ReadNull(22);
 	file.ReadString(marker);
 
-	file.Read<uint32_t>();
+	groups.Load(file);
 
 	LoadPoints(file);
 }

@@ -3,6 +3,24 @@
 #include "File.h"
 #include "AABB.h"
 
+class Groups {
+public:
+	Groups();
+	~Groups();
+
+	void Add(uint32_t index);
+	void Remove(uint32_t index);
+	bool Has(uint32_t index) const;
+
+	void Save(File &file) const;
+	void Load(File &file);
+
+private:
+	uint32_t *Find(uint32_t index);
+	uint32_t count;
+	uint32_t *groups;
+};
+
 class Object {
 public:
 	Object();
@@ -21,6 +39,8 @@ public:
 	uint32_t GetNumber() const;
 
 	virtual AABB GetAABB() const = 0;
+
+	Groups groups;
 protected:
 	enum {
 		THT_PAD = 2,
@@ -37,10 +57,6 @@ protected:
 	uint16_t componentID;
 
 	bool selected;
-protected:
-
-	void LoadGroups(File &file);
-	void SaveGroups(File &file) const;
 private:
 	Object *prev;
 	Object *next;
