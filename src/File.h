@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 
 class File{
 public:
@@ -31,6 +32,15 @@ public:
 	}
 
 	template<typename T>
+	float ReadAngle(){
+		return Read<T>() / 1000.0f / 180.0f * M_PI;
+	}
+	template<typename T>
+	void WriteAngle(float value){
+		Write<T>(value / M_PI * 180.0f * 1000.0f);
+	}
+
+	template<typename T>
 	float ReadMm(){
 		return Read<T>() / 10000.0f;
 	}
@@ -58,7 +68,7 @@ public:
 
 	void WriteNull(size_t num);
 	void ReadNull(size_t num);
-//private:
+private:
 	FILE *file;
 
 	File(const File&) = delete;

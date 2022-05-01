@@ -8,7 +8,12 @@ public:
 
 	virtual AABB GetAABB() const override;
 protected:
+	Vec2 position;
 	float width;
+	float beginAngle;
+	float endAngle;
+	float diameter;
 	uint8_t style;
 	uint8_t cutoff;
+	uint8_t fill;
 };

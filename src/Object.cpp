@@ -3,6 +3,7 @@
 #include "SMDPad.h"
 #include "Track.h"
 #include "Poly.h"
+#include "Arc.h"
 
 Groups::Groups() {
 	groups = nullptr;
@@ -81,8 +82,8 @@ Object *Object::Load(File &file){
 		case POLY:
 			object = new Poly();
 			break;
-			break;
 		case CIRCLE:
+			object = new Arc();
 			break;
 		case TRACK:
 			object = new Track();
