@@ -1,15 +1,17 @@
 #pragma once
-#include "Pad.h"
+#include "PolygonBase.h"
 
-class SMDPad : public Pad {
+class Poly : public PolygonBase {
 public:
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
 	virtual AABB GetAABB() const override;
 private:
-	Vec2 size;
+	float width;
+	uint8_t onlySoldermask;
+	uint8_t cutoff;
+	uint8_t hatched;
+	uint8_t customHatch;
+	float hatchSize;
 };
-
-	
-

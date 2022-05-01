@@ -23,8 +23,8 @@ private:
 
 class Pad : public Object{
 public:
-	void SaveConnections(const Object *objects, File &file) const;
-	void LoadConnections(Object *objects, File &file);
+	virtual void SaveConnections(const Object *objects, File &file) const override;
+	virtual void LoadConnections(Object *objects, File &file) override;
 protected:
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
 	static uint32_t ReadArray(File &file, Vec2 *arr, const Vec2 &shift);

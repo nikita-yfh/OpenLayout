@@ -2,6 +2,7 @@
 #include "THTPad.h"
 #include "SMDPad.h"
 #include "Track.h"
+#include "Poly.h"
 
 Object::Object() {
 	prev = nullptr;
@@ -28,6 +29,8 @@ Object *Object::Load(File &file){
 			object = new THTPad();
 			break;
 		case POLY:
+			object = new Poly();
+			break;
 			break;
 		case CIRCLE:
 			break;

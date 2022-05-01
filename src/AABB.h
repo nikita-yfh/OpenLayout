@@ -40,8 +40,14 @@ public:
 		return true;
 	}
 
+	static inline AABB Min(const AABB &a, const AABB &b) {
+		return AABB(Vec2::Max(a.lower, b.lower), Vec2::Min(a.upper, b.upper));
+	}
+
+	static inline AABB Max(const AABB &a, const AABB &b) {
+		return AABB(Vec2::Min(a.lower, b.lower), Vec2::Max(a.upper, b.upper));
+	}
+
 	Vec2 lower;
 	Vec2 upper;
 };
-
-

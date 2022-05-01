@@ -59,6 +59,16 @@ struct Vec2 {
 		return (a + b) * 0.5f;
 	}
 
+	static inline Vec2 Min(const Vec2 &a, const Vec2 &b) {
+		return Vec2((a.x > b.x) ? b.x : a.x,
+					(a.y > b.y) ? b.y : a.y);
+	}
+
+	static inline Vec2 Max(const Vec2 &a, const Vec2 &b) {
+		return Vec2((a.x > b.x) ? a.x : b.x,
+					(a.y > b.y) ? a.y : b.y);
+	}
+
 	Vec2 operator-() const {
 		return Vec2(-x, -y);
 	}
@@ -104,4 +114,3 @@ struct Vec2 {
 		y = file.ReadMm<T>();
 	}
 };
-
