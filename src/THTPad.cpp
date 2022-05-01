@@ -30,7 +30,7 @@ void THTPad::SaveObject(File &file) const {
 	file.WriteNull(15);
 	file.WriteString(marker);
 
-	file.Write<uint32_t>(0);
+	groups.Save(file);
 
 	// It fill only half of points, another half
 	// is symmetrical to this
@@ -101,7 +101,7 @@ void THTPad::LoadObject(File &file) {
 	file.ReadNull(22);
 	file.ReadString(marker);
 
-	file.Read<uint32_t>(); //groups, not implemented yet
+	groups.Load(file);
 
 	Vec2 points[8];
 	uint8_t count = ReadArray(file, points, position);
