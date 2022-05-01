@@ -11,8 +11,8 @@ public:
 
 	void ShowDialog(wxWindow *parent);
 private:
-	char title[100];
-	char author[100];
-	char company[100];
+	char title[101];
+	char author[101];
+	char company[101];
 	char comment[4096];
 };
