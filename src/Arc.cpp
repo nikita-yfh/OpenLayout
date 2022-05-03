@@ -12,7 +12,7 @@ void Arc::SaveObject(File &file) const {
 	file.WriteMm<float>((diameter - width) / 2.0f);
 	file.WriteAngle<uint32_t>(endAngle);
 	file.WriteNull(1);
-	file.Write<uint8_t>(layer);
+	file.Write<uint8_t>(layer + 1);
 	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(1);
@@ -38,7 +38,7 @@ void Arc::LoadObject(File &file) {
 	width = outRadius - inRadius;
 	endAngle = file.ReadAngle<uint32_t>();
 	file.ReadNull(1);
-	layer = file.Read<uint8_t>();
+	layer = file.Read<uint8_t>() - 1;
 	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(1);

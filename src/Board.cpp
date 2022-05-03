@@ -1,18 +1,21 @@
 #include "Board.h"
 
-Board::Board(Type type, Vec2 innerSize, float border) {
+Board::Board(Type type, Vec2 innerSize, float border) : Board() {
 	if(type != Type::Empty)
 		size.Set(innerSize.x + border * 2.0f, innerSize.y + border * 2.0f);
 	else
 		size = innerSize;
-
-	objects = nullptr;
-	next = nullptr;
 }
 
 Board::Board() {
 	objects = nullptr;
 	next = nullptr;
+	for(int i = 0; i < 7; i++) {
+		groundPane[i] = false;
+		layerVisible[i] = true;
+	}
+	multilayer = false;
+	activeLayer = LAYER_C2;
 }
 
 Board::~Board() {
@@ -46,7 +49,7 @@ void Board::Save(File &file) const {
 	images.Save(file);
 	file.WriteNull(8);
 	anchor.Save<int>(file);
-	file.Write<uint8_t>(isMultilayer);
+	file.Write<uint8_t>(multilayer);
 
 	file.Write<uint32_t>(GetObjectCount());
 	for(Object *object = objects; object; object = object->GetNext())
@@ -69,7 +72,7 @@ void Board::Load(File &file) {
 	images.Load(file);
 	file.ReadNull(8);
 	anchor.Load<int>(file);
-	isMultilayer = file.Read<uint8_t>();
+	multilayer = file.Read<uint8_t>();
 
 	uint32_t objectCount = file.Read<uint32_t>();
 	for(int i = 0; i < objectCount; i++)

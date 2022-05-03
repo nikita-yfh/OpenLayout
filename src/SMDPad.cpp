@@ -17,7 +17,7 @@ void SMDPad::SaveObject(File &file) const {
 	position.Save<float>(file);
 	size.Save<float>(file);
 	file.WriteNull(5);
-	file.Write<uint8_t>(layer);
+	file.Write<uint8_t>(layer + 1);
 	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(1);
@@ -49,7 +49,7 @@ void SMDPad::LoadObject(File &file) {
 	position.Load<float>(file);
 	size.Load<float>(file);
 	file.ReadNull(5);
-	layer = file.Read<uint8_t>();
+	layer = file.Read<uint8_t>() - 1;
 	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(1);

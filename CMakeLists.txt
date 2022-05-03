@@ -9,6 +9,7 @@ set(SOURCES
 	src/App.cpp
 	src/Arc.cpp
 	src/Board.cpp
+	src/BottomPanel.cpp
 	src/ColorScheme.cpp
 	src/ComponentPanel.cpp
 	src/File.cpp
@@ -36,6 +37,7 @@ set(HEADERS
 	src/App.h
 	src/Arc.h
 	src/Board.h
+	src/BottomPanel.h
 	src/ColorScheme.h
 	src/ComponentPanel.h
 	src/File.h
