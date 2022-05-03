@@ -11,7 +11,7 @@ void THTPad::SaveObject(File &file) const {
 	file.WriteMm<float>(outDiameter / 2.0f);
 	file.WriteMm<float>(inDiameter / 2.0f);
 	file.WriteNull(5);
-	file.Write<uint8_t>(layer);
+	file.Write<uint8_t>(layer + 1);
 	file.Write<uint8_t>(shape);
 	file.WriteNull(4);
 	file.Write<uint16_t>(componentID);
@@ -84,7 +84,7 @@ void THTPad::LoadObject(File &file) {
 	outDiameter = file.ReadMm<float>() * 2.0f;
 	inDiameter = file.ReadMm<float>() * 2.0f;
 	file.ReadNull(5);
-	layer = file.Read<uint8_t>();
+	layer = file.Read<uint8_t>() - 1;
 	shape = file.Read<uint8_t>();
 	file.ReadNull(4);
 	componentID = file.Read<uint16_t>();

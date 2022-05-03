@@ -1,9 +1,13 @@
 #include "PCB.h"
 
+static const uint32_t magic = 0xFFAA3306;
+
 PCB::PCB(){
 	boards = nullptr;
 	current = nullptr;
 	activeTab = 0;
+	rubberband = RUBBERBAND_DISABLED;
+	capture = true;
 	AddBoard(new Board(Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f));
 }
 PCB::~PCB(){

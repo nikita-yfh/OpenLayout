@@ -24,7 +24,7 @@ void Poly::SaveObject(File &file) const {
 	file.WriteNull(16);
 	file.WriteMm<uint32_t>(width);
 	file.WriteNull(1);
-	file.Write<uint8_t>(layer);
+	file.Write<uint8_t>(layer + 1);
 	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(11);
@@ -51,7 +51,7 @@ void Poly::LoadObject(File &file) {
 	file.ReadNull(16);
 	width = file.ReadMm<uint32_t>();
 	file.ReadNull(1);
-	layer = file.Read<uint8_t>();
+	layer = file.Read<uint8_t>() - 1;
 	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(11);

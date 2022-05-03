@@ -2,6 +2,7 @@
 #include "MenuBar.h"
 #include "ToolBar.h"
 #include "NewBoardDialog.h"
+#include "BottomPanel.h"
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
@@ -51,25 +52,28 @@ OpenLayoutFrame::OpenLayoutFrame()
 	ToolBar *toolbar = new ToolBar(this);
 	SetToolBar(toolbar);
 
-	wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
+	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 
-	selector = new SelectorPanel(this, pcb);
-	content->Add(selector, 0, wxEXPAND);
+	{
+		wxBoxSizer *panels = new wxBoxSizer(wxHORIZONTAL);
 
-	components = new ComponentPanel(this, pcb);
-	content->Add(components, 0, wxEXPAND);
+		selector = new SelectorPanel(this, pcb);
+		panels->Add(selector, 0, wxEXPAND);
 
-	macros = new MacroPanel(this);
-	content->Add(macros, 0, wxEXPAND);
+		components = new ComponentPanel(this, pcb);
+		panels->Add(components, 0, wxEXPAND);
+
+		macros = new MacroPanel(this);
+		panels->Add(macros, 0, wxEXPAND);
+
+		content->Add(panels, wxEXPAND);
+	}
+
+	BottomPanel *bottomPanel = new BottomPanel(this, pcb);
+	content->Add(bottomPanel, 0, wxEXPAND);
 
 	SetSizer(content);
 	SetAutoLayout(true);
-
-	File file("/home/nikita/Documents/test/arc.lay6", "rb");
-	pcb.Load(file);
-
-	File file2("/home/nikita/Documents/test/arc-d.lay6", "wb");
-	pcb.Save(file2);
 }
 
 void OpenLayoutFrame::Close(wxCommandEvent&) {}
