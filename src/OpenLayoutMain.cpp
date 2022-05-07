@@ -3,6 +3,7 @@
 #include "ToolBar.h"
 #include "NewBoardDialog.h"
 #include "BottomPanel.h"
+#include "LeftPanel.h"
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
@@ -57,10 +58,13 @@ OpenLayoutFrame::OpenLayoutFrame()
 	{
 		wxBoxSizer *panels = new wxBoxSizer(wxHORIZONTAL);
 
-		selector = new SelectorPanel(this, pcb);
+		LeftPanel *right = new LeftPanel(this, &pcb);
+		panels->Add(right, 0, wxEXPAND);
+
+		selector = new SelectorPanel(this, &pcb);
 		panels->Add(selector, 0, wxEXPAND);
 
-		components = new ComponentPanel(this, pcb);
+		components = new ComponentPanel(this, &pcb);
 		panels->Add(components, 0, wxEXPAND);
 
 		macros = new MacroPanel(this);
@@ -69,7 +73,7 @@ OpenLayoutFrame::OpenLayoutFrame()
 		content->Add(panels, wxEXPAND);
 	}
 
-	BottomPanel *bottomPanel = new BottomPanel(this, pcb);
+	BottomPanel *bottomPanel = new BottomPanel(this, &pcb);
 	content->Add(bottomPanel, 0, wxEXPAND);
 
 	SetSizer(content);

@@ -25,6 +25,7 @@ set(SOURCES
 	src/Poly.cpp
 	src/PolygonBase.cpp
 	src/ProjectInfo.cpp
+	src/LeftPanel.cpp
 	src/SelectorPanel.cpp
 	src/Settings.cpp
 	src/SMDPad.cpp
@@ -53,6 +54,7 @@ set(HEADERS
 	src/PolygonBase.h
 	src/Poly.h
 	src/ProjectInfo.h
+	src/LeftPanel.h
 	src/SelectorPanel.h
 	src/Settings.h
 	src/SMDPad.h

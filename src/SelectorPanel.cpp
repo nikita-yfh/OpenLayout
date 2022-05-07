@@ -38,7 +38,7 @@ static const wxString layersStr[] = {
 	_("All layer"),
 };
 
-SelectorPanel::SelectorPanel(wxWindow *parent, PCB &_pcb)
+SelectorPanel::SelectorPanel(wxWindow *parent, PCB *_pcb)
 		: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxBORDER_SUNKEN), pcb(_pcb) {
 
 	wxChoice *elements = new wxChoice(this, ID_ELEMENTS, wxDefaultPosition, wxDefaultSize, 5, elementsStr);

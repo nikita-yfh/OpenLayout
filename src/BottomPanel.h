@@ -4,7 +4,7 @@
 
 class BottomPanel : public wxPanel {
 public:
-	BottomPanel(wxWindow *parent, PCB &pcb);
+	BottomPanel(wxWindow *parent, PCB *pcb);
 private:
 	void UpdatePosition(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
@@ -13,11 +13,9 @@ private:
 	void ShowLayerInfo(wxCommandEvent&);
 	void UpdateGround(wxUpdateUIEvent &e);
 	void ToggleGround(wxCommandEvent&);
-	void UpdateCapture(wxUpdateUIEvent &e);
 	void ToggleCapture(wxCommandEvent&);
-	void UpdateRubberband(wxUpdateUIEvent &e);
 	void ToggleRubberband(wxCommandEvent&);
 	wxDECLARE_EVENT_TABLE();
 
-	PCB &pcb;
+	PCB *pcb;
 };
