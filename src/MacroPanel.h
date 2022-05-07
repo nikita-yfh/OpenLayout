@@ -2,6 +2,7 @@
 
 #include "MacroPreview.h"
 #include <wx/treectrl.h>
+#include <wx/panel.h>
 #include <wx/checkbox.h>
 #include <wx/toolbar.h>
 #include <wx/splitter.h>

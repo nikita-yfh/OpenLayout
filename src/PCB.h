@@ -29,6 +29,12 @@ public:
 	uint8_t GetRubberbandMode() const;
 	uint8_t ToggleRubberbandMode();
 
+	bool GetMetallization() const;
+	bool ToggleMetallization();
+
+	uint8_t GetPadShape() const;
+	void SetPadShape(uint8_t shape);
+
 	const Vec2 &GetMousePosition() const;
 	
 	ProjectInfo info;
@@ -39,7 +45,9 @@ private:
 	uint32_t activeTab;
 
 	bool capture;
+	bool metallization;
 	uint8_t rubberband;
+	uint8_t padShape;
 	Vec2 mousePosition;
 
 	Board *current;
@@ -58,6 +66,19 @@ inline uint8_t PCB::GetRubberbandMode() const {
 inline uint8_t PCB::ToggleRubberbandMode() {
 	rubberband = (rubberband + 1) % 3;
 	return rubberband;
+}
+inline bool PCB::GetMetallization() const {
+	return metallization;
+}
+inline bool PCB::ToggleMetallization() {
+	metallization = !metallization;
+	return metallization;
+}
+inline uint8_t PCB::GetPadShape() const {
+	return padShape;
+}
+inline void PCB::SetPadShape(uint8_t shape) {
+	padShape = shape;
 }
 inline const Vec2 &PCB::GetMousePosition() const {
 	return mousePosition;

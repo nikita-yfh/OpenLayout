@@ -66,8 +66,6 @@ wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_BUTTON(ID_CAPTURE,						BottomPanel::ToggleCapture)
 	EVT_BUTTON(ID_RUBBERBAND,					BottomPanel::ToggleRubberband)
 	EVT_UPDATE_UI(ID_GROUND,					BottomPanel::UpdateGround)
-	EVT_UPDATE_UI(ID_CAPTURE,					BottomPanel::UpdateCapture)
-	EVT_UPDATE_UI(ID_RUBBERBAND,				BottomPanel::UpdateRubberband)
 wxEND_EVENT_TABLE()
 
 class LayerInfoDialog : public wxDialog {
@@ -90,7 +88,7 @@ public:
 };
 
 
-BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb)
+BottomPanel::BottomPanel(wxWindow *parent, PCB *_pcb)
 		: wxPanel(parent), pcb(_pcb) {
 	wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
 	{
@@ -143,7 +141,7 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb)
 		content->Add(ground, 0, wxEXPAND);
 	}
 	{
-		wxBitmapButton *capture = new wxBitmapButton(this, ID_CAPTURE, capture_disabled_xpm);
+		wxBitmapButton *capture = new wxBitmapButton(this, ID_CAPTURE, capture_enabled_xpm);
 		capture->SetToolTip(_("Enable or disable the automatic capture mode"));
 		content->Add(capture, 0, wxEXPAND);
 	}
@@ -164,52 +162,46 @@ static void SetButtonBitmap(wxCommandEvent &e, const wxBitmap &bitmap) {
 }
 
 void BottomPanel::ToggleGround(wxCommandEvent &e) {
-	SetButtonBitmap(e, pcb.GetSelectedBoard()->ToggleCurrentLayerGround() ? ground_enabled_xpm : ground_disabled_xpm);
+	SetButtonBitmap(e, pcb->GetSelectedBoard()->ToggleCurrentLayerGround() ? ground_enabled_xpm : ground_disabled_xpm);
 	GetParent()->Refresh();
 }
 
 void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
-	SetButtonBitmap(e, pcb.GetSelectedBoard()->GetCurrentLayerGround() ? ground_enabled_xpm : ground_disabled_xpm);
+	uint8_t mode = pcb->GetSelectedBoard()->GetCurrentLayerGround();
+	static uint8_t prevMode = mode;
+	if(mode != prevMode) {
+		prevMode = mode;
+		SetButtonBitmap(e, mode ? ground_enabled_xpm : ground_disabled_xpm);
+	}
 }
 
 void BottomPanel::ToggleCapture(wxCommandEvent &e) {
-	SetButtonBitmap(e, pcb.ToggleCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
-}
-
-void BottomPanel::UpdateCapture(wxUpdateUIEvent &e) {
-	SetButtonBitmap(e, pcb.GetCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
+	SetButtonBitmap(e, pcb->ToggleCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
 }
 
 void BottomPanel::ToggleRubberband(wxCommandEvent &e) {
-	uint8_t mode = pcb.ToggleRubberbandMode();
+	uint8_t mode = pcb->ToggleRubberbandMode();
 	SetButtonBitmap(e,	mode == RUBBERBAND_SMALL ? rubberband_large_xpm :
 						mode == RUBBERBAND_LARGE ? rubberband_small_xpm :
 						rubberband_disabled_xpm);
 }
 
-void BottomPanel::UpdateRubberband(wxUpdateUIEvent &e) {
-	uint8_t mode = pcb.GetRubberbandMode();
-	SetButtonBitmap(e,	mode == RUBBERBAND_SMALL ? rubberband_small_xpm :
-						mode == RUBBERBAND_LARGE ? rubberband_large_xpm :
-						rubberband_disabled_xpm);
-}
-
 void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e) {
-	e.Show(pcb.GetSelectedBoard()->IsMultilayer());
+	e.Show(pcb->GetSelectedBoard()->IsMultilayer());
 }
 
 void BottomPanel::UpdatePosition(wxUpdateUIEvent &e) {
 	const char *unit = _("mm");
 	e.SetText(wxString::Format("X:\t%.3f \t%s\nY:\t%.03f \t%s",
-		pcb.GetMousePosition().x, unit,
-		pcb.GetMousePosition().y, unit));
+		pcb->GetMousePosition().x, unit,
+		pcb->GetMousePosition().y, unit));
 }
 
 void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
-	e.Check(e.GetId() - ID_C1 == pcb.GetSelectedBoard()->GetSelectedLayer());
+	e.Check(e.GetId() - ID_C1 == pcb->GetSelectedBoard()->GetSelectedLayer());
 }
 
 void BottomPanel::SetLayer(wxCommandEvent &e) {
-	pcb.GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
+	pcb->GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
 }
 

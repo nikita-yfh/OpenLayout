@@ -88,6 +88,7 @@ void MacroPanel::ToggleSide(wxCommandEvent &e) {
 }
 
 void MacroPanel::ScanDir(wxTreeItemId parent, const char *dirPath) {
+#ifndef _WIN32
 	struct dirent *de;
 	DIR *dir = opendir(dirPath);
 
@@ -110,5 +111,6 @@ void MacroPanel::ScanDir(wxTreeItemId parent, const char *dirPath) {
 			ScanDir(id, path);
 		}
 	}
+#endif
 }
 
