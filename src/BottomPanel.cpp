@@ -162,7 +162,7 @@ static void SetButtonBitmap(wxCommandEvent &e, const wxBitmap &bitmap) {
 }
 
 void BottomPanel::ToggleGround(wxCommandEvent &e) {
-	SetButtonBitmap(e, pcb->GetSelectedBoard()->ToggleCurrentLayerGround() ? ground_enabled_xpm : ground_disabled_xpm);
+	pcb->GetSelectedBoard()->ToggleCurrentLayerGround();
 	GetParent()->Refresh();
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PCB.h"
+#include "Settings.h"
 #include "MacroPanel.h"
 #include "ComponentPanel.h"
 #include "SelectorPanel.h"
@@ -85,6 +86,8 @@ class OpenLayoutFrame : public wxFrame{
 public:
 	OpenLayoutFrame();
 private:
+	void OnKeyDown(wxKeyEvent&);
+
 	void Close(wxCommandEvent&);
 	void ShowSettings(wxCommandEvent&);
 	void ShowAbout(wxCommandEvent&);
@@ -118,6 +121,7 @@ private:
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
 
 	PCB pcb;
+	Settings settings;
 
 	SelectorPanel *selector;
 	ComponentPanel *components;

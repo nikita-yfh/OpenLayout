@@ -6,9 +6,11 @@ public:
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
+	virtual uint8_t GetType() const override {
+		return POLY;
+	}
 	virtual AABB GetAABB() const override;
 private:
-	float width;
 	uint8_t onlySoldermask;
 	uint8_t cutoff;
 	uint8_t hatched;

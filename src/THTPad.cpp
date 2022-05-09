@@ -1,15 +1,14 @@
 #include "THTPad.h"
 
 AABB THTPad::GetAABB() const {
-	Vec2 radius(outDiameter * 0.5f, outDiameter * 0.5f);
+	Vec2 radius(size.out * 0.5f, size.out * 0.5f);
 	return AABB(position - radius, position + radius);
 }
 
 void THTPad::SaveObject(File &file) const {
 	file.Write<uint8_t>(THT_PAD);
 	position.Save<float>(file);
-	file.WriteMm<float>(outDiameter / 2.0f);
-	file.WriteMm<float>(inDiameter / 2.0f);
+	size.Save(file);
 	file.WriteNull(5);
 	file.Write<uint8_t>(layer + 1);
 	file.Write<uint8_t>(shape);
@@ -22,7 +21,7 @@ void THTPad::SaveObject(File &file) const {
 	file.WriteNull(5);
 	file.Write<uint8_t>(thermal);
 	file.WriteNull(2);
-	file.Write<uint32_t>(thermalSize / outDiameter * 300.0f);
+	file.Write<uint32_t>(thermalSize / size.out * 300.0f);
 	file.Write<uint8_t>(through);
 	file.Write<uint8_t>(soldermask);
 	file.WriteNull(3);
@@ -38,7 +37,7 @@ void THTPad::SaveObject(File &file) const {
 	Vec2 points[4];
 	int count = 0;
 
-	float radius = outDiameter * 0.5f;
+	float radius = size.out * 0.5f;
 	float halfa = radius * 0.41421356; // tg(M_PI / 8)
 
 	switch(shape) {
@@ -53,8 +52,8 @@ void THTPad::SaveObject(File &file) const {
 			count = 2;
 			break;
 		case SQUARE_E:
-			points[0].Set(-outDiameter, radius);
-			points[1].Set( outDiameter, radius);
+			points[0].Set(-size.out, radius);
+			points[1].Set( size.out, radius);
 			count = 2;
 			break;
 		case OCTAGON:
@@ -65,10 +64,10 @@ void THTPad::SaveObject(File &file) const {
 			count = 4;
 			break;
 		case OCTAGON_E:
-			points[0].Set(-outDiameter, halfa);
+			points[0].Set(-size.out, halfa);
 			points[1].Set(-radius - halfa, radius);
 			points[2].Set( radius + halfa, radius);
-			points[3].Set( outDiameter, halfa);
+			points[3].Set( size.out, halfa);
 			count = 4;
 			break;
 	}
@@ -81,8 +80,7 @@ void THTPad::SaveObject(File &file) const {
 
 void THTPad::LoadObject(File &file) {
 	position.Load<float>(file);
-	outDiameter = file.ReadMm<float>() * 2.0f;
-	inDiameter = file.ReadMm<float>() * 2.0f;
+	size.Load(file);
 	file.ReadNull(5);
 	layer = file.Read<uint8_t>() - 1;
 	shape = file.Read<uint8_t>();
@@ -95,7 +93,7 @@ void THTPad::LoadObject(File &file) {
 	file.ReadNull(5);
 	thermal = file.Read<uint8_t>();
 	file.ReadNull(2);
-	thermalSize = file.Read<uint32_t>() / 300.0f * outDiameter;
+	thermalSize = file.Read<uint32_t>() / 300.0f * size.out;
 	through = file.Read<uint8_t>();
 	soldermask = file.Read<uint8_t>();
 	file.ReadNull(22);
