@@ -4,6 +4,7 @@
 #include "NewBoardDialog.h"
 #include "BottomPanel.h"
 #include "LeftPanel.h"
+#include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
@@ -44,6 +45,8 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PANEL_PROPERTIES,	OpenLayoutFrame::UpdatePropertiesPanel)
 	EVT_UPDATE_UI(ID_PANEL_DRC,			OpenLayoutFrame::UpdateDRCPanel)
 	EVT_UPDATE_UI(ID_PANEL_MACRO,		OpenLayoutFrame::UpdateMacrosPanel)
+
+	EVT_CHAR_HOOK(						OpenLayoutFrame::OnKeyDown)
 wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame()
@@ -58,7 +61,7 @@ OpenLayoutFrame::OpenLayoutFrame()
 	{
 		wxBoxSizer *panels = new wxBoxSizer(wxHORIZONTAL);
 
-		LeftPanel *right = new LeftPanel(this, &pcb);
+		LeftPanel *right = new LeftPanel(this, &pcb, &settings);
 		panels->Add(right, 0, wxEXPAND);
 
 		selector = new SelectorPanel(this, &pcb);
@@ -76,8 +79,20 @@ OpenLayoutFrame::OpenLayoutFrame()
 	BottomPanel *bottomPanel = new BottomPanel(this, &pcb);
 	content->Add(bottomPanel, 0, wxEXPAND);
 
+	SetFocus();
+
 	SetSizer(content);
 	SetAutoLayout(true);
+}
+
+void OpenLayoutFrame::OnKeyDown(wxKeyEvent &e) {
+	if(e.GetKeyCode() >= WXK_NUMPAD1 && e.GetKeyCode() <= WXK_NUMPAD9) {
+		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
+		Refresh();
+	} else if(e.GetKeyCode() >= '1' && e.GetKeyCode() <= '9') {
+		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - '1']);
+		Refresh();
+	}
 }
 
 void OpenLayoutFrame::Close(wxCommandEvent&) {}

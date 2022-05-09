@@ -6,6 +6,9 @@ public:
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
+	virtual uint8_t GetType() const override {
+		return TRACK;
+	}
 	virtual AABB GetAABB() const override;
 private:
 	inline bool GetBeginStyle() const {
@@ -23,7 +26,6 @@ private:
 			style ^= 2;
 	}
 
-	float width;
 	uint8_t style;
 	uint8_t cutoff;
 };

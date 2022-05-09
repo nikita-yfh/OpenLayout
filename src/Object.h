@@ -38,10 +38,15 @@ public:
 	const Object *GetNext() const;
 	uint32_t GetNumber() const;
 
+	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
 
+	bool IsSelected() const;
+	void Select();
+	void Unselect();
+
 	Groups groups;
-protected:
+
 	enum {
 		THT_PAD = 2,
 		POLY = 4,
@@ -50,6 +55,7 @@ protected:
 		TEXT = 7,
 		SMD_PAD = 8
 	};
+protected:
 	char marker[256];
 	uint8_t layer;
 	float groundDistance;
@@ -69,4 +75,13 @@ inline Object *Object::GetNext() {
 }
 inline const Object *Object::GetNext() const {
 	return next;
+}
+inline bool Object::IsSelected() const {
+	return selected;
+}
+inline void Object::Select() {
+	selected = true;
+}
+inline void Object::Unselect() {
+	selected = false;
 }

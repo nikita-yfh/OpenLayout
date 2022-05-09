@@ -39,6 +39,13 @@ public:
 	uint8_t GetSelectedLayer() const;
 	void SetSelectedLayer(uint8_t layer);
 
+	Object *GetFirstSelected();
+
+	double GetGrid() const;
+	void SetGrid(double grid);
+
+	Object *GetObjects();
+
 	ImageConfigs images;
 
 	enum Layer {
@@ -106,4 +113,12 @@ inline bool Board::ToggleCurrentLayerGround() {
 	groundPane[activeLayer] = !groundPane[activeLayer];
 	return groundPane[activeLayer];
 }
-
+inline double Board::GetGrid() const {
+	return grid;
+}
+inline void Board::SetGrid(double newGrid) {
+	grid = newGrid;
+}
+inline Object *Board::GetObjects() {
+	return objects;
+}

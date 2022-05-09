@@ -16,6 +16,7 @@ Board::Board() {
 	}
 	multilayer = false;
 	activeLayer = LAYER_C2;
+	grid = 1.27;
 }
 
 Board::~Board() {
@@ -88,4 +89,12 @@ void Board::AddObject(Object *object) {
 		objects->prev = object;
 	objects = object;
 }
+
+Object *Board::GetFirstSelected() {
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			return object;
+	return nullptr;
+}
+
 

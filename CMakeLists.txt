@@ -37,6 +37,7 @@ set(HEADERS
 	src/AABB.h
 	src/App.h
 	src/Arc.h
+	src/Array.h
 	src/Board.h
 	src/BottomPanel.h
 	src/ColorScheme.h
@@ -51,6 +52,7 @@ set(HEADERS
 	src/OpenLayoutMain.h
 	src/Pad.h
 	src/PCB.h
+	src/PadSize.h
 	src/PolygonBase.h
 	src/Poly.h
 	src/ProjectInfo.h
@@ -68,7 +70,7 @@ if(WIN32)
 endif()
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
-	set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s -ffunction-sections -fdata-sections")
+	set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s -ffunction-sections -fdata-sections -fvisibility=hidden")
 	set(CMAKE_CXX_FLAGS "-Wno-write-strings")
 endif()
 target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})

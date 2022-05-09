@@ -16,7 +16,7 @@ struct Vec2 {
 		y = _y;
 	}
 	void SetZero() {
-		x = y =0.0f;
+		x = y = 0.0f;
 	}
 	float Length() const {
 		return sqrt(x*x + y*y);
@@ -67,6 +67,18 @@ struct Vec2 {
 	static inline Vec2 Max(const Vec2 &a, const Vec2 &b) {
 		return Vec2((a.x > b.x) ? a.x : b.x,
 					(a.y > b.y) ? a.y : b.y);
+	}
+
+	bool operator==(const Vec2 &other) const {
+		return other.x == x && other.y == y;
+	}
+
+	bool operator<(const Vec2 &other) const {
+		if(x < other.x)
+			return true;
+		else if(x == other.x && y < other.y)
+			return true;
+		return false;
 	}
 
 	Vec2 operator-() const {
