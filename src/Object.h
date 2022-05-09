@@ -50,7 +50,7 @@ public:
 	enum {
 		THT_PAD = 2,
 		POLY = 4,
-		CIRCLE = 5,
+		ARC = 5,
 		TRACK = 6,
 		TEXT = 7,
 		SMD_PAD = 8

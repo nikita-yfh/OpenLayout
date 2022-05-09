@@ -117,7 +117,7 @@ enum {
 	ID_TOOL_TRACK,
 	ID_TOOL_PAD,
 	ID_TOOL_SMD,
-	ID_TOOL_CIRCLE,
+	ID_TOOL_ARC,
 	ID_TOOL_RECT,
 	ID_TOOL_ZONE,
 	ID_TOOL_FORM,
@@ -501,11 +501,8 @@ void LeftPanel::UpdateSizes(wxUpdateUIEvent &e) {
 	Object *selected = pcb->GetSelectedBoard()->GetFirstSelected();
 	if(selected) {
 		switch(selected->GetType()) {
-		case Object::TRACK: case Object::POLY:
-			track = ((PolygonBase*) selected)->GetWidth();
-			break;
-		case Object::CIRCLE:
-			track = ((Arc*) selected)->GetWidth();
+		case Object::TRACK: case Object::POLY: case Object::ARC:
+			track = ((LineObject*) selected)->GetWidth();
 			break;
 		case Object::THT_PAD:
 			pad = ((THTPad*) selected)->GetSize();
@@ -528,10 +525,8 @@ void LeftPanel::SetTrackSize(float size) {
 	for(Object *object = pcb->GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected()) {
 			uint8_t type = object->GetType();
-			if(type == Object::TRACK || type == Object::POLY)
-				((PolygonBase*) object)->SetWidth(size);
-			else if(type == Object::CIRCLE)
-				((Arc*) object)->SetWidth(size);
+			if(type == Object::TRACK || type == Object::POLY || type == Object::ARC)
+				((LineObject*) object)->SetWidth(size);
 		}
 }
 

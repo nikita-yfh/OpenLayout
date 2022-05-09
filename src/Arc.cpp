@@ -6,7 +6,7 @@ AABB Arc::GetAABB() const {
 }
 
 void Arc::SaveObject(File &file) const {
-	file.Write<uint8_t>(CIRCLE);
+	file.Write<uint8_t>(ARC);
 	position.Save<float>(file);
 	file.WriteMm<float>((diameter + width) / 2.0f);
 	file.WriteMm<float>((diameter - width) / 2.0f);

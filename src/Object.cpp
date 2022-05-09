@@ -82,7 +82,7 @@ Object *Object::Load(File &file){
 		case POLY:
 			object = new Poly();
 			break;
-		case CIRCLE:
+		case ARC:
 			object = new Arc();
 			break;
 		case TRACK:
