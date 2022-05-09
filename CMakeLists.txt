@@ -44,6 +44,7 @@ set(HEADERS
 	src/ComponentPanel.h
 	src/File.h
 	src/ImageConfig.h
+	src/LineObject.h
 	src/MacroPanel.h
 	src/MacroPreview.h
 	src/MenuBar.h
