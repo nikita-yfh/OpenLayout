@@ -97,4 +97,13 @@ Object *Board::GetFirstSelected() {
 	return nullptr;
 }
 
+void Board::UpdateGrid(bool shift, bool ctrl) {
+	if(ctrl)
+		activeGrid = 0.0;
+	else if(shift)
+		activeGrid = grid * 0.5;
+	else
+		activeGrid = grid;
+}
+
 

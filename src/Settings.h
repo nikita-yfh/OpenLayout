@@ -116,9 +116,6 @@ struct Settings {
 	wxString GetStr(const Vec2 &value) const;
 	wxString GetStr(const PadSize &value) const;
 
-	double ShowInputGridDialog(wxWindow *parent, double init) const;
-	void ShowGridBinderDialog(wxWindow *parent);
-
 	double ConvertToUnits(double value) const;
 	double ConvertFromUnits(double value) const;
 };
