@@ -86,8 +86,6 @@ class OpenLayoutFrame : public wxFrame{
 public:
 	OpenLayoutFrame();
 private:
-	void OnKeyDown(wxKeyEvent&);
-
 	void Close(wxCommandEvent&);
 	void ShowSettings(wxCommandEvent&);
 	void ShowAbout(wxCommandEvent&);

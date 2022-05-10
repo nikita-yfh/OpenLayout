@@ -1,5 +1,7 @@
 #include "LeftPanel.h"
 #include "Settings.h"
+#include "InputGridDialog.h"
+#include "GridBinderDialog.h"
 #include "Track.h"
 #include "SMDPad.h"
 #include "THTPad.h"
@@ -392,7 +394,7 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 
 
 void LeftPanel::AddNewGrid(wxCommandEvent&) {
-	double grid = settings->ShowInputGridDialog(this, 1.0);
+	double grid = InputGridDialog::Show(this, settings, 1.0);
 	if(grid == 0.0)
 		return;
 	settings->grids.Add(grid);
@@ -433,7 +435,7 @@ void LeftPanel::ToggleGrid(wxCommandEvent &e) {
 }
 
 void LeftPanel::ShowGridBinder(wxCommandEvent&) {
-	settings->ShowGridBinderDialog(this);
+	GridBinderDialog::Show(this, settings);
 }
 
 void LeftPanel::ShowGridMenu(wxCommandEvent&) {

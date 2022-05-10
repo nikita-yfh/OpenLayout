@@ -43,6 +43,7 @@ public:
 
 	double GetGrid() const;
 	void SetGrid(double grid);
+	void UpdateGrid(bool shift, bool ctrl);
 
 	Object *GetObjects();
 
@@ -65,6 +66,7 @@ private:
 	uint8_t activeLayer;
 	bool multilayer;
 	double grid;
+	double activeGrid;
 	double zoom;
 	Vec2 camera;
 	Vec2 anchor;
@@ -117,7 +119,7 @@ inline double Board::GetGrid() const {
 	return grid;
 }
 inline void Board::SetGrid(double newGrid) {
-	grid = newGrid;
+	grid = activeGrid = newGrid;
 }
 inline Object *Board::GetObjects() {
 	return objects;

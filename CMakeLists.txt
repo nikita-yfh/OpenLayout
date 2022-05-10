@@ -13,9 +13,12 @@ set(SOURCES
 	src/ColorScheme.cpp
 	src/ComponentPanel.cpp
 	src/File.cpp
+	src/GridBinderDialog.cpp
+	src/InputGridDialog.cpp
 	src/ImageConfig.cpp
 	src/MacroPanel.cpp
 	src/MacroPreview.cpp
+	src/MainCanvas.cpp
 	src/MenuBar.cpp
 	src/NewBoardDialog.cpp
 	src/Object.cpp
@@ -43,10 +46,13 @@ set(HEADERS
 	src/ColorScheme.h
 	src/ComponentPanel.h
 	src/File.h
+	src/GridBinderDialog.h
+	src/InputGridDialog.h
 	src/ImageConfig.h
 	src/LineObject.h
 	src/MacroPanel.h
 	src/MacroPreview.h
+	src/MainCanvas.h
 	src/MenuBar.h
 	src/NewBoardDialog.h
 	src/Object.h

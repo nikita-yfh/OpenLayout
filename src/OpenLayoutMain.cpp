@@ -4,6 +4,7 @@
 #include "NewBoardDialog.h"
 #include "BottomPanel.h"
 #include "LeftPanel.h"
+#include "MainCanvas.h"
 #include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
@@ -45,12 +46,10 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PANEL_PROPERTIES,	OpenLayoutFrame::UpdatePropertiesPanel)
 	EVT_UPDATE_UI(ID_PANEL_DRC,			OpenLayoutFrame::UpdateDRCPanel)
 	EVT_UPDATE_UI(ID_PANEL_MACRO,		OpenLayoutFrame::UpdateMacrosPanel)
-
-	EVT_CHAR_HOOK(						OpenLayoutFrame::OnKeyDown)
 wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame()
-		:wxFrame(0, wxID_ANY, "OpenLayout", wxDefaultPosition, wxSize(800, 600)) {
+		: wxFrame(nullptr, wxID_ANY, "OpenLayout") {
 	MenuBar *menubar = new MenuBar();
 	SetMenuBar(menubar);
 	ToolBar *toolbar = new ToolBar(this);
@@ -64,6 +63,9 @@ OpenLayoutFrame::OpenLayoutFrame()
 		LeftPanel *right = new LeftPanel(this, &pcb, &settings);
 		panels->Add(right, 0, wxEXPAND);
 
+		MainCanvas *canvas = new MainCanvas(this, &pcb, &settings);
+		panels->Add(canvas, 1, wxEXPAND);
+
 		selector = new SelectorPanel(this, &pcb);
 		panels->Add(selector, 0, wxEXPAND);
 
@@ -73,7 +75,7 @@ OpenLayoutFrame::OpenLayoutFrame()
 		macros = new MacroPanel(this);
 		panels->Add(macros, 0, wxEXPAND);
 
-		content->Add(panels, wxEXPAND);
+		content->Add(panels, 1, wxEXPAND);
 	}
 
 	BottomPanel *bottomPanel = new BottomPanel(this, &pcb);
@@ -81,18 +83,8 @@ OpenLayoutFrame::OpenLayoutFrame()
 
 	SetFocus();
 
-	SetSizer(content);
+	SetSizerAndFit(content);
 	SetAutoLayout(true);
-}
-
-void OpenLayoutFrame::OnKeyDown(wxKeyEvent &e) {
-	if(e.GetKeyCode() >= WXK_NUMPAD1 && e.GetKeyCode() <= WXK_NUMPAD9) {
-		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
-		Refresh();
-	} else if(e.GetKeyCode() >= '1' && e.GetKeyCode() <= '9') {
-		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - '1']);
-		Refresh();
-	}
 }
 
 void OpenLayoutFrame::Close(wxCommandEvent&) {}
