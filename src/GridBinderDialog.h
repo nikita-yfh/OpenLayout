@@ -17,6 +17,7 @@ private:
 	double grids[9];
 
 	void OnSelectedItem(wxListEvent&);
+	void OnActivatedItem(wxListEvent&);
 	void ChangeGrid(wxCommandEvent&);
 
 	wxDECLARE_EVENT_TABLE();

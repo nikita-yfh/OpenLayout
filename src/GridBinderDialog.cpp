@@ -9,6 +9,7 @@ enum {
 
 wxBEGIN_EVENT_TABLE(GridBinderDialog, wxDialog)
 	EVT_LIST_ITEM_SELECTED(ID_KEY_LIST,	GridBinderDialog::OnSelectedItem)
+	EVT_LIST_ITEM_ACTIVATED(ID_KEY_LIST,GridBinderDialog::OnActivatedItem)
 	EVT_BUTTON(ID_CHANGE,				GridBinderDialog::ChangeGrid)
 wxEND_EVENT_TABLE()
 
@@ -38,6 +39,9 @@ GridBinderDialog::GridBinderDialog(wxWindow *parent, Settings *_settings)
 
 void GridBinderDialog::OnSelectedItem(wxListEvent&) {
 	change->Enable(true);
+}
+void GridBinderDialog::OnActivatedItem(wxListEvent &e) {
+	ChangeGrid(e);
 }
 
 void GridBinderDialog::ChangeGrid(wxCommandEvent&) {
