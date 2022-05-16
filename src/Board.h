@@ -2,6 +2,7 @@
 #include "Vec2.h"
 #include "Object.h"
 #include "ImageConfig.h"
+#include "ColorScheme.h"
 #include "File.h"
 
 class Board {
@@ -46,6 +47,8 @@ public:
 	void UpdateGrid(bool shift, bool ctrl);
 
 	Object *GetObjects();
+
+	void DrawGrid(const ColorScheme &colors, uint8_t subgrid) const;
 
 	ImageConfigs images;
 

@@ -23,7 +23,14 @@ void MainCanvas::Draw(wxPaintEvent&) {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode(GL_PROJECTION);
+
+	const ColorScheme &colors = settings->GetColorScheme();
+	wxSize size = GetSize();
+	colors.SetClearColor(COLOR_BGR);
 	glClear(GL_COLOR_BUFFER_BIT);
+	glViewport(0, 0, size.x, size.y);
+
+	glLoadIdentity();
 	glFlush();
 	SwapBuffers();
 }

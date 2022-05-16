@@ -1,4 +1,18 @@
 #include "ColorScheme.h"
+#include <wx/glcanvas.h>
+
+union ColorU {
+	uint32_t color;
+	struct {
+		uint8_t red;
+		uint8_t green;
+		uint8_t blue;
+		uint8_t alpha;
+	};
+	ColorU(const wxColor &_color) {
+		color = _color.GetRGBA();
+	}
+};
 
 ColorScheme::ColorScheme() {
 	SetDefault();
@@ -20,18 +34,26 @@ void ColorScheme::SetDefault() {
 	colors[COLOR_SELO]		= Color(255,170,255);
 	colors[COLOR_SELR]		= Color(0,	255,255);
 }
-void ColorScheme::WriteColor(File &file, const Color &color)const{
+void ColorScheme::SetColor(uint8_t index) const {
+	ColorU color(colors[index]);
+	glColor4ub(color.red, color.green, color.blue, color.alpha);
+}
+void ColorScheme::SetClearColor(uint8_t index) const {
+	ColorU color(colors[index]);
+	glClearColor(color.red / 255.0f, color.green / 255.0f, color.blue / 255.0f, color.alpha / 255.0f);
+}
+void ColorScheme::WriteColor(File &file, const Color &color) const {
 	file.Write<uint32_t>(color.GetRGBA());
 }
-void ColorScheme::ReadColor(File &file, Color &color){
+void ColorScheme::ReadColor(File &file, Color &color) {
 	color.SetRGBA(file.Read<uint32_t>());
 }
-void ColorScheme::Save(File &file)const{
-	for(int q=0;q<COLOR_COUNT;q++)
-		WriteColor(file,colors[q]);
+void ColorScheme::Save(File &file) const {
+	for(int i = 0; i < COLOR_COUNT; i++)
+		WriteColor(file,colors[i]);
 }
-void ColorScheme::Load(File &file){
-	for(int q=0;q<COLOR_COUNT;q++)
-		ReadColor(file,colors[q]);
+void ColorScheme::Load(File &file) {
+	for(int i = 0; i < COLOR_COUNT; i++)
+		ReadColor(file,colors[i]);
 }
 

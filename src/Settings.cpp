@@ -11,13 +11,26 @@
 Settings::Settings() {
 	SetDefault();
 }
+
 void Settings::SetDefault() {
 	//Default settings from Sprint Layout
 	for(int i = 0; i < 3; i++)
 		colors[i].SetDefault();
 	selectedColorScheme = 0; //default
+							 
+	boardZoom		= false;
+	darkGround		= true;
+	allGround		= false;
+	testConnections	= false;
+	testBlinking	= true;
+	ctrlCaptureSize	= true;
+	limitTextHeight	= false;
+	alwaysReadable	= true;
+	optimize		= true;
+	anchorLeftTop	= false;
+	anchorExport	= false;
 
-	undoCount = 50;
+	undoDepth = 50;
 
 	sameDir = true;
 	*layExport = '\0';
@@ -52,11 +65,10 @@ void Settings::SetDefault() {
 	circleQuality = 40;
 
 	const char defKeys[TOOL_COUNT]= {
-		27, //escape
-		'Z', 'L', 'P', 'S',
-		'R', 'Q', 'F', 'N',
-		'T', 'C', 'A', 'X',
-		'M', 'V', 'O'
+		ESCAPE, 'Z', 'L', 'P',
+		'S', 'R', 'Q', 'F',
+		'N', 'T', 'C', 'A',
+		'X', 'M', 'V', 'O'
 	};
 	memcpy(toolKeys, defKeys, sizeof(defKeys));
 
@@ -116,6 +128,15 @@ void Settings::SetDefault() {
 void Settings::SetDefaultMacroPath() {
 	getcwd(macroDir, PATH_LENGTH - 10);
 	strncat(macroDir, "/macros/", PATH_LENGTH);
+}
+uint8_t Settings::GetSubGrid() const {
+	switch(subGrid) {
+		case SUBGRID_2: return 2;
+		case SUBGRID_4: return 4;
+		case SUBGRID_5: return 5;
+		case SUBGRID_10: return 10;
+	}
+	return 0;
 }
 ColorScheme &Settings::GetColorScheme() {
 	static ColorScheme def;
