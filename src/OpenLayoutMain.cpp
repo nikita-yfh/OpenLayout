@@ -5,6 +5,7 @@
 #include "BottomPanel.h"
 #include "LeftPanel.h"
 #include "MainCanvas.h"
+#include "SettingsDialog.h"
 #include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
@@ -56,7 +57,6 @@ OpenLayoutFrame::OpenLayoutFrame()
 	SetToolBar(toolbar);
 
 	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
-
 	{
 		wxBoxSizer *panels = new wxBoxSizer(wxHORIZONTAL);
 
@@ -88,7 +88,12 @@ OpenLayoutFrame::OpenLayoutFrame()
 }
 
 void OpenLayoutFrame::Close(wxCommandEvent&) {}
-void OpenLayoutFrame::ShowSettings(wxCommandEvent&) {}
+void OpenLayoutFrame::ShowSettings(wxCommandEvent&) {
+	SettingsDialog dialog(this, settings);
+	if(dialog.ShowModal() != wxID_OK)
+		return;
+	dialog.Get(settings);
+}
 void OpenLayoutFrame::ShowAbout(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&) {
 	pcb.info.ShowDialog(this);

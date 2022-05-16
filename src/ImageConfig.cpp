@@ -46,7 +46,7 @@ void ImageConfigs::ShowDialog(wxWindow *parent, const ColorScheme &colors){
 	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	{
 		wxNotebook *notebook = new wxNotebook(dialog, wxID_ANY);
-		for(int i = 0; i<2; i++) {
+		for(int i = 0; i < 2; i++) {
 			wxPanel *panel = new wxPanel(notebook);
 			{
 				wxBoxSizer *page = new wxBoxSizer(wxVERTICAL);
@@ -103,7 +103,7 @@ void ImageConfigs::ShowDialog(wxWindow *parent, const ColorScheme &colors){
 				page->Add(sizer);
 				panel->SetSizerAndFit(page);
 			}
-			notebook->AddPage(panel, wxString::Format(_("Board side %d"), i+1));
+			notebook->AddPage(panel, wxString::Format(_("Board side %d"), i + 1));
 		}
 		notebook->SetSelection(1);
 		content->Add(notebook, 1, wxALL|wxEXPAND, 5);

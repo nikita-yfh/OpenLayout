@@ -7,6 +7,7 @@
 #include "ColorScheme.h" 
 
 #define PATH_LENGTH 256
+#define ESCAPE 27
 
 enum {
 	TOOL_EDIT,
@@ -56,7 +57,22 @@ struct Settings {
 	void SetDefault();
 	void SetDefaultMacroPath();
 
-	uint8_t undoCount;
+	bool &operator[](uint8_t index);
+	bool operator[](uint8_t index) const;
+
+	bool boardZoom;
+	bool darkGround;
+	bool allGround;
+	bool testConnections;
+	bool testBlinking;
+	bool ctrlCaptureSize;
+	bool limitTextHeight;
+	bool alwaysReadable;
+	bool optimize;
+	bool anchorLeftTop;
+	bool anchorExport;
+
+	uint8_t undoDepth;
 
 	bool sameDir;
 	char layExport[PATH_LENGTH];
@@ -73,8 +89,6 @@ struct Settings {
 
 	ColorScheme colors[3]; //user color schemes
 	uint8_t selectedColorScheme; //0-Standart; 1-User1; 2-User2; 3-User3;
-
-	const ColorScheme &GetCurrentColors();
 
 	uint16_t copperThickness;
 	uint16_t tempEnhance;
@@ -109,6 +123,7 @@ struct Settings {
 
 	uint8_t circleQuality;
 
+	uint8_t GetSubGrid() const;
 	ColorScheme &GetColorScheme();
 
 	wxString GetGridStr(double grid) const;
@@ -119,3 +134,12 @@ struct Settings {
 	double ConvertToUnits(double value) const;
 	double ConvertFromUnits(double value) const;
 };
+
+inline bool &Settings::operator[](uint8_t index) {
+	return *(&boardZoom + index);
+}
+
+inline bool Settings::operator[](uint8_t index) const {
+	return *(&boardZoom + index);
+}
+

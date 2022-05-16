@@ -35,6 +35,9 @@ public:
 
 	void SetDefault();
 
+	void SetColor(uint8_t id) const;
+	void SetClearColor(uint8_t id) const;
+
 private:
 	void ReadColor(File &file, Color &color);
 	void WriteColor(File &file, const Color &color) const;

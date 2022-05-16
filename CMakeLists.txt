@@ -31,6 +31,7 @@ set(SOURCES
 	src/LeftPanel.cpp
 	src/SelectorPanel.cpp
 	src/Settings.cpp
+	src/SettingsDialog.cpp
 	src/SMDPad.cpp
 	src/THTPad.cpp
 	src/ToolBar.cpp
@@ -66,6 +67,7 @@ set(HEADERS
 	src/LeftPanel.h
 	src/SelectorPanel.h
 	src/Settings.h
+	src/SettingsDialog.h
 	src/SMDPad.h
 	src/THTPad.h
 	src/ToolBar.h
