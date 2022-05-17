@@ -124,7 +124,7 @@ void Settings::SetDefault() {
 	gridBind[8] = 0.1;
 
 	windowPos = wxPoint(-1, -1);
-	windowSize = wxSize(-1, -1);
+	windowSize = wxSize(800, 600);
 
 	showSelectorPanel = false;
 	showComponentsPanel = false;
