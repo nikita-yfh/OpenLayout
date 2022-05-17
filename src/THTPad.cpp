@@ -7,7 +7,7 @@ AABB THTPad::GetAABB() const {
 
 void THTPad::SaveObject(File &file) const {
 	file.Write<uint8_t>(THT_PAD);
-	position.Save<float>(file);
+	position.Save(file);
 	size.Save(file);
 	file.WriteNull(5);
 	file.Write<uint8_t>(layer + 1);
@@ -79,7 +79,7 @@ void THTPad::SaveObject(File &file) const {
 }
 
 void THTPad::LoadObject(File &file) {
-	position.Load<float>(file);
+	position.Load(file);
 	size.Load(file);
 	file.ReadNull(5);
 	layer = file.Read<uint8_t>() - 1;

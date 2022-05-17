@@ -6,7 +6,7 @@
 
 class ComponentPanel : public wxPanel {
 public:
-	ComponentPanel(wxWindow *parent, const PCB *pcb);
+	ComponentPanel(wxWindow *parent, const PCB &pcb);
 private:
 
 	template<int n>
@@ -16,7 +16,7 @@ private:
 
 	void Export(wxCommandEvent&);
 
-	const PCB *pcb;
+	const PCB &pcb;
 
 	wxListCtrl *list;
 	wxDECLARE_EVENT_TABLE();

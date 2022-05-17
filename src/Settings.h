@@ -1,5 +1,4 @@
 #pragma once
-#include <wx/dialog.h>
 #include "File.h"
 #include "Vec2.h"
 #include "PadSize.h"
@@ -56,6 +55,9 @@ struct Settings {
 	Settings();
 	void SetDefault();
 	void SetDefaultMacroPath();
+
+	void Save(File &file) const;
+	void Load(File &file);
 
 	bool &operator[](uint8_t index);
 	bool operator[](uint8_t index) const;
@@ -119,9 +121,7 @@ struct Settings {
 	bool showGrid;
 
 	float customRotationAngle;
-	float rotationAngle;
-
-	uint8_t circleQuality;
+	uint8_t rotationAngleSel;
 
 	uint8_t GetSubGrid() const;
 	ColorScheme &GetColorScheme();

@@ -6,10 +6,10 @@
 
 class InputGridDialog : public wxDialog {
 public:
-	InputGridDialog(wxWindow *parent, const Settings *settings, double init);
+	InputGridDialog(wxWindow *parent, const Settings &settings, double init);
 	double Get() const;
 
-	static double Show(wxWindow *parent, const Settings *settings, double init);
+	static double Show(wxWindow *parent, const Settings &settings, double init);
 private:
 	wxSpinCtrlDouble *input;
 	wxChoice *units;

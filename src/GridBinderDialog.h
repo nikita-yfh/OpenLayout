@@ -6,14 +6,14 @@
 
 class GridBinderDialog : public wxDialog {
 public:
-	GridBinderDialog(wxWindow *window, Settings *settings);
+	GridBinderDialog(wxWindow *window, Settings &settings);
 	void Get();
 
-	static void Show(wxWindow *parent, Settings *settings);
+	static void Show(wxWindow *parent, Settings &settings);
 private:
 	wxListView *keyList;
 	wxButton *change;
-	Settings *settings;
+	Settings &settings;
 	double grids[9];
 
 	void OnSelectedItem(wxListEvent&);

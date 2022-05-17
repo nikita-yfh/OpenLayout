@@ -9,6 +9,7 @@
 #include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
+	EVT_CLOSE(						OpenLayoutFrame::Close)
 	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
 	EVT_MENU(wxID_PROPERTIES,		OpenLayoutFrame::ShowSettings)
 	EVT_MENU(wxID_ABOUT,			OpenLayoutFrame::ShowAbout)
@@ -51,6 +52,7 @@ wxEND_EVENT_TABLE()
 
 OpenLayoutFrame::OpenLayoutFrame()
 		: wxFrame(nullptr, wxID_ANY, "OpenLayout") {
+	LoadSettings();
 	MenuBar *menubar = new MenuBar();
 	SetMenuBar(menubar);
 	ToolBar *toolbar = new ToolBar(this);
@@ -60,16 +62,16 @@ OpenLayoutFrame::OpenLayoutFrame()
 	{
 		wxBoxSizer *panels = new wxBoxSizer(wxHORIZONTAL);
 
-		LeftPanel *right = new LeftPanel(this, &pcb, &settings);
+		LeftPanel *right = new LeftPanel(this, pcb, settings);
 		panels->Add(right, 0, wxEXPAND);
 
-		MainCanvas *canvas = new MainCanvas(this, &pcb, &settings);
+		MainCanvas *canvas = new MainCanvas(this, pcb, settings);
 		panels->Add(canvas, 1, wxEXPAND);
 
-		selector = new SelectorPanel(this, &pcb);
+		selector = new SelectorPanel(this, pcb);
 		panels->Add(selector, 0, wxEXPAND);
 
-		components = new ComponentPanel(this, &pcb);
+		components = new ComponentPanel(this, pcb);
 		panels->Add(components, 0, wxEXPAND);
 
 		macros = new MacroPanel(this);
@@ -78,7 +80,7 @@ OpenLayoutFrame::OpenLayoutFrame()
 		content->Add(panels, 1, wxEXPAND);
 	}
 
-	BottomPanel *bottomPanel = new BottomPanel(this, &pcb);
+	BottomPanel *bottomPanel = new BottomPanel(this, pcb);
 	content->Add(bottomPanel, 0, wxEXPAND);
 
 	SetFocus();
@@ -87,7 +89,39 @@ OpenLayoutFrame::OpenLayoutFrame()
 	SetAutoLayout(true);
 }
 
-void OpenLayoutFrame::Close(wxCommandEvent&) {}
+wxString OpenLayoutFrame::GetDir() {
+#ifdef _WIN32
+	wxString path = wxGetHomeDir() + "/AppData/Roaming/OpenLayout";
+#else
+	wxString path = wxGetHomeDir() + "/.local/share/OpenLayout";
+#endif
+	if(!wxDirExists(path))
+		wxMkdir(path);
+	return path;
+}
+
+void OpenLayoutFrame::SaveSettings() const {
+	wxString path = GetDir() + "/settings";
+	File file(path.c_str(), "wb");
+	settings.Save(file);
+}
+
+void OpenLayoutFrame::LoadSettings() {
+	wxString path = GetDir() + "/settings";
+	File file(path.c_str(), "rb");
+	if(!file.IsOk())
+		return;
+	settings.Load(file);
+}
+
+void OpenLayoutFrame::Close(wxCloseEvent&) {
+	SaveSettings();
+	Destroy();
+}
+void OpenLayoutFrame::Close(wxCommandEvent&) {
+	SaveSettings();
+	Destroy();
+}
 void OpenLayoutFrame::ShowSettings(wxCommandEvent&) {
 	SettingsDialog dialog(this, settings);
 	if(dialog.ShowModal() != wxID_OK)

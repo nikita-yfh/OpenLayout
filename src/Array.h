@@ -12,6 +12,11 @@ public:
 	~UniqueArray() {
 		Clear();
 	}
+	void Init(uint32_t size) {
+		Clear();
+		count = size;
+		items = (T*) malloc(count * sizeof(T));
+	}
 	void Clear() {
 		if(items)
 			free(items);

@@ -7,11 +7,11 @@
 
 class LeftPanel : public wxPanel {
 public:
-	LeftPanel(wxWindow *parent, PCB *pcb, Settings *settings);
+	LeftPanel(wxWindow *parent, PCB &pcb, Settings &settings);
 private:
 	wxToolBar *toolbar;
-	PCB *pcb;
-	Settings *settings;
+	PCB &pcb;
+	Settings &settings;
 	bool rectFill;
 
 	wxSpinCtrlDouble *trackSize;

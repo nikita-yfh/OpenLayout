@@ -22,7 +22,7 @@ wxBEGIN_EVENT_TABLE(ComponentPanel, wxPanel)
 	EVT_CHECKBOX(ID_COMMENT,	ComponentPanel::ToggleColumn<6>)
 wxEND_EVENT_TABLE()
 
-ComponentPanel::ComponentPanel(wxWindow *parent, const PCB *_pcb)
+ComponentPanel::ComponentPanel(wxWindow *parent, const PCB &_pcb)
 		: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(200, -1), wxBORDER_SUNKEN), pcb(_pcb) {
 	wxFlexGridSizer *content = new wxFlexGridSizer(8, 1, 3, 0);
 	list = new wxListView(this, wxID_ANY);

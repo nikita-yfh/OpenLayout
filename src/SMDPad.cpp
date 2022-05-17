@@ -14,8 +14,8 @@ AABB SMDPad::GetAABB() const {
 
 void SMDPad::SaveObject(File &file) const {
 	file.Write<uint8_t>(SMD_PAD);
-	position.Save<float>(file);
-	size.Save<float>(file);
+	position.Save(file);
+	size.Save(file);
 	file.WriteNull(5);
 	file.Write<uint8_t>(layer + 1);
 	file.WriteNull(5);
@@ -46,8 +46,8 @@ void SMDPad::SaveObject(File &file) const {
 }
 
 void SMDPad::LoadObject(File &file) {
-	position.Load<float>(file);
-	size.Load<float>(file);
+	position.Load(file);
+	size.Load(file);
 	file.ReadNull(5);
 	layer = file.Read<uint8_t>() - 1;
 	file.ReadNull(5);

@@ -228,7 +228,7 @@ wxBEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_MENU_RANGE(ID_SMD_DEL, ID_SMD_DEL + 99, 			LeftPanel::RemoveSmdSize)
 wxEND_EVENT_TABLE()
 
-LeftPanel::LeftPanel(wxWindow *parent, PCB *_pcb, Settings *_settings)
+LeftPanel::LeftPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		: wxPanel(parent), pcb(_pcb), settings(_settings) {
 	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	{
@@ -345,17 +345,17 @@ void LeftPanel::SetRectFill(wxCommandEvent &e) {
 
 void LeftPanel::SetPadShape(wxCommandEvent &e) {
 	uint8_t shape = e.GetId() - ID_PAD_CIRCLE;
-	pcb->SetPadShape(shape);
+	pcb.SetPadShape(shape);
 	
-	UpdatePad(pcb->GetMetallization(), shape);
+	UpdatePad(pcb.GetMetallization(), shape);
 }
 
 void LeftPanel::ToggleMetallization(wxCommandEvent&) {
-	UpdatePad(pcb->ToggleMetallization(), pcb->GetPadShape());
+	UpdatePad(pcb.ToggleMetallization(), pcb.GetPadShape());
 }
 void LeftPanel::UpdateMetallization(wxUpdateUIEvent &e) {
-	static bool lastState = pcb->GetMetallization();
-	if(lastState != pcb->GetMetallization())
+	static bool lastState = pcb.GetMetallization();
+	if(lastState != pcb.GetMetallization())
 		ToggleMetallization(e);
 }
 void LeftPanel::UpdatePad(bool metallization, uint8_t shape) {
@@ -367,7 +367,7 @@ void LeftPanel::UpdatePad(bool metallization, uint8_t shape) {
 }
 
 void LeftPanel::ShowPadSizeMenu(wxCommandEvent&) {
-	bool m = pcb->GetMetallization();
+	bool m = pcb.GetMetallization();
 	wxMenu *menu = new wxMenu();
 	AddItem(menu, ID_PAD_CIRCLE,	_("&Circular"),				padBitmaps[m][0]);
 	AddItem(menu, ID_PAD_OCTAGON,	_("&Ocragon"),				padBitmaps[m][1]);
@@ -397,13 +397,13 @@ void LeftPanel::AddNewGrid(wxCommandEvent&) {
 	double grid = InputGridDialog::Show(this, settings, 1.0);
 	if(grid == 0.0)
 		return;
-	settings->grids.Add(grid);
-	pcb->GetSelectedBoard()->SetGrid(grid);
+	settings.grids.Add(grid);
+	pcb.GetSelectedBoard()->SetGrid(grid);
 }
 
 void LeftPanel::RemoveGrid(wxCommandEvent &e) {
 	int index = e.GetId() - ID_GRID_USER_DEL;
-	settings->grids.RemoveIndex(index);
+	settings.grids.RemoveIndex(index);
 }
 
 void LeftPanel::SelectGrid(wxCommandEvent &e) {
@@ -414,24 +414,24 @@ void LeftPanel::SelectGrid(wxCommandEvent &e) {
 	else if(id < ID_GRID_USER)
 		grid = metricGrids[id - ID_GRID_METRIC];
 	else //user grid
-		grid = settings->grids[id - ID_GRID_USER];
-	pcb->GetSelectedBoard()->SetGrid(grid);
+		grid = settings.grids[id - ID_GRID_USER];
+	pcb.GetSelectedBoard()->SetGrid(grid);
 }
 
 void LeftPanel::UpdateGrid(wxUpdateUIEvent &e) {
-	e.SetText(settings->GetGridStr(pcb->GetSelectedBoard()->GetGrid()));
+	e.SetText(settings.GetGridStr(pcb.GetSelectedBoard()->GetGrid()));
 }
 
 void LeftPanel::SetSubgrid(wxCommandEvent &e) {
-	settings->subGrid = e.GetId() - ID_SUBGRID_OFF;
+	settings.subGrid = e.GetId() - ID_SUBGRID_OFF;
 }
 
 void LeftPanel::SetGridStyle(wxCommandEvent &e) {
-	settings->gridStyle = e.GetId() - ID_GRID_LINES;
+	settings.gridStyle = e.GetId() - ID_GRID_LINES;
 }
 
 void LeftPanel::ToggleGrid(wxCommandEvent &e) {
-	settings->showGrid = e.IsChecked();
+	settings.showGrid = e.IsChecked();
 }
 
 void LeftPanel::ShowGridBinder(wxCommandEvent&) {
@@ -442,30 +442,30 @@ void LeftPanel::ShowGridMenu(wxCommandEvent&) {
 	wxMenu *menu = new wxMenu();
 
 	for(int i = 0; i < normalGridsCount; i++) 
-		menu->AppendCheckItem(ID_GRID_NORMAL + i, settings->GetGridStr(normalGrids[i]))
-				->Check(pcb->GetSelectedBoard()->GetGrid() == normalGrids[i]);
+		menu->AppendCheckItem(ID_GRID_NORMAL + i, settings.GetGridStr(normalGrids[i]))
+				->Check(pcb.GetSelectedBoard()->GetGrid() == normalGrids[i]);
 
 	menu->AppendSeparator();
 	{
 		wxMenu *metric = new wxMenu();
 		for(int i = 0; i < metricGridsCount; i++) 
-			metric->AppendCheckItem(ID_GRID_METRIC + i, settings->GetGridStr(metricGrids[i]))
-					->Check(pcb->GetSelectedBoard()->GetGrid() == metricGrids[i]);
+			metric->AppendCheckItem(ID_GRID_METRIC + i, settings.GetGridStr(metricGrids[i]))
+					->Check(pcb.GetSelectedBoard()->GetGrid() == metricGrids[i]);
 		menu->Append(wxID_ANY, _("Metric grids"), metric);
 	}
 	menu->AppendSeparator();
 	{
 		wxMenu *user = new wxMenu();
-		for(int i = 0; i < settings->grids.Size(); i++)
-			user->AppendCheckItem(ID_GRID_USER + i, settings->GetGridStr(settings->grids[i]))
-					->Check(pcb->GetSelectedBoard()->GetGrid() == settings->grids[i]);
-		if(!settings->grids.Empty())
+		for(int i = 0; i < settings.grids.Size(); i++)
+			user->AppendCheckItem(ID_GRID_USER + i, settings.GetGridStr(settings.grids[i]))
+					->Check(pcb.GetSelectedBoard()->GetGrid() == settings.grids[i]);
+		if(!settings.grids.Empty())
 			user->AppendSeparator();
 		user->Append(ID_GRID_USER_NEW, _("Add new grid value..."));
-		if(!settings->grids.Empty()) {
+		if(!settings.grids.Empty()) {
 			wxMenu *remove = new wxMenu();
-			for(int i = 0; i < settings->grids.Size(); i++)
-				remove->Append(ID_GRID_USER_DEL + i, settings->GetGridStr(settings->grids[i]));
+			for(int i = 0; i < settings.grids.Size(); i++)
+				remove->Append(ID_GRID_USER_DEL + i, settings.GetGridStr(settings.grids[i]));
 			user->Append(wxID_ANY, _("Remove"), remove);
 		}
 		menu->Append(wxID_ANY, _("User grids"), user);
@@ -476,7 +476,7 @@ void LeftPanel::ShowGridMenu(wxCommandEvent&) {
 		wxMenu *style = new wxMenu;
 		style->AppendRadioItem(ID_GRID_LINES, _("Lines"));
 		style->AppendRadioItem(ID_GRID_DOTS, _("Dots"));
-		style->Check(ID_GRID_LINES + settings->gridStyle, true);
+		style->Check(ID_GRID_LINES + settings.gridStyle, true);
 		menu->Append(wxID_ANY, _("Grid style"), style);
 	}
 	{
@@ -487,20 +487,20 @@ void LeftPanel::ShowGridMenu(wxCommandEvent&) {
 		sub->AppendRadioItem(ID_SUBGRID_5, "5");
 		sub->AppendRadioItem(ID_SUBGRID_10, "10");
 
-		sub->Check(ID_SUBGRID_OFF + settings->subGrid, true); //enable item
+		sub->Check(ID_SUBGRID_OFF + settings.subGrid, true); //enable item
 		menu->Append(wxID_ANY, _("Subdivisions"), sub);
 	}
-	menu->AppendCheckItem(ID_GRID_SHOW, _("Show grid"))->Check(settings->showGrid);
+	menu->AppendCheckItem(ID_GRID_SHOW, _("Show grid"))->Check(settings.showGrid);
 	PopupMenu(menu);
 	delete menu;
 }
 
 void LeftPanel::UpdateSizes(wxUpdateUIEvent &e) {
-	float track = settings->trackSize;
-	PadSize	pad = settings->padSize;
-	Vec2	smd = settings->smdSize;
+	float track = settings.trackSize;
+	PadSize	pad = settings.padSize;
+	Vec2	smd = settings.smdSize;
 
-	Object *selected = pcb->GetSelectedBoard()->GetFirstSelected();
+	Object *selected = pcb.GetSelectedBoard()->GetFirstSelected();
 	if(selected) {
 		switch(selected->GetType()) {
 		case Object::TRACK: case Object::POLY: case Object::ARC:
@@ -515,16 +515,16 @@ void LeftPanel::UpdateSizes(wxUpdateUIEvent &e) {
 		}
 	}
 
-	trackSize->SetValue(settings->ConvertToUnits(track));
-	padSizeOuter->SetValue(settings->ConvertToUnits(pad.out));
-	padSizeInner->SetValue(settings->ConvertToUnits(pad.in));
-	smdWidth->SetValue(settings->ConvertToUnits(smd.x));
-	smdHeight->SetValue(settings->ConvertToUnits(smd.y));
+	trackSize->SetValue(settings.ConvertToUnits(track));
+	padSizeOuter->SetValue(settings.ConvertToUnits(pad.out));
+	padSizeInner->SetValue(settings.ConvertToUnits(pad.in));
+	smdWidth->SetValue(settings.ConvertToUnits(smd.x));
+	smdHeight->SetValue(settings.ConvertToUnits(smd.y));
 }
 
 void LeftPanel::SetTrackSize(float size) {
-	settings->trackSize = size;
-	for(Object *object = pcb->GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
+	settings.trackSize = size;
+	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected()) {
 			uint8_t type = object->GetType();
 			if(type == Object::TRACK || type == Object::POLY || type == Object::ARC)
@@ -533,81 +533,81 @@ void LeftPanel::SetTrackSize(float size) {
 }
 
 void LeftPanel::SetTrackSize(wxSpinDoubleEvent&) {
-	SetTrackSize(settings->ConvertFromUnits(trackSize->GetValue()));
+	SetTrackSize(settings.ConvertFromUnits(trackSize->GetValue()));
 }
 void LeftPanel::SelectTrackSize(wxCommandEvent &e) {
-	SetTrackSize(settings->trackSizes[e.GetId() - ID_TRACK_SEL]);
+	SetTrackSize(settings.trackSizes[e.GetId() - ID_TRACK_SEL]);
 }
 void LeftPanel::RemoveTrackSize(wxCommandEvent &e) {
-	settings->trackSizes.RemoveIndex(e.GetId() - ID_TRACK_DEL);
+	settings.trackSizes.RemoveIndex(e.GetId() - ID_TRACK_DEL);
 }
 void LeftPanel::AddTrackSize(wxCommandEvent &e) {
-	settings->trackSizes.Add(settings->trackSize);
+	settings.trackSizes.Add(settings.trackSize);
 }
 
 void LeftPanel::SetPadSize(const PadSize &size) {
-	settings->padSize = size;
-	for(Object *object = pcb->GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
+	settings.padSize = size;
+	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected() && object->GetType() == Object::THT_PAD)
 			((THTPad*) object)->SetSize(size);
 }
 
 void LeftPanel::SetPadSize(wxSpinDoubleEvent&) {
-	SetPadSize(PadSize(settings->ConvertFromUnits(padSizeOuter->GetValue()),
-						settings->ConvertFromUnits(padSizeInner->GetValue())));
+	SetPadSize(PadSize(settings.ConvertFromUnits(padSizeOuter->GetValue()),
+						settings.ConvertFromUnits(padSizeInner->GetValue())));
 }
 void LeftPanel::SelectPadSize(wxCommandEvent &e) {
-	SetPadSize(settings->padSizes[e.GetId() - ID_PAD_SEL]);
+	SetPadSize(settings.padSizes[e.GetId() - ID_PAD_SEL]);
 }
 void LeftPanel::RemovePadSize(wxCommandEvent &e) {
-	settings->padSizes.RemoveIndex(e.GetId() - ID_PAD_DEL);
+	settings.padSizes.RemoveIndex(e.GetId() - ID_PAD_DEL);
 }
 void LeftPanel::AddPadSize(wxCommandEvent &e) {
-	settings->padSizes.Add(settings->padSize);
+	settings.padSizes.Add(settings.padSize);
 }
 
 void LeftPanel::SetSmdSize(const Vec2 &size) {
-	settings->smdSize = size;
-	for(Object *object = pcb->GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
+	settings.smdSize = size;
+	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected() && object->GetType() == Object::SMD_PAD)
 			((SMDPad*) object)->SetSize(size);
 }
 
 void LeftPanel::SetSmdSize(wxSpinDoubleEvent&) {
-	SetSmdSize(Vec2(settings->ConvertFromUnits(smdWidth->GetValue()),
-					settings->ConvertFromUnits(smdHeight->GetValue())));
+	SetSmdSize(Vec2(settings.ConvertFromUnits(smdWidth->GetValue()),
+					settings.ConvertFromUnits(smdHeight->GetValue())));
 }
 void LeftPanel::SwapSmdSize(wxCommandEvent&) {
-	SetSmdSize(Vec2(settings->ConvertFromUnits(smdHeight->GetValue()),
-					settings->ConvertFromUnits(smdWidth->GetValue())));
+	SetSmdSize(Vec2(settings.ConvertFromUnits(smdHeight->GetValue()),
+					settings.ConvertFromUnits(smdWidth->GetValue())));
 }
 void LeftPanel::SelectSmdSize(wxCommandEvent &e) {
-	SetSmdSize(settings->smdSizes[e.GetId() - ID_SMD_SEL]);
+	SetSmdSize(settings.smdSizes[e.GetId() - ID_SMD_SEL]);
 }
 void LeftPanel::RemoveSmdSize(wxCommandEvent &e) {
-	settings->smdSizes.RemoveIndex(e.GetId() - ID_SMD_DEL);
+	settings.smdSizes.RemoveIndex(e.GetId() - ID_SMD_DEL);
 }
 void LeftPanel::AddSmdSize(wxCommandEvent &e) {
-	settings->smdSizes.Add(settings->smdSize);
+	settings.smdSizes.Add(settings.smdSize);
 }
 
 void LeftPanel::ShowTrackMenu(wxCommandEvent&) {
 	wxMenu *menu = new wxMenu();
 	bool selectedAny = false;
-	if(!settings->trackSizes.Empty()) {
-		for(int i = 0; i < settings->trackSizes.Size(); i++) {
-			bool selected = settings->trackSizes[i] == settings->trackSize;
+	if(!settings.trackSizes.Empty()) {
+		for(int i = 0; i < settings.trackSizes.Size(); i++) {
+			bool selected = settings.trackSizes[i] == settings.trackSize;
 			selectedAny |= selected;
-			menu->AppendCheckItem(ID_TRACK_SEL + i, settings->GetStr(settings->trackSizes[i]))->Check(selected);
+			menu->AppendCheckItem(ID_TRACK_SEL + i, settings.GetStr(settings.trackSizes[i]))->Check(selected);
 		}
 		menu->AppendSeparator();
 	}
-	AddItem(menu, ID_TRACK_ADD, settings->GetStr(settings->trackSize), plus_xpm, !selectedAny);
-	if(!settings->trackSizes.Empty()) {
+	AddItem(menu, ID_TRACK_ADD, settings.GetStr(settings.trackSize), plus_xpm, !selectedAny);
+	if(!settings.trackSizes.Empty()) {
 		menu->AppendSeparator();
 		wxMenu *remove = new wxMenu();
-		for(int i = 0; i < settings->trackSizes.Size(); i++)
-			AddItem(remove, ID_TRACK_DEL + i, settings->GetStr(settings->trackSizes[i]), cross_xpm);
+		for(int i = 0; i < settings.trackSizes.Size(); i++)
+			AddItem(remove, ID_TRACK_DEL + i, settings.GetStr(settings.trackSizes[i]), cross_xpm);
 		AddSubmenu(menu, remove, _("Remove"), cross_xpm);
 	}
 	PopupMenu(menu);
@@ -616,20 +616,20 @@ void LeftPanel::ShowTrackMenu(wxCommandEvent&) {
 void LeftPanel::ShowPadMenu(wxCommandEvent&) {
 	wxMenu *menu = new wxMenu();
 	bool selectedAny = false;
-	if(!settings->padSizes.Empty()) {
-		for(int i = 0; i < settings->padSizes.Size(); i++) {
-			bool selected = settings->padSizes[i] == settings->padSize;
+	if(!settings.padSizes.Empty()) {
+		for(int i = 0; i < settings.padSizes.Size(); i++) {
+			bool selected = settings.padSizes[i] == settings.padSize;
 			selectedAny |= selected;
-			menu->AppendCheckItem(ID_PAD_SEL + i, settings->GetStr(settings->padSizes[i]))->Check(selected);
+			menu->AppendCheckItem(ID_PAD_SEL + i, settings.GetStr(settings.padSizes[i]))->Check(selected);
 		}
 		menu->AppendSeparator();
 	}
-	AddItem(menu, ID_PAD_ADD, settings->GetStr(settings->padSize), plus_xpm, !selectedAny);
-	if(!settings->padSizes.Empty()) {
+	AddItem(menu, ID_PAD_ADD, settings.GetStr(settings.padSize), plus_xpm, !selectedAny);
+	if(!settings.padSizes.Empty()) {
 		menu->AppendSeparator();
 		wxMenu *remove = new wxMenu();
-		for(int i = 0; i < settings->padSizes.Size(); i++)
-			AddItem(remove, ID_PAD_DEL + i, settings->GetStr(settings->padSizes[i]), cross_xpm);
+		for(int i = 0; i < settings.padSizes.Size(); i++)
+			AddItem(remove, ID_PAD_DEL + i, settings.GetStr(settings.padSizes[i]), cross_xpm);
 		AddSubmenu(menu, remove, _("Remove"), cross_xpm);
 	}
 	PopupMenu(menu);
@@ -638,20 +638,20 @@ void LeftPanel::ShowPadMenu(wxCommandEvent&) {
 void LeftPanel::ShowSmdMenu(wxCommandEvent&) {
 	wxMenu *menu = new wxMenu();
 	bool selectedAny = false;
-	if(!settings->smdSizes.Empty()) {
-		for(int i = 0; i < settings->smdSizes.Size(); i++) {
-			bool selected = settings->smdSizes[i] == settings->smdSize;
+	if(!settings.smdSizes.Empty()) {
+		for(int i = 0; i < settings.smdSizes.Size(); i++) {
+			bool selected = settings.smdSizes[i] == settings.smdSize;
 			selectedAny |= selected;
-			menu->AppendCheckItem(ID_SMD_SEL + i, settings->GetStr(settings->smdSizes[i]))->Check(selected);
+			menu->AppendCheckItem(ID_SMD_SEL + i, settings.GetStr(settings.smdSizes[i]))->Check(selected);
 		}
 		menu->AppendSeparator();
 	}
-	AddItem(menu, ID_SMD_ADD, settings->GetStr(settings->smdSize), plus_xpm, !selectedAny);
-	if(!settings->smdSizes.Empty()) {
+	AddItem(menu, ID_SMD_ADD, settings.GetStr(settings.smdSize), plus_xpm, !selectedAny);
+	if(!settings.smdSizes.Empty()) {
 		menu->AppendSeparator();
 		wxMenu *remove = new wxMenu();
-		for(int i = 0; i < settings->smdSizes.Size(); i++)
-			AddItem(remove, ID_SMD_DEL + i, settings->GetStr(settings->smdSizes[i]), cross_xpm);
+		for(int i = 0; i < settings.smdSizes.Size(); i++)
+			AddItem(remove, ID_SMD_DEL + i, settings.GetStr(settings.smdSizes[i]), cross_xpm);
 		AddSubmenu(menu, remove, _("Remove"), cross_xpm);
 	}
 	PopupMenu(menu);

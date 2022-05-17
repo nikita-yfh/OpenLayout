@@ -2,13 +2,13 @@
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 
-InputGridDialog::InputGridDialog(wxWindow *parent, const Settings *settings, double init)
+InputGridDialog::InputGridDialog(wxWindow *parent, const Settings &settings, double init)
 		: wxDialog(parent, wxID_ANY, _("New grid")) {
 	wxString list[] = {_("mm"), _(L"\x00b5m"), _("mil")};
 	units = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, list);
 
 	char mm[50];
-	if(settings->units == UNITS_MIL) {
+	if(settings.units == UNITS_MIL) {
 		init /= 0.0254;
 		units->SetSelection(2);
 	}else if(snprintf(mm, 50, "%g", init) > 6) {
@@ -42,7 +42,7 @@ double InputGridDialog::Get() const {
 	return value;
 }
 
-double InputGridDialog::Show(wxWindow *parent, const Settings *settings, double init) {
+double InputGridDialog::Show(wxWindow *parent, const Settings &settings, double init) {
 	InputGridDialog *dialog = new InputGridDialog(parent, settings, init);
 	if(dialog->ShowModal() != wxID_OK)
 		return 0.0;

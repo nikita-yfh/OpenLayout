@@ -7,7 +7,7 @@ AABB Arc::GetAABB() const {
 
 void Arc::SaveObject(File &file) const {
 	file.Write<uint8_t>(ARC);
-	position.Save<float>(file);
+	position.Save(file);
 	file.WriteMm<float>((diameter + width) / 2.0f);
 	file.WriteMm<float>((diameter - width) / 2.0f);
 	file.WriteAngle<uint32_t>(endAngle);
@@ -31,7 +31,7 @@ void Arc::SaveObject(File &file) const {
 }
 
 void Arc::LoadObject(File &file) {
-	position.Load<float>(file);
+	position.Load(file);
 	float outRadius = file.ReadMm<float>();
 	float inRadius = file.ReadMm<float>();
 	diameter = outRadius + inRadius;
