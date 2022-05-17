@@ -11,7 +11,7 @@ set(SOURCES
 	src/Board.cpp
 	src/BottomPanel.cpp
 	src/ColorScheme.cpp
-	src/ComponentPanel.cpp
+	src/ComponentsPanel.cpp
 	src/File.cpp
 	src/GridBinderDialog.cpp
 	src/InputGridDialog.cpp
@@ -45,7 +45,7 @@ set(HEADERS
 	src/Board.h
 	src/BottomPanel.h
 	src/ColorScheme.h
-	src/ComponentPanel.h
+	src/ComponentsPanel.h
 	src/File.h
 	src/GridBinderDialog.h
 	src/InputGridDialog.h

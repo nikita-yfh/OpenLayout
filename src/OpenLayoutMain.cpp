@@ -71,13 +71,16 @@ OpenLayoutFrame::OpenLayoutFrame() {
 		panels->Add(canvas, 1, wxEXPAND);
 
 		selector = new SelectorPanel(this, pcb);
+		selector->Show(settings.showSelectorPanel);
 		panels->Add(selector, 0, wxEXPAND);
 
-		components = new ComponentPanel(this, pcb);
+		components = new ComponentsPanel(this, pcb);
+		components->Show(settings.showComponentsPanel);
 		panels->Add(components, 0, wxEXPAND);
 
-		macros = new MacroPanel(this);
-		panels->Add(macros, 0, wxEXPAND);
+		macro = new MacroPanel(this);
+		macro->Show(settings.showMacroPanel);
+		panels->Add(macro, 0, wxEXPAND);
 
 		content->Add(panels, 1, wxEXPAND);
 	}
@@ -89,6 +92,7 @@ OpenLayoutFrame::OpenLayoutFrame() {
 
 	SetSizer(content);
 	SetAutoLayout(true);
+	Layout();
 }
 
 wxString OpenLayoutFrame::GetDir() {
@@ -168,26 +172,31 @@ void OpenLayoutFrame::ToggleComponentsPanel(wxCommandEvent &e) {
 	Layout();
 }
 void OpenLayoutFrame::TogglePropertiesPanel(wxCommandEvent &e) {
+	Layout();
 }
 void OpenLayoutFrame::ToggleDRCPanel(wxCommandEvent &e) {
+	Layout();
 }
 void OpenLayoutFrame::ToggleMacrosPanel(wxCommandEvent &e) {
-	macros->Show(e.IsChecked());
+	macro->Show(e.IsChecked());
 	Layout();
 }
 
 void OpenLayoutFrame::UpdateSelectorPanel(wxUpdateUIEvent &e) {
-	e.Check(selector->IsShown());
+	settings.showSelectorPanel = selector->IsShown();
+	e.Check(settings.showSelectorPanel);
 }
 void OpenLayoutFrame::UpdateComponentsPanel(wxUpdateUIEvent &e) {
-	e.Check(components->IsShown());
+	settings.showComponentsPanel = components->IsShown();
+	e.Check(settings.showComponentsPanel);
 }
 void OpenLayoutFrame::UpdatePropertiesPanel(wxUpdateUIEvent &e) {
 }
 void OpenLayoutFrame::UpdateDRCPanel(wxUpdateUIEvent &e) {
 }
 void OpenLayoutFrame::UpdateMacrosPanel(wxUpdateUIEvent &e) {
-	e.Check(macros->IsShown());
+	settings.showMacroPanel = macro->IsShown();
+	e.Check(settings.showMacroPanel);
 }
 
 void OpenLayoutFrame::UpdateUIEdit(wxUpdateUIEvent&) {}

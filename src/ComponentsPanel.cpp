@@ -1,4 +1,4 @@
-#include "ComponentPanel.h"
+#include "ComponentsPanel.h"
 
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -14,15 +14,15 @@ enum {
 	ID_EXPORT,
 };
 
-wxBEGIN_EVENT_TABLE(ComponentPanel, wxPanel)
-	EVT_CHECKBOX(ID_NUMBER,		ComponentPanel::ToggleColumn<0>)
-	EVT_CHECKBOX(ID_LAYER,		ComponentPanel::ToggleColumn<3>)
-	EVT_CHECKBOX(ID_ROTATION,	ComponentPanel::ToggleColumn<4>)
-	EVT_CHECKBOX(ID_PACKAGE,	ComponentPanel::ToggleColumn<5>)
-	EVT_CHECKBOX(ID_COMMENT,	ComponentPanel::ToggleColumn<6>)
+wxBEGIN_EVENT_TABLE(ComponentsPanel, wxPanel)
+	EVT_CHECKBOX(ID_NUMBER,		ComponentsPanel::ToggleColumn<0>)
+	EVT_CHECKBOX(ID_LAYER,		ComponentsPanel::ToggleColumn<3>)
+	EVT_CHECKBOX(ID_ROTATION,	ComponentsPanel::ToggleColumn<4>)
+	EVT_CHECKBOX(ID_PACKAGE,	ComponentsPanel::ToggleColumn<5>)
+	EVT_CHECKBOX(ID_COMMENT,	ComponentsPanel::ToggleColumn<6>)
 wxEND_EVENT_TABLE()
 
-ComponentPanel::ComponentPanel(wxWindow *parent, const PCB &_pcb)
+ComponentsPanel::ComponentsPanel(wxWindow *parent, const PCB &_pcb)
 		: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxSize(200, -1), wxBORDER_SUNKEN), pcb(_pcb) {
 	wxFlexGridSizer *content = new wxFlexGridSizer(8, 1, 3, 0);
 	list = new wxListView(this, wxID_ANY);
