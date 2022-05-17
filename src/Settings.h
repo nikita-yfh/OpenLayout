@@ -126,6 +126,12 @@ struct Settings {
 	wxPoint windowPos;
 	wxSize windowSize;
 
+	bool showSelectorPanel;
+	bool showComponentsPanel;
+	bool showPropertiesPanel;
+	bool showDRCPanel;
+	bool showMacroPanel;
+
 	uint8_t GetSubGrid() const;
 	ColorScheme &GetColorScheme();
 

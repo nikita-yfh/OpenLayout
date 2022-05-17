@@ -125,6 +125,13 @@ void Settings::SetDefault() {
 
 	windowPos = wxPoint(-1, -1);
 	windowSize = wxSize(-1, -1);
+
+	showSelectorPanel = false;
+	showComponentsPanel = false;
+	showPropertiesPanel = false;
+	showDRCPanel = false;
+	showMacroPanel = true;
+
 }
 void Settings::SetDefaultMacroPath() {
 	getcwd(macroDir, PATH_LENGTH - 10);
@@ -251,6 +258,11 @@ void Settings::Save(File &file) const {
 	file.Write<uint16_t>(windowPos.y);
 	file.Write<uint16_t>(windowSize.x);
 	file.Write<uint16_t>(windowSize.y);
+	file.Write<bool>(showSelectorPanel);
+	file.Write<bool>(showComponentsPanel);
+	file.Write<bool>(showPropertiesPanel);
+	file.Write<bool>(showDRCPanel);
+	file.Write<bool>(showMacroPanel);
 }
 
 
@@ -321,4 +333,9 @@ void Settings::Load(File &file) {
 	windowPos.y = file.Read<uint16_t>();
 	windowSize.x = file.Read<uint16_t>();
 	windowSize.y = file.Read<uint16_t>();
+	showSelectorPanel = file.Read<bool>();
+	showComponentsPanel = file.Read<bool>();
+	showPropertiesPanel = file.Read<bool>();
+	showDRCPanel = file.Read<bool>();
+	showMacroPanel = file.Read<bool>();
 }

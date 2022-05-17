@@ -4,9 +4,9 @@
 #include <wx/panel.h>
 #include <wx/listctrl.h>
 
-class ComponentPanel : public wxPanel {
+class ComponentsPanel : public wxPanel {
 public:
-	ComponentPanel(wxWindow *parent, const PCB &pcb);
+	ComponentsPanel(wxWindow *parent, const PCB &pcb);
 private:
 
 	template<int n>

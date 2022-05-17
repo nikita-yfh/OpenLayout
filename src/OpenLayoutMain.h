@@ -3,7 +3,7 @@
 #include "PCB.h"
 #include "Settings.h"
 #include "MacroPanel.h"
-#include "ComponentPanel.h"
+#include "ComponentsPanel.h"
 #include "SelectorPanel.h"
 #include <wx/frame.h>
 
@@ -129,7 +129,7 @@ private:
 	Settings settings;
 
 	SelectorPanel *selector;
-	ComponentPanel *components;
-	MacroPanel *macros;
+	ComponentsPanel *components;
+	MacroPanel *macro;
 	wxDECLARE_EVENT_TABLE();
 };
