@@ -122,6 +122,9 @@ void Settings::SetDefault() {
 	gridBind[6] = 0.0396875;
 	gridBind[7] = 1.0;
 	gridBind[8] = 0.1;
+
+	windowPos = wxPoint(-1, -1);
+	windowSize = wxSize(-1, -1);
 }
 void Settings::SetDefaultMacroPath() {
 	getcwd(macroDir, PATH_LENGTH - 10);
@@ -244,6 +247,10 @@ void Settings::Save(File &file) const {
 	file.Write<bool>(showGrid);
 	file.Write<float>(customRotationAngle);
 	file.Write<uint8_t>(rotationAngleSel);
+	file.Write<uint16_t>(windowPos.x);
+	file.Write<uint16_t>(windowPos.y);
+	file.Write<uint16_t>(windowSize.x);
+	file.Write<uint16_t>(windowSize.y);
 }
 
 
@@ -310,4 +317,8 @@ void Settings::Load(File &file) {
 	showGrid = file.Read<bool>();
 	customRotationAngle = file.Read<float>();
 	rotationAngleSel = file.Read<uint8_t>();
+	windowPos.x = file.Read<uint16_t>();
+	windowPos.y = file.Read<uint16_t>();
+	windowSize.x = file.Read<uint16_t>();
+	windowSize.y = file.Read<uint16_t>();
 }

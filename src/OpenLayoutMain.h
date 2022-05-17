@@ -90,6 +90,8 @@ private:
 	void SaveSettings() const;
 	void LoadSettings();
 
+	void Move(wxMoveEvent&);
+	void Resize(wxSizeEvent&);
 	void Close(wxCloseEvent&);
 	void Close(wxCommandEvent&);
 	void ShowSettings(wxCommandEvent&);
