@@ -9,6 +9,8 @@
 #include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
+	EVT_MOVE(						OpenLayoutFrame::Move)
+	EVT_SIZE(						OpenLayoutFrame::Resize)
 	EVT_CLOSE(						OpenLayoutFrame::Close)
 	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
 	EVT_MENU(wxID_PROPERTIES,		OpenLayoutFrame::ShowSettings)
@@ -50,9 +52,9 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PANEL_MACRO,		OpenLayoutFrame::UpdateMacrosPanel)
 wxEND_EVENT_TABLE()
 
-OpenLayoutFrame::OpenLayoutFrame()
-		: wxFrame(nullptr, wxID_ANY, "OpenLayout") {
+OpenLayoutFrame::OpenLayoutFrame() {
 	LoadSettings();
+	Create(nullptr, wxID_ANY, "OpenLayout", settings.windowPos, settings.windowSize);
 	MenuBar *menubar = new MenuBar();
 	SetMenuBar(menubar);
 	ToolBar *toolbar = new ToolBar(this);
@@ -85,7 +87,7 @@ OpenLayoutFrame::OpenLayoutFrame()
 
 	SetFocus();
 
-	SetSizerAndFit(content);
+	SetSizer(content);
 	SetAutoLayout(true);
 }
 
@@ -112,6 +114,15 @@ void OpenLayoutFrame::LoadSettings() {
 	if(!file.IsOk())
 		return;
 	settings.Load(file);
+}
+
+void OpenLayoutFrame::Move(wxMoveEvent &e) {
+	settings.windowPos = e.GetPosition();
+	e.Skip();
+}
+void OpenLayoutFrame::Resize(wxSizeEvent &e) {
+	settings.windowSize = e.GetSize();
+	e.Skip();
 }
 
 void OpenLayoutFrame::Close(wxCloseEvent&) {

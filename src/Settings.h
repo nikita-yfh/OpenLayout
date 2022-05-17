@@ -123,6 +123,9 @@ struct Settings {
 	float customRotationAngle;
 	uint8_t rotationAngleSel;
 
+	wxPoint windowPos;
+	wxSize windowSize;
+
 	uint8_t GetSubGrid() const;
 	ColorScheme &GetColorScheme();
 
