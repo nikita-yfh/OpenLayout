@@ -6,13 +6,13 @@
 
 class SelectorPanel : public wxPanel {
 public:
-	SelectorPanel(wxWindow *parent, PCB *pcb);
+	SelectorPanel(wxWindow *parent, PCB &pcb);
 
 private:
 
 	void UpdateSortingList(wxCommandEvent&);
 
-	PCB *pcb;
+	PCB &pcb;
 
 	wxChoice *sorting;
 	wxDECLARE_EVENT_TABLE();

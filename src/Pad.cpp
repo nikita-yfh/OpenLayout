@@ -81,12 +81,12 @@ void Pad::LoadConnections(Object *objects, File &file) {
 void Pad::WriteArray(File &file, const Vec2 *points, uint32_t count, const Vec2 &shift) {
 	file.Write<uint32_t>(count);
 	for(int i = 0; i < count; i++)
-		(points[i] - shift).Save<float>(file);
+		(points[i] - shift).Save(file);
 }
 uint32_t Pad::ReadArray(File &file, Vec2 *points, const Vec2 &shift) {
 	uint32_t count = file.Read<uint32_t>();
 	for(int i = 0; i < count; i++) {
-		points[i].Load<float>(file);
+		points[i].Load(file);
 		points[i] -= shift;
 	}
 	bool wrap = false;
@@ -111,8 +111,8 @@ void Pad::WriteSymmetricalArray(File &file, const Vec2 *points, uint32_t count, 
 	file.Write<uint32_t>(count * 2);
 	for(int i = 0; i < count * 2; i++) {
 		if(i < count)
-			(points[i] + shift).Save<float>(file);
+			(points[i] + shift).Save(file);
 		else
-			(shift - points[(i+count) % count]).Save<float>(file);
+			(shift - points[(i+count) % count]).Save(file);
 	}
 }

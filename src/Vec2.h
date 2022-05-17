@@ -115,14 +115,20 @@ struct Vec2 {
 		x /= v;
 		y /= v;
 	}
-	template<typename T>
 	void Save(File &file) const {
-		file.WriteMm<T>(x);
-		file.WriteMm<T>(y);
+		file.WriteMm<float>(x);
+		file.WriteMm<float>(y);
 	}
-	template<typename T>
 	void Load(File &file) {
-		x = file.ReadMm<T>();
-		y = file.ReadMm<T>();
+		x = file.ReadMm<float>();
+		y = file.ReadMm<float>();
+	}
+	void SaveInt(File &file) const {
+		file.WriteMm<uint32_t>(x);
+		file.WriteMm<uint32_t>(y);
+	}
+	void LoadInt(File &file) {
+		x = file.ReadMm<uint32_t>();
+		y = file.ReadMm<uint32_t>();
 	}
 };

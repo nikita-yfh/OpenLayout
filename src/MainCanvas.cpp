@@ -11,7 +11,7 @@ static const int attribList[] = {
 	WX_GL_DEPTH_SIZE, 24, 0, 0
 };
 
-MainCanvas::MainCanvas(wxWindow *parent, PCB *_pcb, Settings *_settings)
+MainCanvas::MainCanvas(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		: wxGLCanvas(parent, wxID_ANY, attribList), pcb(_pcb), settings(_settings) {
 	SetFocus();
 }
@@ -24,7 +24,7 @@ void MainCanvas::Draw(wxPaintEvent&) {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode(GL_PROJECTION);
 
-	const ColorScheme &colors = settings->GetColorScheme();
+	const ColorScheme &colors = settings.GetColorScheme();
 	wxSize size = GetSize();
 	colors.SetClearColor(COLOR_BGR);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -39,10 +39,10 @@ void MainCanvas::OnKey(wxKeyEvent &e) {
 	ctrl = e.ControlDown();
 	shift = e.ShiftDown();
 	if(e.GetKeyCode() >= WXK_NUMPAD1 && e.GetKeyCode() <= WXK_NUMPAD9) {
-		pcb->GetSelectedBoard()->SetGrid(settings->gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
+		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
 		Refresh();
 	} else if(e.GetKeyCode() >= '1' && e.GetKeyCode() <= '9') {
-		pcb->GetSelectedBoard()->SetGrid(settings->gridBind[e.GetKeyCode() - '1']);
+		pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - '1']);
 		Refresh();
 	}
 }

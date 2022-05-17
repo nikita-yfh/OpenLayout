@@ -5,10 +5,10 @@
 
 class MainCanvas : public wxGLCanvas {
 public:
-	MainCanvas(wxWindow *parent, PCB *pcb, Settings *settings);
+	MainCanvas(wxWindow *parent, PCB &pcb, Settings &settings);
 private:
-	PCB *pcb;
-	Settings *settings;
+	PCB &pcb;
+	Settings &settings;
 	bool shift;
 	bool ctrl;
 

@@ -13,9 +13,9 @@ wxBEGIN_EVENT_TABLE(GridBinderDialog, wxDialog)
 	EVT_BUTTON(ID_CHANGE,				GridBinderDialog::ChangeGrid)
 wxEND_EVENT_TABLE()
 
-GridBinderDialog::GridBinderDialog(wxWindow *parent, Settings *_settings)
+GridBinderDialog::GridBinderDialog(wxWindow *parent, Settings &_settings)
 		: wxDialog(parent, wxID_ANY, _("Grid values for keys 1..9")), settings(_settings) {
-	memcpy(grids, settings->gridBind, sizeof(grids));
+	memcpy(grids, settings.gridBind, sizeof(grids));
 	keyList = new wxListView(this, ID_KEY_LIST, wxDefaultPosition,
 			wxDefaultSize, wxLC_REPORT | wxBORDER_SIMPLE);
 
@@ -24,7 +24,7 @@ GridBinderDialog::GridBinderDialog(wxWindow *parent, Settings *_settings)
 	for(int i = 0; i < 9; i++) {
 		keyList->InsertItem(i, char(i + 1));
 		keyList->SetItem(i, 0, char(i + '1'));
-		keyList->SetItem(i, 1, settings->GetGridStr(grids[i]));
+		keyList->SetItem(i, 1, settings.GetGridStr(grids[i]));
 	}
 
 	change = new wxButton(this, ID_CHANGE, _("Change grid"));
@@ -48,17 +48,17 @@ void GridBinderDialog::ChangeGrid(wxCommandEvent&) {
 	int n = keyList->GetFirstSelected();
 	double grid = InputGridDialog::Show(this, settings, grids[n]);
 	if(grid != 0.0) {
-		keyList->SetItem(n, 1, settings->GetGridStr(grid));
+		keyList->SetItem(n, 1, settings.GetGridStr(grid));
 		grids[n] = grid;
 	}
 }
 
 
 void GridBinderDialog::Get() {
-	memcpy(settings->gridBind, grids, sizeof(grids));
+	memcpy(settings.gridBind, grids, sizeof(grids));
 }
 
-void GridBinderDialog::Show(wxWindow *parent, Settings *settings) {
+void GridBinderDialog::Show(wxWindow *parent, Settings &settings) {
 	GridBinderDialog *dialog = new GridBinderDialog(parent, settings);
 	if(dialog->ShowModal() != wxID_OK)
 		return;

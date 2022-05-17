@@ -86,6 +86,11 @@ class OpenLayoutFrame : public wxFrame{
 public:
 	OpenLayoutFrame();
 private:
+	static wxString GetDir();
+	void SaveSettings() const;
+	void LoadSettings();
+
+	void Close(wxCloseEvent&);
 	void Close(wxCommandEvent&);
 	void ShowSettings(wxCommandEvent&);
 	void ShowAbout(wxCommandEvent&);

@@ -40,16 +40,16 @@ uint32_t Board::GetObjectCount() const {
 void Board::Save(File &file) const {
 	file.WriteString(name, 30);
 	file.WriteNull(4);
-	size.Save<int>(file);
+	size.SaveInt(file);
 	file.Write(groundPane, 7);
 	file.Write<double>(grid);
 	file.Write<double>(zoom);
-	camera.Save<int>(file);
+	camera.SaveInt(file);
 	file.Write<uint32_t>(activeLayer);
 	file.Write(layerVisible, 7);
 	images.Save(file);
 	file.WriteNull(8);
-	anchor.Save<int>(file);
+	anchor.SaveInt(file);
 	file.Write<uint8_t>(multilayer);
 
 	file.Write<uint32_t>(GetObjectCount());
@@ -63,16 +63,16 @@ void Board::Save(File &file) const {
 void Board::Load(File &file) {
 	file.ReadString(name, 30);
 	file.ReadNull(4);
-	size.Load<int>(file);
+	size.LoadInt(file);
 	file.Read(groundPane, 7);
 	grid = file.Read<double>();
 	zoom = file.Read<double>();
-	camera.Load<int>(file);
+	camera.LoadInt(file);
 	activeLayer = file.Read<uint32_t>();
 	file.Read(layerVisible, 7);
 	images.Load(file);
 	file.ReadNull(8);
-	anchor.Load<int>(file);
+	anchor.LoadInt(file);
 	multilayer = file.Read<uint8_t>();
 
 	uint32_t objectCount = file.Read<uint32_t>();

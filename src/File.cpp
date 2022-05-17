@@ -11,12 +11,6 @@ File::~File() {
 bool File::IsOk() const{
 	return file != nullptr;
 }
-void File::Write(const void *ptr, size_t size) {
-	fwrite(ptr, size, 1, file);
-}
-void File::Read(void *ptr, size_t size) {
-	fread(ptr, size, 1, file);
-}
 void File::WriteString(const char *str, uint8_t n) {
 	Write<uint8_t>(strlen(str));
 	fwrite(str, n, 1, file);

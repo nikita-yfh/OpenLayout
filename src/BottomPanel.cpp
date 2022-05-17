@@ -88,7 +88,7 @@ public:
 };
 
 
-BottomPanel::BottomPanel(wxWindow *parent, PCB *_pcb)
+BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb)
 		: wxPanel(parent), pcb(_pcb) {
 	wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
 	{
@@ -162,12 +162,12 @@ static void SetButtonBitmap(wxCommandEvent &e, const wxBitmap &bitmap) {
 }
 
 void BottomPanel::ToggleGround(wxCommandEvent &e) {
-	pcb->GetSelectedBoard()->ToggleCurrentLayerGround();
+	pcb.GetSelectedBoard()->ToggleCurrentLayerGround();
 	GetParent()->Refresh();
 }
 
 void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
-	uint8_t mode = pcb->GetSelectedBoard()->GetCurrentLayerGround();
+	uint8_t mode = pcb.GetSelectedBoard()->GetCurrentLayerGround();
 	static uint8_t prevMode = mode;
 	if(mode != prevMode) {
 		prevMode = mode;
@@ -176,32 +176,32 @@ void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
 }
 
 void BottomPanel::ToggleCapture(wxCommandEvent &e) {
-	SetButtonBitmap(e, pcb->ToggleCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
+	SetButtonBitmap(e, pcb.ToggleCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
 }
 
 void BottomPanel::ToggleRubberband(wxCommandEvent &e) {
-	uint8_t mode = pcb->ToggleRubberbandMode();
+	uint8_t mode = pcb.ToggleRubberbandMode();
 	SetButtonBitmap(e,	mode == RUBBERBAND_SMALL ? rubberband_large_xpm :
 						mode == RUBBERBAND_LARGE ? rubberband_small_xpm :
 						rubberband_disabled_xpm);
 }
 
 void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e) {
-	e.Show(pcb->GetSelectedBoard()->IsMultilayer());
+	e.Show(pcb.GetSelectedBoard()->IsMultilayer());
 }
 
 void BottomPanel::UpdatePosition(wxUpdateUIEvent &e) {
 	const char *unit = _("mm");
 	e.SetText(wxString::Format("X:\t%.3f \t%s\nY:\t%.03f \t%s",
-		pcb->GetMousePosition().x, unit,
-		pcb->GetMousePosition().y, unit));
+		pcb.GetMousePosition().x, unit,
+		pcb.GetMousePosition().y, unit));
 }
 
 void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
-	e.Check(e.GetId() - ID_C1 == pcb->GetSelectedBoard()->GetSelectedLayer());
+	e.Check(e.GetId() - ID_C1 == pcb.GetSelectedBoard()->GetSelectedLayer());
 }
 
 void BottomPanel::SetLayer(wxCommandEvent &e) {
-	pcb->GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
+	pcb.GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
 }
 

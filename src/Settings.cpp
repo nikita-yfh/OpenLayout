@@ -60,9 +60,7 @@ void Settings::SetDefault() {
 	showGrid = true;
 
 	customRotationAngle = 22.5f;
-	rotationAngle = 45.0f;
-
-	circleQuality = 40;
+	rotationAngleSel = 1; // 45 deg
 
 	const char defKeys[TOOL_COUNT]= {
 		ESCAPE, 'Z', 'L', 'P',
@@ -183,3 +181,133 @@ double Settings::ConvertFromUnits(double value) const {
 	return value;
 }
 
+void Settings::Save(File &file) const {
+	file.Write<bool>(boardZoom);
+	file.Write<bool>(darkGround);
+	file.Write<bool>(allGround);
+	file.Write<bool>(testConnections);
+	file.Write<bool>(testBlinking);
+	file.Write<bool>(ctrlCaptureSize);
+	file.Write<bool>(limitTextHeight);
+	file.Write<bool>(alwaysReadable);
+	file.Write<bool>(optimize);
+	file.Write<bool>(anchorLeftTop);
+	file.Write<bool>(anchorExport);
+	file.Write<uint8_t>(undoDepth);
+	file.Write<bool>(sameDir);
+	file.WriteString(layExport);
+	file.WriteString(gbrExport);
+	file.WriteString(bmpExport);
+	file.WriteString(hpglExport);
+	file.WriteString(scannedCopies);
+	file.WriteString(macroDir);
+	file.Write<uint8_t>(units);
+	file.Write<uint8_t>(drill);
+	file.Write<uint8_t>(gridStyle);
+	for(int i = 0; i < 3; i++)
+		colors[i].Save(file);
+	file.Write<uint8_t>(selectedColorScheme);
+	file.Write<uint16_t>(copperThickness);
+	file.Write<uint16_t>(tempEnhance);
+	for(int i = 0; i < TOOL_COUNT; i++)
+		file.Write<char>(toolKeys[i]);
+	file.Write<bool>(measure45Lines);
+	file.Write<bool>(measureShow);
+	file.Write<bool>(measureBig);
+	file.Write<bool>(measureTp);
+	file.Write<bool>(measureLight);
+	file.Write<bool>(autosave);
+	file.Write<uint16_t>(autosaveTimer);
+	padSize.Save(file);
+	smdSize.Save(file);
+	file.Write<float>(trackSize);
+
+	file.Write<uint32_t>(padSizes.Size());
+	for(int i = 0; i < padSizes.Size(); i++)
+		padSizes[i].Save(file);
+
+	file.Write<uint32_t>(smdSizes.Size());
+	for(int i = 0; i < smdSizes.Size(); i++)
+		smdSizes[i].Save(file);
+
+	file.Write<uint32_t>(trackSizes.Size());
+	for(int i = 0; i < trackSizes.Size(); i++)
+		file.Write<float>(trackSizes[i]);
+
+	file.Write<uint32_t>(grids.Size());
+	for(int i = 0; i < grids.Size(); i++)
+		file.Write<double>(grids[i]);
+
+	for(int i = 0; i < 9; i++)
+		file.Write<double>(gridBind[i]);
+	file.Write<uint8_t>(subGrid);
+	file.Write<bool>(showGrid);
+	file.Write<float>(customRotationAngle);
+	file.Write<uint8_t>(rotationAngleSel);
+}
+
+
+void Settings::Load(File &file) {
+	boardZoom = file.Read<bool>();
+	darkGround = file.Read<bool>();
+	allGround = file.Read<bool>();
+	testConnections = file.Read<bool>();
+	testBlinking = file.Read<bool>();
+	ctrlCaptureSize = file.Read<bool>();
+	limitTextHeight = file.Read<bool>();
+	alwaysReadable = file.Read<bool>();
+	optimize = file.Read<bool>();
+	anchorLeftTop = file.Read<bool>();
+	anchorExport = file.Read<bool>();
+	undoDepth = file.Read<uint8_t>();
+	sameDir = file.Read<bool>();
+	file.ReadString(layExport);
+	file.ReadString(gbrExport);
+	file.ReadString(bmpExport);
+	file.ReadString(hpglExport);
+	file.ReadString(scannedCopies);
+	file.ReadString(macroDir);
+	units = file.Read<uint8_t>();
+	drill = file.Read<uint8_t>();
+	gridStyle = file.Read<uint8_t>();
+	for(int i = 0; i < 3; i++)
+		colors[i].Load(file);
+	selectedColorScheme = file.Read<uint8_t>();
+	copperThickness = file.Read<uint16_t>();
+	tempEnhance = file.Read<uint16_t>();
+	for(int i = 0; i < TOOL_COUNT; i++)
+		toolKeys[i] = file.Read<char>();
+	measure45Lines = file.Read<bool>();
+	measureShow = file.Read<bool>();
+	measureBig = file.Read<bool>();
+	measureTp = file.Read<bool>();
+	measureLight = file.Read<bool>();
+	autosave = file.Read<bool>();
+	autosaveTimer = file.Read<uint16_t>();
+	padSize.Load(file);
+	smdSize.Load(file);
+	trackSize = file.Read<float>();
+
+	padSizes.Init(file.Read<uint32_t>());
+	for(int i = 0; i < padSizes.Size(); i++)
+		padSizes[i].Load(file);
+
+	smdSizes.Init(file.Read<uint32_t>());
+	for(int i = 0; i < smdSizes.Size(); i++)
+		smdSizes[i].Load(file);
+
+	trackSizes.Init(file.Read<uint32_t>());
+	for(int i = 0; i < trackSizes.Size(); i++)
+		trackSizes[i] = file.Read<float>();
+
+	grids.Init(file.Read<uint32_t>());
+	for(int i = 0; i < grids.Size(); i++)
+		grids[i] = file.Read<double>();
+
+	for(int i = 0; i < 9; i++)
+		gridBind[i] = file.Read<double>();
+	subGrid = file.Read<uint8_t>();
+	showGrid = file.Read<bool>();
+	customRotationAngle = file.Read<float>();
+	rotationAngleSel = file.Read<uint8_t>();
+}
