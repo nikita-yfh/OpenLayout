@@ -3,6 +3,9 @@
 
 class Track : public PolygonBase {
 public:
+	virtual void DrawGroundDistance() const override{}
+	virtual void DrawObject() const override{}
+
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
@@ -27,5 +30,4 @@ private:
 	}
 
 	uint8_t style;
-	uint8_t cutoff;
 };

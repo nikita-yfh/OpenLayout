@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "ImageConfig.h"
 #include "ColorScheme.h"
+#include "Settings.h"
 #include "File.h"
 
 class Board {
@@ -48,7 +49,8 @@ public:
 
 	Object *GetObjects();
 
-	void DrawGrid(const ColorScheme &colors, uint8_t subgrid) const;
+	void Draw(const Settings &settings, const Vec2 &screenSize) const;
+	void DrawGrid(const Settings &settings, const Vec2 &screenSize) const;
 
 	ImageConfigs images;
 

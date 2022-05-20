@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Vec2.h"
+#include "Angle.h"
 
 class Connections {
 public:
@@ -41,7 +42,7 @@ protected:
 	bool thermal;
 	uint8_t thermalStyle[4];
 	float thermalSize;
-	float angle;
+	Angle angle;
 
 	Connections connections;
 };

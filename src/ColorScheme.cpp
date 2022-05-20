@@ -38,9 +38,9 @@ void ColorScheme::SetColor(uint8_t index) const {
 	ColorU color(colors[index]);
 	glColor4ub(color.red, color.green, color.blue, color.alpha);
 }
-void ColorScheme::SetClearColor(uint8_t index) const {
+void ColorScheme::SetGroundColor(uint8_t index) const {
 	ColorU color(colors[index]);
-	glClearColor(color.red / 255.0f, color.green / 255.0f, color.blue / 255.0f, color.alpha / 255.0f);
+	glColor4f(color.red / 425.0f, color.green / 425.0f, color.blue / 425.0f, color.alpha / 255.0f);
 }
 void ColorScheme::WriteColor(File &file, const Color &color) const {
 	file.Write<uint32_t>(color.GetRGBA());

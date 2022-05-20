@@ -13,6 +13,7 @@ set(SOURCES
 	src/ColorScheme.cpp
 	src/ComponentsPanel.cpp
 	src/File.cpp
+	src/GLUtils.cpp
 	src/GridBinderDialog.cpp
 	src/InputGridDialog.cpp
 	src/ImageConfig.cpp
@@ -39,6 +40,7 @@ set(SOURCES
 )
 set(HEADERS
 	src/AABB.h
+	src/Angle.h
 	src/App.h
 	src/Arc.h
 	src/Array.h
@@ -47,6 +49,7 @@ set(HEADERS
 	src/ColorScheme.h
 	src/ComponentsPanel.h
 	src/File.h
+	src/GLUtils.h
 	src/GridBinderDialog.h
 	src/InputGridDialog.h
 	src/ImageConfig.h

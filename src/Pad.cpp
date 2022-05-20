@@ -91,16 +91,7 @@ uint32_t Pad::ReadArray(File &file, Vec2 *points, const Vec2 &shift) {
 	}
 	bool wrap = false;
 	if(count >= 3) {
-		float a[3] = {
-			points[0].Angle(),
-			points[1].Angle(),
-			points[2].Angle()
-		};
-		if(a[2] > a[0])
-			wrap = (a[1] > a[0] && a[1] < a[2]);
-		else 
-			wrap = (a[1] > a[0] || a[1] < a[2]);
-		if(wrap)
+		if(!Angle::Clockwise(points[0], points[1], points[2]))
 			for(int i = 0; i < count / 2; i++)
 				Swap(points[i], points[count - i - 1]);
 	}

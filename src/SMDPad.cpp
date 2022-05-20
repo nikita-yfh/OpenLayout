@@ -1,4 +1,5 @@
 #include "SMDPad.h"
+#include "GLUtils.h"
 
 template<typename T>
 static inline T min(T a, T b) {
@@ -38,8 +39,8 @@ void SMDPad::SaveObject(File &file) const {
 	groups.Save(file);
 
 	Vec2 points[2] = {
-		(Vec2(-size.x, size.y) * 0.5f).Rotate(angle),
-		(Vec2( size.x, size.y) * 0.5f).Rotate(angle)
+		angle.Rotate(Vec2(-size.x, size.y) * 0.5f),
+		angle.Rotate(Vec2( size.x, size.y) * 0.5f)
 	};
 
 	WriteSymmetricalArray(file, points, 2, position);
@@ -71,8 +72,18 @@ void SMDPad::LoadObject(File &file) {
 	ReadArray(file, points, position);
 
 	Vec2 dx = points[1] - points[0];
-	Vec2 dy = points[1] - points[2];
-
-	angle = dx.Angle();
-	size.Set(dx.Length(), dy.Length());
+	angle = Angle(dx);
 }
+
+void SMDPad::DrawGroundDistance() const {
+	glutils::Translate(position);
+	glutils::Rotate(angle);
+	glutils::DrawRectangle(size * 0.5f + Vec2(groundDistance, groundDistance));
+}
+
+void SMDPad::DrawObject() const {
+	glutils::Translate(position);
+	glutils::Rotate(angle);
+	glutils::DrawRectangle(size * 0.5f);
+}
+
