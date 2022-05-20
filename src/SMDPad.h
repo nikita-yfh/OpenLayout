@@ -3,6 +3,9 @@
 
 class SMDPad : public Pad {
 public:
+	virtual void DrawGroundDistance() const override;
+	virtual void DrawObject() const override;
+
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 

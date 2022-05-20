@@ -11,4 +11,5 @@ protected:
 
 	Vec2 *points;
 	uint32_t count;
+	bool cutoff;
 };

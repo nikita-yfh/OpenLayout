@@ -3,6 +3,9 @@
 
 class Poly : public PolygonBase {
 public:
+	virtual void DrawGroundDistance() const override{}
+	virtual void DrawObject() const override{}
+
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
@@ -11,9 +14,9 @@ public:
 	}
 	virtual AABB GetAABB() const override;
 private:
-	uint8_t onlySoldermask;
+	bool onlySoldermask;
 	uint8_t cutoff;
-	uint8_t hatched;
+	bool hatched;
 	uint8_t customHatch;
 	float hatchSize;
 };

@@ -25,6 +25,10 @@ class Object {
 public:
 	Object();
 
+	virtual void DrawGroundDistance() const = 0;
+	virtual void DrawObject() const = 0;
+	virtual void DrawDrillings() const {}
+
 	virtual void SaveObject(File &file) const = 0;
 	virtual void LoadObject(File &file) = 0;
 
@@ -40,6 +44,7 @@ public:
 
 	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
+
 
 	bool IsSelected() const;
 	void Select();

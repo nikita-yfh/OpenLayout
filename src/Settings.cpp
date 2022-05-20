@@ -144,10 +144,18 @@ uint8_t Settings::GetSubGrid() const {
 		case SUBGRID_5: return 5;
 		case SUBGRID_10: return 10;
 	}
-	return 0;
+	return 1;
 }
+
+static ColorScheme def;
+
 ColorScheme &Settings::GetColorScheme() {
-	static ColorScheme def;
+	if(selectedColorScheme == 0)
+		return def;
+	return colors[selectedColorScheme - 1];
+}
+
+const ColorScheme &Settings::GetColorScheme() const {
 	if(selectedColorScheme == 0)
 		return def;
 	return colors[selectedColorScheme - 1];

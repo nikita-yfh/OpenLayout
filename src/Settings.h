@@ -134,6 +134,7 @@ struct Settings {
 
 	uint8_t GetSubGrid() const;
 	ColorScheme &GetColorScheme();
+	const ColorScheme &GetColorScheme() const;
 
 	wxString GetGridStr(double grid) const;
 	wxString GetStr(float value) const;

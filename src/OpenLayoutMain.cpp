@@ -93,6 +93,10 @@ OpenLayoutFrame::OpenLayoutFrame() {
 	SetSizer(content);
 	SetAutoLayout(true);
 	Layout();
+
+	File file("/home/nikita/Documents/test/test.lay6", "rb");
+	if(file.IsOk())
+		pcb.Load(file);
 }
 
 wxString OpenLayoutFrame::GetDir() {

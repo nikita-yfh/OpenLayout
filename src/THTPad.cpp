@@ -1,4 +1,5 @@
 #include "THTPad.h"
+#include "GLUtils.h"
 
 AABB THTPad::GetAABB() const {
 	Vec2 radius(size.out * 0.5f, size.out * 0.5f);
@@ -73,7 +74,7 @@ void THTPad::SaveObject(File &file) const {
 	}
 
 	if(count) {
-		Vec2::Rotate(points, count, angle);
+		angle.Rotate(points, count);
 		WriteSymmetricalArray(file, points, count, position);
 	}
 }
@@ -108,21 +109,21 @@ void THTPad::LoadObject(File &file) {
 		case CIRCLE:
 		case CIRCLE_E:
 		case CIRCLE_E + 3:
-			angle = points[1].Angle();
+			angle = Angle(points[1]);
 			break;
 		case OCTAGON:
 		case OCTAGON_E:
-			angle = Vec2::Mean(points[3], points[4]).Angle();
+			angle = Angle(Vec2::Mean(points[3], points[4]));
 			break;
 		case OCTAGON_E + 3:
-			angle = Vec2::Mean(points[5], points[6]).Angle();
+			angle = Angle(Vec2::Mean(points[5], points[6]));
 			break;
 		case SQUARE:
 		case SQUARE_E:
-			angle = Vec2::Mean(points[1], points[2]).Angle();
+			angle = Angle(Vec2::Mean(points[1], points[2]));
 			break;
 		case SQUARE_E + 3:
-			angle = Vec2::Mean(points[2], points[3]).Angle();
+			angle = Angle(Vec2::Mean(points[2], points[3]));
 			break;
 	}
 	if(shape > SQUARE_E) {
@@ -131,3 +132,17 @@ void THTPad::LoadObject(File &file) {
 		shape -= 3;
 	}
 }
+
+void THTPad::DrawGroundDistance() const {
+	glutils::Translate(position);
+	glutils::DrawCircle(size.out / 2.0f + groundDistance);
+}
+void THTPad::DrawObject() const {
+	glutils::Translate(position);
+	glutils::DrawCircle(size.out / 2.0f);
+}
+void THTPad::DrawDrillings() const {
+	glutils::Translate(position);
+	glutils::DrawCircle(size.in / 2.0f);
+}
+

@@ -424,14 +424,17 @@ void LeftPanel::UpdateGrid(wxUpdateUIEvent &e) {
 
 void LeftPanel::SetSubgrid(wxCommandEvent &e) {
 	settings.subGrid = e.GetId() - ID_SUBGRID_OFF;
+	GetParent()->Refresh();
 }
 
 void LeftPanel::SetGridStyle(wxCommandEvent &e) {
 	settings.gridStyle = e.GetId() - ID_GRID_LINES;
+	GetParent()->Refresh();
 }
 
 void LeftPanel::ToggleGrid(wxCommandEvent &e) {
 	settings.showGrid = e.IsChecked();
+	GetParent()->Refresh();
 }
 
 void LeftPanel::ShowGridBinder(wxCommandEvent&) {

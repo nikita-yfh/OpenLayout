@@ -19,18 +19,7 @@ MainCanvas::MainCanvas(wxWindow *parent, PCB &_pcb, Settings &_settings)
 void MainCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);
 	SetCurrent(context);
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glMatrixMode(GL_PROJECTION);
-
-	const ColorScheme &colors = settings.GetColorScheme();
-	wxSize size = GetSize();
-	colors.SetClearColor(COLOR_BGR);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, size.x, size.y);
-
-	glLoadIdentity();
+	pcb.GetSelectedBoard()->Draw(settings, Vec2(GetSize().x, GetSize().y));
 	glFlush();
 	SwapBuffers();
 }
