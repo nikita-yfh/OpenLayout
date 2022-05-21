@@ -46,11 +46,16 @@ public:
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);
+	void UpdateCamera(const Vec2 &delta);
+	void Zoom(float ratio, const Vec2 &mouse);
 
 	Object *GetObjects();
 
 	void Draw(const Settings &settings, const Vec2 &screenSize) const;
 	void DrawGrid(const Settings &settings, const Vec2 &screenSize) const;
+
+	Vec2 ConvertToCoords(const Vec2 &vec) const;
+	Vec2 ConvertFromCoords(const Vec2 &vec) const;
 
 	ImageConfigs images;
 
