@@ -91,11 +91,19 @@ struct Vec2 {
 		x /= v;
 		y /= v;
 	}
-	void Save(File &file) const {
+	void SavePosition(File &file) const {
 		file.WriteMm<float>(x);
 		file.WriteMm<float>(-y);
 	}
+	void Save(File &file) const {
+		file.WriteMm<float>(x);
+		file.WriteMm<float>(y);
+	}
 	void Load(File &file) {
+		x = file.ReadMm<float>();
+		y = file.ReadMm<float>();
+	}
+	void LoadPosition(File &file) {
 		x = file.ReadMm<float>();
 		y = -file.ReadMm<float>();
 	}
