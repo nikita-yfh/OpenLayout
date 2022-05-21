@@ -4,40 +4,47 @@
 #include "NewBoardDialog.h"
 #include "BottomPanel.h"
 #include "LeftPanel.h"
-#include "MainCanvas.h"
 #include "SettingsDialog.h"
 #include <wx/sysopt.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
-	EVT_MOVE(						OpenLayoutFrame::Move)
-	EVT_SIZE(						OpenLayoutFrame::Resize)
-	EVT_CLOSE(						OpenLayoutFrame::Close)
-	EVT_MENU(wxID_EXIT,				OpenLayoutFrame::Close)
-	EVT_MENU(wxID_PROPERTIES,		OpenLayoutFrame::ShowSettings)
-	EVT_MENU(wxID_ABOUT,			OpenLayoutFrame::ShowAbout)
-	EVT_MENU(wxID_INFO,				OpenLayoutFrame::ShowProjectInfo)
-	EVT_MENU(ID_BOARD_NEW,			OpenLayoutFrame::NewBoard)
-	EVT_MENU(ID_SCANNED_COPY,		OpenLayoutFrame::ShowImagesConfig)
-	EVT_MENU(ID_GROUP,				OpenLayoutFrame::Group)
-	EVT_MENU(ID_UNGROUP,			OpenLayoutFrame::Ungroup)
-	EVT_MENU(wxID_SELECTALL,		OpenLayoutFrame::SelectAll)
-	EVT_MENU(wxID_SAVE,				OpenLayoutFrame::SaveFile)
-	EVT_MENU(wxID_SAVEAS,			OpenLayoutFrame::SaveFileAs)
-	EVT_MENU(wxID_OPEN,				OpenLayoutFrame::OpenFile)
-	EVT_MENU_RANGE(ID_LAYER_C1, ID_LAYER_O, OpenLayoutFrame::SetSelectionLayer)
-	EVT_UPDATE_UI(wxID_COPY,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(wxID_CUT,			OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(wxID_DELETE,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(wxID_DUPLICATE,	OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(ID_ROTATE,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(ID_HMIRROR,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(ID_VMIRROR,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(ID_SNAP_GRID,		OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI(ID_GROUP,			OpenLayoutFrame::UpdateUIGroup)
-	EVT_UPDATE_UI(ID_UNGROUP,		OpenLayoutFrame::UpdateUIUngroup)
-	EVT_UPDATE_UI_RANGE(ID_LAYER_C1, ID_LAYER_S2, OpenLayoutFrame::UpdateUIEdit)
-	EVT_UPDATE_UI_RANGE(ID_LAYER_I1, ID_LAYER_I2, OpenLayoutFrame::UpdateUIMultilayer)
-	EVT_UPDATE_UI(ID_LAYER_O, OpenLayoutFrame::UpdateUIEdit)
+	EVT_MOVE(							OpenLayoutFrame::Move)
+	EVT_SIZE(							OpenLayoutFrame::Resize)
+	EVT_CLOSE(							OpenLayoutFrame::Close)
+	EVT_MENU(wxID_EXIT,					OpenLayoutFrame::Close)
+	EVT_MENU(wxID_PROPERTIES,			OpenLayoutFrame::ShowSettings)
+	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
+	EVT_MENU(wxID_INFO,					OpenLayoutFrame::ShowProjectInfo)
+	EVT_MENU(ID_BOARD_NEW,				OpenLayoutFrame::NewBoard)
+	EVT_MENU(ID_SCANNED_COPY,			OpenLayoutFrame::ShowImagesConfig)
+	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
+	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
+	EVT_MENU(wxID_SELECTALL,			OpenLayoutFrame::SelectAll)
+	EVT_MENU(wxID_SAVE,					OpenLayoutFrame::SaveFile)
+	EVT_MENU(wxID_SAVEAS,				OpenLayoutFrame::SaveFileAs)
+	EVT_MENU(wxID_OPEN,					OpenLayoutFrame::OpenFile)
+	EVT_MENU(ID_ZOOM_BOARD,				OpenLayoutFrame::ZoomBoard)
+	EVT_MENU(ID_ZOOM_OBJECTS,			OpenLayoutFrame::ZoomObjects)
+	EVT_MENU(ID_ZOOM_SELECTION,			OpenLayoutFrame::ZoomSelection)
+	EVT_MENU_RANGE(ID_LAYER_C1, ID_LAYER_O,
+										OpenLayoutFrame::SetSelectionLayer)
+	EVT_UPDATE_UI(wxID_COPY,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(wxID_CUT,				OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(wxID_DELETE,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(wxID_DUPLICATE,		OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_ROTATE,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_HMIRROR,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_VMIRROR,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_SNAP_GRID,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_GROUP,				OpenLayoutFrame::UpdateUIGroup)
+	EVT_UPDATE_UI(ID_UNGROUP,			OpenLayoutFrame::UpdateUIUngroup)
+	EVT_UPDATE_UI(ID_ZOOM_OBJECTS,		OpenLayoutFrame::UpdateUIObjects)
+	EVT_UPDATE_UI(ID_ZOOM_SELECTION,	OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI_RANGE(ID_LAYER_C1, ID_LAYER_S2,
+										OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI_RANGE(ID_LAYER_I1, ID_LAYER_I2,
+										OpenLayoutFrame::UpdateUIMultilayer)
+	EVT_UPDATE_UI(ID_LAYER_O,			OpenLayoutFrame::UpdateUISelection)
 
 	EVT_MENU(ID_PANEL_SELECTOR,			OpenLayoutFrame::ToggleSelectorPanel)
 	EVT_MENU(ID_PANEL_COMPONENTS,		OpenLayoutFrame::ToggleComponentsPanel)
@@ -67,7 +74,7 @@ OpenLayoutFrame::OpenLayoutFrame() {
 		LeftPanel *right = new LeftPanel(this, pcb, settings);
 		panels->Add(right, 0, wxEXPAND);
 
-		MainCanvas *canvas = new MainCanvas(this, pcb, settings);
+		canvas = new MainCanvas(this, pcb, settings);
 		panels->Add(canvas, 1, wxEXPAND);
 
 		selector = new SelectorPanel(this, pcb);
@@ -166,6 +173,18 @@ void OpenLayoutFrame::Delete(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->images.ShowDialog(this, ColorScheme());
 }
+void OpenLayoutFrame::ZoomBoard(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->ZoomBoard(canvas->GetSize());
+	canvas->Refresh();
+}
+void OpenLayoutFrame::ZoomObjects(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->ZoomObjects(canvas->GetSize());
+	canvas->Refresh();
+}
+void OpenLayoutFrame::ZoomSelection(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->ZoomSelection(canvas->GetSize());
+	canvas->Refresh();
+}
 
 void OpenLayoutFrame::ToggleSelectorPanel(wxCommandEvent &e) {
 	selector->Show(e.IsChecked());
@@ -203,7 +222,13 @@ void OpenLayoutFrame::UpdateMacrosPanel(wxUpdateUIEvent &e) {
 	e.Check(settings.showMacroPanel);
 }
 
-void OpenLayoutFrame::UpdateUIEdit(wxUpdateUIEvent&) {}
+void OpenLayoutFrame::UpdateUIObjects(wxUpdateUIEvent &e) {
+	e.Enable(!pcb.GetSelectedBoard()->IsEmpty());
+}
+void OpenLayoutFrame::UpdateUISelection(wxUpdateUIEvent &e) {
+	e.Enable(pcb.GetSelectedBoard()->IsSelected());
+}
 void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIUngroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIMultilayer(wxUpdateUIEvent&) {}
+

@@ -2,6 +2,7 @@
 
 #include "PCB.h"
 #include "Settings.h"
+#include "MainCanvas.h"
 #include "MacroPanel.h"
 #include "ComponentsPanel.h"
 #include "SelectorPanel.h"
@@ -76,7 +77,6 @@ enum {
 	ID_ALIGN_VCENTER,
 	ID_TRANSPARENT,
 	ID_ZOOM,
-	ID_ZOOM_PREVIOUS,
 	ID_ZOOM_BOARD,
 	ID_ZOOM_OBJECTS,
 	ID_ZOOM_SELECTION,
@@ -107,6 +107,10 @@ private:
 	void SetSelectionLayer(wxCommandEvent&);
 	void Delete(wxCommandEvent&);
 	void ShowImagesConfig(wxCommandEvent&);
+	void ZoomBoard(wxCommandEvent&);
+	void ZoomObjects(wxCommandEvent&);
+	void ZoomSelection(wxCommandEvent&);
+
 
 	void ToggleSelectorPanel(wxCommandEvent&);
 	void ToggleComponentsPanel(wxCommandEvent&);
@@ -120,7 +124,8 @@ private:
 	void UpdateDRCPanel(wxUpdateUIEvent&);
 	void UpdateMacrosPanel(wxUpdateUIEvent&);
 
-	void UpdateUIEdit(wxUpdateUIEvent&);
+	void UpdateUIObjects(wxUpdateUIEvent&);
+	void UpdateUISelection(wxUpdateUIEvent&);
 	void UpdateUIGroup(wxUpdateUIEvent&);
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
@@ -128,6 +133,7 @@ private:
 	PCB pcb;
 	Settings settings;
 
+	MainCanvas *canvas;
 	SelectorPanel *selector;
 	ComponentsPanel *components;
 	MacroPanel *macro;
