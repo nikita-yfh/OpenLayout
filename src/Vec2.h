@@ -1,4 +1,5 @@
 #pragma once
+#include <wx/gdicmn.h>
 #include <math.h>
 #include "File.h"
 
@@ -9,6 +10,12 @@ struct Vec2 {
 	Vec2() {}
 	Vec2(float _x,float _y) {
 		Set(_x, _y);
+	}
+	Vec2(const wxPoint &point) {
+		Set(point.x, point.y);
+	}
+	Vec2(const wxSize &size) {
+		Set(size.x, size.y);
 	}
 
 	void Set(float _x,float _y) {
@@ -64,16 +71,16 @@ struct Vec2 {
 		return Vec2(-y, x);
 	}
 	Vec2 operator+(const Vec2 &v) const {
-		return Vec2(x+v.x, y+v.y);
+		return Vec2(x + v.x, y + v.y);
 	}
 	Vec2 operator-(const Vec2 &v) const {
-		return Vec2(x-v.x, y-v.y);
+		return Vec2(x - v.x, y - v.y);
 	}
 	Vec2 operator*(float k) const {
-		return Vec2(x*k, y*k);
+		return Vec2(x * k, y * k);
 	}
 	Vec2 operator/(float k) const {
-		return Vec2(x/k, y/k);
+		return Vec2(x / k, y / k);
 	}
 	void operator+=(const Vec2 &v) {
 		x += v.x;

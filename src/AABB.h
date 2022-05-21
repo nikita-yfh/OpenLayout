@@ -15,6 +15,18 @@ public:
 		upper = _upper;
 	}
 
+	inline Vec2 Size() const {
+		return upper - lower;
+	}
+	
+	inline float Width() const {
+		return Size().x;
+	}
+
+	inline float Height() const {
+		return Size().y;
+	}
+
 	inline Vec2 GetCenter() const {
 		return (lower + upper) * 0.5f;
 	}
@@ -40,12 +52,12 @@ public:
 		return true;
 	}
 
-	static inline AABB Min(const AABB &a, const AABB &b) {
-		return AABB(Vec2::Max(a.lower, b.lower), Vec2::Min(a.upper, b.upper));
+	inline AABB operator|(const AABB &other) {
+		return AABB(Vec2::Min(lower, other.lower), Vec2::Max(upper, other.upper));
 	}
-
-	static inline AABB Max(const AABB &a, const AABB &b) {
-		return AABB(Vec2::Min(a.lower, b.lower), Vec2::Max(a.upper, b.upper));
+	inline void operator|=(const AABB &other) {
+		lower = Vec2::Min(lower, other.lower);
+		upper = Vec2::Max(upper, other.upper);
 	}
 
 	Vec2 lower;

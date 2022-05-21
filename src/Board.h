@@ -26,6 +26,7 @@ public:
 	const Board *GetNext() const;
 
 	void AddObject(Object *object);
+	bool IsEmpty() const;
 
 	const char *GetName() const;
 
@@ -42,12 +43,16 @@ public:
 	void SetSelectedLayer(uint8_t layer);
 
 	Object *GetFirstSelected();
+	bool IsSelected() const;
 
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);
 	void UpdateCamera(const Vec2 &delta);
 	void Zoom(float ratio, const Vec2 &mouse);
+	void ZoomBoard(const Vec2 &screenSize);
+	void ZoomObjects(const Vec2 &screenSize);
+	void ZoomSelection(const Vec2 &screenSize);
 
 	Object *GetObjects();
 
@@ -83,6 +88,7 @@ private:
 
 	Object *objects;
 	uint32_t GetObjectCount() const;
+	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
 
 	Board *next;
 
@@ -133,4 +139,7 @@ inline void Board::SetGrid(double newGrid) {
 }
 inline Object *Board::GetObjects() {
 	return objects;
+}
+inline bool Board::IsEmpty() const {
+	return objects == nullptr;
 }

@@ -38,7 +38,6 @@ extern "C" {
 #include "toolbar/zoom_any.xpm"
 #include "toolbar/zoom_board.xpm"
 #include "toolbar/zoom_objects.xpm"
-#include "toolbar/zoom_prev.xpm"
 #include "toolbar/zoom_selection.xpm"
 }
 
@@ -114,8 +113,6 @@ void ToolBar::Align(wxCommandEvent&){
 }
 void ToolBar::Zoom(wxCommandEvent&){
 	wxMenu *menu = new wxMenu();
-	AddMenuItem(menu, _("Zoom previous"),	ID_ZOOM_PREVIOUS,	zoom_prev_xpm);
-	menu->AppendSeparator();
 	AddMenuItem(menu, _("Zoom board"),		ID_ZOOM_BOARD,		zoom_board_xpm);
 	AddMenuItem(menu, _("Zoom objects"),	ID_ZOOM_OBJECTS,	zoom_objects_xpm);
 	AddMenuItem(menu, _("Zoom selection"),	ID_ZOOM_SELECTION,	zoom_selection_xpm);

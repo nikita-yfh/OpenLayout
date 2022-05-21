@@ -131,7 +131,6 @@ MenuBar::MenuBar(){
 		menu->Append(ID_ZOOM_BOARD, _("Zoom &board"));
 		menu->Append(ID_ZOOM_OBJECTS, _("Zoom &objects"));
 		menu->Append(ID_ZOOM_SELECTION, _("Zoom &selection"));
-		menu->Append(ID_ZOOM_PREVIOUS, _("&Zoom previous"));
 		Append(menu, _("&Options"));
 	}
 	{

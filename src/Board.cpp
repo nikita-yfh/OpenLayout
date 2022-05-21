@@ -103,6 +103,13 @@ Object *Board::GetFirstSelected() {
 	return nullptr;
 }
 
+bool Board::IsSelected() const {
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			return true;
+	return false;
+}
+
 void Board::UpdateGrid(bool shift, bool ctrl) {
 	if(ctrl)
 		activeGrid = 0.0;
@@ -127,6 +134,42 @@ void Board::Zoom(float ratio, const Vec2 &mouse) {
 	// camera2 = camera1 + mouse * (ratio - 1) / (zoom1 * ratio)
 	camera += mouse * (ratio - 1.0f) / (zoom * ratio);
 	zoom *= ratio;
+}
+
+void Board::ZoomAABB(const Vec2 &screenSize, const AABB &aabb) {
+	Vec2 size = aabb.Size();
+	camera = aabb.lower;
+	if(screenSize.x / screenSize.y > size.x / size.y) {
+		zoom = screenSize.y / size.y;
+		camera.x -= (screenSize.x / screenSize.y * size.y - size.x) / 2.0f;
+	} else {
+		zoom = screenSize.x / size.x;
+		camera.y -= (screenSize.y / screenSize.x * size.x - size.y) / 2.0f;
+	}
+}
+
+void Board::ZoomBoard(const Vec2 &screenSize) {
+	ZoomAABB(screenSize, AABB(Vec2(0.0f, 0.0f), size));
+}
+
+void Board::ZoomObjects(const Vec2 &screenSize) {
+	if(!objects)
+		return;
+	AABB aabb(objects->GetAABB());
+	for(Object *object = objects->next; object; object = object->next)
+		aabb |= object->GetAABB();
+	ZoomAABB(screenSize, aabb);
+}
+
+void Board::ZoomSelection(const Vec2 &screenSize) {
+	Object *first = GetFirstSelected();
+	if(!first)
+		return;
+	AABB aabb(first->GetAABB());
+	for(Object *object = objects->next; object; object = object->next)
+		if(object->IsSelected())
+			aabb |= object->GetAABB();
+	ZoomAABB(screenSize, aabb);
 }
 
 Vec2 Board::ConvertToCoords(const Vec2 &vec) const {
