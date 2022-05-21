@@ -45,12 +45,13 @@ void Board::Save(File &file) const {
 	file.Write(groundPane, 7);
 	file.Write<double>(grid * 10000.0f);
 	file.Write<double>(zoom / 10000.0f);
-	camera.SaveInt(file);
+	file.Write<int32_t>(camera.x * zoom);
+	file.Write<int32_t>(camera.y * zoom);
 	file.Write<uint32_t>(activeLayer + 1);
 	file.Write(layerVisible, 7);
 	images.Save(file);
 	file.WriteNull(8);
-	anchor.SaveInt(file);
+	anchor.InvY().SaveInt(file);
 	file.Write<uint8_t>(multilayer);
 
 	file.Write<uint32_t>(GetObjectCount());
@@ -68,12 +69,14 @@ void Board::Load(File &file) {
 	file.Read(groundPane, 7);
 	grid = file.Read<double>() / 10000.0f;
 	zoom = file.Read<double>() * 10000.0f;
-	camera.LoadInt(file);
+	camera.x = file.Read<int32_t>() / zoom;
+	camera.y = file.Read<int32_t>() / zoom;
 	activeLayer = file.Read<uint32_t>() - 1;
 	file.Read(layerVisible, 7);
 	images.Load(file);
 	file.ReadNull(8);
 	anchor.LoadInt(file);
+	anchor = anchor.InvY();
 	multilayer = file.Read<uint8_t>();
 
 	uint32_t objectCount = file.Read<uint32_t>();
@@ -109,6 +112,30 @@ void Board::UpdateGrid(bool shift, bool ctrl) {
 		activeGrid = grid;
 }
 
+void Board::UpdateCamera(const Vec2 &delta) {
+	camera += delta;
+}
+
+void Board::Zoom(float ratio, const Vec2 &mouse) {
+	// pos = mouse / zoom + camera
+	// pos1 = pos2
+	// mouse / zoom1 + camera1 = mouse / zoom2 + camera2
+	// camera2 = camera1 + mouse / zoom1 - mouse / zoom2
+	// camera2 = camera1 + mouse * (1 / zoom1 - 1 / zoom2)
+	// camera2 = camera1 + mouse * (zoom2 - zoom1) / (zoom1 * zoom2)
+	// camera2 = camera1 + mouse * zoom1 * (ratio - 1) / (zoom1 * zoom1 * ratio)
+	// camera2 = camera1 + mouse * (ratio - 1) / (zoom1 * ratio)
+	camera += mouse * (ratio - 1.0f) / (zoom * ratio);
+	zoom *= ratio;
+}
+
+Vec2 Board::ConvertToCoords(const Vec2 &vec) const {
+	return (vec / zoom + camera);
+}
+Vec2 Board::ConvertFromCoords(const Vec2 &vec) const {
+	return ((vec - camera) * zoom);
+}
+
 void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	const ColorScheme &colors = settings.GetColorScheme();
 	glEnable(GL_BLEND);
@@ -120,15 +147,27 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 
 	glViewport(0, 0, screenSize.x, screenSize.y);
 	glLoadIdentity();
-	glOrtho(0.0f, screenSize.x/zoom, -screenSize.y/zoom, 0.0f, 0.0f, 1.0f);
-	glutils::Translate(-camera / zoom);
+	glOrtho(0.0f, screenSize.x / zoom, screenSize.y / zoom, 0.0f, 0.0f, 1.0f);
+	glutils::Translate(-camera);
 
 	if(GetCurrentLayerGround())
 		colors.SetGroundColor(COLOR_C1 + activeLayer);
 	else
 		colors.SetColor(COLOR_BGR);
 
-	glRectf(0.0f, 0.0f, size.x, -size.y);
+	glRectf(0.0f, 0.0f, size.x, size.y);
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(-camera.x * zoom, screenSize.y - (size.y - camera.y) * zoom, size.x * zoom, size.y * zoom);
+
+	if(GetCurrentLayerGround()) {
+		colors.SetColor(COLOR_BGR);
+		for(Object *object = objects; object; object = object->next) {
+			glPushMatrix();
+			object->DrawGroundDistance();
+			glPopMatrix();
+		}
+	}
 
 	if(settings.showGrid && activeGrid * zoom > 6.0)
 		DrawGrid(settings, screenSize);
@@ -151,6 +190,7 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 		object->DrawDrillings();
 		glPopMatrix();
 	}
+	glDisable(GL_SCISSOR_TEST);
 }
 
 void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
@@ -158,18 +198,18 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 	glDisable(GL_LINE_SMOOTH);
 	const ColorScheme &colors = settings.GetColorScheme();
 	uint8_t subgrid = settings.GetSubGrid();
-	double subgridValue = subgrid * grid;
-	Vec2 begin(fmod(anchor.x, subgridValue) - subgridValue, fmod(anchor.y, subgridValue) + subgridValue);
-	Vec2 end(size.x, -size.y);
+	double subgridValue = subgrid * activeGrid;
+	Vec2 begin(fmod(anchor.x, subgridValue) - subgridValue, fmod(anchor.y, subgridValue) - subgridValue);
+	Vec2 end(size.x, size.y);
 	if(settings.gridStyle == GRID_LINES) {
 		colors.SetColor(COLOR_LINES);
 		glLineWidth(1.0f);
 		glBegin(GL_LINES);
-		for(double x = begin.x; x < end.x; x += grid) {
+		for(double x = begin.x; x < end.x; x += activeGrid) {
 			glutils::Vertex(Vec2(x, begin.y));
 			glutils::Vertex(Vec2(x, end.y));
 		}
-		for(double y = begin.y; y > end.y; y -= grid) {
+		for(double y = begin.y; y < end.y; y += activeGrid) {
 			glutils::Vertex(Vec2(begin.x, y));
 			glutils::Vertex(Vec2(end.x, y));
 		}
@@ -181,7 +221,7 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 				glutils::Vertex(Vec2(x, begin.y));
 				glutils::Vertex(Vec2(x, end.y));
 			}
-			for(double y = begin.y; y > end.y; y -= subgridValue) {
+			for(double y = begin.y; y < end.y; y += subgridValue) {
 				glutils::Vertex(Vec2(begin.x, y));
 				glutils::Vertex(Vec2(end.x, y));
 			}
@@ -191,15 +231,15 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 		colors.SetColor(COLOR_DOTS);
 		glPointSize(1.0f);
 		glBegin(GL_POINTS);
-		for(double x = begin.x; x < size.x; x += grid)
-			for(double y = begin.y; y > size.y; y -= grid)
+		for(double x = begin.x; x < end.x; x += activeGrid)
+			for(double y = begin.y; y < end.y; y += activeGrid)
 				glutils::Vertex(Vec2(x, y));
 		glEnd();
 		if(subgrid != 1) {
 			glPointSize(2.0f);
 			glBegin(GL_POINTS);
-			for(double x = begin.x; x < size.x; x += subgridValue)
-				for(double y = begin.y; y > size.y; y -= subgridValue)
+			for(double x = begin.x; x < end.x; x += subgridValue)
+				for(double y = begin.y; y < end.y; y += subgridValue)
 					glutils::Vertex(Vec2(x, y));
 			glEnd();
 		}

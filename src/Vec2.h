@@ -93,11 +93,11 @@ struct Vec2 {
 	}
 	void Save(File &file) const {
 		file.WriteMm<float>(x);
-		file.WriteMm<float>(y);
+		file.WriteMm<float>(-y);
 	}
 	void Load(File &file) {
 		x = file.ReadMm<float>();
-		y = file.ReadMm<float>();
+		y = -file.ReadMm<float>();
 	}
 	void SaveInt(File &file) const {
 		file.WriteMm<int32_t>(x);
