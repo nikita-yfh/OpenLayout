@@ -81,8 +81,16 @@ void Board::Load(File &file) {
 	multilayer = file.Read<uint8_t>();
 
 	uint32_t objectCount = file.Read<uint32_t>();
-	for(int i = 0; i < objectCount; i++)
-		AddObject(Object::Load(file));
+	Object *last = nullptr;
+	for(int i = 0; i < objectCount; i++) {
+		Object *object = Object::Load(file);
+		if(last)
+			last->next = object;
+		else
+			objects = object;
+		object->prev = last;
+		last = object;
+	}
 	for(Object *object = objects; object; object = object->GetNext())
 		object->LoadConnections(objects, file);
 
@@ -240,14 +248,15 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 				object->DrawObject();
 	glDisable(GL_BLEND);
 
-	if(settings.drill == DRILL_BGR)
-		colors.SetColor(COLOR_BGR);
-	else if(settings.drill == DRILL_BLACK)
-		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	else
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+	colors.SetDrillingsColor(settings.drill);
 	for(Object *object = objects; object; object = object->next)
 		object->DrawDrillings();
+	colors.SetColor(COLOR_CON);
+	glLineWidth(1.5f);
+	glBegin(GL_LINES);
+	for(Object *object = objects; object; object = object->next) 
+		object->DrawConnections();
+	glEnd();
 	glDisable(GL_SCISSOR_TEST);
 }
 

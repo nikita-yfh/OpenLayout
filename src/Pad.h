@@ -2,29 +2,39 @@
 #include "Object.h"
 #include "Vec2.h"
 
+class Pad;
+
 class Connections {
 public:
 	Connections();
 	~Connections();
 
-	void Add(Object *object);
-	void Remove(const Object *object);
-	bool Has(const Object *object) const;
+	void Add(Pad *object);
+	void Remove(const Pad *object);
+	bool Has(const Pad *object) const;
+
+	inline const Pad *operator[](uint32_t index) const {
+		return connections[index];
+	}
+	inline uint32_t Count() const {
+		return count;
+	}
 
 	void Save(const Object *objects, File &file) const;
 	void Load(Object *objects, File &file);
 
 private:
-	Object **Find(const Object *object);
+	Pad **Find(const Pad *object);
 	uint32_t count;
-	Object **connections;
+	Pad **connections;
 };
-
 
 class Pad : public Object{
 public:
 	virtual void SaveConnections(const Object *objects, File &file) const override;
 	virtual void LoadConnections(Object *objects, File &file) override;
+
+	virtual void DrawConnections() const override;
 protected:
 
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
@@ -33,7 +43,7 @@ protected:
 	static void WriteSymmetricalArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
 
 	Vec2 position;
-	enum{
+	enum {
 		TH_STYLE_C1,
 		TH_STYLE_C2,
 		TH_STYLE_I1,
