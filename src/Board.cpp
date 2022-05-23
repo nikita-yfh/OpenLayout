@@ -213,7 +213,8 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	if(GetCurrentLayerGround()) {
 		colors.SetColor(COLOR_BGR);
 		for(Object *object = objects; object; object = object->next)
-			object->DrawGroundDistance();
+			if(object->GetLayer() == activeLayer)
+				object->DrawGroundDistance();
 	}
 
 	if(settings.showGrid && activeGrid * zoom > 6.0)
@@ -239,7 +240,7 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 			layer = layers[2][i];
 		colors.SetColor(COLOR_C1 + layer);
 		for(Object *object = objects; object; object = object->next)
-			if(object->layer == layer && !(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
+			if(object->GetLayer() == layer && !(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
 				object->DrawObject();
 	}
 	colors.SetColor(COLOR_VIA);
