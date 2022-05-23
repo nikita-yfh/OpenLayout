@@ -28,6 +28,7 @@ public:
 	virtual void DrawGroundDistance() const = 0;
 	virtual void DrawObject() const = 0;
 	virtual void DrawDrillings() const {}
+	virtual void DrawConnections() const {}
 
 	virtual void SaveObject(File &file) const = 0;
 	virtual void LoadObject(File &file) = 0;

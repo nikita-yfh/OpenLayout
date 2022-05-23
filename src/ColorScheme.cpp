@@ -1,4 +1,5 @@
 #include "ColorScheme.h"
+#include "Settings.h"
 #include <wx/glcanvas.h>
 
 union ColorU {
@@ -41,6 +42,14 @@ void ColorScheme::SetColor(uint8_t index) const {
 void ColorScheme::SetGroundColor(uint8_t index) const {
 	ColorU color(colors[index]);
 	glColor4f(color.red / 425.0f, color.green / 425.0f, color.blue / 425.0f, color.alpha / 255.0f);
+}
+void ColorScheme::SetDrillingsColor(uint8_t drill) const {
+	if(drill == DRILL_BGR)
+		SetColor(COLOR_BGR);
+	else if(drill == DRILL_BLACK)
+		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	else
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 }
 void ColorScheme::WriteColor(File &file, const Color &color) const {
 	file.Write<uint32_t>(color.GetRGBA());
