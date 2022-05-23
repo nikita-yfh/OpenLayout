@@ -47,7 +47,7 @@ void SMDPad::SaveObject(File &file) const {
 }
 
 void SMDPad::LoadObject(File &file) {
-	position.LoadPosition(file);
+	file.ReadNull(8);
 	size.Load(file);
 	file.ReadNull(5);
 	layer = file.Read<uint8_t>() - 1;
@@ -73,6 +73,7 @@ void SMDPad::LoadObject(File &file) {
 
 	Vec2 dx = points[1] - points[0];
 	angle = dx.Angle();
+	position = Vec2::Mean(points[0], points[2]);
 }
 
 void SMDPad::DrawGroundDistance() const {
