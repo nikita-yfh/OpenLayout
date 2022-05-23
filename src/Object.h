@@ -42,10 +42,10 @@ public:
 	Object *GetNext();
 	const Object *GetNext() const;
 	uint32_t GetNumber() const;
+	uint8_t GetLayer() const;
 
 	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
-
 
 	bool IsSelected() const;
 	void Select();
@@ -90,4 +90,7 @@ inline void Object::Select() {
 }
 inline void Object::Unselect() {
 	selected = false;
+}
+inline uint8_t Object::GetLayer() const {
+	return layer;
 }
