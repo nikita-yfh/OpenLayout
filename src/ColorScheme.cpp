@@ -36,7 +36,7 @@ void ColorScheme::SetDefault() {
 }
 void ColorScheme::SetColor(uint8_t index) const {
 	ColorU color(colors[index]);
-	glColor4ub(color.red, color.green, color.blue, color.alpha);
+	glColor4ub(color.red, color.green, color.blue, 50);
 }
 void ColorScheme::SetGroundColor(uint8_t index) const {
 	ColorU color(colors[index]);

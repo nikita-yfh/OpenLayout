@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "GLUtils.h"
+#include "THTPad.h"
 
 Board::Board(Type type, Vec2 innerSize, float border) : Board() {
 	if(type != Type::Empty)
@@ -181,8 +182,6 @@ Vec2 Board::ConvertFromCoords(const Vec2 &vec) const {
 
 void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	const ColorScheme &colors = settings.GetColorScheme();
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glMatrixMode(GL_PROJECTION);
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -205,22 +204,41 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 
 	if(GetCurrentLayerGround()) {
 		colors.SetColor(COLOR_BGR);
-		for(Object *object = objects; object; object = object->next) {
-			glPushMatrix();
+		for(Object *object = objects; object; object = object->next)
 			object->DrawGroundDistance();
-			glPopMatrix();
-		}
 	}
 
 	if(settings.showGrid && activeGrid * zoom > 6.0)
 		DrawGrid(settings, screenSize);
 
-	for(Object *object = objects; object; object = object->next) {
-		colors.SetColor(COLOR_C1 + object->layer);
-		glPushMatrix();
-		object->DrawObject();
-		glPopMatrix();
+	if(settings.transparent) {
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE);
 	}
+	const uint8_t layers[7][7]= {
+		{LAYER_I1, LAYER_I2, LAYER_C2, LAYER_C1, LAYER_S2, LAYER_S1, LAYER_O},
+		{LAYER_C1, LAYER_C2, LAYER_I2, LAYER_I1, LAYER_S1, LAYER_S2, LAYER_O},
+		{LAYER_C1, LAYER_C2, LAYER_I1, LAYER_I2, LAYER_S1, LAYER_S2, LAYER_O},
+		{LAYER_I1, LAYER_I2, LAYER_C1, LAYER_C2, LAYER_S1, LAYER_S2, LAYER_O}
+	};
+	for(int i = 0; i < 7; i++) {
+		uint8_t layer = layers[3][i];
+		if(activeLayer == LAYER_C1 || activeLayer == LAYER_S1)
+			layer = layers[0][i];
+		else if(activeLayer == LAYER_I1)
+			layer = layers[1][i];
+		else if(activeLayer == LAYER_I2)
+			layer = layers[2][i];
+		colors.SetColor(COLOR_C1 + layer);
+		for(Object *object = objects; object; object = object->next)
+			if(object->layer == layer && !(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
+				object->DrawObject();
+	}
+	colors.SetColor(COLOR_VIA);
+		for(Object *object = objects; object; object = object->next)
+			if(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization())
+				object->DrawObject();
+	glDisable(GL_BLEND);
 
 	if(settings.drill == DRILL_BGR)
 		colors.SetColor(COLOR_BGR);
@@ -228,11 +246,8 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 		glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	else
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-	for(Object *object = objects; object; object = object->next) {
-		glPushMatrix();
+	for(Object *object = objects; object; object = object->next)
 		object->DrawDrillings();
-		glPopMatrix();
-	}
 	glDisable(GL_SCISSOR_TEST);
 }
 

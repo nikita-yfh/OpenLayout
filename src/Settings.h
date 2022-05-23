@@ -123,6 +123,8 @@ struct Settings {
 	float customRotationAngle;
 	uint8_t rotationAngleSel;
 
+	bool transparent;
+
 	wxPoint windowPos;
 	wxSize windowSize;
 

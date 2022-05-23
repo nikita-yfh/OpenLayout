@@ -107,10 +107,10 @@ private:
 	void SetSelectionLayer(wxCommandEvent&);
 	void Delete(wxCommandEvent&);
 	void ShowImagesConfig(wxCommandEvent&);
+	void ToggleTransparent(wxCommandEvent&);
 	void ZoomBoard(wxCommandEvent&);
 	void ZoomObjects(wxCommandEvent&);
 	void ZoomSelection(wxCommandEvent&);
-
 
 	void ToggleSelectorPanel(wxCommandEvent&);
 	void ToggleComponentsPanel(wxCommandEvent&);

@@ -123,6 +123,8 @@ void Settings::SetDefault() {
 	gridBind[7] = 1.0;
 	gridBind[8] = 0.1;
 
+	transparent = false;
+
 	windowPos = wxPoint(-1, -1);
 	windowSize = wxSize(800, 600);
 

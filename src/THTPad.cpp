@@ -74,7 +74,7 @@ void THTPad::SaveObject(File &file) const {
 	}
 
 	if(count) {
-		angle.Rotate(points, count);
+		Vec2::Rotate(points, count, angle);
 		WriteSymmetricalArray(file, points, count, position);
 	}
 }
@@ -109,21 +109,21 @@ void THTPad::LoadObject(File &file) {
 		case CIRCLE:
 		case CIRCLE_E:
 		case CIRCLE_E + 3:
-			angle = Angle(points[1]);
+			angle = points[1].Angle();
 			break;
 		case OCTAGON:
 		case OCTAGON_E:
-			angle = Angle(Vec2::Mean(points[3], points[4]));
+			angle = Vec2::Mean(points[3], points[4]).Angle();
 			break;
 		case OCTAGON_E + 3:
-			angle = Angle(Vec2::Mean(points[5], points[6]));
+			angle = Vec2::Mean(points[5], points[6]).Angle();
 			break;
 		case SQUARE:
 		case SQUARE_E:
-			angle = Angle(Vec2::Mean(points[1], points[2]));
+			angle = Vec2::Mean(points[1], points[2]).Angle();
 			break;
 		case SQUARE_E + 3:
-			angle = Angle(Vec2::Mean(points[2], points[3]));
+			angle = Vec2::Mean(points[2], points[3]).Angle();
 			break;
 	}
 	if(shape > SQUARE_E) {
@@ -134,15 +134,12 @@ void THTPad::LoadObject(File &file) {
 }
 
 void THTPad::DrawGroundDistance() const {
-	glutils::Translate(position);
-	glutils::DrawCircle(size.out / 2.0f + groundDistance);
+	glutils::DrawCircle(position, size.out / 2.0f + groundDistance);
 }
 void THTPad::DrawObject() const {
-	glutils::Translate(position);
-	glutils::DrawCircle(size.out / 2.0f);
+	glutils::DrawCircle(position, size.out / 2.0f);
 }
 void THTPad::DrawDrillings() const {
-	glutils::Translate(position);
-	glutils::DrawCircle(size.in / 2.0f);
+	glutils::DrawCircle(position, size.in / 2.0f);
 }
 

@@ -39,8 +39,8 @@ void SMDPad::SaveObject(File &file) const {
 	groups.Save(file);
 
 	Vec2 points[2] = {
-		angle.Rotate(Vec2(-size.x, size.y) * 0.5f),
-		angle.Rotate(Vec2( size.x, size.y) * 0.5f)
+		Vec2(-size.x, size.y).Rotate(angle) * 0.5f,
+		Vec2( size.x, size.y).Rotate(angle) * 0.5f
 	};
 
 	WriteSymmetricalArray(file, points, 2, position);
@@ -72,18 +72,22 @@ void SMDPad::LoadObject(File &file) {
 	ReadArray(file, points, position);
 
 	Vec2 dx = points[1] - points[0];
-	angle = Angle(dx);
+	angle = dx.Angle();
 }
 
 void SMDPad::DrawGroundDistance() const {
+	glPushMatrix();
 	glutils::Translate(position);
 	glutils::Rotate(angle);
 	glutils::DrawRectangle(size * 0.5f + Vec2(groundDistance, groundDistance));
+	glPopMatrix();
 }
 
 void SMDPad::DrawObject() const {
+	glPushMatrix();
 	glutils::Translate(position);
 	glutils::Rotate(angle);
 	glutils::DrawRectangle(size * 0.5f);
+	glPopMatrix();
 }
 

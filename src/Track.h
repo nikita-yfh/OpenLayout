@@ -3,8 +3,8 @@
 
 class Track : public PolygonBase {
 public:
-	virtual void DrawGroundDistance() const override{}
-	virtual void DrawObject() const override{}
+	virtual void DrawGroundDistance() const override;
+	virtual void DrawObject() const override;
 
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
@@ -14,6 +14,7 @@ public:
 	}
 	virtual AABB GetAABB() const override;
 private:
+	void Draw(float halfWidth) const;
 	inline bool GetBeginStyle() const {
 		return style & 1;
 	}

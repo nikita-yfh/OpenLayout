@@ -15,7 +15,7 @@ wxEND_EVENT_TABLE()
 static const int attribList[] = {
 	WX_GL_RGBA,
 	WX_GL_SAMPLE_BUFFERS, GL_FALSE,
-	WX_GL_DEPTH_SIZE, 24, 0, 0
+	WX_GL_STENCIL_SIZE, 8, 0, 0
 };
 
 static const float zoomRatio = 1.3f;

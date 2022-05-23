@@ -1,7 +1,6 @@
 #pragma once
 #include "Object.h"
 #include "Vec2.h"
-#include "Angle.h"
 
 class Connections {
 public:
@@ -27,6 +26,7 @@ public:
 	virtual void SaveConnections(const Object *objects, File &file) const override;
 	virtual void LoadConnections(Object *objects, File &file) override;
 protected:
+
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
 	static uint32_t ReadArray(File &file, Vec2 *arr, const Vec2 &shift);
 
@@ -42,7 +42,7 @@ protected:
 	bool thermal;
 	uint8_t thermalStyle[4];
 	float thermalSize;
-	Angle angle;
+	float angle;
 
 	Connections connections;
 };

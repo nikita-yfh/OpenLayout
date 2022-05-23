@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "GLUtils.h"
 
 AABB Track::GetAABB() const {
 	Vec2 min( 1000000.0f,  1000000.0f);
@@ -65,4 +66,34 @@ void Track::LoadObject(File &file) {
 	LoadPoints(file);
 }
 
+void Track::Draw(float halfWidth) const {
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	glEnable(GL_STENCIL_TEST);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_INCR);
+
+	DrawLine(halfWidth, false, !GetBeginStyle(), !GetEndStyle());
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
+
+	glRectf(0.0f, 0.0f, 500.0f, 500.0f);
+
+	glDisable(GL_STENCIL_TEST);
+}
+
+void Track::DrawGroundDistance() const {
+	if(cutoff)
+		Draw(width / 2.0f);
+	else
+		Draw(width / 2.0f + groundDistance);
+}
+
+void Track::DrawObject() const {
+	if(!cutoff)
+		Draw(width / 2.0f);
+}
 
