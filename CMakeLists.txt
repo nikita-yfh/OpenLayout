@@ -40,7 +40,6 @@ set(SOURCES
 )
 set(HEADERS
 	src/AABB.h
-	src/Angle.h
 	src/App.h
 	src/Arc.h
 	src/Array.h
@@ -80,11 +79,12 @@ set(HEADERS
 if(WIN32)
     set(SOURCES ${SOURCES} src/resource.rc)
 endif()
+find_package(OpenGL)
 add_executable(OpenLayout ${SOURCES} ${HEADERS})
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL GNU)
 	set(CMAKE_CXX_FLAGS_RELEASE "-O3 -s -ffunction-sections -fdata-sections -fvisibility=hidden")
 	set(CMAKE_CXX_FLAGS "-Wno-write-strings")
 endif()
-target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${GL_LIBRARIES})
+target_link_libraries(OpenLayout PRIVATE ${wxWidgets_LIBRARIES} ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY})
 
 install(TARGETS OpenLayout DESTINATION bin)

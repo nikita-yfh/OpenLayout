@@ -23,6 +23,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_SAVE,					OpenLayoutFrame::SaveFile)
 	EVT_MENU(wxID_SAVEAS,				OpenLayoutFrame::SaveFileAs)
 	EVT_MENU(wxID_OPEN,					OpenLayoutFrame::OpenFile)
+	EVT_MENU(ID_TRANSPARENT,			OpenLayoutFrame::ToggleTransparent)
 	EVT_MENU(ID_ZOOM_BOARD,				OpenLayoutFrame::ZoomBoard)
 	EVT_MENU(ID_ZOOM_OBJECTS,			OpenLayoutFrame::ZoomObjects)
 	EVT_MENU(ID_ZOOM_SELECTION,			OpenLayoutFrame::ZoomSelection)
@@ -172,6 +173,10 @@ void OpenLayoutFrame::SetSelectionLayer(wxCommandEvent&) {}
 void OpenLayoutFrame::Delete(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->images.ShowDialog(this, ColorScheme());
+}
+void OpenLayoutFrame::ToggleTransparent(wxCommandEvent&) {
+	settings.transparent = !settings.transparent;
+	canvas->Refresh();
 }
 void OpenLayoutFrame::ZoomBoard(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->ZoomBoard(canvas->GetSize());

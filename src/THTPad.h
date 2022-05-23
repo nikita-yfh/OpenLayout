@@ -18,6 +18,7 @@ public:
 
 	const PadSize &GetSize() const;
 	void SetSize(const PadSize &size);
+	bool HasMetallization() const;
 private:
 	PadSize size;
 	enum{
@@ -37,6 +38,9 @@ inline const PadSize &THTPad::GetSize() const {
 }
 inline void THTPad::SetSize(const PadSize &newSize) {
 	size = newSize;
+}
+inline bool THTPad::HasMetallization() const {
+	return through;
 }
 	
 

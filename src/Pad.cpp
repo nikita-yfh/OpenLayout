@@ -7,6 +7,13 @@ static inline void Swap(T &a, T &b) {
 	b = c;
 }
 
+static bool Clockwise(float a, float b, float c) {
+	if(c > a)
+		return (b < a || b > c);
+	else 
+		return (b < a && b > c);
+}
+
 Connections::Connections() {
 	connections = nullptr;
 	count = 0;
@@ -90,11 +97,9 @@ uint32_t Pad::ReadArray(File &file, Vec2 *points, const Vec2 &shift) {
 		points[i] -= shift;
 	}
 	bool wrap = false;
-	if(count >= 3) {
-		if(!Angle::Clockwise(points[0], points[1], points[2]))
-			for(int i = 0; i < count / 2; i++)
-				Swap(points[i], points[count - i - 1]);
-	}
+	if(count >= 3 && !Clockwise(points[0].Angle(), points[1].Angle(), points[2].Angle()))
+		for(int i = 0; i < count / 2; i++)
+			Swap(points[i], points[count - i - 1]);
 	return count;
 }
 

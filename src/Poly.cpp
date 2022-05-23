@@ -1,4 +1,5 @@
 #include "Poly.h"
+#include "GLUtils.h"
 
 AABB Poly::GetAABB() const {
 	Vec2 min( 1000000.0f,  1000000.0f);
@@ -73,4 +74,41 @@ void Poly::LoadObject(File &file) {
 	LoadPoints(file, onlySoldermask);
 }
 
+void Poly::DrawGroundDistance() const {
+	if(cutoff)
+		Draw(width / 2.0f);
+	else
+		Draw(width / 2.0f + groundDistance);
+}
+void Poly::DrawObject() const {
+	if(!cutoff)
+		Draw(width / 2.0f);
+}
+
+void Poly::Draw(float halfWidth) const {
+	if(count < 3)
+		return;
+
+	glClear(GL_STENCIL_BUFFER_BIT);
+
+	glEnable(GL_STENCIL_TEST);
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+	glStencilFunc(GL_NEVER, 1, 1);
+	glStencilOp(GL_INVERT, GL_INVERT, GL_INVERT);
+
+	glBegin(GL_TRIANGLE_FAN);
+	for(int i = 0; i < count; i++)
+		glutils::Vertex(points[i]);
+	glEnd();
+	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+	DrawLine(halfWidth, true, true, true);
+
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glStencilFunc(GL_EQUAL, 1, 1);
+	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
+
+	glRectf(0.0f, 0.0f, 500.0f, 500.0f);
+
+	glDisable(GL_STENCIL_TEST);
+}
 

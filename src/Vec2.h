@@ -11,6 +11,10 @@ struct Vec2 {
 	Vec2(float _x,float _y) {
 		Set(_x, _y);
 	}
+	Vec2(float angle) {
+		x = cosf(angle);
+		y = sinf(angle);
+	}
 	Vec2(const wxPoint &point) {
 		Set(point.x, point.y);
 	}
@@ -30,6 +34,11 @@ struct Vec2 {
 	}
 	float LengthSq() const {
 		return x*x + y*y;
+	}
+	void SetLength(float length) {
+		float k = length / Length();
+		x *= k;
+		y *= k;
 	}
 	Vec2 InvY() const {
 		return Vec2(x, -y);
@@ -52,6 +61,33 @@ struct Vec2 {
 					(a.y > b.y) ? a.y : b.y);
 	}
 
+	float Angle() const {
+		if(y < 0)
+			return 2.0f * M_PI + atan2f(y, x);
+		else
+			return atan2f(y, x);
+	}
+
+	Vec2 Rotate(float angle) const {
+		return Vec2(
+			x * cosf(angle) - y * sinf(angle),
+			x * sinf(angle) + y * cosf(angle)
+		);
+	}
+
+	static inline void Rotate(Vec2 *array, int count, float angle) {
+		float s = sinf(angle);
+		float c = cosf(angle);
+
+		for(int i = 0; i < count; i++) {
+			Vec2 result(
+				array[i].x * c - array[i].y * s,
+				array[i].x * s + array[i].y * c
+			);
+			array[i] = result;
+		}
+	}
+
 	bool operator==(const Vec2 &other) const {
 		return other.x == x && other.y == y;
 	}
@@ -66,9 +102,6 @@ struct Vec2 {
 
 	Vec2 operator-() const {
 		return Vec2(-x, -y);
-	}
-	Vec2 operator~() const {
-		return Vec2(-y, x);
 	}
 	Vec2 operator+(const Vec2 &v) const {
 		return Vec2(x + v.x, y + v.y);

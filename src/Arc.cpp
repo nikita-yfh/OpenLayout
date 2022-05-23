@@ -11,13 +11,13 @@ void Arc::SaveObject(File &file) const {
 	position.SavePosition(file);
 	file.WriteMm<float>((diameter + width) / 2.0f);
 	file.WriteMm<float>((diameter - width) / 2.0f);
-	endAngle.Save(file);
+	file.WriteAngle(endAngle);
 	file.WriteNull(1);
 	file.Write<uint8_t>(layer + 1);
 	file.WriteNull(5);
 	file.Write<uint16_t>(componentID);
 	file.WriteNull(1);
-	beginAngle.Save(file);
+	file.WriteAngle(beginAngle);
 	file.WriteNull(5);
 	file.Write<uint8_t>(fill);
 	file.WriteMm<uint32_t>(groundDistance);
@@ -37,13 +37,13 @@ void Arc::LoadObject(File &file) {
 	float inRadius = file.ReadMm<float>();
 	diameter = outRadius + inRadius;
 	width = outRadius - inRadius;
-	endAngle.Load(file);
+	endAngle = file.ReadAngle();
 	file.ReadNull(1);
 	layer = file.Read<uint8_t>() - 1;
 	file.ReadNull(5);
 	componentID = file.Read<uint16_t>();
 	file.ReadNull(1);
-	beginAngle.Load(file);
+	beginAngle = file.ReadAngle();
 	file.ReadNull(5);
 	fill = file.Read<uint8_t>();
 	groundDistance = file.ReadMm<uint32_t>();
@@ -58,6 +58,35 @@ void Arc::LoadObject(File &file) {
 }
 
 void Arc::Draw(float halfwidth) const {
-	glutils::Translate(position);
+	float radius = diameter * 0.5f;
+	float end = endAngle;
+	if(endAngle <= beginAngle)
+		end += M_PI * 2.0f;
+
+	glBegin(GL_TRIANGLE_STRIP);
+	for(float i = beginAngle; i < end; i += (end - beginAngle) / (glutils::numSegments)) {
+		Vec2 vec(-i);
+		glutils::Vertex(position + vec * (radius - halfwidth));
+		glutils::Vertex(position + vec * (radius + halfwidth));
+	}
+	glutils::Vertex(position + Vec2(-end) * (radius - halfwidth));
+	glutils::Vertex(position + Vec2(-end) * (radius + halfwidth));
+	glEnd();
+	if(beginAngle != endAngle) {
+		glutils::DrawSector(position + Vec2(-beginAngle) * radius, halfwidth, beginAngle - M_PI, beginAngle);
+		glutils::DrawSector(position + Vec2(-endAngle)   * radius, halfwidth, endAngle, endAngle + M_PI);
+	}
+}
+
+void Arc::DrawObject() const {
+	if(!cutoff)
+		Draw(width / 2.0f);
+}
+
+void Arc::DrawGroundDistance() const {
+	if(cutoff)
+		Draw(width / 2.0f);
+	else
+		Draw(width / 2.0f + groundDistance);
 }
 

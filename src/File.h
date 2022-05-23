@@ -32,6 +32,13 @@ public:
 		return *this;
 	}
 
+	float ReadAngle() {
+		return Read<uint32_t>() / 1000.0f / 180.0f * M_PI;
+	}
+	void WriteAngle(float value) {
+		Write<uint32_t>(value / M_PI * 180.0f * 1000.0f);
+	}
+
 	template<typename T>
 	float ReadMm() {
 		return Read<T>() / 10000.0f;
