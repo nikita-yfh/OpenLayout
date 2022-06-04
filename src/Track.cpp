@@ -145,8 +145,10 @@ void Track::Draw(float halfWidth) const {
 				pathBegin1 = points[i + 1] - normals[i + 1];
 			}
 		} else {
-			end1 = pathBegin1 = points[i + 1] - normals[i];
-			end2 = pathBegin2 = points[i + 1] + normals[i];
+			end1 = points[i + 1] - normals[i];
+			end2 = points[i + 1] + normals[i];
+			pathBegin1 = points[i + 1] - normals[i + 1];
+			pathBegin2 = points[i + 1] + normals[i + 1];
 		}
 
 		glutils::Vertex(begin1);
