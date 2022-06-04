@@ -46,10 +46,12 @@ public:
 
 	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
+	virtual bool TestPoint(const Vec2 &point) const = 0;
 
 	bool IsSelected() const;
 	void Select();
 	void Unselect();
+	void InvertSelection();
 
 	Groups groups;
 
@@ -90,6 +92,9 @@ inline void Object::Select() {
 }
 inline void Object::Unselect() {
 	selected = false;
+}
+inline void Object::InvertSelection() {
+	selected = !selected;
 }
 inline uint8_t Object::GetLayer() const {
 	return layer;

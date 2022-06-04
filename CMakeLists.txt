@@ -74,6 +74,7 @@ set(HEADERS
 	src/THTPad.h
 	src/ToolBar.h
 	src/Track.h
+	src/Utils.h
 	src/Vec2.h
 )
 if(WIN32)

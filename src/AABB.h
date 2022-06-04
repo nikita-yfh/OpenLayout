@@ -31,6 +31,14 @@ public:
 		return (lower + upper) * 0.5f;
 	}
 
+	bool TestPoint(const Vec2 &point) const {
+		return
+			point.x <= upper.x &&
+			point.y <= upper.y &&
+			point.x >= lower.x &&
+			point.y >= lower.y;
+	}
+
 	inline bool Contains(const AABB& other) const {
 		return
 			lower.x <= other.lower.x &&
@@ -52,12 +60,34 @@ public:
 		return true;
 	}
 
+	inline AABB operator+(const Vec2 &vec) {
+		return AABB(lower + vec, upper + vec);
+	}
+	inline AABB operator-(const Vec2 &vec) {
+		return AABB(lower - vec, upper - vec);
+	}
+	inline void operator+=(const Vec2 &vec) {
+		lower += vec;
+		upper += vec;
+	}
+	inline void operator-=(const Vec2 &vec) {
+		lower -= vec;
+		upper -= vec;
+	}
+
 	inline AABB operator|(const AABB &other) {
 		return AABB(Vec2::Min(lower, other.lower), Vec2::Max(upper, other.upper));
 	}
 	inline void operator|=(const AABB &other) {
 		lower = Vec2::Min(lower, other.lower);
 		upper = Vec2::Max(upper, other.upper);
+	}
+	inline AABB operator|(const Vec2 &vec) {
+		return AABB(Vec2::Min(lower, vec), Vec2::Max(upper, vec));
+	}
+	inline void operator|=(const Vec2 &vec) {
+		lower = Vec2::Min(lower, vec);
+		upper = Vec2::Max(upper, vec);
 	}
 
 	Vec2 lower;

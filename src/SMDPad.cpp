@@ -1,16 +1,13 @@
 #include "SMDPad.h"
 #include "GLUtils.h"
-
-template<typename T>
-static inline T min(T a, T b) {
-	if(a > b)
-		return b;
-	return a;
-}
+#include "Utils.h"
 
 AABB SMDPad::GetAABB() const {
-	Vec2 halfSize(size * 0.5f);
-	return AABB(position - halfSize, position + halfSize);
+	return AABB(position - size * sqrtf(2.0f) * 2.0f, position + size * sqrtf(2.0f) * 2.0f);
+}
+
+bool SMDPad::TestPoint(const Vec2 &point) const {
+	return false;
 }
 
 void SMDPad::SaveObject(File &file) const {
@@ -28,7 +25,7 @@ void SMDPad::SaveObject(File &file) const {
 	file.WriteNull(5);
 	file.Write<uint8_t>(thermal);
 	file.WriteNull(2);
-	file.Write<uint32_t>(thermalSize / min(size.x, size.y) * 300.0f);
+	file.Write<uint32_t>(thermalSize / utils::Min(size.x, size.y) * 300.0f);
 	file.WriteNull(1);
 	file.Write<uint8_t>(soldermask);
 	file.WriteNull(3);
@@ -39,8 +36,8 @@ void SMDPad::SaveObject(File &file) const {
 	groups.Save(file);
 
 	Vec2 points[2] = {
-		Vec2(-size.x, size.y).Rotate(angle) * 0.5f,
-		Vec2( size.x, size.y).Rotate(angle) * 0.5f
+		size.InvX().Rotate(angle) * 0.5f,
+		size.Rotate(angle) * 0.5f
 	};
 
 	WriteSymmetricalArray(file, points, 2, position);
@@ -60,7 +57,7 @@ void SMDPad::LoadObject(File &file) {
 	file.ReadNull(5);
 	thermal = file.Read<uint8_t>();
 	file.ReadNull(2);
-	thermalSize = file.Read<uint32_t>() / 300.0f * min(size.x, size.y);
+	thermalSize = file.Read<uint32_t>() / 300.0f * utils::Min(size.x, size.y);
 	file.ReadNull(1);
 	soldermask = file.Read<uint8_t>();
 	file.ReadNull(22);

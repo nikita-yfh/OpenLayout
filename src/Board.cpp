@@ -188,6 +188,20 @@ Vec2 Board::ConvertFromCoords(const Vec2 &vec) const {
 	return ((vec - camera) * zoom);
 }
 
+bool Board::SelectObject(const Vec2 &point) {
+	for(Object *object = objects; object; object = object->next)
+		if(object->GetAABB().TestPoint(point) && object->TestPoint(point)) {
+			object->InvertSelection();
+			return true;
+		}
+	return false;
+}
+
+void Board::UnselectAll() {
+	for(Object *object = objects; object; object = object->next)
+		object->Unselect();
+}
+
 void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	const ColorScheme &colors = settings.GetColorScheme();
 	glMatrixMode(GL_PROJECTION);
@@ -212,7 +226,7 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 
 	if(GetCurrentLayerGround()) {
 		colors.SetColor(COLOR_BGR);
-		for(Object *object = objects; object; object = object->next)
+		for(const Object *object = objects; object; object = object->next)
 			if(object->GetLayer() == activeLayer)
 				object->DrawGroundDistance();
 	}
@@ -239,23 +253,29 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 		else if(activeLayer == LAYER_I2)
 			layer = layers[2][i];
 		colors.SetColor(COLOR_C1 + layer);
-		for(Object *object = objects; object; object = object->next)
-			if(object->GetLayer() == layer && !(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
+		for(const Object *object = objects; object; object = object->next)
+			if(object->GetLayer() == layer && !object->IsSelected() &&
+					!(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
 				object->DrawObject();
 	}
 	colors.SetColor(COLOR_VIA);
-		for(Object *object = objects; object; object = object->next)
-			if(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization())
-				object->DrawObject();
+	for(const Object *object = objects; object; object = object->next)
+		if(object->GetType() == Object::THT_PAD && !object->IsSelected() && ((THTPad*) object)->HasMetallization())
+			object->DrawObject();
 	glDisable(GL_BLEND);
 
+	colors.SetColor(COLOR_SELO);
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->DrawObject();
+
 	colors.SetDrillingsColor(settings.drill);
-	for(Object *object = objects; object; object = object->next)
+	for(const Object *object = objects; object; object = object->next)
 		object->DrawDrillings();
 	colors.SetColor(COLOR_CON);
 	glLineWidth(1.5f);
 	glBegin(GL_LINES);
-	for(Object *object = objects; object; object = object->next) 
+	for(const Object *object = objects; object; object = object->next) 
 		object->DrawConnections();
 	glEnd();
 	glDisable(GL_SCISSOR_TEST);

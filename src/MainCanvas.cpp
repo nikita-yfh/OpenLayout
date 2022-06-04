@@ -48,6 +48,10 @@ void MainCanvas::OnKey(wxKeyEvent &e) {
 }
 
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
+	if(!shift)
+		pcb.GetSelectedBoard()->UnselectAll();
+	pcb.GetSelectedBoard()->SelectObject(GetPos(e));
+	Refresh();
 }
 void MainCanvas::OnLeftUp(wxMouseEvent &e) {
 }

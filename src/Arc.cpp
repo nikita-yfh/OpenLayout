@@ -1,9 +1,21 @@
 #include "Arc.h"
 #include "GLUtils.h"
+#include "Utils.h"
 
 AABB Arc::GetAABB() const {
 	Vec2 radius((diameter + width) * 0.5f, (diameter + width) * 0.5f);
 	return AABB(position - radius, position + radius);
+}
+
+bool Arc::TestPoint(const Vec2 &point) const {
+	if(utils::PointInCircle(point, position, (diameter + width) * 0.5f) &&
+		!utils::PointInCircle(point, position, (diameter - width) * 0.5f))
+		return true;
+	if(utils::PointInCircle(point, position + Vec2(-beginAngle) * diameter * 0.5f, width * 0.5f))
+		return true;
+	if(utils::PointInCircle(point, position + Vec2(-endAngle) * diameter * 0.5f, width * 0.5f))
+		return true;
+	return false;
 }
 
 void Arc::SaveObject(File &file) const {

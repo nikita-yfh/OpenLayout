@@ -61,6 +61,8 @@ public:
 
 	Vec2 ConvertToCoords(const Vec2 &vec) const;
 	Vec2 ConvertFromCoords(const Vec2 &vec) const;
+	bool SelectObject(const Vec2 &point);
+	void UnselectAll();
 
 	ImageConfigs images;
 

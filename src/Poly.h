@@ -13,6 +13,7 @@ public:
 		return POLY;
 	}
 	virtual AABB GetAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const;
 private:
 	void Draw(float halfWidth) const;
 
