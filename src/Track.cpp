@@ -110,14 +110,17 @@ void Track::Draw(float halfWidth) const {
 		Vec2 n2 = (c - b).Normal(halfWidth);
 
 		float orientation = utils::Orientation(a, b, c);
-		clockwise[i] = orientation > 0.0f;
+		clockwise[i] = orientation >= 0.0f;
 
-		if(clockwise[i]) {
+		if(orientation > 0.0f) {
 			intersections[i] = utils::Intersection(a - n1, b - n1, b - n2, c - n2);
-			glutils::DrawTriangleFan(intersections[i], b, b + n1, b + n2, !clockwise[i]);
-		} else {
+			glutils::DrawTriangleFan(intersections[i], b, b + n2, b + n1, true);
+		} else if(orientation < 0.0f) {
 			intersections[i] = utils::Intersection(a + n1, b + n1, b + n2, c + n2);
-			glutils::DrawTriangleFan(intersections[i], b, b - n1, b - n2, !clockwise[i]);
+			glutils::DrawTriangleFan(intersections[i], b, b - n1, b - n2, true);
+		} else {
+			intersections[i] = Vec2::Invalid();
+			glutils::DrawTriangleFan(b, b, b - n1, b - n2, true);
 		}
 	}
 
@@ -141,6 +144,9 @@ void Track::Draw(float halfWidth) const {
 				end2 = pathBegin2 = intersections[i];
 				pathBegin1 = points[i + 1] - normals[i + 1];
 			}
+		} else {
+			end1 = pathBegin1 = points[i + 1] - normals[i];
+			end2 = pathBegin2 = points[i + 1] + normals[i];
 		}
 
 		glutils::Vertex(begin1);
