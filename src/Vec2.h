@@ -7,44 +7,66 @@ struct Vec2 {
 	float x;
 	float y;
 
-	Vec2() {}
-	Vec2(float _x,float _y) {
+	inline Vec2() {}
+	inline Vec2(float _x,float _y) {
 		Set(_x, _y);
 	}
-	Vec2(float angle) {
+	inline explicit Vec2(float angle) {
 		x = cosf(angle);
 		y = sinf(angle);
 	}
-	Vec2(const wxPoint &point) {
+	inline explicit Vec2(const Vec2 &vec, float length) {
+		float oldLength = vec.Length();
+		float k = length / oldLength;
+		Set(vec.x * k, vec.y * k);
+	}
+	inline Vec2(const wxPoint &point) {
 		Set(point.x, point.y);
 	}
-	Vec2(const wxSize &size) {
+	inline Vec2(const wxSize &size) {
 		Set(size.x, size.y);
 	}
 
-	void Set(float _x,float _y) {
+	inline void Set(float _x, float _y) {
 		x = _x;
 		y = _y;
 	}
-	void SetZero() {
+	inline void SetZero() {
 		x = y = 0.0f;
 	}
-	float Length() const {
-		return sqrt(x*x + y*y);
+	inline float Length() const {
+		return sqrt(x * x + y * y);
 	}
-	float LengthSq() const {
-		return x*x + y*y;
+	inline float LengthSq() const {
+		return x * x + y * y;
 	}
-	void SetLength(float length) {
+	inline void SetLength(float length) {
 		float k = length / Length();
 		x *= k;
 		y *= k;
 	}
-	Vec2 InvY() const {
+	inline Vec2 InvY() const {
 		return Vec2(x, -y);
 	}
-	Vec2 InvX() const {
+	inline Vec2 InvX() const {
 		return Vec2(-x, y);
+	}
+
+	inline Vec2 Normal() const {
+		return Vec2(-y, x);
+	}
+
+	inline Vec2 Normal(float length) const {
+		Vec2 v(-y, x);
+		v.SetLength(length);
+		return v;
+	}
+
+	inline bool IsValid() const {
+		return x == x && y == y;
+	}
+	static inline Vec2 Invalid() {
+		return Vec2(NAN, NAN);
 	}
 
 	static inline Vec2 Mean(const Vec2 &a, const Vec2 &b) {
@@ -61,11 +83,16 @@ struct Vec2 {
 					(a.y > b.y) ? a.y : b.y);
 	}
 
-	float Angle() const {
-		if(y < 0)
-			return 2.0f * M_PI + atan2f(y, x);
-		else
-			return atan2f(y, x);
+	static inline float Dot(const Vec2 &a, const Vec2 &b) {
+		return a.x * b.x + a.y * b.y;
+	}
+
+	static inline float Angle(const Vec2 &a, const Vec2 &b) {
+		return acos(Dot(a, b) / sqrt(a.LengthSq() * b.LengthSq()));
+	}
+
+	inline float Angle() const {
+		return atan2f(y, x);
 	}
 
 	Vec2 Rotate(float angle) const {
@@ -88,11 +115,14 @@ struct Vec2 {
 		}
 	}
 
-	bool operator==(const Vec2 &other) const {
+	inline bool operator==(const Vec2 &other) const {
 		return other.x == x && other.y == y;
 	}
+	inline bool operator!=(const Vec2 &other) const {
+		return other.x != x || other.y != y;
+	}
 
-	bool operator<(const Vec2 &other) const {
+	inline bool operator<(const Vec2 &other) const {
 		if(x < other.x)
 			return true;
 		else if(x == other.x && y < other.y)
@@ -100,40 +130,44 @@ struct Vec2 {
 		return false;
 	}
 
-	Vec2 operator-() const {
+	inline Vec2 operator-() const {
 		return Vec2(-x, -y);
 	}
-	Vec2 operator+(const Vec2 &v) const {
+	inline Vec2 operator+(const Vec2 &v) const {
 		return Vec2(x + v.x, y + v.y);
 	}
-	Vec2 operator-(const Vec2 &v) const {
+	inline Vec2 operator-(const Vec2 &v) const {
 		return Vec2(x - v.x, y - v.y);
 	}
-	Vec2 operator*(float k) const {
+	inline Vec2 operator*(float k) const {
 		return Vec2(x * k, y * k);
 	}
-	Vec2 operator/(float k) const {
+	inline Vec2 operator/(float k) const {
 		return Vec2(x / k, y / k);
 	}
-	void operator+=(const Vec2 &v) {
+	inline void operator+=(const Vec2 &v) {
 		x += v.x;
 		y += v.y;
 	}
-	void operator-=(const Vec2 &v) {
+	inline void operator-=(const Vec2 &v) {
 		x -= v.x;
 		y -= v.y;
 	}
-	void operator*=(const float &v) {
+	inline void operator*=(const float &v) {
 		x *= v;
 		y *= v;
 	}
-	void operator/=(const float &v) {
+	inline void operator/=(const float &v) {
 		x /= v;
 		y /= v;
 	}
 	void SavePosition(File &file) const {
 		file.WriteMm<float>(x);
 		file.WriteMm<float>(-y);
+	}
+	void LoadPosition(File &file) {
+		x = file.ReadMm<float>();
+		y = -file.ReadMm<float>();
 	}
 	void Save(File &file) const {
 		file.WriteMm<float>(x);
@@ -142,10 +176,6 @@ struct Vec2 {
 	void Load(File &file) {
 		x = file.ReadMm<float>();
 		y = file.ReadMm<float>();
-	}
-	void LoadPosition(File &file) {
-		x = file.ReadMm<float>();
-		y = -file.ReadMm<float>();
 	}
 	void SaveInt(File &file) const {
 		file.WriteMm<int32_t>(x);

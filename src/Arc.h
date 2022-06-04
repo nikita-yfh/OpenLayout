@@ -14,6 +14,7 @@ public:
 		return ARC;
 	}
 	virtual AABB GetAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const;
 protected:
 	Vec2 position;
 	float beginAngle;

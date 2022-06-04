@@ -13,6 +13,7 @@ public:
 		return SMD_PAD;
 	}
 	virtual AABB GetAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const override;
 
 	const Vec2 &GetSize() const;
 	void SetSize(const Vec2 &size);

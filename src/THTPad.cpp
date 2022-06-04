@@ -1,9 +1,14 @@
 #include "THTPad.h"
 #include "GLUtils.h"
+#include "Utils.h"
 
 AABB THTPad::GetAABB() const {
 	Vec2 radius(size.out * 0.5f, size.out * 0.5f);
 	return AABB(position - radius, position + radius);
+}
+
+bool THTPad::TestPoint(const Vec2 &point) const {
+	return utils::PointInCircle(point, position, size.out * 0.5f);
 }
 
 void THTPad::SaveObject(File &file) const {

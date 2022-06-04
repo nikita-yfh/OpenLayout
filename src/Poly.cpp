@@ -1,9 +1,10 @@
 #include "Poly.h"
 #include "GLUtils.h"
+#include "Utils.h"
 
 AABB Poly::GetAABB() const {
-	Vec2 min( 1000000.0f,  1000000.0f);
-	Vec2 max(-1000000.0f, -1000000.0f);
+	Vec2 max(0.0f, 0.0f);
+	Vec2 min(500.0f, 500.0f);
 
 	for(int i = 0; i < count; i++) {
 		const Vec2 &point = points[i];
@@ -18,6 +19,10 @@ AABB Poly::GetAABB() const {
 	}
 	Vec2 size(width / 2.0f, width / 2.0f);
 	return AABB(min - size, max + size);
+}
+
+bool Poly::TestPoint(const Vec2 &point) const {
+	return utils::PointInConcavePolygon(point, count, points);
 }
 
 void Poly::SaveObject(File &file) const {

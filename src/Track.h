@@ -13,21 +13,22 @@ public:
 		return TRACK;
 	}
 	virtual AABB GetAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const;
 private:
 	void Draw(float halfWidth) const;
 	inline bool GetBeginStyle() const {
-		return style & 1;
+		return style & 0x01;
 	}
 	inline bool GetEndStyle() const {
-		return style & 2;
+		return style & 0x02;
 	}
 	inline void SetBeginStyle(bool s) {
 		if(s ^ GetBeginStyle())
-			style ^= 1;
+			style ^= 0x01;
 	}
 	inline void SetEndStyle(bool s) {
 		if(s ^ GetEndStyle())
-			style ^= 2;
+			style ^= 0x02;
 	}
 
 	uint8_t style;

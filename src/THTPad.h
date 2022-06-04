@@ -15,6 +15,7 @@ public:
 		return THT_PAD;
 	}
 	virtual AABB GetAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const;
 
 	const PadSize &GetSize() const;
 	void SetSize(const PadSize &size);
