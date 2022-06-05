@@ -6,8 +6,6 @@ public:
 	PolygonBase();
 	~PolygonBase();
 protected:
-	void DrawLine(float halhWidth, bool loop, bool begin, bool end) const;
-	bool TestPoint(const Vec2 &point, bool loop, bool begin, bool end) const;
 	void LoadPoints(File &file, bool onlySoldermask = false);
 	void SavePoints(File &file, bool onlySoldermask = false) const;
 
