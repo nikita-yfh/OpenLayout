@@ -40,18 +40,19 @@ inline bool IntersectTwoLines(const Vec2 &a, const Vec2 &b, const Vec2 &c, const
     float o1 = Orientation(a, b, c);
     float o2 = Orientation(a, b, d);
     float o3 = Orientation(c, d, a);
-    float o4 = Orientation(d, d, b);
+    float o4 = Orientation(c, d, b);
     return o1 * o2 <= 0.0f && o3 * o4 <= 0.0f;
 }
 inline bool PointInConcavePolygon(const Vec2 &point, uint32_t count, const Vec2 *points) {
 	int counter = 0;
-	Vec2 endLine(500.0f, 0.0f);
+	Vec2 endLine(500.0f, point.y);
 	for(int i = 0; i < count; i++) {
 		const Vec2 &p1 = points[i];
 		const Vec2 &p2 = points[(i + 1) % count];
 		if(IntersectTwoLines(p1, p2, point, endLine))
 			counter++;
 	}
+	printf("%d\n", counter);
 	return counter % 2 == 1;
 }
 inline bool PointInCircle(const Vec2 &point, const Vec2 &center, float radius) {
@@ -68,13 +69,16 @@ inline Vec2 Intersection(const Vec2 &a, const Vec2 &b, const Vec2 &c, const Vec2
 
     float determinant = a1 * b2 - a2 * b1;
 
-	if(determinant == 0.0f)
-		return Vec2::Invalid();
-
 	return Vec2(
         (b2 * c1 - b1 * c2) / determinant,
         (a1 * c2 - a2 * c1) / determinant
 	);
+}
+
+inline bool PointInPolySegment(const Vec2 &point, const Vec2 &a, const Vec2 &b, float halhWidth) {
+	Vec2 delta = b - a;
+	Vec2 n = (point - a).Rotate(-delta.Angle());
+	return n.y < halhWidth && n.y > -halhWidth && n.x > 0 && n.x * n.x < delta.LengthSq();
 }
 
 };

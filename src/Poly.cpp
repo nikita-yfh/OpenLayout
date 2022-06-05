@@ -22,7 +22,15 @@ AABB Poly::GetAABB() const {
 }
 
 bool Poly::TestPoint(const Vec2 &point) const {
-	return utils::PointInConcavePolygon(point, count, points);
+	if(utils::PointInConcavePolygon(point, count, points))
+		return true;
+	for(int i = 0; i < count; i++) {
+		if(utils::PointInPolySegment(point, points[i], points[(i + 1) % count], width / 2.0f))
+			return true;
+		if(utils::PointInCircle(point, points[i], width / 2.0f))
+			return true;
+	}
+	return false;
 }
 
 void Poly::SaveObject(File &file) const {
@@ -106,7 +114,23 @@ void Poly::Draw(float halfWidth) const {
 		glutils::Vertex(points[i]);
 	glEnd();
 	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	DrawLine(halfWidth, true, true, true);
+	float angles[count];
+	glBegin(GL_QUADS);
+	for(int i = 0; i < count; i++) {
+		const Vec2 &a = points[i];
+		const Vec2 &b = points[(i + 1) % count];
+
+		Vec2 delta = (b - a).Normal(halfWidth);
+		angles[i] = delta.Angle();
+
+		glutils::Vertex(a - delta);
+		glutils::Vertex(a + delta);
+		glutils::Vertex(b + delta);
+		glutils::Vertex(b - delta);
+	}
+	glEnd();
+	for(int i = 0; i < count; i++)
+		glutils::DrawCircle(points[i], halfWidth);
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glStencilFunc(GL_EQUAL, 1, 1);

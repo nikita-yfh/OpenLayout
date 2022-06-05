@@ -22,6 +22,13 @@ AABB Track::GetAABB() const {
 }
 
 bool Track::TestPoint(const Vec2 &point) const {
+	float halfWidth = width / 2.0f;
+	for(int i = 0; i < count - 1; i++)
+		if(utils::PointInPolySegment(point, points[i], points[i + 1], halfWidth))
+			return true;
+	for(int i = GetBeginStyle(); i < count - GetEndStyle(); i++)
+		if(utils::PointInCircle(point, points[i], width / 2.0f))
+			return true;
 	return false;
 }
 
