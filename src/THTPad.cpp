@@ -3,12 +3,34 @@
 #include "Utils.h"
 
 AABB THTPad::GetAABB() const {
-	Vec2 radius(size.out * 0.5f, size.out * 0.5f);
-	return AABB(position - radius, position + radius);
+	Vec2 maxRadius(size.out * 2.5f, size.out * 2.5f);
+	return AABB(position - maxRadius, position + maxRadius);
 }
 
 bool THTPad::TestPoint(const Vec2 &point) const {
-	return utils::PointInCircle(point, position, size.out * 0.5f);
+	Vec2 _point = (point - position).Rotate(-angle);
+	switch(shape) {
+	case CIRCLE:
+		return utils::PointInCircle(point, position, size.out * 0.5f);
+	case CIRCLE_E:
+		if(utils::PointInCircle(_point, Vec2(-size.out * 0.5f, 0.0f), size.out * 0.5f))
+			return true;
+		if(utils::PointInCircle(_point, Vec2( size.out * 0.5f, 0.0f), size.out * 0.5f))
+			return true;
+	case SQUARE:
+		return abs(_point.x) < size.out * 0.5f && abs(_point.y) < size.out * 0.5f;
+	case SQUARE_E:
+		return abs(_point.x) < size.out && abs(_point.y) < size.out * 0.5f;
+	case OCTAGON:
+		if(abs(_point.x) > size.out * 0.5f || abs(_point.y) > size.out * 0.5f)
+			return false;
+		return abs(_point.x) + abs(_point.y) < size.out * 0.5f * sqrt(2.0f);
+	case OCTAGON_E:
+		if(abs(_point.x) > size.out || abs(_point.y) > size.out * 0.5f)
+			return false;
+		return abs(_point.x) + abs(_point.y) < size.out * 0.5f * (sqrt(2.0f) + 1.0f);
+	}
+	return false;
 }
 
 void THTPad::SaveObject(File &file) const {
