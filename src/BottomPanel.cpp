@@ -168,7 +168,7 @@ void BottomPanel::ToggleGround(wxCommandEvent &e) {
 
 void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
 	uint8_t mode = pcb.GetSelectedBoard()->GetCurrentLayerGround();
-	static uint8_t prevMode = mode;
+	static uint8_t prevMode = !mode;
 	if(mode != prevMode) {
 		prevMode = mode;
 		SetButtonBitmap(e, mode ? ground_enabled_xpm : ground_disabled_xpm);
