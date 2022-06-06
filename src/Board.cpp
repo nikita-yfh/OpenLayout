@@ -282,7 +282,7 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 }
 
 void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
-	glDisable(GL_POINT_SMOOTH);
+	glEnable(GL_POINT_SMOOTH);
 	glDisable(GL_LINE_SMOOTH);
 	const ColorScheme &colors = settings.GetColorScheme();
 	uint8_t subgrid = settings.GetSubGrid();
@@ -324,7 +324,7 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 				glutils::Vertex(Vec2(x, y));
 		glEnd();
 		if(subgrid != 1) {
-			glPointSize(2.0f);
+			glPointSize(3.0f);
 			glBegin(GL_POINTS);
 			for(double x = begin.x; x < end.x; x += subgridValue)
 				for(double y = begin.y; y < end.y; y += subgridValue)

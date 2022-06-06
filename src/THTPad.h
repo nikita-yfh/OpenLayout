@@ -21,6 +21,7 @@ public:
 	void SetSize(const PadSize &size);
 	bool HasMetallization() const;
 private:
+	void Draw(float halfSize, float distance) const;
 	PadSize size;
 	enum{
 		CIRCLE = 1,
