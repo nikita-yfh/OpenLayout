@@ -8,27 +8,28 @@ AABB THTPad::GetAABB() const {
 }
 
 bool THTPad::TestPoint(const Vec2 &point) const {
+	float radius = size.out * 0.5f;
 	Vec2 _point = (point - position).Rotate(-angle);
 	switch(shape) {
 	case CIRCLE:
-		return utils::PointInCircle(point, position, size.out * 0.5f);
+		return utils::PointInCircle(point, position, radius);
 	case CIRCLE_E:
-		if(utils::PointInCircle(_point, Vec2(-size.out * 0.5f, 0.0f), size.out * 0.5f))
+		if(utils::PointInCircle(_point, Vec2(-radius, 0.0f), radius))
 			return true;
-		if(utils::PointInCircle(_point, Vec2( size.out * 0.5f, 0.0f), size.out * 0.5f))
+		if(utils::PointInCircle(_point, Vec2( radius, 0.0f), radius))
 			return true;
 	case SQUARE:
-		return abs(_point.x) < size.out * 0.5f && abs(_point.y) < size.out * 0.5f;
+		return abs(_point.x) < radius && abs(_point.y) < radius;
 	case SQUARE_E:
-		return abs(_point.x) < size.out && abs(_point.y) < size.out * 0.5f;
+		return abs(_point.x) < size.out && abs(_point.y) < radius;
 	case OCTAGON:
-		if(abs(_point.x) > size.out * 0.5f || abs(_point.y) > size.out * 0.5f)
+		if(abs(_point.x) > radius || abs(_point.y) > radius)
 			return false;
-		return abs(_point.x) + abs(_point.y) < size.out * 0.5f * sqrt(2.0f);
+		return abs(_point.x) + abs(_point.y) < radius * sqrtf(2.0f);
 	case OCTAGON_E:
-		if(abs(_point.x) > size.out || abs(_point.y) > size.out * 0.5f)
+		if(abs(_point.x) > size.out || abs(_point.y) > radius)
 			return false;
-		return abs(_point.x) + abs(_point.y) < size.out * 0.5f * (sqrt(2.0f) + 1.0f);
+		return abs(_point.x) + abs(_point.y) < radius * (sqrtf(2.0f) + 1.0f);
 	}
 	return false;
 }
