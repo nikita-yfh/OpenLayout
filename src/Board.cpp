@@ -7,6 +7,7 @@ Board::Board(Type type, Vec2 innerSize, float border) : Board() {
 		size.Set(innerSize.x + border * 2.0f, innerSize.y + border * 2.0f);
 	else
 		size = innerSize;
+	anchor.Set(0.0f, size.y);
 }
 
 Board::Board() {
@@ -19,6 +20,10 @@ Board::Board() {
 	multilayer = false;
 	activeLayer = LAYER_C2;
 	activeGrid = grid = 1.27;
+	camera.Set(0.0f, 0.0f);
+	zoom = 10;
+	anchor.Set(0.0f, 0.0f);
+	strcpy(name, _("New Board"));
 }
 
 Board::~Board() {
