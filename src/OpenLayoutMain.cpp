@@ -6,11 +6,15 @@
 #include "LeftPanel.h"
 #include "SettingsDialog.h"
 #include <wx/sysopt.h>
+#include <wx/msgdlg.h>
 
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MOVE(							OpenLayoutFrame::Move)
 	EVT_SIZE(							OpenLayoutFrame::Resize)
 	EVT_CLOSE(							OpenLayoutFrame::Close)
+	EVT_MENU(wxID_SAVE,					OpenLayoutFrame::SaveFile)
+	EVT_MENU(wxID_SAVEAS,				OpenLayoutFrame::SaveFileAs)
+	EVT_MENU(wxID_OPEN,					OpenLayoutFrame::OpenFile)
 	EVT_MENU(wxID_EXIT,					OpenLayoutFrame::Close)
 	EVT_MENU(wxID_PROPERTIES,			OpenLayoutFrame::ShowSettings)
 	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
@@ -101,10 +105,46 @@ OpenLayoutFrame::OpenLayoutFrame() {
 	SetSizer(content);
 	SetAutoLayout(true);
 	Layout();
+}
 
-	File file("/home/nikita/Documents/test/test.lay6", "rb");
-	if(file.IsOk())
-		pcb.Load(file);
+void OpenLayoutFrame::OpenFile(wxCommandEvent &e) {
+	wxFileDialog dialog(this, _("Open layout file"), "", "",
+		_("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_OPEN);
+
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	File file(dialog.GetPath().c_str(), "rb");
+	if(file.IsOk() && pcb.Load(file)) {
+		lastFile = dialog.GetPath();
+		Refresh();
+	} else
+		wxMessageBox(_("Error opening file"), _("Open"), wxICON_ERROR);
+}
+
+void OpenLayoutFrame::SaveFileAs(wxCommandEvent &e) {
+	wxFileDialog dialog(this, _("Save layout file"), "", "",
+		_("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+	if (dialog.ShowModal() == wxID_CANCEL)
+		return;
+	File file(dialog.GetPath().c_str(), "rb");
+	if(file.IsOk()) {
+		pcb.Save(file);
+		lastFile = dialog.GetPath();
+	} else
+		wxMessageBox(_("Error saving file"), _("Save"), wxICON_ERROR);
+}
+
+void OpenLayoutFrame::SaveFile(wxCommandEvent &e) {
+	if(lastFile.IsEmpty())
+		SaveFileAs(e);
+	else {
+		File file(lastFile, "rb");
+		if(file.IsOk()) 
+			pcb.Save(file);
+		else
+			wxMessageBox(_("Error saving file"), _("Save"), wxICON_ERROR);
+	}
 }
 
 wxString OpenLayoutFrame::GetDir() {
@@ -166,9 +206,6 @@ void OpenLayoutFrame::NewBoard(wxCommandEvent&) {
 void OpenLayoutFrame::Group(wxCommandEvent&) {}
 void OpenLayoutFrame::Ungroup(wxCommandEvent&) {}
 void OpenLayoutFrame::SelectAll(wxCommandEvent&) {}
-void OpenLayoutFrame::SaveFile(wxCommandEvent&) {}
-void OpenLayoutFrame::SaveFileAs(wxCommandEvent&) {}
-void OpenLayoutFrame::OpenFile(wxCommandEvent&) {}
 void OpenLayoutFrame::SetSelectionLayer(wxCommandEvent&) {}
 void OpenLayoutFrame::Delete(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&) {

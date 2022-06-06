@@ -137,5 +137,7 @@ private:
 	SelectorPanel *selector;
 	ComponentsPanel *components;
 	MacroPanel *macro;
+
+	wxString lastFile;
 	wxDECLARE_EVENT_TABLE();
 };
