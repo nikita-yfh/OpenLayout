@@ -51,6 +51,12 @@ enum {
 	SUBGRID_10,
 };
 
+enum{
+	RUBBERBAND_DISABLED,
+	RUBBERBAND_SMALL,
+	RUBBERBAND_LARGE
+};
+
 struct Settings {
 	Settings();
 	void SetDefault();
@@ -124,6 +130,8 @@ struct Settings {
 	uint8_t rotationAngleSel;
 
 	bool transparent;
+	bool capture;
+	uint8_t rubberband;
 
 	wxPoint windowPos;
 	wxSize windowSize;

@@ -88,8 +88,8 @@ public:
 };
 
 
-BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb)
-		: wxPanel(parent), pcb(_pcb) {
+BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
+		: wxPanel(parent), pcb(_pcb), settings(_settings) {
 	wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
 	{
 		wxStaticText *position = new wxStaticText(this, ID_POSITION, wxEmptyString);
@@ -141,12 +141,16 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb)
 		content->Add(ground, 0, wxEXPAND);
 	}
 	{
-		wxBitmapButton *capture = new wxBitmapButton(this, ID_CAPTURE, capture_enabled_xpm);
+		wxBitmapButton *capture = new wxBitmapButton(this, ID_CAPTURE,
+			settings.capture ? capture_enabled_xpm : capture_disabled_xpm);
 		capture->SetToolTip(_("Enable or disable the automatic capture mode"));
 		content->Add(capture, 0, wxEXPAND);
 	}
 	{
-		wxBitmapButton *rubberband = new wxBitmapButton(this, ID_RUBBERBAND, rubberband_disabled_xpm);
+		wxBitmapButton *rubberband = new wxBitmapButton(this, ID_RUBBERBAND,
+			settings.rubberband == RUBBERBAND_LARGE ? rubberband_large_xpm :
+			settings.rubberband == RUBBERBAND_SMALL ? rubberband_small_xpm :
+			rubberband_disabled_xpm);
 		rubberband->SetToolTip(_("Toggle the level of Rubberband function (small range / big range / off)"));
 		content->Add(rubberband, 0, wxEXPAND);
 	}
@@ -176,13 +180,14 @@ void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
 }
 
 void BottomPanel::ToggleCapture(wxCommandEvent &e) {
-	SetButtonBitmap(e, pcb.ToggleCaptureMode() ? capture_enabled_xpm : capture_disabled_xpm);
+	settings.capture = !settings.capture;
+	SetButtonBitmap(e, settings.capture ? capture_enabled_xpm : capture_disabled_xpm);
 }
 
 void BottomPanel::ToggleRubberband(wxCommandEvent &e) {
-	uint8_t mode = pcb.ToggleRubberbandMode();
-	SetButtonBitmap(e,	mode == RUBBERBAND_SMALL ? rubberband_large_xpm :
-						mode == RUBBERBAND_LARGE ? rubberband_small_xpm :
+	settings.rubberband = (settings.rubberband + 1) % 3;
+	SetButtonBitmap(e,	settings.rubberband == RUBBERBAND_LARGE ? rubberband_large_xpm :
+						settings.rubberband == RUBBERBAND_SMALL ? rubberband_small_xpm :
 						rubberband_disabled_xpm);
 }
 

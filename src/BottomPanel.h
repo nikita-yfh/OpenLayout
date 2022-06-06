@@ -4,7 +4,7 @@
 
 class BottomPanel : public wxPanel {
 public:
-	BottomPanel(wxWindow *parent, PCB &pcb);
+	BottomPanel(wxWindow *parent, PCB &pcb, Settings &settings);
 private:
 	void UpdatePosition(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
@@ -18,4 +18,5 @@ private:
 	wxDECLARE_EVENT_TABLE();
 
 	PCB &pcb;
+	Settings &settings;
 };

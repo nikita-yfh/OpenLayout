@@ -61,6 +61,10 @@ void Settings::SetDefault() {
 
 	customRotationAngle = 22.5f;
 	rotationAngleSel = 1; // 45 deg
+	
+	transparent = false;
+	capture = true;
+	rubberband = RUBBERBAND_DISABLED;
 
 	const char defKeys[TOOL_COUNT]= {
 		ESCAPE, 'Z', 'L', 'P',
@@ -264,6 +268,8 @@ void Settings::Save(File &file) const {
 	file.Write<bool>(showGrid);
 	file.Write<float>(customRotationAngle);
 	file.Write<uint8_t>(rotationAngleSel);
+	file.Write<uint8_t>(capture);
+	file.Write<uint8_t>(rubberband);
 	file.Write<uint16_t>(windowPos.x);
 	file.Write<uint16_t>(windowPos.y);
 	file.Write<uint16_t>(windowSize.x);
@@ -339,6 +345,8 @@ void Settings::Load(File &file) {
 	showGrid = file.Read<bool>();
 	customRotationAngle = file.Read<float>();
 	rotationAngleSel = file.Read<uint8_t>();
+	capture = file.Read<uint8_t>();
+	rubberband = file.Read<uint8_t>();
 	windowPos.x = file.Read<uint16_t>();
 	windowPos.y = file.Read<uint16_t>();
 	windowSize.x = file.Read<uint16_t>();

@@ -97,7 +97,7 @@ OpenLayoutFrame::OpenLayoutFrame() {
 		content->Add(panels, 1, wxEXPAND);
 	}
 
-	BottomPanel *bottomPanel = new BottomPanel(this, pcb);
+	BottomPanel *bottomPanel = new BottomPanel(this, pcb, settings);
 	content->Add(bottomPanel, 0, wxEXPAND);
 
 	SetFocus();
