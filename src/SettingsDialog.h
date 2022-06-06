@@ -40,7 +40,7 @@ protected:
 	wxListView *toolList;
 	wxDirPickerCtrl *dirs[5];
 	wxCheckBox *sameDirs;
-	wxColourPickerCtrl *colorPicker[12];
+	wxColourPickerCtrl *colorPicker[14];
 	wxCheckBox *checkboxes[11];
 
 private:
