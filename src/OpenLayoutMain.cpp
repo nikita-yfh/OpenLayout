@@ -194,6 +194,7 @@ void OpenLayoutFrame::ShowSettings(wxCommandEvent&) {
 	if(dialog.ShowModal() != wxID_OK)
 		return;
 	dialog.Get(settings);
+	Refresh();
 }
 void OpenLayoutFrame::ShowAbout(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&) {

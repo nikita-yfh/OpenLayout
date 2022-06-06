@@ -52,7 +52,6 @@ inline bool PointInConcavePolygon(const Vec2 &point, uint32_t count, const Vec2 
 		if(IntersectTwoLines(p1, p2, point, endLine))
 			counter++;
 	}
-	printf("%d\n", counter);
 	return counter % 2 == 1;
 }
 inline bool PointInCircle(const Vec2 &point, const Vec2 &center, float radius) {

@@ -219,9 +219,12 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	glOrtho(0.0f, screenSize.x / zoom, screenSize.y / zoom, 0.0f, 0.0f, 1.0f);
 	glutils::Translate(-camera);
 
-	if(GetCurrentLayerGround())
-		colors.SetGroundColor(COLOR_C1 + activeLayer);
-	else
+	if(GetCurrentLayerGround()) {
+		if(settings.darkGround)
+			colors.SetGroundColor(COLOR_C1 + activeLayer);
+		else
+			colors.SetColor(COLOR_C1 + activeLayer);
+	} else
 		colors.SetColor(COLOR_BGR);
 
 	glRectf(0.0f, 0.0f, size.x, size.y);
