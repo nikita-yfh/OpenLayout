@@ -3,11 +3,12 @@
 #include "Utils.h"
 
 AABB SMDPad::GetAABB() const {
-	return AABB(position - size * sqrtf(2.0f) * 2.0f, position + size * sqrtf(2.0f) * 2.0f);
+	return AABB(position - size * sqrtf(2.0f), position + size * sqrtf(2.0f));
 }
 
 bool SMDPad::TestPoint(const Vec2 &point) const {
-	return false;
+	Vec2 _point = (point - position).Rotate(-angle);
+	return abs(_point.x) < size.x * 0.5f && abs(_point.y) < size.y * 0.5f;
 }
 
 void SMDPad::SaveObject(File &file) const {
