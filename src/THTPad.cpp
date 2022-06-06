@@ -138,11 +138,89 @@ void THTPad::LoadObject(File &file) {
 	}
 }
 
+void THTPad::Draw(float halfSize, float distance) const {
+	switch(shape) {
+	case CIRCLE:
+		glutils::DrawCircle(position, halfSize + distance);
+		break;
+	case SQUARE:
+		glPushMatrix();
+		glutils::Translate(position);
+		glutils::Rotate(angle);
+		glutils::DrawRectangle(Vec2(halfSize + distance, halfSize + distance));
+		glPopMatrix();
+		break;
+	case SQUARE_E:
+		glPushMatrix();
+		glutils::Translate(position);
+		glutils::Rotate(angle);
+		glutils::DrawRectangle(Vec2(halfSize * 2.0f + distance, halfSize + distance));
+		glPopMatrix();
+		break;
+	case CIRCLE_E:
+		glBegin(GL_TRIANGLE_FAN);
+		glutils::Vertex(position);
+		for(float i = angle + M_PI / 2.0f; i < angle + M_PI * 3.0f / 2.0f; i += glutils::stepAngle)
+			glutils::Vertex(Vec2(i) * (halfSize + distance) + position - Vec2(angle) * halfSize);
+		for(float i = angle + M_PI * 3.0f / 2.0f; i < angle + M_PI * 5.0f / 2.0f; i += glutils::stepAngle)
+			glutils::Vertex(Vec2(i) * (halfSize + distance) + position + Vec2(angle) * halfSize);
+		glutils::Vertex(Vec2(angle + M_PI / 2.0f) * (halfSize + distance) + position - Vec2(angle) * halfSize);
+		glEnd();
+		break;
+	case OCTAGON:
+		glPushMatrix();
+		glutils::Translate(position);
+		glutils::Rotate(angle);
+		{
+			float s1 = halfSize + distance;
+			float s2 = s1 * 0.41421356; // tg(M_PI / 8)
+			glBegin(GL_TRIANGLE_FAN);
+			glutils::Vertex(Vec2(0.0f, 0.0f));
+			glutils::Vertex(Vec2(-s1,  s2));
+			glutils::Vertex(Vec2(-s2,  s1));
+			glutils::Vertex(Vec2( s2,  s1));
+			glutils::Vertex(Vec2( s1,  s2));
+			glutils::Vertex(Vec2( s1, -s2));
+			glutils::Vertex(Vec2( s2, -s1));
+			glutils::Vertex(Vec2(-s2, -s1));
+			glutils::Vertex(Vec2(-s1, -s2));
+			glutils::Vertex(Vec2(-s1,  s2));
+			glEnd();
+		}
+		glPopMatrix();
+		break;
+	case OCTAGON_E:
+		glPushMatrix();
+		glutils::Translate(position);
+		glutils::Rotate(angle);
+		{
+			float s1 = halfSize + distance;
+			float s2 = s1 * 0.41421356; // tg(M_PI / 8)
+			float s3 = halfSize * 2.0f + distance;
+			float s4 = halfSize + s2;
+			glBegin(GL_TRIANGLE_FAN);
+			glutils::Vertex(Vec2(0.0f, 0.0f));
+			glutils::Vertex(Vec2(-s3,  s2));
+			glutils::Vertex(Vec2(-s4,  s1));
+			glutils::Vertex(Vec2( s4,  s1));
+			glutils::Vertex(Vec2( s3,  s2));
+			glutils::Vertex(Vec2( s3, -s2));
+			glutils::Vertex(Vec2( s4, -s1));
+			glutils::Vertex(Vec2(-s4, -s1));
+			glutils::Vertex(Vec2(-s3, -s2));
+			glutils::Vertex(Vec2(-s3,  s2));
+			glEnd();
+		}
+		glPopMatrix();
+		break;
+	}
+}
+
 void THTPad::DrawGroundDistance() const {
-	glutils::DrawCircle(position, size.out / 2.0f + groundDistance);
+	Draw(size.out / 2.0f, groundDistance);
 }
 void THTPad::DrawObject() const {
-	glutils::DrawCircle(position, size.out / 2.0f);
+	Draw(size.out / 2.0f, 0.0f);
 }
 void THTPad::DrawDrillings() const {
 	glutils::DrawCircle(position, size.in / 2.0f);
