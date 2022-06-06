@@ -2,6 +2,16 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
+Arc::Arc(uint8_t layer, float width, const Vec2 &_position, float _diameter)
+					: LineObject(layer, width) {
+	position = _position;
+	beginAngle = 0.0f;
+	endAngle = 0.0f;
+	diameter = _diameter;
+	cutoff = false;
+	fill = false;
+}
+
 AABB Arc::GetAABB() const {
 	Vec2 radius((diameter + width) * 0.5f, (diameter + width) * 0.5f);
 	return AABB(position - radius, position + radius);
@@ -75,18 +85,27 @@ void Arc::Draw(float halfwidth) const {
 	if(endAngle <= beginAngle)
 		end += M_PI * 2.0f;
 
-	glBegin(GL_TRIANGLE_STRIP);
-	for(float i = beginAngle; i < end; i += (end - beginAngle) / (glutils::numSegments)) {
-		Vec2 vec(-i);
-		glutils::Vertex(position + vec * (radius - halfwidth));
-		glutils::Vertex(position + vec * (radius + halfwidth));
-	}
-	glutils::Vertex(position + Vec2(-end) * (radius - halfwidth));
-	glutils::Vertex(position + Vec2(-end) * (radius + halfwidth));
-	glEnd();
-	if(beginAngle != endAngle) {
-		glutils::DrawSector(position + Vec2(-beginAngle) * radius, halfwidth, beginAngle - M_PI, beginAngle);
-		glutils::DrawSector(position + Vec2(-endAngle)   * radius, halfwidth, endAngle, endAngle + M_PI);
+	if(halfwidth == 0.0f) {
+		glLineWidth(1.0f);
+		glBegin(GL_LINE_STRIP);
+		for(float i = beginAngle; i < end; i += (end - beginAngle) / (glutils::numSegments))
+			glutils::Vertex(position + Vec2(-i) * radius);
+		glutils::Vertex(position + Vec2(-end) * radius);
+		glEnd();
+	} else {
+		glBegin(GL_TRIANGLE_STRIP);
+		for(float i = beginAngle; i < end; i += (end - beginAngle) / (glutils::numSegments)) {
+			Vec2 vec(-i);
+			glutils::Vertex(position + vec * (radius - halfwidth));
+			glutils::Vertex(position + vec * (radius + halfwidth));
+		}
+		glutils::Vertex(position + Vec2(-end) * (radius - halfwidth));
+		glutils::Vertex(position + Vec2(-end) * (radius + halfwidth));
+		glEnd();
+		if(beginAngle != endAngle) {
+			glutils::DrawSector(position + Vec2(-beginAngle) * radius, halfwidth, beginAngle - M_PI, beginAngle);
+			glutils::DrawSector(position + Vec2(-endAngle)   * radius, halfwidth, endAngle, endAngle + M_PI);
+		}
 	}
 }
 

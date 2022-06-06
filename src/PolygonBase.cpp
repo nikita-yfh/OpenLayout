@@ -1,9 +1,15 @@
 #include "PolygonBase.h"
 #include "GLUtils.h"
 
-PolygonBase::PolygonBase() {
-	points = nullptr;
-	count = 0;
+PolygonBase::PolygonBase(uint8_t layer, float width, const Vec2 *_points, uint32_t _count)
+						: LineObject(layer, width) {
+	cutoff = false;
+	count = _count;
+	if(count) {
+		points = (Vec2*) malloc(sizeof(Vec2) * count);
+		memcpy(points, _points, sizeof(Vec2) * count);
+	} else
+		points = nullptr;
 }
 
 PolygonBase::~PolygonBase() {

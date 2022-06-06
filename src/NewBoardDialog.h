@@ -15,7 +15,7 @@ class NewBoardDialog : public wxDialog {
 public:
 	NewBoardDialog(wxWindow* parent);
 
-	Board *GetBoard() const;
+	Board *CreateBoard(bool originTop) const;
 private:
 
 	wxRadioButton *types[3];

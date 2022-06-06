@@ -4,6 +4,9 @@
 
 class THTPad : public Pad {
 public:
+	THTPad() : THTPad(0, Vec2(0.0f, 0.0f), PadSize(0.0f, 0.0f)) {}
+	THTPad(uint8_t layer, const Vec2 &position, const PadSize &size);
+
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 	virtual void DrawDrillings() const override;
@@ -33,6 +36,8 @@ private:
 	};
 	uint8_t shape;
 	bool through;
+
+	friend class Board;
 };
 
 inline const PadSize &THTPad::GetSize() const {

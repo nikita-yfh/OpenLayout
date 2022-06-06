@@ -10,7 +10,6 @@ PCB::PCB(){
 	capture = true;
 	metallization = false;
 	padShape = 0;
-	AddBoard(new Board(Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f));
 }
 PCB::~PCB(){
 	while(boards){

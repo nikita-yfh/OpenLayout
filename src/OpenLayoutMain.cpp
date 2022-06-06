@@ -105,6 +105,8 @@ OpenLayoutFrame::OpenLayoutFrame() {
 	SetSizer(content);
 	SetAutoLayout(true);
 	Layout();
+
+	pcb.AddBoard(new Board(Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f, settings.originLeftTop));
 }
 
 void OpenLayoutFrame::OpenFile(wxCommandEvent &e) {
@@ -202,7 +204,10 @@ void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&) {
 }
 void OpenLayoutFrame::NewBoard(wxCommandEvent&) {
 	NewBoardDialog dialog(this);
-	dialog.ShowModal();
+	if(dialog.ShowModal() != wxID_OK)
+		return;
+	pcb.AddBoard(dialog.CreateBoard(settings.originLeftTop));
+	Refresh();
 }
 void OpenLayoutFrame::Group(wxCommandEvent&) {}
 void OpenLayoutFrame::Ungroup(wxCommandEvent&) {}

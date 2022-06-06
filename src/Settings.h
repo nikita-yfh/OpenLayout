@@ -77,8 +77,8 @@ struct Settings {
 	bool limitTextHeight;
 	bool alwaysReadable;
 	bool optimize;
-	bool anchorLeftTop;
-	bool anchorExport;
+	bool originLeftTop;
+	bool originExport;
 
 	uint8_t undoDepth;
 

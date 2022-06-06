@@ -1,13 +1,33 @@
 #include "Board.h"
 #include "GLUtils.h"
 #include "THTPad.h"
+#include "Arc.h"
+#include "Track.h"
 
-Board::Board(Type type, Vec2 innerSize, float border) : Board() {
+Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() {
 	if(type != Type::Empty)
 		size.Set(innerSize.x + border * 2.0f, innerSize.y + border * 2.0f);
 	else
 		size = innerSize;
-	anchor.Set(0.0f, size.y);
+
+	if(type == Type::Round) {
+		Arc *circle = new Arc(LAYER_O, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x);
+		AddObject(circle);
+	} else if(type == Type::Rectangle) {
+		const Vec2 points[] = {
+			{border, border},
+			{border + innerSize.x, border},
+			{border + innerSize.x, border + innerSize.y},
+			{border, border + innerSize.y},
+			{border, border}
+		};
+		Track *frame = new Track(LAYER_O, 0.0f, points, 5);
+		AddObject(frame);
+	}
+	if(originTop)
+		origin = Vec2(border, border);
+	else
+		origin = Vec2(border, size.y - border);
 }
 
 Board::Board() {
@@ -22,7 +42,7 @@ Board::Board() {
 	activeGrid = grid = 1.27;
 	camera.Set(0.0f, 0.0f);
 	zoom = 10;
-	anchor.Set(0.0f, 0.0f);
+	origin.Set(0.0f, 0.0f);
 	strcpy(name, _("New Board"));
 }
 
@@ -57,7 +77,7 @@ void Board::Save(File &file) const {
 	file.Write(layerVisible, 7);
 	images.Save(file);
 	file.WriteNull(8);
-	anchor.InvY().SaveInt(file);
+	origin.InvY().SaveInt(file);
 	file.Write<uint8_t>(multilayer);
 
 	file.Write<uint32_t>(GetObjectCount());
@@ -81,8 +101,8 @@ void Board::Load(File &file) {
 	file.Read(layerVisible, 7);
 	images.Load(file);
 	file.ReadNull(8);
-	anchor.LoadInt(file);
-	anchor = anchor.InvY();
+	origin.LoadInt(file);
+	origin = origin.InvY();
 	multilayer = file.Read<uint8_t>();
 
 	uint32_t objectCount = file.Read<uint32_t>();
@@ -295,7 +315,7 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 	const ColorScheme &colors = settings.GetColorScheme();
 	uint8_t subgrid = settings.GetSubGrid();
 	double subgridValue = subgrid * activeGrid;
-	Vec2 begin(fmod(anchor.x, subgridValue) - subgridValue, fmod(anchor.y, subgridValue) - subgridValue);
+	Vec2 begin(fmod(origin.x, subgridValue) - subgridValue, fmod(origin.y, subgridValue) - subgridValue);
 	Vec2 end(size.x, size.y);
 	if(settings.gridStyle == GRID_LINES) {
 		colors.SetColor(COLOR_LINES);

@@ -113,24 +113,25 @@ void Poly::Draw(float halfWidth) const {
 	for(int i = 0; i < count; i++)
 		glutils::Vertex(points[i]);
 	glEnd();
-	glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
-	float angles[count];
-	glBegin(GL_QUADS);
-	for(int i = 0; i < count; i++) {
-		const Vec2 &a = points[i];
-		const Vec2 &b = points[(i + 1) % count];
 
-		Vec2 delta = (b - a).Normal(halfWidth);
-		angles[i] = delta.Angle();
+	if(width != 0.0f) {
+		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		glBegin(GL_QUADS);
+		for(int i = 0; i < count; i++) {
+			const Vec2 &a = points[i];
+			const Vec2 &b = points[(i + 1) % count];
 
-		glutils::Vertex(a - delta);
-		glutils::Vertex(a + delta);
-		glutils::Vertex(b + delta);
-		glutils::Vertex(b - delta);
+			Vec2 delta = (b - a).Normal(halfWidth);
+
+			glutils::Vertex(a - delta);
+			glutils::Vertex(a + delta);
+			glutils::Vertex(b + delta);
+			glutils::Vertex(b - delta);
+		}
+		glEnd();
+		for(int i = 0; i < count; i++)
+			glutils::DrawCircle(points[i], halfWidth);
 	}
-	glEnd();
-	for(int i = 0; i < count; i++)
-		glutils::DrawCircle(points[i], halfWidth);
 
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 	glStencilFunc(GL_EQUAL, 1, 1);

@@ -79,6 +79,14 @@ void Connections::Load(Object *objects, File &file) {
 	}
 }
 
+Pad::Pad(uint8_t layer, const Vec2 &_position) : Object(layer) {
+	position = _position;
+	thermal = false;
+	memset(thermalStyle, 0x55, 4);
+	thermalSize = 0.4f;
+	angle = 0.0f;
+}
+
 void Pad::SaveConnections(const Object *objects, File &file) const {
 	connections.Save(objects, file);
 }

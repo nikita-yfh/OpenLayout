@@ -2,6 +2,12 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
+THTPad::THTPad(uint8_t layer, const Vec2 &position, const PadSize &_size) : Pad(layer, position) {
+	size = _size;
+	shape = 0;
+	through = false;
+}
+
 AABB THTPad::GetAABB() const {
 	Vec2 maxRadius(size.out * 2.5f, size.out * 2.5f);
 	return AABB(position - maxRadius, position + maxRadius);

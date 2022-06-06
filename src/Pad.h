@@ -31,6 +31,9 @@ private:
 
 class Pad : public Object{
 public:
+	Pad() : Pad(0, Vec2(0.0f, 0.0f)) {}
+	Pad(uint8_t layer, const Vec2 &_position);
+
 	virtual void SaveConnections(const Object *objects, File &file) const override;
 	virtual void LoadConnections(Object *objects, File &file) override;
 

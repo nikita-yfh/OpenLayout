@@ -2,6 +2,10 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
+SMDPad::SMDPad(uint8_t layer, const Vec2 &position, const Vec2 &_size) : Pad(layer, position) {
+	size = _size;
+}
+
 AABB SMDPad::GetAABB() const {
 	return AABB(position - size * sqrtf(2.0f), position + size * sqrtf(2.0f));
 }

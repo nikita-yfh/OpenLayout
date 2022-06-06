@@ -9,8 +9,7 @@ Groups::Groups() {
 	groups = nullptr;
 	count = 0;
 }
-Groups::~Groups() {
-	if(groups)
+Groups::~Groups() { if(groups)
 		free(groups);
 	count = 0;
 }
@@ -55,13 +54,17 @@ void Groups::Load(File &file) {
 	}
 }
 
-Object::Object() {
+Object::Object(uint8_t _layer) {
 	prev = nullptr;
 	next = nullptr;
 	*marker = '\0';
 	componentID = 0;
 	groundDistance = 0.0f;
+	soldermask = false;
+	selected = false;
+	layer = _layer;
 }
+
 uint32_t Object::GetNumber() const {
 	uint32_t count = 0;
 	for(Object *i = prev; i; i = i->next)
