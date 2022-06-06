@@ -23,7 +23,8 @@ private:
 
 class Object {
 public:
-	Object();
+	Object() : Object(0) {}
+	Object(uint8_t layer);
 
 	virtual void DrawGroundDistance() const = 0;
 	virtual void DrawObject() const = 0;

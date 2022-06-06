@@ -185,7 +185,8 @@ void NewBoardDialog::RecalcSize(wxCommandEvent&) {
 	allWidth->SetLabel(wxString::Format("%.2f", newWidth));
 	allHeight->SetLabel(wxString::Format("%.2f", newHeight));
 }
-Board *NewBoardDialog::GetBoard() const {
+
+Board *NewBoardDialog::CreateBoard(bool originTop) const {
 	Vec2 boardSize;
 	if(!types[2]->GetValue()){
 		boardSize.x = width->GetValue();
@@ -200,7 +201,7 @@ Board *NewBoardDialog::GetBoard() const {
 	else if(types[2]->GetValue())
 		boardType = Board::Type::Round;
 
-	return new Board(boardType, boardSize, boardBorder);
+	return new Board(boardType, boardSize, boardBorder, originTop);
 }
 
 

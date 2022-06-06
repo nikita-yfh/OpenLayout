@@ -3,6 +3,9 @@
 
 class SMDPad : public Pad {
 public:
+	SMDPad() : SMDPad(0, Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f)) {}
+	SMDPad(uint8_t layer, const Vec2 &position, const Vec2 &size);
+
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 
@@ -19,6 +22,8 @@ public:
 	void SetSize(const Vec2 &size);
 private:
 	Vec2 size;
+
+	friend class Board;
 };
 
 inline const Vec2 &SMDPad::GetSize() const {

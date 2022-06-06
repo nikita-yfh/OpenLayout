@@ -14,7 +14,7 @@ public:
 		Round
 	};
 
-	Board(Type type, Vec2 innerSize, float border);
+	Board(Type type, Vec2 innerSize, float border, bool originTop);
 	Board();
 
 	~Board();
@@ -64,6 +64,10 @@ public:
 	bool SelectObject(const Vec2 &point);
 	void UnselectAll();
 
+	void SetOrigin(const Vec2 &origin);
+	void SetOriginTop();
+	void SetOriginBottom();
+
 	ImageConfigs images;
 
 	enum Layer {
@@ -86,7 +90,7 @@ private:
 	double activeGrid;
 	double zoom;
 	Vec2 camera;
-	Vec2 anchor;
+	Vec2 origin;
 
 	Object *objects;
 	uint32_t GetObjectCount() const;
@@ -144,4 +148,13 @@ inline Object *Board::GetObjects() {
 }
 inline bool Board::IsEmpty() const {
 	return objects == nullptr;
+}
+inline void Board::SetOrigin(const Vec2 &newOrigin) {
+	origin = newOrigin;
+}
+inline void Board::SetOriginTop() {
+	origin = Vec2(0.0f, 0.0f);
+}
+inline void Board::SetOriginBottom() {
+	origin = Vec2(0.0f, size.y);
 }

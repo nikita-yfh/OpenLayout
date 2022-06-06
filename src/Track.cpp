@@ -79,94 +79,102 @@ void Track::LoadObject(File &file) {
 }
 
 void Track::Draw(float halfWidth) const {
-	Vec2 normals[count - 1];
-	for(int i = 0; i < count - 1; i++)
-		normals[i] = (points[i + 1] - points[i]).Normal(halfWidth);
-
-	Vec2 pathBegin1 = points[0] - normals[0];
-	Vec2 pathBegin2 = points[0] + normals[0];
-	Vec2 pathEnd1 = points[count - 1] - normals[count - 2];
-	Vec2 pathEnd2 = points[count - 1] + normals[count - 2];
-
-	if(GetBeginStyle()) {
-		Vec2 delta = Vec2(points[1] - points[0], halfWidth);
-		pathBegin1 -= delta;
-		pathBegin2 -= delta;
+	if(halfWidth == 0.0f) {
+		glLineWidth(1.0f);
+		glBegin(GL_LINE_STRIP);
+		for(int i = 0; i < count; i++)
+			glutils::Vertex(points[i]);
+		glEnd();
 	} else {
-		glutils::DrawTriangleFan(points[0], points[0],
-			points[0] + normals[0], points[0] - normals[0], true);
-	}
-	if(GetEndStyle()) {
-		Vec2 delta = Vec2(points[count - 1] - points[count - 2], halfWidth);
-		pathEnd1 -= delta;
-		pathEnd2 -= delta;
-	} else {
-		glutils::DrawTriangleFan(points[count - 1], points[count - 1],
-			points[count - 1] + normals[count - 2], points[count - 1] - normals[count - 2], false);
-	}
+		Vec2 normals[count - 1];
+		for(int i = 0; i < count - 1; i++)
+			normals[i] = (points[i + 1] - points[i]).Normal(halfWidth);
 
-	Vec2 intersections[count - 2];
-	bool clockwise[count - 2];
+		Vec2 pathBegin1 = points[0] - normals[0];
+		Vec2 pathBegin2 = points[0] + normals[0];
+		Vec2 pathEnd1 = points[count - 1] - normals[count - 2];
+		Vec2 pathEnd2 = points[count - 1] + normals[count - 2];
 
-	for(int i = 0; i < count - 2; i++) {
-		const Vec2 &a = points[i];
-		const Vec2 &b = points[i + 1];
-		const Vec2 &c = points[i + 2];
-
-		Vec2 n1 = (b - a).Normal(halfWidth);
-		Vec2 n2 = (c - b).Normal(halfWidth);
-
-		float orientation = utils::Orientation(a, b, c);
-		clockwise[i] = orientation >= 0.0f;
-
-		if(orientation > 0.0f) {
-			intersections[i] = utils::Intersection(a - n1, b - n1, b - n2, c - n2);
-			glutils::DrawTriangleFan(intersections[i], b, b + n2, b + n1, true);
-		} else if(orientation < 0.0f) {
-			intersections[i] = utils::Intersection(a + n1, b + n1, b + n2, c + n2);
-			glutils::DrawTriangleFan(intersections[i], b, b - n1, b - n2, true);
+		if(GetBeginStyle()) {
+			Vec2 delta = Vec2(points[1] - points[0], halfWidth);
+			pathBegin1 -= delta;
+			pathBegin2 -= delta;
 		} else {
-			intersections[i] = Vec2::Invalid();
-			glutils::DrawTriangleFan(b, b, b - n1, b - n2, true);
+			glutils::DrawTriangleFan(points[0], points[0],
+				points[0] + normals[0], points[0] - normals[0], true);
 		}
-	}
+		if(GetEndStyle()) {
+			Vec2 delta = Vec2(points[count - 1] - points[count - 2], halfWidth);
+			pathEnd1 -= delta;
+			pathEnd2 -= delta;
+		} else {
+			glutils::DrawTriangleFan(points[count - 1], points[count - 1],
+				points[count - 1] + normals[count - 2], points[count - 1] - normals[count - 2], false);
+		}
 
-	glBegin(GL_TRIANGLES);
-	for(int i = 0; i < count - 1; i++) {
-		Vec2 begin1 = pathBegin1;
-		Vec2 begin2 = pathBegin2;
-		Vec2 end1;
-		Vec2 end2;
-		
-		if(i == count - 2) {
-			end1 = pathEnd1;
-			end2 = pathEnd2;
-		} else if (intersections[i].IsValid()) {
-			if(clockwise[i]) {
-				end1 = pathBegin1 = intersections[i];
-				end2 = points[i + 1] + normals[i];
-				pathBegin2 = points[i + 1] + normals[i + 1];
+		Vec2 intersections[count - 2];
+		bool clockwise[count - 2];
+
+		for(int i = 0; i < count - 2; i++) {
+			const Vec2 &a = points[i];
+			const Vec2 &b = points[i + 1];
+			const Vec2 &c = points[i + 2];
+
+			Vec2 n1 = (b - a).Normal(halfWidth);
+			Vec2 n2 = (c - b).Normal(halfWidth);
+
+			float orientation = utils::Orientation(a, b, c);
+			clockwise[i] = orientation >= 0.0f;
+
+			if(orientation > 0.0f) {
+				intersections[i] = utils::Intersection(a - n1, b - n1, b - n2, c - n2);
+				glutils::DrawTriangleFan(intersections[i], b, b + n2, b + n1, true);
+			} else if(orientation < 0.0f) {
+				intersections[i] = utils::Intersection(a + n1, b + n1, b + n2, c + n2);
+				glutils::DrawTriangleFan(intersections[i], b, b - n1, b - n2, true);
+			} else {
+				intersections[i] = Vec2::Invalid();
+				glutils::DrawTriangleFan(b, b, b - n1, b - n2, true);
+			}
+		}
+
+		glBegin(GL_TRIANGLES);
+		for(int i = 0; i < count - 1; i++) {
+			Vec2 begin1 = pathBegin1;
+			Vec2 begin2 = pathBegin2;
+			Vec2 end1;
+			Vec2 end2;
+			
+			if(i == count - 2) {
+				end1 = pathEnd1;
+				end2 = pathEnd2;
+			} else if (intersections[i].IsValid()) {
+				if(clockwise[i]) {
+					end1 = pathBegin1 = intersections[i];
+					end2 = points[i + 1] + normals[i];
+					pathBegin2 = points[i + 1] + normals[i + 1];
+				} else {
+					end1 = points[i + 1] - normals[i];
+					end2 = pathBegin2 = intersections[i];
+					pathBegin1 = points[i + 1] - normals[i + 1];
+				}
 			} else {
 				end1 = points[i + 1] - normals[i];
-				end2 = pathBegin2 = intersections[i];
+				end2 = points[i + 1] + normals[i];
 				pathBegin1 = points[i + 1] - normals[i + 1];
+				pathBegin2 = points[i + 1] + normals[i + 1];
 			}
-		} else {
-			end1 = points[i + 1] - normals[i];
-			end2 = points[i + 1] + normals[i];
-			pathBegin1 = points[i + 1] - normals[i + 1];
-			pathBegin2 = points[i + 1] + normals[i + 1];
-		}
 
-		glutils::Vertex(begin1);
-		glutils::Vertex(begin2);
-		glutils::Vertex(end1);
-		glutils::Vertex(end1);
-		glutils::Vertex(begin2);
-		glutils::Vertex(end2);
+			glutils::Vertex(begin1);
+			glutils::Vertex(begin2);
+			glutils::Vertex(end1);
+			glutils::Vertex(end1);
+			glutils::Vertex(begin2);
+			glutils::Vertex(end2);
+		}
+			
+		glEnd();
 	}
-		
-	glEnd();
 }
 
 void Track::DrawGroundDistance() const {

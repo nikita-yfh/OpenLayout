@@ -27,8 +27,8 @@ void Settings::SetDefault() {
 	limitTextHeight	= false;
 	alwaysReadable	= true;
 	optimize		= true;
-	anchorLeftTop	= false;
-	anchorExport	= false;
+	originLeftTop	= false;
+	originExport	= false;
 
 	undoDepth = 50;
 
@@ -215,8 +215,8 @@ void Settings::Save(File &file) const {
 	file.Write<bool>(limitTextHeight);
 	file.Write<bool>(alwaysReadable);
 	file.Write<bool>(optimize);
-	file.Write<bool>(anchorLeftTop);
-	file.Write<bool>(anchorExport);
+	file.Write<bool>(originLeftTop);
+	file.Write<bool>(originExport);
 	file.Write<uint8_t>(undoDepth);
 	file.Write<bool>(sameDir);
 	file.WriteString(layExport);
@@ -292,8 +292,8 @@ void Settings::Load(File &file) {
 	limitTextHeight = file.Read<bool>();
 	alwaysReadable = file.Read<bool>();
 	optimize = file.Read<bool>();
-	anchorLeftTop = file.Read<bool>();
-	anchorExport = file.Read<bool>();
+	originLeftTop = file.Read<bool>();
+	originExport = file.Read<bool>();
 	undoDepth = file.Read<uint8_t>();
 	sameDir = file.Read<bool>();
 	file.ReadString(layExport);
