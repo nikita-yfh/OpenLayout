@@ -12,7 +12,7 @@ Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() 
 
 	if(type == Type::Round) {
 		Arc *circle = new Arc(LAYER_O, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x);
-		AddObject(circle);
+		AddObjectBegin(circle);
 	} else if(type == Type::Rectangle) {
 		const Vec2 points[] = {
 			{border, border},
@@ -22,7 +22,7 @@ Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() 
 			{border, border}
 		};
 		Track *frame = new Track(LAYER_O, 0.0f, points, 5);
-		AddObject(frame);
+		AddObjectBegin(frame);
 	}
 	if(originTop)
 		origin = Vec2(border, border);
@@ -31,7 +31,6 @@ Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() 
 }
 
 Board::Board() {
-	objects = nullptr;
 	next = nullptr;
 	for(int i = 0; i < 7; i++) {
 		groundPane[i] = false;
@@ -44,24 +43,6 @@ Board::Board() {
 	zoom = 10;
 	origin.Set(0.0f, 0.0f);
 	strcpy(name, _("New Board"));
-}
-
-Board::~Board() {
-	while(objects) {
-		Object *next = objects->next;
-		delete objects;
-		objects = next;
-	}
-}
-
-uint32_t Board::GetObjectCount() const {
-	uint32_t n = 0;
-	Object *tmp = objects;
-	while(tmp) {
-		n++;
-		tmp = tmp->GetNext();
-	}
-	return n;
 }
 
 void Board::Save(File &file) const {
@@ -109,12 +90,7 @@ void Board::Load(File &file) {
 	Object *last = nullptr;
 	for(int i = 0; i < objectCount; i++) {
 		Object *object = Object::Load(file);
-		if(last)
-			last->next = object;
-		else
-			objects = object;
-		object->prev = last;
-		last = object;
+		AddObjectEnd(object);
 	}
 	for(Object *object = objects; object; object = object->GetNext())
 		object->LoadConnections(objects, file);
@@ -122,27 +98,6 @@ void Board::Load(File &file) {
 	UpdateGrid(false, false);
 }
 
-void Board::AddObject(Object *object) {
-	object->next = objects;
-	object->prev = nullptr;
-	if(objects)
-		objects->prev = object;
-	objects = object;
-}
-
-Object *Board::GetFirstSelected() {
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			return object;
-	return nullptr;
-}
-
-bool Board::IsSelected() const {
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			return true;
-	return false;
-}
 
 void Board::UpdateGrid(bool shift, bool ctrl) {
 	if(ctrl)
@@ -190,7 +145,7 @@ void Board::ZoomObjects(const Vec2 &screenSize) {
 	if(!objects)
 		return;
 	AABB aabb(objects->GetAABB());
-	for(Object *object = objects->next; object; object = object->next)
+	for(Object *object = objects->GetNext(); object; object = object->GetNext())
 		aabb |= object->GetAABB();
 	ZoomAABB(screenSize, aabb);
 }
@@ -200,7 +155,7 @@ void Board::ZoomSelection(const Vec2 &screenSize) {
 	if(!first)
 		return;
 	AABB aabb(first->GetAABB());
-	for(Object *object = objects->next; object; object = object->next)
+	for(Object *object = objects->GetNext(); object; object = object->GetNext())
 		if(object->IsSelected())
 			aabb |= object->GetAABB();
 	ZoomAABB(screenSize, aabb);
@@ -212,21 +167,6 @@ Vec2 Board::ConvertToCoords(const Vec2 &vec) const {
 Vec2 Board::ConvertFromCoords(const Vec2 &vec) const {
 	return ((vec - camera) * zoom);
 }
-
-bool Board::SelectObject(const Vec2 &point) {
-	for(Object *object = objects; object; object = object->next)
-		if(object->GetAABB().TestPoint(point) && object->TestPoint(point)) {
-			object->InvertSelection();
-			return true;
-		}
-	return false;
-}
-
-void Board::UnselectAll() {
-	for(Object *object = objects; object; object = object->next)
-		object->Unselect();
-}
-
 void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 	const ColorScheme &colors = settings.GetColorScheme();
 	glMatrixMode(GL_PROJECTION);
@@ -254,7 +194,7 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 
 	if(GetCurrentLayerGround()) {
 		colors.SetColor(COLOR_BGR);
-		for(const Object *object = objects; object; object = object->next)
+		for(const Object *object = objects; object; object = object->GetNext())
 			if(object->GetLayer() == activeLayer)
 				object->DrawGroundDistance();
 	}
@@ -281,29 +221,29 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 		else if(activeLayer == LAYER_I2)
 			layer = layers[2][i];
 		colors.SetColor(COLOR_C1 + layer);
-		for(const Object *object = objects; object; object = object->next)
+		for(const Object *object = objects; object; object = object->GetNext())
 			if(object->GetLayer() == layer && !object->IsSelected() &&
 					!(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
 				object->DrawObject();
 	}
 	colors.SetColor(COLOR_VIA);
-	for(const Object *object = objects; object; object = object->next)
+	for(const Object *object = objects; object; object = object->GetNext())
 		if(object->GetType() == Object::THT_PAD && !object->IsSelected() && ((THTPad*) object)->HasMetallization())
 			object->DrawObject();
 	glDisable(GL_BLEND);
 
 	colors.SetColor(COLOR_SELO);
-	for(const Object *object = objects; object; object = object->next)
+	for(const Object *object = objects; object; object = object->GetNext())
 		if(object->IsSelected())
 			object->DrawObject();
 
 	colors.SetDrillingsColor(settings.drill);
-	for(const Object *object = objects; object; object = object->next)
+	for(const Object *object = objects; object; object = object->GetNext())
 		object->DrawDrillings();
 	colors.SetColor(COLOR_CON);
 	glLineWidth(1.5f);
 	glBegin(GL_LINES);
-	for(const Object *object = objects; object; object = object->next) 
+	for(const Object *object = objects; object; object = object->GetNext()) 
 		object->DrawConnections();
 	glEnd();
 	glDisable(GL_SCISSOR_TEST);

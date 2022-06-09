@@ -20,6 +20,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
 	EVT_MENU(wxID_INFO,					OpenLayoutFrame::ShowProjectInfo)
 	EVT_MENU(ID_BOARD_NEW,				OpenLayoutFrame::NewBoard)
+	EVT_MENU(ID_BOARD_DELETE,			OpenLayoutFrame::DeleteBoard)
 	EVT_MENU(ID_SCANNED_COPY,			OpenLayoutFrame::ShowImagesConfig)
 	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
 	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
@@ -41,6 +42,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_HMIRROR,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_VMIRROR,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_SNAP_GRID,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_BOARD_DELETE,		OpenLayoutFrame::UpdateUIDeleteBoard)
 	EVT_UPDATE_UI(ID_GROUP,				OpenLayoutFrame::UpdateUIGroup)
 	EVT_UPDATE_UI(ID_UNGROUP,			OpenLayoutFrame::UpdateUIUngroup)
 	EVT_UPDATE_UI(ID_ZOOM_OBJECTS,		OpenLayoutFrame::UpdateUIObjects)
@@ -206,7 +208,19 @@ void OpenLayoutFrame::NewBoard(wxCommandEvent&) {
 	NewBoardDialog dialog(this);
 	if(dialog.ShowModal() != wxID_OK)
 		return;
-	pcb.AddBoard(dialog.CreateBoard(settings.originLeftTop));
+	Board *board = dialog.CreateBoard(settings.originLeftTop);
+	pcb.AddBoard(board);
+	Refresh();
+	wxMessageBox(wxString::Format(_("A new Board named \"%s\" was added."),
+			board->GetName()), GetTitle(), wxICON_INFORMATION);
+}
+void OpenLayoutFrame::DeleteBoard(wxCommandEvent&) {
+	wxMessageDialog dialog(this, wxString::Format(_("Delete board \"%s\"?"), 
+		pcb.GetSelectedBoard()->GetName()), GetTitle(),
+		wxOK | wxCANCEL | wxOK_DEFAULT | wxICON_QUESTION | wxCENTER);
+	if(dialog.ShowModal() != wxID_OK)
+		return;
+	pcb.DeleteSelectedBoard();
 	Refresh();
 }
 void OpenLayoutFrame::Group(wxCommandEvent&) {}
@@ -279,4 +293,7 @@ void OpenLayoutFrame::UpdateUISelection(wxUpdateUIEvent &e) {
 void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIUngroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIMultilayer(wxUpdateUIEvent&) {}
+void OpenLayoutFrame::UpdateUIDeleteBoard(wxUpdateUIEvent &e) {
+	e.Enable(!pcb.HasOneBoard());
+}
 

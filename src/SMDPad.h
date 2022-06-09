@@ -23,7 +23,7 @@ public:
 private:
 	Vec2 size;
 
-	friend class Board;
+	friend class ObjectGroup;
 };
 
 inline const Vec2 &SMDPad::GetSize() const {

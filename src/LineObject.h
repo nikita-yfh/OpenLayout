@@ -3,7 +3,7 @@
 
 class LineObject : public Object {
 public:
-	LineObject() : LineObject(0, 0.0f) {}
+	LineObject() {}
 	LineObject(uint8_t layer, float _width) : Object(layer) { width = _width; }
 
 	float GetWidth() const;
@@ -11,7 +11,7 @@ public:
 protected:
 	float width;
 
-	friend class Board;
+	friend class ObjectGroup;
 };
 
 inline float LineObject::GetWidth() const {

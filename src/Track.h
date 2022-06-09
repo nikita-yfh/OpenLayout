@@ -37,5 +37,5 @@ private:
 
 	uint8_t style;
 
-	friend class Board;
+	friend class ObjectGroup;
 };

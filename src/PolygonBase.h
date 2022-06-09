@@ -3,7 +3,7 @@
 
 class PolygonBase : public LineObject {
 public:
-	PolygonBase();
+	PolygonBase() {}
 	PolygonBase(uint8_t layer, float width, const Vec2 *points, uint32_t count);
 
 	~PolygonBase();
@@ -15,5 +15,5 @@ protected:
 	uint32_t count;
 	bool cutoff;
 
-	friend class Board;
+	friend class ObjectGroup;
 };

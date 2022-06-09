@@ -76,7 +76,7 @@ private:
 	Object *prev;
 	Object *next;
 
-	friend class Board;
+	friend class ObjectGroup;
 };
 
 inline Object *Object::GetNext() {

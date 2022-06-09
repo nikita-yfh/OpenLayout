@@ -37,7 +37,7 @@ private:
 	uint8_t shape;
 	bool through;
 
-	friend class Board;
+	friend class ObjectGroup;
 };
 
 inline const PadSize &THTPad::GetSize() const {
