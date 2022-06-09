@@ -23,6 +23,7 @@ set(SOURCES
 	src/MenuBar.cpp
 	src/NewBoardDialog.cpp
 	src/Object.cpp
+	src/ObjectGroup.cpp
 	src/OpenLayoutMain.cpp
 	src/Pad.cpp
 	src/PCB.cpp
@@ -59,6 +60,7 @@ set(HEADERS
 	src/MenuBar.h
 	src/NewBoardDialog.h
 	src/Object.h
+	src/ObjectGroup.h
 	src/OpenLayoutMain.h
 	src/Pad.h
 	src/PCB.h

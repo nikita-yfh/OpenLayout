@@ -23,7 +23,6 @@ enum {
 	ID_DIRECTORIES,
 	ID_BOARD_NEW,
 	ID_BOARD_PROPERTIES,
-	ID_BOARD_COPY,
 	ID_BOARD_DELETE,
 	ID_BOARD_SET_RIGHT,
 	ID_BOARD_SET_LEFT,
@@ -98,6 +97,7 @@ private:
 	void ShowAbout(wxCommandEvent&);
 	void ShowProjectInfo(wxCommandEvent&);
 	void NewBoard(wxCommandEvent&);
+	void DeleteBoard(wxCommandEvent&);
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);
 	void SelectAll(wxCommandEvent&);
@@ -129,6 +129,7 @@ private:
 	void UpdateUIGroup(wxUpdateUIEvent&);
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
+	void UpdateUIDeleteBoard(wxUpdateUIEvent&);
 
 	PCB pcb;
 	Settings settings;

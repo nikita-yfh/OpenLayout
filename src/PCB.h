@@ -13,7 +13,14 @@ public:
 	bool Load(File &file);
 
 	void AddBoard(Board *board);
+	void DeleteSelectedBoard();
+	void MoveSelectedBoardLeft();
+	void MoveSelectedBoardRight();
+	void SetSelectedBoardLeft();
+	void SetSelectedBoardRight();
+
 	uint32_t GetBoardCount() const;
+	bool HasOneBoard() const;
 	void SetBoard(uint32_t n);
 	Board *GetSelectedBoard();
 

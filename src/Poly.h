@@ -27,5 +27,5 @@ private:
 	uint8_t customHatch;
 	float hatchSize;
 
-	friend class Board;
+	friend class ObjectGroup;
 };

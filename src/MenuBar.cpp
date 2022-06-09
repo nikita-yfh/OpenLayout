@@ -55,7 +55,6 @@ MenuBar::MenuBar(){
 		wxMenu *menu = new wxMenu();
 		menu->Append(ID_BOARD_NEW, _("Add new board"));
 		menu->Append(ID_BOARD_PROPERTIES, _("Properties"));
-		menu->Append(ID_BOARD_COPY, _("Copy board"));
 		menu->Append(ID_BOARD_DELETE, _("Delete board"));
 		menu->AppendSeparator();
 		menu->Append(ID_BOARD_SET_RIGHT, _("Set board to &right"));
@@ -63,8 +62,8 @@ MenuBar::MenuBar(){
 		menu->AppendSeparator();
 		menu->Append(ID_BOARD_MOVE_RIGHT, _("&Move board to right"));
 		menu->Append(ID_BOARD_MOVE_LEFT, _("M&ove board to left"));
-		menu->Append(ID_BOARD_IMPORT, _("&Import boards from "));
-		menu->Append(ID_BOARD_SAVE, _("&Save boards to "));
+		menu->Append(ID_BOARD_IMPORT, _("&Import boards from file"));
+		menu->Append(ID_BOARD_SAVE, _("&Save boards to file"));
 		Append(menu, _("&Board"));
 	}
 	{

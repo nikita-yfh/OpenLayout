@@ -1,12 +1,13 @@
 #pragma once
 #include "Vec2.h"
 #include "Object.h"
+#include "ObjectGroup.h"
 #include "ImageConfig.h"
 #include "ColorScheme.h"
 #include "Settings.h"
 #include "File.h"
 
-class Board {
+class Board : public ObjectGroup {
 public:
 	enum class Type{
 		Empty,
@@ -17,16 +18,11 @@ public:
 	Board(Type type, Vec2 innerSize, float border, bool originTop);
 	Board();
 
-	~Board();
-
 	void Load(File &file);
 	void Save(File &file) const;
 
 	Board *GetNext();
 	const Board *GetNext() const;
-
-	void AddObject(Object *object);
-	bool IsEmpty() const;
 
 	const char *GetName() const;
 
@@ -42,9 +38,6 @@ public:
 	uint8_t GetSelectedLayer() const;
 	void SetSelectedLayer(uint8_t layer);
 
-	Object *GetFirstSelected();
-	bool IsSelected() const;
-
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);
@@ -54,15 +47,11 @@ public:
 	void ZoomObjects(const Vec2 &screenSize);
 	void ZoomSelection(const Vec2 &screenSize);
 
-	Object *GetObjects();
-
 	void Draw(const Settings &settings, const Vec2 &screenSize) const;
 	void DrawGrid(const Settings &settings, const Vec2 &screenSize) const;
 
 	Vec2 ConvertToCoords(const Vec2 &vec) const;
 	Vec2 ConvertFromCoords(const Vec2 &vec) const;
-	bool SelectObject(const Vec2 &point);
-	void UnselectAll();
 
 	void SetOrigin(const Vec2 &origin);
 	void SetOriginTop();
@@ -70,15 +59,6 @@ public:
 
 	ImageConfigs images;
 
-	enum Layer {
-		LAYER_C1,
-		LAYER_S1,
-		LAYER_C2,
-		LAYER_S2,
-		LAYER_I1,
-		LAYER_I2,
-		LAYER_O,
-	};
 private:
 	char name[30];
 	Vec2 size;
@@ -92,8 +72,6 @@ private:
 	Vec2 camera;
 	Vec2 origin;
 
-	Object *objects;
-	uint32_t GetObjectCount() const;
 	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
 
 	Board *next;
@@ -142,12 +120,6 @@ inline double Board::GetGrid() const {
 }
 inline void Board::SetGrid(double newGrid) {
 	grid = activeGrid = newGrid;
-}
-inline Object *Board::GetObjects() {
-	return objects;
-}
-inline bool Board::IsEmpty() const {
-	return objects == nullptr;
 }
 inline void Board::SetOrigin(const Vec2 &newOrigin) {
 	origin = newOrigin;

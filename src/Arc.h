@@ -26,5 +26,5 @@ protected:
 	bool cutoff;
 	bool fill;
 
-	friend class Board;
+	friend class ObjectGroup;
 };
