@@ -20,7 +20,6 @@ set(SOURCES
 	src/MacroPanel.cpp
 	src/MacroPreview.cpp
 	src/MainCanvas.cpp
-	src/MenuBar.cpp
 	src/NewBoardDialog.cpp
 	src/Object.cpp
 	src/ObjectGroup.cpp
@@ -36,7 +35,6 @@ set(SOURCES
 	src/SettingsDialog.cpp
 	src/SMDPad.cpp
 	src/THTPad.cpp
-	src/ToolBar.cpp
 	src/Track.cpp
 )
 set(HEADERS
@@ -57,7 +55,6 @@ set(HEADERS
 	src/MacroPanel.h
 	src/MacroPreview.h
 	src/MainCanvas.h
-	src/MenuBar.h
 	src/NewBoardDialog.h
 	src/Object.h
 	src/ObjectGroup.h
@@ -74,7 +71,6 @@ set(HEADERS
 	src/SettingsDialog.h
 	src/SMDPad.h
 	src/THTPad.h
-	src/ToolBar.h
 	src/Track.h
 	src/Utils.h
 	src/Vec2.h
