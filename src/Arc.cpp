@@ -50,7 +50,7 @@ void Arc::SaveObject(File &file) const {
 	file.WriteNull(22);
 	file.WriteString(marker);
 
-	groups.Save(file);
+	SaveGroups(file);
 }
 
 void Arc::LoadObject(File &file) {
@@ -76,7 +76,7 @@ void Arc::LoadObject(File &file) {
 	file.ReadNull(22);
 	file.ReadString(marker);
 
-	groups.Load(file);
+	LoadGroups(file);
 }
 
 void Arc::Draw(float halfwidth) const {

@@ -55,8 +55,7 @@ void Poly::SaveObject(File &file) const {
 	file.WriteNull(6);
 	file.WriteString(marker);
 
-	groups.Save(file);
-
+	SaveGroups(file);
 	SavePoints(file, onlySoldermask);
 }
 
@@ -82,8 +81,7 @@ void Poly::LoadObject(File &file) {
 	file.ReadNull(6);
 	file.ReadString(marker);
 
-	groups.Load(file);
-
+	LoadGroups(file);
 	LoadPoints(file, onlySoldermask);
 }
 

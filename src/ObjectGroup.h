@@ -30,6 +30,7 @@ public:
 protected:
 	Object *GetLast();
 	uint32_t GetObjectCount() const;
+	Object *GetObject(uint32_t n);
 
 	Object *objects;
 };

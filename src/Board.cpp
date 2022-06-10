@@ -88,10 +88,8 @@ void Board::Load(File &file) {
 
 	uint32_t objectCount = file.Read<uint32_t>();
 	Object *last = nullptr;
-	for(int i = 0; i < objectCount; i++) {
-		Object *object = Object::Load(file);
-		AddObjectEnd(object);
-	}
+	for(int i = 0; i < objectCount; i++)
+		AddObjectEnd(Object::Load(file));
 	for(Object *object = objects; object; object = object->GetNext())
 		object->LoadConnections(objects, file);
 
