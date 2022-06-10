@@ -2,24 +2,7 @@
 #include <stdint.h>
 #include "File.h"
 #include "AABB.h"
-
-class Groups {
-public:
-	Groups();
-	~Groups();
-
-	void Add(uint32_t index);
-	void Remove(uint32_t index);
-	bool Has(uint32_t index) const;
-
-	void Save(File &file) const;
-	void Load(File &file);
-
-private:
-	uint32_t *Find(uint32_t index);
-	uint32_t count;
-	uint32_t *groups;
-};
+#include "Array.h"
 
 class Object {
 public:
@@ -42,7 +25,6 @@ public:
 
 	Object *GetNext();
 	const Object *GetNext() const;
-	uint32_t GetNumber() const;
 	uint8_t GetLayer() const;
 
 	virtual uint8_t GetType() const = 0;
@@ -54,7 +36,7 @@ public:
 	void Unselect();
 	void InvertSelection();
 
-	Groups groups;
+	UniqueArray<uint32_t> groups;
 
 	enum {
 		THT_PAD = 2,
@@ -65,6 +47,9 @@ public:
 		SMD_PAD = 8
 	};
 protected:
+	void SaveGroups(File &file) const;
+	void LoadGroups(File &file);
+
 	char marker[256];
 	uint8_t layer;
 	float groundDistance;

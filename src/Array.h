@@ -15,7 +15,8 @@ public:
 	void Init(uint32_t size) {
 		Clear();
 		count = size;
-		items = (T*) malloc(count * sizeof(T));
+		if(count)
+			items = (T*) malloc(count * sizeof(T));
 	}
 	void Clear() {
 		if(items)

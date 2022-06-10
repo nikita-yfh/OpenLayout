@@ -38,7 +38,7 @@ void SMDPad::SaveObject(File &file) const {
 	file.WriteNull(15);
 	file.WriteString(marker);
 
-	groups.Save(file);
+	SaveGroups(file);
 
 	Vec2 points[2] = {
 		size.InvX().Rotate(angle) * 0.5f,
@@ -68,7 +68,7 @@ void SMDPad::LoadObject(File &file) {
 	file.ReadNull(22);
 	file.ReadString(marker);
 
-	groups.Load(file);
+	LoadGroups(file);
 
 	Vec2 points[4];
 	ReadArray(file, points, position);

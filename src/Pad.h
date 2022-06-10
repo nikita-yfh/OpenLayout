@@ -1,33 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Vec2.h"
-
-class Pad;
-
-class Connections {
-public:
-	Connections();
-	~Connections();
-
-	void Add(Pad *object);
-	void Remove(const Pad *object);
-	bool Has(const Pad *object) const;
-
-	inline const Pad *operator[](uint32_t index) const {
-		return connections[index];
-	}
-	inline uint32_t Count() const {
-		return count;
-	}
-
-	void Save(const Object *objects, File &file) const;
-	void Load(Object *objects, File &file);
-
-private:
-	Pad **Find(const Pad *object);
-	uint32_t count;
-	Pad **connections;
-};
+#include "Array.h"
 
 class Pad : public Object{
 public:
@@ -57,7 +31,7 @@ protected:
 	float thermalSize;
 	float angle;
 
-	Connections connections;
+	UniqueArray<Pad*> connections;
 };
 
 	

@@ -15,70 +15,6 @@ static bool Clockwise(float a, float b, float c) {
 		return (b < a && b > c);
 }
 
-Connections::Connections() {
-	connections = nullptr;
-	count = 0;
-}
-Connections::~Connections() {
-	if(connections)
-		free(connections);
-	count = 0;
-}
-void Connections::Add(Pad *object) {
-	if(Find(object))
-		return;
-	connections = (Pad**) realloc(connections, (count + 1) * sizeof(Pad*));
-	connections[count++] = object;
-}
-void Connections::Remove(const Pad *object) {
-	Pad **i = Find(object);
-	if(i) {
-		count--;
-		*i = connections[count]; // Move last item to deleted
-		connections = (Pad**) realloc(connections, count * sizeof(Pad*));
-	}
-}
-Pad **Connections::Find(const Pad *object) {
-	for(Pad **i = connections; *i; i++)
-		if(*i == object)
-			return i;
-	return nullptr;
-}
-bool Connections::Has(const Pad *object) const {
-	for(Pad **i = connections; *i; i++)
-		if(*i == object)
-			return true;
-	return false;
-}
-void Connections::Save(const Object *objects, File &file) const {
-	file.Write<uint32_t>(count);
-	if(count) {
-		for(Pad **i = connections; *i; i++) {
-			uint32_t index;
-			for(const Object *j = objects; j; j = j->GetNext(), index++) {
-				if(j == *i) {
-					file.Write<uint32_t>(index);
-					break;
-				}
-			}
-		}
-	}
-}
-void Connections::Load(Object *objects, File &file) {
-	this->~Connections();
-	count = file.Read<uint32_t>();
-	if(count) {
-		connections = (Pad**) malloc(count * sizeof(Pad*));
-		for(int i = 0; i < count; i++) {
-			int index = file.Read<uint32_t>();
-			Object *object = objects;
-			while(index--)
-				object = object->GetNext();
-			connections[i] = (Pad*) object;
-		}
-	}
-}
-
 Pad::Pad(uint8_t layer, const Vec2 &_position) : Object(layer) {
 	position = _position;
 	thermal = false;
@@ -88,10 +24,29 @@ Pad::Pad(uint8_t layer, const Vec2 &_position) : Object(layer) {
 }
 
 void Pad::SaveConnections(const Object *objects, File &file) const {
-	connections.Save(objects, file);
+	file.Write<uint32_t>(connections.Size());
+	for(int i = 0; i < connections.Size(); i++) {
+		uint32_t index = 0;
+		for(const Object *j = objects; j; j = j->GetNext(), index++) {
+			if(j == connections[i]) {
+				file.Write<uint32_t>(index);
+				break;
+			}
+		}
+	}
 }
 void Pad::LoadConnections(Object *objects, File &file) {
-	connections.Load(objects, file);
+	uint32_t count = file.Read<uint32_t>();
+	if(count) {
+		connections.Init(count);
+		for(int i = 0; i < count; i++) {
+			int index = file.Read<uint32_t>();
+			Object *object = objects;
+			while(index--)
+				object = object->GetNext();
+			connections[i] = (Pad*) object;
+		}
+	}
 }
 
 void Pad::WriteArray(File &file, const Vec2 *points, uint32_t count, const Vec2 &shift) {
@@ -123,7 +78,7 @@ void Pad::WriteSymmetricalArray(File &file, const Vec2 *points, uint32_t count, 
 }
 
 void Pad::DrawConnections() const {
-	for(int i = 0; i < connections.Count(); i++) {
+	for(int i = 0; i < connections.Size(); i++) {
 		const Pad *pad = connections[i];
 		if(pad > this) { // will draw connection once
 			glutils::Vertex(position);

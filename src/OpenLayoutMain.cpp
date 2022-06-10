@@ -126,12 +126,12 @@ void OpenLayoutFrame::OpenFile(wxCommandEvent &e) {
 }
 
 void OpenLayoutFrame::SaveFileAs(wxCommandEvent &e) {
-	wxFileDialog dialog(this, _("Save layout file"), "", "",
+	wxFileDialog dialog(this, _("Save layout file"), "", lastFile,
 		_("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 	if (dialog.ShowModal() == wxID_CANCEL)
 		return;
-	File file(dialog.GetPath().c_str(), "rb");
+	File file(dialog.GetPath().c_str(), "wb");
 	if(file.IsOk()) {
 		pcb.Save(file);
 		lastFile = dialog.GetPath();
@@ -143,7 +143,7 @@ void OpenLayoutFrame::SaveFile(wxCommandEvent &e) {
 	if(lastFile.IsEmpty())
 		SaveFileAs(e);
 	else {
-		File file(lastFile, "rb");
+		File file(lastFile, "wb");
 		if(file.IsOk()) 
 			pcb.Save(file);
 		else
