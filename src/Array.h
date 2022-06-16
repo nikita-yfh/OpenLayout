@@ -3,20 +3,34 @@
 #include <string.h>
 
 template<typename T>
-class UniqueArray {
+class Array {
 public:
-	UniqueArray() {
+	Array() {
 		count = 0;
 		items = nullptr;
 	}
-	~UniqueArray() {
+	Array(const Array &other) {
+		items = nullptr;
+		Init(other.count);
+		for(int i = 0; i < count; i++)
+			new (&items[i]) T(other.items[i]);
+	}
+	Array(const T *newItems, uint32_t newCount) {
+		items = nullptr;
+		Set(newItems, newCount);
+	}
+
+	~Array() {
 		Clear();
 	}
 	void Init(uint32_t size) {
 		Clear();
 		count = size;
-		if(count)
+		if(count) {
 			items = (T*) malloc(count * sizeof(T));
+			for(int i = 0; i < count; i++)
+				new (&items[i]) T();
+		}
 	}
 	void Clear() {
 		if(items)
@@ -24,23 +38,19 @@ public:
 		count = 0;
 	}
 	void Add(const T &value) {
-		if(Find(value))
-			return;
 		count++;
-		items = (T*) realloc(items, count * sizeof(T));
-	}
-	void Remove(const T &value) {
-		T *i = Find(value);
-		if(!i) return;
-		count--;
-		*i = items[count]; // Move last item to deleted
-		items = (T*) realloc(items, count * sizeof(T));
+		Resize();
+		items[count - 1] = value;
 	}
 	void RemoveIndex(uint32_t index) {
 		count--;
 		for(int i = index; i < count; i++)
 			items[i] = items[i + 1];
-		items = (T*) realloc(items, count * sizeof(T));
+		Resize();
+	}
+	void RemoveLast() {
+		count--;
+		Resize();
 	}
 	bool Has(const T &value) const {
 		for(int i = 0; i < count; i++)
@@ -50,8 +60,11 @@ public:
 	}
 	void Set(const T *newItems, int newCount) {
 		Clear();
-		items = (T*) malloc(newCount * sizeof(T));
-		memcpy(items, newItems, newCount * sizeof(T));
+		if(newCount) {
+			items = (T*) malloc(newCount * sizeof(T));
+			memcpy(items, newItems, newCount * sizeof(T));
+		} else
+			items = nullptr;
 		count = newCount;
 	}
 	bool Empty() const {
@@ -74,25 +87,63 @@ protected:
 		return nullptr;
 	}
 
+	void Resize() {
+		items = (T*) realloc(items, count * sizeof(T));
+	}
+
 	uint32_t count;
 	T *items;
 private:
-	UniqueArray(const UniqueArray&) = delete;
-	void operator=(const UniqueArray&) = delete;
+	void operator=(const Array&) = delete;
+};
+
+template<typename T>
+class UniqueArray : public Array<T> {
+protected:
+	using Array<T>::count;
+	using Array<T>::items;
+	using Array<T>::Find;
+	using Array<T>::Has;
+	using Array<T>::Resize;
+public:
+	UniqueArray() {}
+	UniqueArray(const UniqueArray &other)
+		: Array<T>(other) {}
+
+	void Add(const T &value) {
+		if(Has(value))
+			return;
+		count++;
+		Resize();
+		items[count - 1] = value;
+	}
+	void Remove(const T &value) {
+		T *i = Find(value);
+		if(!i) return;
+		count--;
+		*i = items[count]; // Move last item to deleted
+		Resize();
+	}
 };
 
 template<typename T>
 class UniqueSortArray : public UniqueArray<T> {
-	using UniqueArray<T>::count;
-	using UniqueArray<T>::items;
-	using UniqueArray<T>::Find;
-
+protected:
+	using Array<T>::count;
+	using Array<T>::items;
+	using Array<T>::Find;
+	using Array<T>::Has;
+	using Array<T>::Resize;
 public:
+	UniqueSortArray() {}
+	UniqueSortArray(const UniqueSortArray &other)
+		: UniqueArray<T>(other) {}
+
 	void Add(const T &value) {
-		if(Find(value))
+		if(Has(value))
 			return;
 		count++;
-		items = (T*) realloc(items, count * sizeof(T));
+		Resize();
 		for(int i = count - 1; i >= 0; i--) {
 			if(items[i - 1] < value || i == 0) {
 				items[i] = value;
@@ -112,7 +163,7 @@ public:
 			i++;
 		}
 
-		items = (T*) realloc(items, count * sizeof(T));
+		Resize();
 	}
 };
 

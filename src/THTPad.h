@@ -7,6 +7,8 @@ public:
 	THTPad() : THTPad(0, Vec2(0.0f, 0.0f), PadSize(0.0f, 0.0f)) {}
 	THTPad(uint8_t layer, const Vec2 &position, const PadSize &size);
 
+	virtual THTPad *Clone() const override;
+
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 	virtual void DrawDrillings() const override;

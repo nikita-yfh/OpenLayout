@@ -1,13 +1,13 @@
 #pragma once
 #include <wx/glcanvas.h>
-#include "PCB.h"
+#include "Board.h"
 #include "Settings.h"
 
 class MainCanvas : public wxGLCanvas {
 public:
-	MainCanvas(wxWindow *parent, PCB &pcb, Settings &settings);
+	MainCanvas(wxWindow *parent, Board *board, Settings &settings);
 private:
-	PCB &pcb;
+	Board *board;
 	Settings &settings;
 	bool shift;
 	bool ctrl;
@@ -28,4 +28,3 @@ private:
 
 	wxDECLARE_EVENT_TABLE();
 };
-

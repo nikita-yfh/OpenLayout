@@ -15,15 +15,13 @@ public:
 		Round
 	};
 
-	Board(Type type, Vec2 innerSize, float border, bool originTop);
-	Board();
+	Board(const char *name, Type type, Vec2 innerSize, float border, bool originTop);
+	Board() {}
 
 	void Load(File &file);
 	void Save(File &file) const;
 
-	Board *GetNext();
-	const Board *GetNext() const;
-
+	void SetName(const char *name);
 	const char *GetName() const;
 
 	bool IsMultilayer() const;
@@ -73,20 +71,13 @@ private:
 	Vec2 origin;
 
 	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
-
-	Board *next;
-
-	friend class PCB;
 };
 
-inline Board *Board::GetNext() {
-	return next;
-}
-inline const Board *Board::GetNext() const {
-	return next;
-}
 inline const char *Board::GetName() const {
 	return name;
+}
+inline void Board::SetName(const char *_name) {
+	strncpy(name, _name, 30);
 }
 inline uint8_t Board::GetSelectedLayer() const {
 	return activeLayer;

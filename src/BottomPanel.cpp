@@ -167,6 +167,7 @@ static void SetButtonBitmap(wxCommandEvent &e, const wxBitmap &bitmap) {
 
 void BottomPanel::ToggleGround(wxCommandEvent &e) {
 	pcb.GetSelectedBoard()->ToggleCurrentLayerGround();
+	printf("%d %s\n", pcb.GetTab(), pcb.GetSelectedBoard()->GetName());
 	GetParent()->Refresh();
 }
 

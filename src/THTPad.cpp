@@ -8,6 +8,10 @@ THTPad::THTPad(uint8_t layer, const Vec2 &position, const PadSize &_size) : Pad(
 	through = false;
 }
 
+THTPad *THTPad::Clone() const {
+	return new THTPad(*this);
+}
+
 AABB THTPad::GetAABB() const {
 	Vec2 maxRadius(size.out * 2.5f, size.out * 2.5f);
 	return AABB(position - maxRadius, position + maxRadius);

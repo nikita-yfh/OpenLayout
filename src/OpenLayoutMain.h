@@ -9,6 +9,8 @@
 #include <wx/frame.h>
 #include <wx/toolbar.h>
 #include <wx/menu.h>
+#include <wx/notebook.h>
+
 class OpenLayoutFrame : public wxFrame{
 public:
 	OpenLayoutFrame();
@@ -28,11 +30,18 @@ private:
 	void ShowAbout(wxCommandEvent&);
 	void ShowProjectInfo(wxCommandEvent&);
 	void NewBoard(wxCommandEvent&);
+	void CopyBoard(wxCommandEvent&);
 	void DeleteBoard(wxCommandEvent&);
+	void MoveBoardLeft(wxCommandEvent&);
+	void MoveBoardRight(wxCommandEvent&);
+	void SetBoardLeft(wxCommandEvent&);
+	void SetBoardRight(wxCommandEvent&);
+
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);
 	void ShowAlignMenu(wxCommandEvent&);
 	void ShowZoomMenu(wxCommandEvent&);
+	void DeleteSelected(wxCommandEvent&);
 	void SelectAll(wxCommandEvent&);
 	void SaveFile(wxCommandEvent&);
 	void SaveFileAs(wxCommandEvent&);
@@ -63,11 +72,17 @@ private:
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);
 	void UpdateUIDeleteBoard(wxUpdateUIEvent&);
+	void UpdateUIMoveBoardLeft(wxUpdateUIEvent&);
+	void UpdateUIMoveBoardRight(wxUpdateUIEvent&);
+
+	void SelectPage(wxBookCtrlEvent&);
+	MainCanvas *GetCanvas();
+	void UpdatePages();
 
 	PCB pcb;
 	Settings settings;
 
-	MainCanvas *canvas;
+	wxNotebook *pages;
 	SelectorPanel *selector;
 	ComponentsPanel *components;
 	MacroPanel *macro;

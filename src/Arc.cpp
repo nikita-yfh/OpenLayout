@@ -12,6 +12,10 @@ Arc::Arc(uint8_t layer, float width, const Vec2 &_position, float _diameter)
 	fill = false;
 }
 
+Arc *Arc::Clone() const {
+	return new Arc(*this);
+}
+
 AABB Arc::GetAABB() const {
 	Vec2 radius((diameter + width) * 0.5f, (diameter + width) * 0.5f);
 	return AABB(position - radius, position + radius);

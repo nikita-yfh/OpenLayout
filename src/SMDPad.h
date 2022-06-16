@@ -6,6 +6,8 @@ public:
 	SMDPad() : SMDPad(0, Vec2(0.0f, 0.0f), Vec2(0.0f, 0.0f)) {}
 	SMDPad(uint8_t layer, const Vec2 &position, const Vec2 &size);
 
+	virtual SMDPad *Clone() const override;
+
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 

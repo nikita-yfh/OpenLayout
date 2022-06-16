@@ -60,6 +60,7 @@ enum {
 	ID_DIRECTORIES,
 	ID_BOARD_NEW,
 	ID_BOARD_PROPERTIES,
+	ID_BOARD_COPY,
 	ID_BOARD_DELETE,
 	ID_BOARD_SET_RIGHT,
 	ID_BOARD_SET_LEFT,
@@ -116,6 +117,7 @@ enum {
 	ID_ZOOM_BOARD,
 	ID_ZOOM_OBJECTS,
 	ID_ZOOM_SELECTION,
+	ID_PAGES
 };
 
 
@@ -132,12 +134,18 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
 	EVT_MENU(wxID_INFO,					OpenLayoutFrame::ShowProjectInfo)
 	EVT_MENU(ID_BOARD_NEW,				OpenLayoutFrame::NewBoard)
+	EVT_MENU(ID_BOARD_COPY,				OpenLayoutFrame::CopyBoard)
 	EVT_MENU(ID_BOARD_DELETE,			OpenLayoutFrame::DeleteBoard)
+	EVT_MENU(ID_BOARD_MOVE_LEFT,		OpenLayoutFrame::MoveBoardLeft)
+	EVT_MENU(ID_BOARD_MOVE_RIGHT,		OpenLayoutFrame::MoveBoardRight)
+	EVT_MENU(ID_BOARD_SET_LEFT,			OpenLayoutFrame::SetBoardLeft)
+	EVT_MENU(ID_BOARD_SET_RIGHT,		OpenLayoutFrame::SetBoardRight)
 	EVT_MENU(ID_SCANNED_COPY,			OpenLayoutFrame::ShowImagesConfig)
 	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
 	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
 	EVT_MENU(ID_ALIGN,					OpenLayoutFrame::ShowAlignMenu)
 	EVT_MENU(ID_ZOOM,					OpenLayoutFrame::ShowZoomMenu)
+	EVT_MENU(wxID_DELETE,				OpenLayoutFrame::DeleteSelected)
 	EVT_MENU(wxID_SELECTALL,			OpenLayoutFrame::SelectAll)
 	EVT_MENU(wxID_SAVE,					OpenLayoutFrame::SaveFile)
 	EVT_MENU(wxID_SAVEAS,				OpenLayoutFrame::SaveFileAs)
@@ -157,6 +165,10 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_VMIRROR,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_SNAP_GRID,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_BOARD_DELETE,		OpenLayoutFrame::UpdateUIDeleteBoard)
+	EVT_UPDATE_UI(ID_BOARD_MOVE_LEFT,	OpenLayoutFrame::UpdateUIMoveBoardLeft)
+	EVT_UPDATE_UI(ID_BOARD_MOVE_RIGHT,	OpenLayoutFrame::UpdateUIMoveBoardRight)
+	EVT_UPDATE_UI(ID_BOARD_SET_LEFT,	OpenLayoutFrame::UpdateUIMoveBoardLeft)
+	EVT_UPDATE_UI(ID_BOARD_SET_RIGHT,	OpenLayoutFrame::UpdateUIMoveBoardRight)
 	EVT_UPDATE_UI(ID_GROUP,				OpenLayoutFrame::UpdateUIGroup)
 	EVT_UPDATE_UI(ID_UNGROUP,			OpenLayoutFrame::UpdateUIUngroup)
 	EVT_UPDATE_UI(ID_ZOOM_OBJECTS,		OpenLayoutFrame::UpdateUIObjects)
@@ -178,6 +190,8 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PANEL_PROPERTIES,	OpenLayoutFrame::UpdatePropertiesPanel)
 	EVT_UPDATE_UI(ID_PANEL_DRC,			OpenLayoutFrame::UpdateDRCPanel)
 	EVT_UPDATE_UI(ID_PANEL_MACRO,		OpenLayoutFrame::UpdateMacrosPanel)
+
+	EVT_NOTEBOOK_PAGE_CHANGED(ID_PAGES,	OpenLayoutFrame::SelectPage)
 wxEND_EVENT_TABLE()
 
 static void AddMenuItem(wxMenu *parent, const wxString &text, int id, const wxBitmap &bitmap){
@@ -199,8 +213,8 @@ OpenLayoutFrame::OpenLayoutFrame() {
 		LeftPanel *right = new LeftPanel(this, pcb, settings);
 		panels->Add(right, 0, wxEXPAND);
 
-		canvas = new MainCanvas(this, pcb, settings);
-		panels->Add(canvas, 1, wxEXPAND);
+		pages = new wxNotebook(this, ID_PAGES, wxDefaultPosition, wxDefaultSize, wxNB_BOTTOM);
+		panels->Add(pages, 1, wxEXPAND);
 
 		selector = new SelectorPanel(this, pcb);
 		selector->Show(settings.showSelectorPanel);
@@ -226,7 +240,8 @@ OpenLayoutFrame::OpenLayoutFrame() {
 	SetAutoLayout(true);
 	Layout();
 
-	pcb.AddBoard(new Board(Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f, settings.originLeftTop));
+	pcb.AddBoard(new Board(_("New board"), Board::Type::Empty, Vec2(160.0f, 100.0f), 0.0f, settings.originLeftTop));
+	UpdatePages();
 }
 wxMenuBar *OpenLayoutFrame::BuildMenuBar() {
 	wxMenuBar *menuBar = new wxMenuBar();
@@ -286,17 +301,18 @@ wxMenuBar *OpenLayoutFrame::BuildMenuBar() {
 	{
 		//Board
 		wxMenu *menu = new wxMenu();
-		menu->Append(ID_BOARD_NEW, _("Add new board"));
-		menu->Append(ID_BOARD_PROPERTIES, _("Properties"));
-		menu->Append(ID_BOARD_DELETE, _("Delete board"));
+		menu->Append(ID_BOARD_NEW, _("&Add new board"));
+		menu->Append(ID_BOARD_PROPERTIES, _("&Properties"));
+		menu->Append(ID_BOARD_COPY, _("&Copy board"));
+		menu->Append(ID_BOARD_DELETE, _("&Delete board"));
 		menu->AppendSeparator();
 		menu->Append(ID_BOARD_SET_RIGHT, _("Set board to &right"));
 		menu->Append(ID_BOARD_SET_LEFT, _("Set board to &left"));
 		menu->AppendSeparator();
 		menu->Append(ID_BOARD_MOVE_RIGHT, _("&Move board to right"));
 		menu->Append(ID_BOARD_MOVE_LEFT, _("M&ove board to left"));
-		menu->Append(ID_BOARD_IMPORT, _("&Import boards from file"));
-		menu->Append(ID_BOARD_SAVE, _("&Save boards to file"));
+		menu->Append(ID_BOARD_IMPORT, _("&Import pages from file"));
+		menu->Append(ID_BOARD_SAVE, _("&Save pages to file"));
 		menuBar->Append(menu, _("&Board"));
 	}
 	{
@@ -420,7 +436,6 @@ wxToolBar *OpenLayoutFrame::BuildToolBar() {
 	return toolBar;
 }
 
-
 void OpenLayoutFrame::OpenFile(wxCommandEvent &e) {
 	wxFileDialog dialog(this, _("Open layout file"), "", "",
 		_("Layout files (*.lay*)|*.lay*|All files (*.*)|*.*"), wxFD_OPEN);
@@ -430,7 +445,7 @@ void OpenLayoutFrame::OpenFile(wxCommandEvent &e) {
 	File file(dialog.GetPath().c_str(), "rb");
 	if(file.IsOk() && pcb.Load(file)) {
 		lastFile = dialog.GetPath();
-		Refresh();
+		UpdatePages();
 	} else
 		wxMessageBox(_("Error opening file"), _("Open"), wxICON_ERROR);
 }
@@ -508,7 +523,7 @@ void OpenLayoutFrame::ShowSettings(wxCommandEvent&) {
 	if(dialog.ShowModal() != wxID_OK)
 		return;
 	dialog.Get(settings);
-	Refresh();
+	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::ShowAbout(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowProjectInfo(wxCommandEvent&) {
@@ -520,9 +535,17 @@ void OpenLayoutFrame::NewBoard(wxCommandEvent&) {
 		return;
 	Board *board = dialog.CreateBoard(settings.originLeftTop);
 	pcb.AddBoard(board);
-	Refresh();
+	UpdatePages();
 	wxMessageBox(wxString::Format(_("A new Board named \"%s\" was added."),
 			board->GetName()), GetTitle(), wxICON_INFORMATION);
+}
+void OpenLayoutFrame::CopyBoard(wxCommandEvent&) {
+	Board *copy = new Board(*pcb.GetSelectedBoard());
+	char name[30];
+	snprintf(name, 30, _("Copy of %s"), copy->GetName());
+	copy->SetName(name);
+	pcb.AddBoard(copy);
+	UpdatePages();
 }
 void OpenLayoutFrame::DeleteBoard(wxCommandEvent&) {
 	wxMessageDialog dialog(this, wxString::Format(_("Delete board \"%s\"?"), 
@@ -531,7 +554,23 @@ void OpenLayoutFrame::DeleteBoard(wxCommandEvent&) {
 	if(dialog.ShowModal() != wxID_OK)
 		return;
 	pcb.DeleteSelectedBoard();
-	Refresh();
+	UpdatePages();
+}
+void OpenLayoutFrame::MoveBoardLeft(wxCommandEvent&) {
+	pcb.MoveSelectedBoardLeft();
+	UpdatePages();
+}
+void OpenLayoutFrame::MoveBoardRight(wxCommandEvent&) {
+	pcb.MoveSelectedBoardRight();
+	UpdatePages();
+}
+void OpenLayoutFrame::SetBoardLeft(wxCommandEvent&) {
+	pcb.SetSelectedBoardLeft();
+	UpdatePages();
+}
+void OpenLayoutFrame::SetBoardRight(wxCommandEvent&) {
+	pcb.SetSelectedBoardRight();
+	UpdatePages();
 }
 void OpenLayoutFrame::Group(wxCommandEvent&) {}
 void OpenLayoutFrame::Ungroup(wxCommandEvent&) {}
@@ -552,7 +591,14 @@ void OpenLayoutFrame::ShowZoomMenu(wxCommandEvent&) {
 	AddMenuItem(menu, _("Zoom selection"),	ID_ZOOM_SELECTION,	zoom_selection_xpm);
 	PopupMenu(menu);
 }
-void OpenLayoutFrame::SelectAll(wxCommandEvent&) {}
+void OpenLayoutFrame::DeleteSelected(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->DeleteSelected();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::SelectAll(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->SelectAll();
+	GetCanvas()->Refresh();
+}
 void OpenLayoutFrame::SetSelectionLayer(wxCommandEvent&) {}
 void OpenLayoutFrame::Delete(wxCommandEvent&) {}
 void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&) {
@@ -560,19 +606,19 @@ void OpenLayoutFrame::ShowImagesConfig(wxCommandEvent&) {
 }
 void OpenLayoutFrame::ToggleTransparent(wxCommandEvent&) {
 	settings.transparent = !settings.transparent;
-	canvas->Refresh();
+	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::ZoomBoard(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->ZoomBoard(canvas->GetSize());
-	canvas->Refresh();
+	pcb.GetSelectedBoard()->ZoomBoard(GetCanvas()->GetSize());
+	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::ZoomObjects(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->ZoomObjects(canvas->GetSize());
-	canvas->Refresh();
+	pcb.GetSelectedBoard()->ZoomObjects(GetCanvas()->GetSize());
+	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::ZoomSelection(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->ZoomSelection(canvas->GetSize());
-	canvas->Refresh();
+	pcb.GetSelectedBoard()->ZoomSelection(GetCanvas()->GetSize());
+	GetCanvas()->Refresh();
 }
 
 void OpenLayoutFrame::ToggleSelectorPanel(wxCommandEvent &e) {
@@ -621,6 +667,30 @@ void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIUngroup(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIMultilayer(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIDeleteBoard(wxUpdateUIEvent &e) {
-	e.Enable(!pcb.HasOneBoard());
+	e.Enable(pcb.Size() > 1);
+}
+void OpenLayoutFrame::UpdateUIMoveBoardLeft(wxUpdateUIEvent &e) {
+	e.Enable(pcb.CanMoveLeft());
+}
+void OpenLayoutFrame::UpdateUIMoveBoardRight(wxUpdateUIEvent &e) {
+	e.Enable(pcb.CanMoveRight());
+}
+
+void OpenLayoutFrame::SelectPage(wxBookCtrlEvent &e) {
+	pcb.SetTab(e.GetSelection());
+	GetCanvas()->Refresh();
+}
+
+MainCanvas *OpenLayoutFrame::GetCanvas() {
+	return (MainCanvas*) pages->GetCurrentPage();
+}
+
+void OpenLayoutFrame::UpdatePages() {
+	uint32_t tab = pcb.GetTab();
+	pages->DeleteAllPages();
+	for(int i = 0; i < pcb.Size(); i++) {
+		MainCanvas *canvas = new MainCanvas(pages, pcb[i], settings);
+		pages->AddPage(canvas, pcb[i]->GetName(), tab == i);
+	}
 }
 

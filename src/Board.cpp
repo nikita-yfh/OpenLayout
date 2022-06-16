@@ -4,7 +4,8 @@
 #include "Arc.h"
 #include "Track.h"
 
-Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() {
+Board::Board(const char *_name, Type type, Vec2 innerSize, float border, bool originTop) : Board() {
+	objects = nullptr;
 	if(type != Type::Empty)
 		size.Set(innerSize.x + border * 2.0f, innerSize.y + border * 2.0f);
 	else
@@ -28,10 +29,7 @@ Board::Board(Type type, Vec2 innerSize, float border, bool originTop) : Board() 
 		origin = Vec2(border, border);
 	else
 		origin = Vec2(border, size.y - border);
-}
-
-Board::Board() {
-	next = nullptr;
+	strcpy(name, _name);
 	for(int i = 0; i < 7; i++) {
 		groundPane[i] = false;
 		layerVisible[i] = true;
@@ -42,7 +40,6 @@ Board::Board() {
 	camera.Set(0.0f, 0.0f);
 	zoom = 10;
 	origin.Set(0.0f, 0.0f);
-	strcpy(name, _("New Board"));
 }
 
 void Board::Save(File &file) const {
@@ -89,7 +86,7 @@ void Board::Load(File &file) {
 	uint32_t objectCount = file.Read<uint32_t>();
 	Object *last = nullptr;
 	for(int i = 0; i < objectCount; i++)
-		AddObjectEnd(Object::Load(file));
+		last = AddObjectEnd(Object::Load(file), last);
 	for(Object *object = objects; object; object = object->GetNext())
 		object->LoadConnections(objects, file);
 

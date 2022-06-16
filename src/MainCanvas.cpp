@@ -20,15 +20,15 @@ static const int attribList[] = {
 
 static const float zoomRatio = 1.3f;
 
-MainCanvas::MainCanvas(wxWindow *parent, PCB &_pcb, Settings &_settings)
-		: wxGLCanvas(parent, wxID_ANY, attribList), pcb(_pcb), settings(_settings) {
+MainCanvas::MainCanvas(wxWindow *parent, Board *_board, Settings &_settings)
+		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings) {
 	SetFocus();
 }
 
 void MainCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);
 	SetCurrent(context);
-	pcb.GetSelectedBoard()->Draw(settings, Vec2(GetSize().x, GetSize().y));
+	board->Draw(settings, Vec2(GetSize().x, GetSize().y));
 	glFlush();
 	SwapBuffers();
 }
@@ -36,12 +36,12 @@ void MainCanvas::Draw(wxPaintEvent&) {
 void MainCanvas::OnKey(wxKeyEvent &e) {
 	shift = e.ShiftDown();
 	ctrl = e.ControlDown();
-	pcb.GetSelectedBoard()->UpdateGrid(shift, ctrl);
+	board->UpdateGrid(shift, ctrl);
 	if(!shift && !ctrl) {
 		if(e.GetKeyCode() >= WXK_NUMPAD1 && e.GetKeyCode() <= WXK_NUMPAD9)
-			pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
+			board->SetGrid(settings.gridBind[e.GetKeyCode() - WXK_NUMPAD1]);
 		else if(e.GetKeyCode() >= '1' && e.GetKeyCode() <= '9')
-			pcb.GetSelectedBoard()->SetGrid(settings.gridBind[e.GetKeyCode() - '1']);
+			board->SetGrid(settings.gridBind[e.GetKeyCode() - '1']);
 	}
 	Refresh();
 	e.Skip();
@@ -49,8 +49,8 @@ void MainCanvas::OnKey(wxKeyEvent &e) {
 
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 	if(!shift)
-		pcb.GetSelectedBoard()->UnselectAll();
-	pcb.GetSelectedBoard()->SelectObject(GetPos(e));
+		board->UnselectAll();
+	board->SelectObject(GetPos(e));
 	Refresh();
 }
 void MainCanvas::OnLeftUp(wxMouseEvent &e) {
@@ -63,7 +63,7 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	Vec2 delta = dragPosition - GetPos(e);
 	if(e.MiddleIsDown()) {
-		pcb.GetSelectedBoard()->UpdateCamera(delta);
+		board->UpdateCamera(delta);
 		Refresh();
 	}
 	dragPosition = GetPos(e);
@@ -73,7 +73,7 @@ void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
 	if(e.GetWheelRotation() < 0)
 		ratio = 1.0f / ratio;
 
-	pcb.GetSelectedBoard()->Zoom(ratio, GetMousePos(e));
+	board->Zoom(ratio, GetMousePos(e));
 
 	Refresh();
 	e.Skip();
@@ -86,5 +86,5 @@ Vec2 MainCanvas::GetMousePos(const wxMouseEvent &e) const {
 }
 
 Vec2 MainCanvas::GetPos(const wxMouseEvent &e) const {
-	return pcb.GetSelectedBoard()->ConvertToCoords(GetMousePos(e));
+	return board->ConvertToCoords(GetMousePos(e));
 }

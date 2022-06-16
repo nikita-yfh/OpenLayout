@@ -2,11 +2,15 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
+Poly *Poly::Clone() const {
+	return new Poly(*this);
+}
+
 AABB Poly::GetAABB() const {
 	Vec2 max(0.0f, 0.0f);
 	Vec2 min(500.0f, 500.0f);
 
-	for(int i = 0; i < count; i++) {
+	for(int i = 0; i < points.Size(); i++) {
 		const Vec2 &point = points[i];
 		if(point.x < min.x)
 			min.x = point.x;
@@ -22,10 +26,10 @@ AABB Poly::GetAABB() const {
 }
 
 bool Poly::TestPoint(const Vec2 &point) const {
-	if(utils::PointInConcavePolygon(point, count, points))
+	if(utils::PointInConcavePolygon(point, points.Size(), &points[0]))
 		return true;
-	for(int i = 0; i < count; i++) {
-		if(utils::PointInPolySegment(point, points[i], points[(i + 1) % count], width / 2.0f))
+	for(int i = 0; i < points.Size(); i++) {
+		if(utils::PointInPolySegment(point, points[i], points[(i + 1) % points.Size()], width / 2.0f))
 			return true;
 		if(utils::PointInCircle(point, points[i], width / 2.0f))
 			return true;
@@ -97,7 +101,7 @@ void Poly::DrawObject() const {
 }
 
 void Poly::Draw(float halfWidth) const {
-	if(count < 3)
+	if(points.Size() < 3)
 		return;
 
 	glClear(GL_STENCIL_BUFFER_BIT);
@@ -108,16 +112,16 @@ void Poly::Draw(float halfWidth) const {
 	glStencilOp(GL_INVERT, GL_INVERT, GL_INVERT);
 
 	glBegin(GL_TRIANGLE_FAN);
-	for(int i = 0; i < count; i++)
+	for(int i = 0; i < points.Size(); i++)
 		glutils::Vertex(points[i]);
 	glEnd();
 
 	if(width != 0.0f) {
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 		glBegin(GL_QUADS);
-		for(int i = 0; i < count; i++) {
+		for(int i = 0; i < points.Size(); i++) {
 			const Vec2 &a = points[i];
-			const Vec2 &b = points[(i + 1) % count];
+			const Vec2 &b = points[(i + 1) % points.Size()];
 
 			Vec2 delta = (b - a).Normal(halfWidth);
 
@@ -127,7 +131,7 @@ void Poly::Draw(float halfWidth) const {
 			glutils::Vertex(b - delta);
 		}
 		glEnd();
-		for(int i = 0; i < count; i++)
+		for(int i = 0; i < points.Size(); i++)
 			glutils::DrawCircle(points[i], halfWidth);
 	}
 
