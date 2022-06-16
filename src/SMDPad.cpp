@@ -6,6 +6,10 @@ SMDPad::SMDPad(uint8_t layer, const Vec2 &position, const Vec2 &_size) : Pad(lay
 	size = _size;
 }
 
+SMDPad *SMDPad::Clone() const {
+	return new SMDPad(*this);
+}
+
 AABB SMDPad::GetAABB() const {
 	return AABB(position - size * sqrtf(2.0f), position + size * sqrtf(2.0f));
 }

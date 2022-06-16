@@ -2,11 +2,15 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
+Track *Track::Clone() const {
+	return new Track(*this);
+}
+
 AABB Track::GetAABB() const {
 	Vec2 max(0.0f, 0.0f);
 	Vec2 min(500.0f, 500.0f);
 
-	for(int i = 0; i < count; i++) {
+	for(int i = 0; i < points.Size(); i++) {
 		const Vec2 &point = points[i];
 		if(point.x < min.x)
 			min.x = point.x;
@@ -23,10 +27,10 @@ AABB Track::GetAABB() const {
 
 bool Track::TestPoint(const Vec2 &point) const {
 	float halfWidth = width / 2.0f;
-	for(int i = 0; i < count - 1; i++)
+	for(int i = 0; i < points.Size() - 1; i++)
 		if(utils::PointInPolySegment(point, points[i], points[i + 1], halfWidth))
 			return true;
-	for(int i = GetBeginStyle(); i < count - GetEndStyle(); i++)
+	for(int i = GetBeginStyle(); i < points.Size() - GetEndStyle(); i++)
 		if(utils::PointInCircle(point, points[i], width / 2.0f))
 			return true;
 	return false;
@@ -80,18 +84,18 @@ void Track::Draw(float halfWidth) const {
 	if(halfWidth == 0.0f) {
 		glLineWidth(1.0f);
 		glBegin(GL_LINE_STRIP);
-		for(int i = 0; i < count; i++)
+		for(int i = 0; i < points.Size(); i++)
 			glutils::Vertex(points[i]);
 		glEnd();
 	} else {
-		Vec2 normals[count - 1];
-		for(int i = 0; i < count - 1; i++)
+		Vec2 normals[points.Size() - 1];
+		for(int i = 0; i < points.Size() - 1; i++)
 			normals[i] = (points[i + 1] - points[i]).Normal(halfWidth);
 
 		Vec2 pathBegin1 = points[0] - normals[0];
 		Vec2 pathBegin2 = points[0] + normals[0];
-		Vec2 pathEnd1 = points[count - 1] - normals[count - 2];
-		Vec2 pathEnd2 = points[count - 1] + normals[count - 2];
+		Vec2 pathEnd1 = points[points.Size() - 1] - normals[points.Size() - 2];
+		Vec2 pathEnd2 = points[points.Size() - 1] + normals[points.Size() - 2];
 
 		if(GetBeginStyle()) {
 			Vec2 delta = Vec2(points[1] - points[0], halfWidth);
@@ -102,18 +106,18 @@ void Track::Draw(float halfWidth) const {
 				points[0] + normals[0], points[0] - normals[0], true);
 		}
 		if(GetEndStyle()) {
-			Vec2 delta = Vec2(points[count - 1] - points[count - 2], halfWidth);
+			Vec2 delta = Vec2(points[points.Size() - 1] - points[points.Size() - 2], halfWidth);
 			pathEnd1 -= delta;
 			pathEnd2 -= delta;
 		} else {
-			glutils::DrawTriangleFan(points[count - 1], points[count - 1],
-				points[count - 1] + normals[count - 2], points[count - 1] - normals[count - 2], false);
+			glutils::DrawTriangleFan(points[points.Size() - 1], points[points.Size() - 1],
+				points[points.Size() - 1] + normals[points.Size() - 2], points[points.Size() - 1] - normals[points.Size() - 2], false);
 		}
 
-		Vec2 intersections[count - 2];
-		bool clockwise[count - 2];
+		Vec2 intersections[points.Size() - 2];
+		bool clockwise[points.Size() - 2];
 
-		for(int i = 0; i < count - 2; i++) {
+		for(int i = 0; i < points.Size() - 2; i++) {
 			const Vec2 &a = points[i];
 			const Vec2 &b = points[i + 1];
 			const Vec2 &c = points[i + 2];
@@ -137,13 +141,13 @@ void Track::Draw(float halfWidth) const {
 		}
 
 		glBegin(GL_TRIANGLES);
-		for(int i = 0; i < count - 1; i++) {
+		for(int i = 0; i < points.Size() - 1; i++) {
 			Vec2 begin1 = pathBegin1;
 			Vec2 begin2 = pathBegin2;
 			Vec2 end1;
 			Vec2 end2;
 			
-			if(i == count - 2) {
+			if(i == points.Size() - 2) {
 				end1 = pathEnd1;
 				end2 = pathEnd2;
 			} else if (intersections[i].IsValid()) {

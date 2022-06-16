@@ -23,6 +23,13 @@ Pad::Pad(uint8_t layer, const Vec2 &_position) : Object(layer) {
 	angle = 0.0f;
 }
 
+Pad::~Pad() {
+	for(int i = 0; i < connections.Size(); i++) {
+		Pad *connected = connections[i];
+		connected->connections.Remove(this);
+	}
+}
+
 void Pad::SaveConnections(const Object *objects, File &file) const {
 	file.Write<uint32_t>(connections.Size());
 	for(int i = 0; i < connections.Size(); i++) {
@@ -84,6 +91,18 @@ void Pad::DrawConnections() const {
 			glutils::Vertex(position);
 			glutils::Vertex(pad->position);
 		}
+	}
+}
+
+void Pad::UpdateConnections(Object *objects) {
+	for(int i = 0; i < connections.Size(); i++) {
+		const Object *newConnection = objects;
+		const Object *oldConnection = connections[i];
+		while(oldConnection->GetPrev()) {
+			oldConnection = oldConnection->GetPrev();
+			newConnection = newConnection->GetNext();
+		}
+		connections[i] = (Pad*) newConnection;
 	}
 }
 

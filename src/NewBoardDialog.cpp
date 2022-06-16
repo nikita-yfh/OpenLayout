@@ -201,7 +201,7 @@ Board *NewBoardDialog::CreateBoard(bool originTop) const {
 	else if(types[2]->GetValue())
 		boardType = Board::Type::Round;
 
-	return new Board(boardType, boardSize, boardBorder, originTop);
+	return new Board(name->GetValue().c_str(), boardType, boardSize, boardBorder, originTop);
 }
 
 

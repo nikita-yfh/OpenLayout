@@ -3,11 +3,11 @@
 #include "ProjectInfo.h"
 #include "Board.h"
 #include "File.h"
+#include "Array.h"
 
-class PCB {
+class PCB : public Array<Board*> {
 public:
 	PCB();
-	~PCB();
 
 	void Save(File &file) const;
 	bool Load(File &file);
@@ -19,9 +19,11 @@ public:
 	void SetSelectedBoardLeft();
 	void SetSelectedBoardRight();
 
-	uint32_t GetBoardCount() const;
-	bool HasOneBoard() const;
-	void SetBoard(uint32_t n);
+	bool CanMoveLeft() const;
+	bool CanMoveRight() const;
+
+	void SetTab(uint32_t n);
+	uint32_t GetTab() const;
 	Board *GetSelectedBoard();
 
 	bool GetMetallization() const;
@@ -34,9 +36,6 @@ public:
 	
 	ProjectInfo info;
 private:
-	Board *GetLastBoard();
-
-	Board *boards;
 	uint32_t activeTab;
 
 	bool capture;
@@ -44,10 +43,23 @@ private:
 	uint8_t rubberband;
 	uint8_t padShape;
 	Vec2 mousePosition;
-
-	Board *current;
 };
 
+inline Board *PCB::GetSelectedBoard() {
+	return items[activeTab];
+}
+inline bool PCB::CanMoveLeft() const {
+	return activeTab != 0;
+}
+inline bool PCB::CanMoveRight() const {
+	return activeTab != Size() - 1;
+}
+inline void PCB::SetTab(uint32_t n) {
+	activeTab = n;
+}
+inline uint32_t PCB::GetTab() const {
+	return activeTab;
+}
 inline bool PCB::GetMetallization() const {
 	return metallization;
 }
@@ -64,3 +76,4 @@ inline void PCB::SetPadShape(uint8_t shape) {
 inline const Vec2 &PCB::GetMousePosition() const {
 	return mousePosition;
 }
+

@@ -3,11 +3,15 @@
 
 class ObjectGroup {
 public:
+	ObjectGroup(const ObjectGroup &other);
 	ObjectGroup();
+
 	~ObjectGroup();
 
 	void AddObjectBegin(Object *object);
 	void AddObjectEnd(Object *object);
+	Object *AddObjectEnd(Object *object, Object *last);
+
 	bool IsEmpty() const;
 
 	Object *GetFirstSelected();
@@ -16,7 +20,10 @@ public:
 	Object *GetObjects();
 
 	bool SelectObject(const Vec2 &point);
+	void SelectAll();
 	void UnselectAll();
+
+	void DeleteSelected();
 
 	enum Layer {
 		LAYER_C1,

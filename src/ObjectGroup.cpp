@@ -1,5 +1,13 @@
 #include "ObjectGroup.h"
 
+ObjectGroup::ObjectGroup(const ObjectGroup &other) {
+	Object *last = nullptr;
+	for(const Object *object = other.objects; object; object = object->next)
+		last = AddObjectEnd(object->Clone(), last);
+	for(Object *object = objects; object; object = object->next)
+		object->UpdateConnections(objects);
+}
+
 ObjectGroup::ObjectGroup() {
 	objects = nullptr;
 }
@@ -37,6 +45,17 @@ void ObjectGroup::AddObjectEnd(Object *object) {
 		last->next = object;
 	else
 		objects = object;
+	object->prev = last;
+}
+
+Object *ObjectGroup::AddObjectEnd(Object *object, Object *last) {
+	if(last == nullptr)
+		objects = object;
+	else
+		last->next = object;
+	object->prev = last;
+	object->next = nullptr;
+	return object;
 }
 
 void ObjectGroup::AddObjectBegin(Object *object) {
@@ -70,8 +89,30 @@ bool ObjectGroup::SelectObject(const Vec2 &point) {
 	return false;
 }
 
+void ObjectGroup::SelectAll() {
+	for(Object *object = objects; object; object = object->next)
+		object->Select();
+}
+
 void ObjectGroup::UnselectAll() {
 	for(Object *object = objects; object; object = object->next)
 		object->Unselect();
+}
+
+void ObjectGroup::DeleteSelected() {
+	for(Object *object = objects; object;) {
+		if(object->IsSelected()) {
+			if(object->next)
+				object->next->prev = object->prev;
+			if(object->prev)
+				object->prev->next = object->next;
+			else
+				objects = object->next;
+			Object *temp = object;
+			object = object->next;
+			delete temp;
+		} else
+			object = object->next;
+	}
 }
 

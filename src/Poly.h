@@ -7,6 +7,8 @@ public:
 	Poly(uint8_t layer, float width, const Vec2 *points, uint32_t count)
 		: PolygonBase(layer, width, points, count) {}
 
+	virtual Poly *Clone() const override;
+
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 

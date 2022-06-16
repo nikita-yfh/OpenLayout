@@ -7,11 +7,14 @@ class Pad : public Object{
 public:
 	Pad() : Pad(0, Vec2(0.0f, 0.0f)) {}
 	Pad(uint8_t layer, const Vec2 &_position);
+	~Pad();
 
 	virtual void SaveConnections(const Object *objects, File &file) const override;
 	virtual void LoadConnections(Object *objects, File &file) override;
 
 	virtual void DrawConnections() const override;
+
+	virtual void UpdateConnections(Object *objects) override;
 protected:
 
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);
