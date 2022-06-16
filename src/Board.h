@@ -58,6 +58,8 @@ public:
 	ImageConfigs images;
 
 private:
+	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
+
 	char name[30];
 	Vec2 size;
 	uint8_t groundPane[7];
@@ -69,8 +71,6 @@ private:
 	double zoom;
 	Vec2 camera;
 	Vec2 origin;
-
-	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
 };
 
 inline const char *Board::GetName() const {

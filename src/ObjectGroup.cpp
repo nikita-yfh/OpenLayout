@@ -83,10 +83,20 @@ bool ObjectGroup::IsSelected() const {
 bool ObjectGroup::SelectObject(const Vec2 &point) {
 	for(Object *object = objects; object; object = object->next)
 		if(object->GetAABB().TestPoint(point) && object->TestPoint(point)) {
-			object->InvertSelection();
+			InvertSelectionGroup(object);
 			return true;
 		}
 	return false;
+}
+
+void ObjectGroup::InvertSelectionGroup(Object *o1) {
+	o1->InvertSelection();
+	for(Object *o2 = objects; o2; o2 = o2->next)
+		if(o2 != o1)
+			for(int i1 = 0; i1 < o1->groups.Size(); i1++)
+				for(int i2 = 0; i2 < o2->groups.Size(); i2++)
+					if(o1->groups[i1] == o2->groups[i2])
+						o2->InvertSelection();
 }
 
 void ObjectGroup::SelectAll() {

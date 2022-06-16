@@ -35,6 +35,8 @@ public:
 		LAYER_O,
 	};
 protected:
+	void InvertSelectionGroup(Object *object);
+
 	Object *GetLast();
 	uint32_t GetObjectCount() const;
 	Object *GetObject(uint32_t n);
