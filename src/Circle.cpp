@@ -1,8 +1,8 @@
-#include "Arc.h"
+#include "Circle.h"
 #include "GLUtils.h"
 #include "Utils.h"
 
-Arc::Arc(uint8_t layer, float width, const Vec2 &_position, float _diameter)
+Circle::Circle(uint8_t layer, float width, const Vec2 &_position, float _diameter)
 					: LineObject(layer, width) {
 	position = _position;
 	beginAngle = 0.0f;
@@ -12,16 +12,16 @@ Arc::Arc(uint8_t layer, float width, const Vec2 &_position, float _diameter)
 	fill = false;
 }
 
-Arc *Arc::Clone() const {
-	return new Arc(*this);
+Circle *Circle::Clone() const {
+	return new Circle(*this);
 }
 
-AABB Arc::GetAABB() const {
+AABB Circle::GetAABB() const {
 	Vec2 radius((diameter + width) * 0.5f, (diameter + width) * 0.5f);
 	return AABB(position - radius, position + radius);
 }
 
-bool Arc::TestPoint(const Vec2 &point) const {
+bool Circle::TestPoint(const Vec2 &point) const {
 	if(utils::PointInCircle(point, position, (diameter + width) * 0.5f) &&
 		!utils::PointInCircle(point, position, (diameter - width) * 0.5f))
 		return true;
@@ -32,8 +32,8 @@ bool Arc::TestPoint(const Vec2 &point) const {
 	return false;
 }
 
-void Arc::SaveObject(File &file) const {
-	file.Write<uint8_t>(ARC);
+void Circle::SaveObject(File &file) const {
+	file.Write<uint8_t>(CIRCLE);
 	position.SavePosition(file);
 	file.WriteMm<float>((diameter + width) / 2.0f);
 	file.WriteMm<float>((diameter - width) / 2.0f);
@@ -57,7 +57,7 @@ void Arc::SaveObject(File &file) const {
 	SaveGroups(file);
 }
 
-void Arc::LoadObject(File &file) {
+void Circle::LoadObject(File &file) {
 	position.LoadPosition(file);
 	float outRadius = file.ReadMm<float>();
 	float inRadius = file.ReadMm<float>();
@@ -83,7 +83,7 @@ void Arc::LoadObject(File &file) {
 	LoadGroups(file);
 }
 
-void Arc::Draw(float halfwidth) const {
+void Circle::Draw(float halfwidth) const {
 	float radius = diameter * 0.5f;
 	float end = endAngle;
 	if(endAngle <= beginAngle)
@@ -113,12 +113,12 @@ void Arc::Draw(float halfwidth) const {
 	}
 }
 
-void Arc::DrawObject() const {
+void Circle::DrawObject() const {
 	if(!cutoff)
 		Draw(width / 2.0f);
 }
 
-void Arc::DrawGroundDistance() const {
+void Circle::DrawGroundDistance() const {
 	if(cutoff)
 		Draw(width / 2.0f);
 	else

@@ -1,7 +1,7 @@
 #include "Board.h"
 #include "GLUtils.h"
 #include "THTPad.h"
-#include "Arc.h"
+#include "Circle.h"
 #include "Track.h"
 
 Board::Board(const char *_name, Type type, Vec2 innerSize, float border, bool originTop) : Board() {
@@ -12,7 +12,7 @@ Board::Board(const char *_name, Type type, Vec2 innerSize, float border, bool or
 		size = innerSize;
 
 	if(type == Type::Round) {
-		Arc *circle = new Arc(LAYER_O, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x);
+		Circle *circle = new Circle(LAYER_O, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x);
 		AddObjectBegin(circle);
 	} else if(type == Type::Rectangle) {
 		const Vec2 points[] = {

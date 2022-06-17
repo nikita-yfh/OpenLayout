@@ -6,7 +6,7 @@
 #include "SMDPad.h"
 #include "THTPad.h"
 #include "Poly.h"
-#include "Arc.h"
+#include "Circle.h"
 #include <wx/sizer.h>
 #include <wx/menu.h>
 #include <wx/statline.h>
@@ -87,7 +87,7 @@ static const Tool tools[] = {
 	{track_xpm,		_("Track"),			_("Draw tracks")},
 	{pad_circle_xpm,_("Pad"),			_("Add pads, right click to select a pad shape")},
 	{smd_xpm,		_("SMD-Pad"),		_("Add SMD-Pads")},
-	{circle_xpm,	_("Circle"),		_("Draw circles or arcs")},
+	{circle_xpm,	_("Circle"),		_("Draw circles or circles")},
 	{rect_track_xpm,_("Rectangle"),		_("Draw rectangles")},
 	{polygon_xpm,	_("Zone"),			_("Draw filled areas")},
 	{special_xpm,	_("Special form"),	_("Wizard for equilateral polygons, apirals, etc.")},
@@ -119,7 +119,7 @@ enum {
 	ID_TOOL_TRACK,
 	ID_TOOL_PAD,
 	ID_TOOL_SMD,
-	ID_TOOL_ARC,
+	ID_TOOL_CIRCLE,
 	ID_TOOL_RECT,
 	ID_TOOL_ZONE,
 	ID_TOOL_FORM,
@@ -506,7 +506,7 @@ void LeftPanel::UpdateSizes(wxUpdateUIEvent &e) {
 	Object *selected = pcb.GetSelectedBoard()->GetFirstSelected();
 	if(selected) {
 		switch(selected->GetType()) {
-		case Object::TRACK: case Object::POLY: case Object::ARC:
+		case Object::TRACK: case Object::POLY: case Object::CIRCLE:
 			track = ((LineObject*) selected)->GetWidth();
 			break;
 		case Object::THT_PAD:
@@ -530,7 +530,7 @@ void LeftPanel::SetTrackSize(float size) {
 	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected()) {
 			uint8_t type = object->GetType();
-			if(type == Object::TRACK || type == Object::POLY || type == Object::ARC)
+			if(type == Object::TRACK || type == Object::POLY || type == Object::CIRCLE)
 				((LineObject*) object)->SetWidth(size);
 		}
 }
