@@ -15,6 +15,7 @@ public:
 	bool IsEmpty() const;
 
 	Object *GetFirstSelected();
+	const Object *GetFirstSelected() const;
 	bool IsSelected() const;
 
 	Object *GetObjects();
@@ -22,6 +23,11 @@ public:
 	bool SelectObject(const Vec2 &point);
 	void SelectAll();
 	void UnselectAll();
+
+	bool CanGroup() const;
+	bool CanUngroup() const;
+	void GroupSelected();
+	void UngroupSelected();
 
 	void DeleteSelected();
 
@@ -36,6 +42,8 @@ public:
 	};
 protected:
 	void InvertSelectionGroup(Object *object);
+	uint32_t GetFreeGroup() const;
+	uint32_t GetMaxSelectedGroup() const;
 
 	Object *GetLast();
 	uint32_t GetObjectCount() const;
