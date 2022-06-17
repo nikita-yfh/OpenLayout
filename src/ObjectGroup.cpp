@@ -73,6 +73,13 @@ Object *ObjectGroup::GetFirstSelected() {
 	return nullptr;
 }
 
+const Object *ObjectGroup::GetFirstSelected() const {
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			return object;
+	return nullptr;
+}
+
 bool ObjectGroup::IsSelected() const {
 	for(Object *object = objects; object; object = object->next)
 		if(object->IsSelected())
@@ -90,13 +97,13 @@ bool ObjectGroup::SelectObject(const Vec2 &point) {
 }
 
 void ObjectGroup::InvertSelectionGroup(Object *o1) {
-	o1->InvertSelection();
+	bool selected = !o1->selected;
+	o1->selected = selected;
 	for(Object *o2 = objects; o2; o2 = o2->next)
-		if(o2 != o1)
-			for(int i1 = 0; i1 < o1->groups.Size(); i1++)
-				for(int i2 = 0; i2 < o2->groups.Size(); i2++)
-					if(o1->groups[i1] == o2->groups[i2])
-						o2->InvertSelection();
+		for(int i1 = 0; i1 < o1->groups.Size(); i1++)
+			for(int i2 = 0; i2 < o2->groups.Size(); i2++)
+				if(o1->groups[i1] == o2->groups[i2])
+					o2->selected = selected;
 }
 
 void ObjectGroup::SelectAll() {
@@ -126,3 +133,87 @@ void ObjectGroup::DeleteSelected() {
 	}
 }
 
+bool ObjectGroup::CanGroup() const {
+	const Object *first = nullptr;
+	uint32_t count = 0;
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected()) {
+			if(!first)
+				first = object;
+			count++;
+		}
+	if(!first || count <= 1)
+		return false;
+	for(int i = 0; i < first->groups.Size(); i++) {
+		bool all = true;
+		for(const Object *object = first->next; object; object = object->next)
+			if(object->IsSelected() && !object->groups.Has(first->groups[i])) {
+				all = false;
+				break;
+			}
+		if(all)
+			return false;
+	}
+	return true;
+}
+bool ObjectGroup::CanUngroup() const {
+	uint32_t max = GetMaxSelectedGroup();
+	bool groups[max + 1] = {false};
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			for(int i = 0; i < object->groups.Size(); i++) {
+				if(groups[object->groups[i]])
+					return true;
+				else
+					groups[object->groups[i]] = true;
+			}
+	return false;
+}
+
+void ObjectGroup::GroupSelected() {
+	uint32_t group = GetFreeGroup();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->groups.Add(group);
+}
+
+void ObjectGroup::UngroupSelected() {
+	uint32_t max = GetMaxSelectedGroup();
+	uint32_t groupCount[max + 1] = {0};
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			for(int i = 0; i < object->groups.Size(); i++)
+				groupCount[object->groups[i]]++;
+	uint32_t group;
+	uint32_t maxCount = 0;
+	for(int i = 0; i <= max; i++) {
+		if(maxCount < groupCount[i]) {
+			maxCount = groupCount[i];
+			group = i;
+		}
+	}
+	
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->groups.Remove(group);
+
+}
+
+uint32_t ObjectGroup::GetFreeGroup() const {
+	uint32_t max = 0;
+	for(const Object *object = objects; object; object = object->next)
+		for(int i = 0; i < object->groups.Size(); i++)
+			if(max < object->groups[i])
+				max = object->groups[i];
+	return max + 1;
+}
+
+uint32_t ObjectGroup::GetMaxSelectedGroup() const {
+	uint32_t max = 0;
+	for(const Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			for(int i = 0; i < object->groups.Size(); i++)
+				if(max < object->groups[i])
+					max = object->groups[i];
+	return max;
+}

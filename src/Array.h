@@ -99,13 +99,13 @@ private:
 
 template<typename T>
 class UniqueArray : public Array<T> {
-protected:
+public:
 	using Array<T>::count;
 	using Array<T>::items;
 	using Array<T>::Find;
 	using Array<T>::Has;
 	using Array<T>::Resize;
-public:
+
 	UniqueArray() {}
 	UniqueArray(const UniqueArray &other)
 		: Array<T>(other) {}

@@ -572,8 +572,12 @@ void OpenLayoutFrame::SetBoardRight(wxCommandEvent&) {
 	pcb.SetSelectedBoardRight();
 	UpdatePages();
 }
-void OpenLayoutFrame::Group(wxCommandEvent&) {}
-void OpenLayoutFrame::Ungroup(wxCommandEvent&) {}
+void OpenLayoutFrame::Group(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->GroupSelected();
+}
+void OpenLayoutFrame::Ungroup(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->UngroupSelected();
+}
 void OpenLayoutFrame::ShowAlignMenu(wxCommandEvent&) {
 	wxMenu *menu = new wxMenu();
 	AddMenuItem(menu, _("Align top"),				ID_ALIGN_TOP,		align_top_xpm);
@@ -663,8 +667,12 @@ void OpenLayoutFrame::UpdateUIObjects(wxUpdateUIEvent &e) {
 void OpenLayoutFrame::UpdateUISelection(wxUpdateUIEvent &e) {
 	e.Enable(pcb.GetSelectedBoard()->IsSelected());
 }
-void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent&) {}
-void OpenLayoutFrame::UpdateUIUngroup(wxUpdateUIEvent&) {}
+void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent &e) {
+	e.Enable(pcb.GetSelectedBoard()->CanGroup());
+}
+void OpenLayoutFrame::UpdateUIUngroup(wxUpdateUIEvent &e) {
+	e.Enable(pcb.GetSelectedBoard()->CanUngroup());
+}
 void OpenLayoutFrame::UpdateUIMultilayer(wxUpdateUIEvent&) {}
 void OpenLayoutFrame::UpdateUIDeleteBoard(wxUpdateUIEvent &e) {
 	e.Enable(pcb.Size() > 1);
