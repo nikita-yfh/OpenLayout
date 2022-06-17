@@ -7,9 +7,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(xpm)
 set(SOURCES
 	src/App.cpp
-	src/Arc.cpp
 	src/Board.cpp
 	src/BottomPanel.cpp
+	src/Circle.cpp
 	src/ColorScheme.cpp
 	src/ComponentsPanel.cpp
 	src/File.cpp
@@ -40,11 +40,11 @@ set(SOURCES
 set(HEADERS
 	src/AABB.h
 	src/App.h
-	src/Arc.h
 	src/Array.h
 	src/Board.h
 	src/BottomPanel.h
 	src/ColorScheme.h
+	src/Circle.h
 	src/ComponentsPanel.h
 	src/File.h
 	src/GLUtils.h

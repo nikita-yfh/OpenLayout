@@ -3,7 +3,7 @@
 #include "SMDPad.h"
 #include "Track.h"
 #include "Poly.h"
-#include "Arc.h"
+#include "Circle.h"
 
 
 Object::Object(uint8_t _layer) {
@@ -43,8 +43,8 @@ Object *Object::Load(File &file){
 		case POLY:
 			object = new Poly();
 			break;
-		case ARC:
-			object = new Arc();
+		case CIRCLE:
+			object = new Circle();
 			break;
 		case TRACK:
 			object = new Track();
