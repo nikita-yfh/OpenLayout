@@ -8,7 +8,7 @@ Circle::Circle(uint8_t layer, float width, const Vec2 &_position, float _diamete
 	beginAngle = 0.0f;
 	endAngle = 0.0f;
 	diameter = _diameter;
-	cutoff = false;
+	cutout = false;
 	fill = false;
 }
 
@@ -48,7 +48,7 @@ void Circle::SaveObject(File &file) const {
 	file.Write<uint8_t>(fill);
 	file.WriteMm<uint32_t>(groundDistance);
 	file.WriteNull(7);
-	file.Write<uint8_t>(cutoff);
+	file.Write<uint8_t>(cutout);
 	file.WriteNull(5);
 	file.Write<uint8_t>(soldermask);
 	file.WriteNull(22);
@@ -74,7 +74,7 @@ void Circle::LoadObject(File &file) {
 	fill = file.Read<uint8_t>();
 	groundDistance = file.ReadMm<uint32_t>();
 	file.ReadNull(7);
-	cutoff = file.Read<uint8_t>();
+	cutout = file.Read<uint8_t>();
 	file.ReadNull(5);
 	soldermask = file.Read<uint8_t>();
 	file.ReadNull(22);
@@ -114,12 +114,12 @@ void Circle::Draw(float halfwidth) const {
 }
 
 void Circle::DrawObject() const {
-	if(!cutoff)
+	if(!cutout)
 		Draw(width / 2.0f);
 }
 
 void Circle::DrawGroundDistance() const {
-	if(cutoff)
+	if(cutout)
 		Draw(width / 2.0f);
 	else
 		Draw(width / 2.0f + groundDistance);

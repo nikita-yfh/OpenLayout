@@ -11,7 +11,7 @@ protected:
 	void SavePoints(File &file, bool onlySoldermask = false) const;
 
 	Array<Vec2> points;
-	bool cutoff;
+	bool cutout;
 
 	friend class ObjectGroup;
 };

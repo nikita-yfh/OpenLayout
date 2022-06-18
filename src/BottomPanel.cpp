@@ -10,6 +10,8 @@
 #include <wx/statline.h>
 
 extern "C" {
+#include "xpm/bottompanel/cutout_rect.xpm"
+#include "xpm/bottompanel/cutout_polygon.xpm"
 #include "xpm/bottompanel/capture_disabled.xpm"
 #include "xpm/bottompanel/capture_enabled.xpm"
 #include "xpm/bottompanel/ground_disabled.xpm"
@@ -46,7 +48,11 @@ enum {
 	ID_HELP,
 	ID_GROUND,
 	ID_CAPTURE,
-	ID_RUBBERBAND
+	ID_RUBBERBAND,
+
+	ID_GROUND_DISTANCE,
+	ID_CUTOUT_RECT,
+	ID_CUTOUT_POLYGON
 };
 
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
@@ -65,7 +71,11 @@ wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_BUTTON(ID_GROUND,						BottomPanel::ToggleGround)
 	EVT_BUTTON(ID_CAPTURE,						BottomPanel::ToggleCapture)
 	EVT_BUTTON(ID_RUBBERBAND,					BottomPanel::ToggleRubberband)
+	EVT_SPINCTRLDOUBLE(ID_GROUND_DISTANCE,		BottomPanel::SetGroundDistance)
 	EVT_UPDATE_UI(ID_GROUND,					BottomPanel::UpdateGround)
+	EVT_UPDATE_UI(ID_GROUND_DISTANCE,			BottomPanel::UpdateGroundDistance)
+	EVT_UPDATE_UI(ID_CUTOUT_RECT,				BottomPanel::UpdateCutout)
+	EVT_UPDATE_UI(ID_CUTOUT_POLYGON,			BottomPanel::UpdateCutout)
 wxEND_EVENT_TABLE()
 
 class LayerInfoDialog : public wxDialog {
@@ -141,6 +151,25 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		content->Add(ground, 0, wxEXPAND);
 	}
 	{
+		wxBoxSizer *vsizer = new wxBoxSizer(wxVERTICAL);
+		wxBoxSizer *hsizer = new wxBoxSizer(wxHORIZONTAL);
+
+		groundDistance = new wxSpinCtrlDouble(this, ID_GROUND_DISTANCE, wxEmptyString,
+				wxDefaultPosition, wxSize(60, -1), wxSP_ARROW_KEYS, 0.0, 10.0, 0.4, 0.1);
+
+		wxBitmapButton *cutoutRect = new wxBitmapButton(this, ID_CUTOUT_RECT, cutout_rect_xpm);
+		wxBitmapButton *cutoutPolygon = new wxBitmapButton(this, ID_CUTOUT_POLYGON, cutout_polygon_xpm);
+
+		cutoutRect->SetToolTip(_("Generate rectangle-cutout-areas in the ground plane"));
+		cutoutPolygon->SetToolTip(_("Generate polygon-cutout-areas in the ground plane"));
+
+		hsizer->Add(cutoutRect, 1, wxEXPAND);
+		hsizer->Add(cutoutPolygon, 1, wxEXPAND);
+		vsizer->Add(groundDistance, 0, wxEXPAND);
+		vsizer->Add(hsizer, 0, wxEXPAND);
+		content->Add(vsizer, 0, wxEXPAND);
+	}
+	{
 		wxBitmapButton *capture = new wxBitmapButton(this, ID_CAPTURE,
 			settings.capture ? capture_enabled_xpm : capture_disabled_xpm);
 		capture->SetToolTip(_("Enable or disable the automatic capture mode"));
@@ -177,6 +206,7 @@ void BottomPanel::UpdateGround(wxUpdateUIEvent &e) {
 		prevMode = mode;
 		SetButtonBitmap(e, mode ? ground_enabled_xpm : ground_disabled_xpm);
 	}
+	e.Enable(pcb.GetSelectedBoard()->IsSelectedLayerCopper());
 }
 
 void BottomPanel::ToggleCapture(wxCommandEvent &e) {
@@ -209,4 +239,26 @@ void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
 void BottomPanel::SetLayer(wxCommandEvent &e) {
 	pcb.GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
 }
+
+void BottomPanel::SetGroundDistance(wxSpinDoubleEvent &e) {
+	settings.groundDistance = e.GetValue();
+	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
+		if(object->IsSelected())
+			object->SetGroundDistance(settings.groundDistance);
+	GetParent()->Refresh();
+}
+
+void BottomPanel::UpdateGroundDistance(wxUpdateUIEvent &e) {
+	Object *selected = pcb.GetSelectedBoard()->GetFirstSelected();
+	if(selected)
+		groundDistance->SetValue(selected->GetGroundDistance());
+	else
+		groundDistance->SetValue(settings.groundDistance);
+	UpdateCutout(e);
+}
+
+void BottomPanel::UpdateCutout(wxUpdateUIEvent &e) {
+	e.Enable(pcb.GetSelectedBoard()->GetCurrentLayerGround());
+}
+
 

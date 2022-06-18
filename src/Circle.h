@@ -25,7 +25,7 @@ protected:
 	float beginAngle;
 	float endAngle;
 	float diameter;
-	bool cutoff;
+	bool cutout;
 	bool fill;
 
 	friend class ObjectGroup;

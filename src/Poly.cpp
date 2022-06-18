@@ -50,7 +50,7 @@ void Poly::SaveObject(File &file) const {
 	file.WriteNull(5);
 	file.Write<uint8_t>(hatched);
 	file.Write<uint8_t>(customHatch);
-	file.Write<uint8_t>(cutoff);
+	file.Write<uint8_t>(cutout);
 	file.WriteMm<uint32_t>(hatchSize);
 	file.WriteNull(1);
 	file.Write<uint8_t>(soldermask);
@@ -76,7 +76,7 @@ void Poly::LoadObject(File &file) {
 	file.ReadNull(5);
 	hatched = file.Read<uint8_t>();
 	customHatch = file.Read<uint8_t>();
-	cutoff = file.Read<uint8_t>();
+	cutout = file.Read<uint8_t>();
 	hatchSize = file.ReadMm<uint32_t>();
 	file.ReadNull(1);
 	soldermask = file.ReadMm<uint8_t>();
@@ -90,13 +90,13 @@ void Poly::LoadObject(File &file) {
 }
 
 void Poly::DrawGroundDistance() const {
-	if(cutoff)
+	if(cutout)
 		Draw(width / 2.0f);
 	else
 		Draw(width / 2.0f + groundDistance);
 }
 void Poly::DrawObject() const {
-	if(!cutoff)
+	if(!cutout)
 		Draw(width / 2.0f);
 }
 

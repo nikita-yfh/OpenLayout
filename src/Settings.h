@@ -132,6 +132,7 @@ struct Settings {
 	bool transparent;
 	bool capture;
 	uint8_t rubberband;
+	float groundDistance;
 
 	wxPoint windowPos;
 	wxSize windowSize;
