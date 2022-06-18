@@ -6,25 +6,6 @@ Track *Track::Clone() const {
 	return new Track(*this);
 }
 
-AABB Track::GetAABB() const {
-	Vec2 max(0.0f, 0.0f);
-	Vec2 min(500.0f, 500.0f);
-
-	for(int i = 0; i < points.Size(); i++) {
-		const Vec2 &point = points[i];
-		if(point.x < min.x)
-			min.x = point.x;
-		if(point.y < min.y)
-			min.y = point.y;
-		if(point.x > max.x)
-			max.x = point.x;
-		if(point.y > max.y)
-			max.y = point.y;
-	}
-	Vec2 size(width / 2.0f, width / 2.0f);
-	return AABB(min - size, max + size);
-}
-
 bool Track::TestPoint(const Vec2 &point) const {
 	float halfWidth = width / 2.0f;
 	for(int i = 0; i < points.Size() - 1; i++)

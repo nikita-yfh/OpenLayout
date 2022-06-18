@@ -132,7 +132,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_PROPERTIES,			OpenLayoutFrame::ShowSettings)
 	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
 	EVT_MENU(wxID_INFO,					OpenLayoutFrame::ShowProjectInfo)
-	EVT_MENU(wxID_NEW,				OpenLayoutFrame::NewBoard)
+	EVT_MENU(wxID_NEW,					OpenLayoutFrame::NewBoard)
 	EVT_MENU(ID_BOARD_COPY,				OpenLayoutFrame::CopyBoard)
 	EVT_MENU(ID_BOARD_DELETE,			OpenLayoutFrame::DeleteBoard)
 	EVT_MENU(ID_BOARD_MOVE_LEFT,		OpenLayoutFrame::MoveBoardLeft)
@@ -140,6 +140,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(ID_BOARD_SET_LEFT,			OpenLayoutFrame::SetBoardLeft)
 	EVT_MENU(ID_BOARD_SET_RIGHT,		OpenLayoutFrame::SetBoardRight)
 	EVT_MENU(ID_SCANNED_COPY,			OpenLayoutFrame::ShowImagesConfig)
+	EVT_MENU(ID_ROTATE,					OpenLayoutFrame::Rotate)
 	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
 	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
 	EVT_MENU(ID_ALIGN,					OpenLayoutFrame::ShowAlignMenu)
@@ -190,6 +191,8 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_PANEL_DRC,			OpenLayoutFrame::UpdateDRCPanel)
 	EVT_UPDATE_UI(ID_PANEL_MACRO,		OpenLayoutFrame::UpdateMacrosPanel)
 
+	EVT_MENU_RANGE(ID_ROTATE_90, ID_ROTATE_CUSTOM,
+										OpenLayoutFrame::SetRotationAngle)
 	EVT_NOTEBOOK_PAGE_CHANGED(ID_PAGES,	OpenLayoutFrame::SelectPage)
 wxEND_EVENT_TABLE()
 
@@ -409,6 +412,7 @@ wxToolBar *OpenLayoutFrame::BuildToolBar() {
 		menu->AppendRadioItem(ID_ROTATE_45,	L"45\x00b0");
 		menu->AppendRadioItem(ID_ROTATE_10,	L"10\x00b0");
 		menu->AppendRadioItem(ID_ROTATE_5,	L"5\x00b0");
+		menu->Check(ID_ROTATE_90 + settings.rotationAngleSel, true);
 		toolBar->SetDropdownMenu(ID_ROTATE, menu);
 	}
 	toolBar->AddTool(ID_HMIRROR, _("Mirror horizontal"), mirror_h_xpm, _("Mirror horisontal"));
@@ -571,6 +575,10 @@ void OpenLayoutFrame::SetBoardRight(wxCommandEvent&) {
 	pcb.SetSelectedBoardRight();
 	UpdatePages();
 }
+void OpenLayoutFrame::Rotate(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->RotateSelected(settings.GetRotationAngle());
+	GetCanvas()->Refresh();
+}
 void OpenLayoutFrame::Group(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->GroupSelected();
 }
@@ -681,6 +689,10 @@ void OpenLayoutFrame::UpdateUIMoveBoardLeft(wxUpdateUIEvent &e) {
 }
 void OpenLayoutFrame::UpdateUIMoveBoardRight(wxUpdateUIEvent &e) {
 	e.Enable(pcb.CanMoveRight());
+}
+
+void OpenLayoutFrame::SetRotationAngle(wxCommandEvent &e) {
+	settings.rotationAngleSel = e.GetId() - ID_ROTATE_90;
 }
 
 void OpenLayoutFrame::SelectPage(wxBookCtrlEvent &e) {

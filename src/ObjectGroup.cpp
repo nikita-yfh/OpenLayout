@@ -217,3 +217,23 @@ uint32_t ObjectGroup::GetMaxSelectedGroup() const {
 					max = object->groups[i];
 	return max;
 }
+
+void ObjectGroup::RotateSelected(float angle) {
+	Vec2 center = GetSelectedCenter();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Rotate(center, angle);
+}
+
+Vec2 ObjectGroup::GetSelectedCenter() const {
+	const Object *first = GetFirstSelected();
+	if(!first)
+		return Vec2(FLT_MAX, FLT_MAX);
+	AABB aabb = first->GetPointsAABB();
+	for(const Object *object = first->next; object; object = object->next)
+		if(object->IsSelected())
+			aabb |= object->GetPointsAABB();
+	return aabb.GetCenter();
+}
+
+

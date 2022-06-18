@@ -30,6 +30,10 @@ Pad::~Pad() {
 	}
 }
 
+AABB Pad::GetPointsAABB() const {
+	return AABB(position, position);
+}
+
 void Pad::SaveConnections(const Object *objects, File &file) const {
 	file.Write<uint32_t>(connections.Size());
 	for(int i = 0; i < connections.Size(); i++) {
@@ -104,5 +108,10 @@ void Pad::UpdateConnections(Object *objects) {
 		}
 		connections[i] = (Pad*) newConnection;
 	}
+}
+
+void Pad::Rotate(const Vec2 &center, float delta) {
+	position = position.Rotate(delta, center);
+	angle += delta;
 }
 

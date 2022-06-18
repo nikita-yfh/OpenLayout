@@ -37,6 +37,7 @@ private:
 	void SetBoardLeft(wxCommandEvent&);
 	void SetBoardRight(wxCommandEvent&);
 
+	void Rotate(wxCommandEvent&);
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);
 	void ShowAlignMenu(wxCommandEvent&);
@@ -75,6 +76,7 @@ private:
 	void UpdateUIMoveBoardLeft(wxUpdateUIEvent&);
 	void UpdateUIMoveBoardRight(wxUpdateUIEvent&);
 
+	void SetRotationAngle(wxCommandEvent&);
 	void SelectPage(wxBookCtrlEvent&);
 	MainCanvas *GetCanvas();
 	void UpdatePages();

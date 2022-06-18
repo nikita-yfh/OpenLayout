@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Vec2.h"
+#include "AABB.h"
 #include "Array.h"
 
 class Pad : public Object{
@@ -11,10 +12,11 @@ public:
 
 	virtual void SaveConnections(const Object *objects, File &file) const override;
 	virtual void LoadConnections(Object *objects, File &file) override;
-
+	virtual void UpdateConnections(Object *objects) override;
 	virtual void DrawConnections() const override;
 
-	virtual void UpdateConnections(Object *objects) override;
+	virtual AABB GetPointsAABB() const override;
+	virtual void Rotate(const Vec2 &center, float angle) override;
 protected:
 
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);

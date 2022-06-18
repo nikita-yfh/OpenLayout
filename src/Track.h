@@ -18,7 +18,6 @@ public:
 	virtual uint8_t GetType() const override {
 		return TRACK;
 	}
-	virtual AABB GetAABB() const override;
 	virtual bool TestPoint(const Vec2 &point) const;
 private:
 	void Draw(float halfWidth) const;

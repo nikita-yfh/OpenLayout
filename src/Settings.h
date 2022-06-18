@@ -51,10 +51,18 @@ enum {
 	SUBGRID_10,
 };
 
-enum{
+enum {
 	RUBBERBAND_DISABLED,
 	RUBBERBAND_SMALL,
 	RUBBERBAND_LARGE
+};
+
+enum {
+	ANGLE_90,
+	ANGLE_45,
+	ANGLE_15,
+	ANGLE_5,
+	ANGLE_CUSTOM
 };
 
 struct Settings {
@@ -144,6 +152,7 @@ struct Settings {
 	bool showMacroPanel;
 
 	uint8_t GetSubGrid() const;
+	float GetRotationAngle() const;
 	ColorScheme &GetColorScheme();
 	const ColorScheme &GetColorScheme() const;
 
