@@ -116,7 +116,7 @@ void Poly::Draw(float halfWidth) const {
 		glutils::Vertex(points[i]);
 	glEnd();
 
-	if(width != 0.0f) {
+	if(halfWidth != 0.0f) {
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 		glBegin(GL_QUADS);
 		for(int i = 0; i < points.Size(); i++) {
