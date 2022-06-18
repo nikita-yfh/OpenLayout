@@ -7,15 +7,16 @@ struct PadSize {
 
 	PadSize() {}
 	PadSize(float _out, float _in) {
-		Set(_out, _in);
+		in = _in;
+		out = _out;
 	}
 
 	void Set(float _out, float _in) {
 		if(_in > _out) {
-			if(in == _in)
-				in = out = _out;
-			else
+			if(out == _out)
 				in = out = _in;
+			else
+				in = out = _out;
 		} else {
 			in = _in;
 			out = _out;
@@ -28,6 +29,11 @@ struct PadSize {
 
 	bool operator==(const PadSize &other) const {
 		return other.in == in && other.out == out;
+	}
+
+	const PadSize &operator=(const PadSize &other) {
+		Set(other.out, other.in);
+		return *this;
 	}
 
 	bool operator<(const PadSize &other) const {
