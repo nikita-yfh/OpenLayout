@@ -503,18 +503,19 @@ void LeftPanel::UpdateSizes(wxUpdateUIEvent &e) {
 	PadSize	pad = settings.padSize;
 	Vec2	smd = settings.smdSize;
 
-	Object *selected = pcb.GetSelectedBoard()->GetFirstSelected();
-	if(selected) {
-		switch(selected->GetType()) {
-		case Object::TRACK: case Object::POLY: case Object::CIRCLE:
-			track = ((LineObject*) selected)->GetWidth();
-			break;
-		case Object::THT_PAD:
-			pad = ((THTPad*) selected)->GetSize();
-			break;
-		case Object::SMD_PAD:
-			smd = ((SMDPad*) selected)->GetSize();
-			break;
+	for(const Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext()) {
+		if(object->IsSelected()) {
+			switch(object->GetType()) {
+			case Object::TRACK: case Object::POLY: case Object::CIRCLE:
+				track = ((LineObject*) object)->GetWidth();
+				break;
+			case Object::THT_PAD:
+				pad = ((THTPad*) object)->GetSize();
+				break;
+			case Object::SMD_PAD:
+				smd = ((SMDPad*) object)->GetSize();
+				break;
+			}
 		}
 	}
 
@@ -533,6 +534,7 @@ void LeftPanel::SetTrackSize(float size) {
 			if(type == Object::TRACK || type == Object::POLY || type == Object::CIRCLE)
 				((LineObject*) object)->SetWidth(size);
 		}
+	GetParent()->Refresh();
 }
 
 void LeftPanel::SetTrackSize(wxSpinDoubleEvent&) {
@@ -553,6 +555,7 @@ void LeftPanel::SetPadSize(const PadSize &size) {
 	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected() && object->GetType() == Object::THT_PAD)
 			((THTPad*) object)->SetSize(size);
+	GetParent()->Refresh();
 }
 
 void LeftPanel::SetPadSize(wxSpinDoubleEvent&) {
@@ -574,6 +577,7 @@ void LeftPanel::SetSmdSize(const Vec2 &size) {
 	for(Object *object = pcb.GetSelectedBoard()->GetObjects(); object; object = object->GetNext())
 		if(object->IsSelected() && object->GetType() == Object::SMD_PAD)
 			((SMDPad*) object)->SetSize(size);
+	GetParent()->Refresh();
 }
 
 void LeftPanel::SetSmdSize(wxSpinDoubleEvent&) {
