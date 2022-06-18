@@ -1,6 +1,7 @@
 #pragma once
 #include <wx/gdicmn.h>
 #include <math.h>
+#include <float.h>
 #include "File.h"
 
 struct Vec2 {
@@ -95,23 +96,25 @@ struct Vec2 {
 		return atan2f(y, x);
 	}
 
-	Vec2 Rotate(float angle) const {
+	inline Vec2 Rotate(float angle, Vec2 center = {0.0f, 0.0f}) const {
+		Vec2 delta(x - center.x, y - center.y);
 		return Vec2(
-			x * cosf(angle) - y * sinf(angle),
-			x * sinf(angle) + y * cosf(angle)
-		);
+			delta.x * cosf(angle) - delta.y * sinf(angle),
+			delta.x * sinf(angle) + delta.y * cosf(angle)
+		) + center;
 	}
 
-	static inline void Rotate(Vec2 *array, int count, float angle) {
+	static inline void Rotate(Vec2 *array, int count, float angle, Vec2 center = {0.0f, 0.0f}) {
 		float s = sinf(angle);
 		float c = cosf(angle);
 
 		for(int i = 0; i < count; i++) {
-			Vec2 result(
+			array[i] -= center;
+			array[i].Set(
 				array[i].x * c - array[i].y * s,
 				array[i].x * s + array[i].y * c
 			);
-			array[i] = result;
+			array[i] += center;
 		}
 	}
 

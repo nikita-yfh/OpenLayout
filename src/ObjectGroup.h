@@ -29,6 +29,8 @@ public:
 	void GroupSelected();
 	void UngroupSelected();
 
+	void RotateSelected(float angle);
+
 	void DeleteSelected();
 
 	enum Layer {
@@ -44,6 +46,7 @@ protected:
 	void InvertSelectionGroup(Object *object);
 	uint32_t GetFreeGroup() const;
 	uint32_t GetMaxSelectedGroup() const;
+	Vec2 GetSelectedCenter() const;
 
 	Object *GetLast();
 	uint32_t GetObjectCount() const;

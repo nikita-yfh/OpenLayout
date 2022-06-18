@@ -21,6 +21,12 @@ AABB Circle::GetAABB() const {
 	return AABB(position - radius, position + radius);
 }
 
+AABB Circle::GetPointsAABB() const {
+	AABB aabb(position, position);
+	aabb.Expand(diameter * 0.5f);
+	return aabb;
+}
+
 bool Circle::TestPoint(const Vec2 &point) const {
 	if(utils::PointInCircle(point, position, (diameter + width) * 0.5f) &&
 		!utils::PointInCircle(point, position, (diameter - width) * 0.5f))
@@ -123,5 +129,11 @@ void Circle::DrawGroundDistance() const {
 		Draw(width / 2.0f);
 	else
 		Draw(width / 2.0f + groundDistance);
+}
+
+void Circle::Rotate(const Vec2 &center, float delta) {
+	position = position.Rotate(delta, center);
+	beginAngle += delta;
+	endAngle += delta;
 }
 

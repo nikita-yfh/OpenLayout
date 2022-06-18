@@ -35,7 +35,9 @@ public:
 
 	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
+	virtual AABB GetPointsAABB() const = 0;
 	virtual bool TestPoint(const Vec2 &point) const = 0;
+	virtual void Rotate(const Vec2 &center, float angle) = 0;
 
 	void SetGroundDistance(float distance);
 	float GetGroundDistance() const;

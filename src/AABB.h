@@ -60,6 +60,12 @@ public:
 		return true;
 	}
 
+	inline AABB Expand(float f) {
+		return Expand(Vec2(f, f));
+	}
+	inline AABB Expand(const Vec2 &vec) {
+		return AABB(lower - vec, upper + vec);
+	}
 	inline AABB operator+(const Vec2 &vec) {
 		return AABB(lower + vec, upper + vec);
 	}

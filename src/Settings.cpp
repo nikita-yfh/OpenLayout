@@ -151,6 +151,15 @@ uint8_t Settings::GetSubGrid() const {
 	}
 	return 1;
 }
+float Settings::GetRotationAngle() const {
+	switch(rotationAngleSel) {
+		case ANGLE_90: return M_PI / 2.0f;
+		case ANGLE_45: return M_PI / 4.0f;
+		case ANGLE_15: return M_PI / 12.0f;
+		case ANGLE_5: return M_PI / 36.0f;
+	}
+	return customRotationAngle;
+}
 
 static ColorScheme def;
 

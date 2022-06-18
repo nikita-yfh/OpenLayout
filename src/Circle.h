@@ -1,5 +1,6 @@
 #pragma once
 #include "LineObject.h"
+#include "AABB.h"
 
 class Circle : public LineObject {
 public:
@@ -8,7 +9,6 @@ public:
 
 	virtual Circle *Clone() const override;
 
-	void Draw(float halfwidth) const;
 	virtual void DrawGroundDistance() const override;
 	virtual void DrawObject() const override;
 
@@ -19,8 +19,12 @@ public:
 		return CIRCLE;
 	}
 	virtual AABB GetAABB() const override;
-	virtual bool TestPoint(const Vec2 &point) const;
-protected:
+	virtual AABB GetPointsAABB() const override;
+	virtual bool TestPoint(const Vec2 &point) const override;
+	virtual void Rotate(const Vec2 &center, float angle) override;
+private:
+	void Draw(float halfwidth) const;
+
 	Vec2 position;
 	float beginAngle;
 	float endAngle;
