@@ -37,6 +37,9 @@ public:
 	virtual AABB GetAABB() const = 0;
 	virtual bool TestPoint(const Vec2 &point) const = 0;
 
+	void SetGroundDistance(float distance);
+	float GetGroundDistance() const;
+
 	bool IsSelected() const;
 	void Select();
 	void Unselect();
@@ -93,4 +96,10 @@ inline void Object::InvertSelection() {
 }
 inline uint8_t Object::GetLayer() const {
 	return layer;
+}
+inline void Object::SetGroundDistance(float distance) {
+	groundDistance = distance;
+}
+inline float Object::GetGroundDistance() const {
+	return groundDistance;
 }

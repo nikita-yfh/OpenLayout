@@ -65,6 +65,7 @@ void Settings::SetDefault() {
 	transparent = false;
 	capture = true;
 	rubberband = RUBBERBAND_DISABLED;
+	groundDistance = 0.4f;
 
 	const char defKeys[TOOL_COUNT]= {
 		ESCAPE, 'Z', 'L', 'P',
@@ -126,8 +127,6 @@ void Settings::SetDefault() {
 	gridBind[6] = 0.0396875;
 	gridBind[7] = 1.0;
 	gridBind[8] = 0.1;
-
-	transparent = false;
 
 	windowPos = wxPoint(-1, -1);
 	windowSize = wxSize(800, 600);
@@ -270,6 +269,7 @@ void Settings::Save(File &file) const {
 	file.Write<uint8_t>(rotationAngleSel);
 	file.Write<uint8_t>(capture);
 	file.Write<uint8_t>(rubberband);
+	file.Write<float>(groundDistance);
 	file.Write<uint16_t>(windowPos.x);
 	file.Write<uint16_t>(windowPos.y);
 	file.Write<uint16_t>(windowSize.x);
@@ -347,6 +347,7 @@ void Settings::Load(File &file) {
 	rotationAngleSel = file.Read<uint8_t>();
 	capture = file.Read<uint8_t>();
 	rubberband = file.Read<uint8_t>();
+	groundDistance = file.Read<float>();
 	windowPos.x = file.Read<uint16_t>();
 	windowPos.y = file.Read<uint16_t>();
 	windowSize.x = file.Read<uint16_t>();

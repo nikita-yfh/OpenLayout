@@ -48,7 +48,7 @@ void Track::SaveObject(File &file) const {
 	file.WriteNull(11);
 	file.WriteMm<uint32_t>(groundDistance);
 	file.WriteNull(7);
-	file.Write<uint8_t>(cutoff);
+	file.Write<uint8_t>(cutout);
 	file.WriteNull(5);
 	file.Write<uint8_t>(soldermask);
 	file.WriteNull(22);
@@ -70,7 +70,7 @@ void Track::LoadObject(File &file) {
 	file.ReadNull(11);
 	groundDistance = file.ReadMm<uint32_t>();
 	file.ReadNull(7);
-	cutoff = file.Read<uint8_t>();
+	cutout = file.Read<uint8_t>();
 	file.ReadNull(5);
 	soldermask = file.Read<uint8_t>();
 	file.ReadNull(22);
@@ -180,14 +180,14 @@ void Track::Draw(float halfWidth) const {
 }
 
 void Track::DrawGroundDistance() const {
-	if(cutoff)
+	if(cutout)
 		Draw(width / 2.0f);
 	else
 		Draw(width / 2.0f + groundDistance);
 }
 
 void Track::DrawObject() const {
-	if(!cutoff)
+	if(!cutout)
 		Draw(width / 2.0f);
 }
 

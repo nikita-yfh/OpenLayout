@@ -58,7 +58,6 @@ enum {
 	ID_SAVE_EMP,
 	ID_SAVE_PNG,
 	ID_DIRECTORIES,
-	ID_BOARD_NEW,
 	ID_BOARD_PROPERTIES,
 	ID_BOARD_COPY,
 	ID_BOARD_DELETE,
@@ -133,7 +132,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(wxID_PROPERTIES,			OpenLayoutFrame::ShowSettings)
 	EVT_MENU(wxID_ABOUT,				OpenLayoutFrame::ShowAbout)
 	EVT_MENU(wxID_INFO,					OpenLayoutFrame::ShowProjectInfo)
-	EVT_MENU(ID_BOARD_NEW,				OpenLayoutFrame::NewBoard)
+	EVT_MENU(wxID_NEW,				OpenLayoutFrame::NewBoard)
 	EVT_MENU(ID_BOARD_COPY,				OpenLayoutFrame::CopyBoard)
 	EVT_MENU(ID_BOARD_DELETE,			OpenLayoutFrame::DeleteBoard)
 	EVT_MENU(ID_BOARD_MOVE_LEFT,		OpenLayoutFrame::MoveBoardLeft)
@@ -301,7 +300,7 @@ wxMenuBar *OpenLayoutFrame::BuildMenuBar() {
 	{
 		//Board
 		wxMenu *menu = new wxMenu();
-		menu->Append(ID_BOARD_NEW, _("&Add new board"));
+		menu->Append(wxID_NEW, _("&Add new board"));
 		menu->Append(ID_BOARD_PROPERTIES, _("&Properties"));
 		menu->Append(ID_BOARD_COPY, _("&Copy board"));
 		menu->Append(ID_BOARD_DELETE, _("&Delete board"));

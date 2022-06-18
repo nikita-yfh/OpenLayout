@@ -34,6 +34,7 @@ public:
 	bool ToggleCurrentLayerGround();
 
 	uint8_t GetSelectedLayer() const;
+	bool IsSelectedLayerCopper() const;
 	void SetSelectedLayer(uint8_t layer);
 
 	double GetGrid() const;

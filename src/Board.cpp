@@ -93,6 +93,10 @@ void Board::Load(File &file) {
 	UpdateGrid(false, false);
 }
 
+bool Board::IsSelectedLayerCopper() const {
+	return	activeLayer == LAYER_C1 || activeLayer == LAYER_C2 ||
+			activeLayer == LAYER_I1 || activeLayer == LAYER_I2;
+}
 
 void Board::UpdateGrid(bool shift, bool ctrl) {
 	if(ctrl)

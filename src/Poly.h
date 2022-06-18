@@ -24,7 +24,7 @@ private:
 	void Draw(float halfWidth) const;
 
 	bool onlySoldermask;
-	uint8_t cutoff;
+	uint8_t cutout;
 	bool hatched;
 	uint8_t customHatch;
 	float hatchSize;
