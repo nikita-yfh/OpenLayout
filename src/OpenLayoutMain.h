@@ -86,6 +86,7 @@ private:
 	PCB pcb;
 	Settings settings;
 
+	wxMenu *rotateMenu;
 	wxNotebook *pages;
 	SelectorPanel *selector;
 	ComponentsPanel *components;
