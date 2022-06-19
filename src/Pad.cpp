@@ -126,4 +126,7 @@ void Pad::MirrorVertical(float y) {
 	utils::MirrorAngle(angle, M_PI);
 }
 
+void Pad::ToGrid(double grid, const Vec2 &origin) {
+	position = utils::ToGrid(position, grid, origin);
+}
 

@@ -40,6 +40,7 @@ private:
 	void Rotate(wxCommandEvent&);
 	void MirrorHorizontal(wxCommandEvent&);
 	void MirrorVertical(wxCommandEvent&);
+	void SnapToGrid(wxCommandEvent&);
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);
 	void ShowAlignMenu(wxCommandEvent&);

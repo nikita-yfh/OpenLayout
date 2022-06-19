@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec2.h"
+#include <math.h>
 
 namespace utils {
 
@@ -27,6 +28,12 @@ inline T Mean(T a, T b) {
 
 inline void MirrorAngle(float &angle, float c) {
 	angle = c * 2.0f - angle;
+}
+
+inline Vec2 ToGrid(const Vec2 &vec, double grid, const Vec2 &origin) {
+	Vec2 delta = vec - origin;
+	return Vec2(round(delta.x / grid) * grid,
+				round(delta.y / grid) * grid) + origin;
 }
 
 inline bool OnSegment(const Vec2 &p, const Vec2 &q, const Vec2 &r) {
