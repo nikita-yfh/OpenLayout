@@ -59,7 +59,7 @@ void Settings::SetDefault() {
 	subGrid = SUBGRID_4;
 	showGrid = true;
 
-	customRotationAngle = 22.5f;
+	customRotationAngle = M_PI / 8.0f; // 22.5 deg
 	rotationAngleSel = 1; // 45 deg
 	
 	transparent = false;

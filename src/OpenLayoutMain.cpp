@@ -3,6 +3,7 @@
 #include "BottomPanel.h"
 #include "LeftPanel.h"
 #include "SettingsDialog.h"
+#include "GLUtils.h"
 #include <wx/sysopt.h>
 #include <wx/msgdlg.h>
 
@@ -73,7 +74,6 @@ enum {
 	ID_ROTATE_10,
 	ID_ROTATE_5,
 	ID_ROTATE_CUSTOM,
-	ID_ROTATE_CUSTOM_CH,
 	ID_VMIRROR,
 	ID_HMIRROR,
 	ID_GROUP,
@@ -409,13 +409,15 @@ wxToolBar *OpenLayoutFrame::BuildToolBar() {
 	toolBar->AddTool(wxID_DUPLICATE, _("Duplicate"), duplicate_xpm, _("Duplicate"));
 	toolBar->AddTool(ID_ROTATE, _("Rotate"), rotate_xpm, _("Rotate"), wxITEM_DROPDOWN);
 	{
-		wxMenu *menu = new wxMenu();
-		menu->AppendRadioItem(ID_ROTATE_90,	L"90\x00b0");
-		menu->AppendRadioItem(ID_ROTATE_45,	L"45\x00b0");
-		menu->AppendRadioItem(ID_ROTATE_10,	L"10\x00b0");
-		menu->AppendRadioItem(ID_ROTATE_5,	L"5\x00b0");
-		menu->Check(ID_ROTATE_90 + settings.rotationAngleSel, true);
-		toolBar->SetDropdownMenu(ID_ROTATE, menu);
+		rotateMenu = new wxMenu();
+		rotateMenu->AppendRadioItem(ID_ROTATE_90,	L"90\x00b0");
+		rotateMenu->AppendRadioItem(ID_ROTATE_45,	L"45\x00b0");
+		rotateMenu->AppendRadioItem(ID_ROTATE_10,	L"10\x00b0");
+		rotateMenu->AppendRadioItem(ID_ROTATE_5,	L"5\x00b0");
+		rotateMenu->AppendRadioItem(ID_ROTATE_CUSTOM,	wxString::Format(L"%g\x00b0...",
+					glutils::RadToDeg(settings.customRotationAngle)));
+		rotateMenu->Check(ID_ROTATE_90 + settings.rotationAngleSel, true);
+		toolBar->SetDropdownMenu(ID_ROTATE, rotateMenu);
 	}
 	toolBar->AddTool(ID_HMIRROR, _("Mirror horizontal"), mirror_h_xpm, _("Mirror horisontal"));
 	toolBar->AddTool(ID_VMIRROR, _("Mirror vertical"), mirror_v_xpm, _("Mirror vertical"));
@@ -702,7 +704,24 @@ void OpenLayoutFrame::UpdateUIMoveBoardRight(wxUpdateUIEvent &e) {
 }
 
 void OpenLayoutFrame::SetRotationAngle(wxCommandEvent &e) {
-	settings.rotationAngleSel = e.GetId() - ID_ROTATE_90;
+	if(e.GetId() == ID_ROTATE_CUSTOM) {
+		wxDialog *dialog = new wxDialog(this, wxID_ANY, _("Rotational angle"));
+		wxBoxSizer *box = new wxBoxSizer(wxVERTICAL);
+		wxSpinCtrlDouble *input = new wxSpinCtrlDouble(dialog, wxID_ANY, wxEmptyString,
+			wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -360.0f, 360.0f,
+			glutils::RadToDeg(settings.customRotationAngle), 0.05);
+		box->Add(input, 1, wxEXPAND | wxALL, 5);
+		box->Add(dialog->CreateSeparatedButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL);
+		input->SetFocus();
+		dialog->SetSizerAndFit(box);
+		if(dialog->ShowModal() == wxID_OK) {
+			settings.customRotationAngle = glutils::DegToRad(input->GetValue());
+			settings.rotationAngleSel = ANGLE_CUSTOM;
+			rotateMenu->SetLabel(ID_ROTATE_CUSTOM, wxString::Format(L"%g\x00b0...", input->GetValue()));
+		}
+	}
+	else
+		settings.rotationAngleSel = e.GetId() - ID_ROTATE_90;
 }
 
 void OpenLayoutFrame::SelectPage(wxBookCtrlEvent &e) {
