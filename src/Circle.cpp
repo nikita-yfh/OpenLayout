@@ -149,3 +149,7 @@ void Circle::MirrorVertical(float y) {
 	utils::MirrorAngle(endAngle, M_PI);
 }
 
+void Circle::ToGrid(double grid, const Vec2 &origin) {
+	position = utils::ToGrid(position, grid, origin);
+}
+

@@ -1,5 +1,6 @@
 #include "PolygonBase.h"
 #include "GLUtils.h"
+#include "Utils.h"
 
 PolygonBase::PolygonBase(uint8_t layer, float width, const Vec2 *array, uint32_t count)
 			: LineObject(layer, width), points(array, count), cutout(false) {}
@@ -43,6 +44,11 @@ void PolygonBase::MirrorHorizontal(float x) {
 void PolygonBase::MirrorVertical(float y) {
 	for(int i = 0; i < points.Size(); i++)
 		points[i].MirrorVertical(y);
+}
+
+void PolygonBase::ToGrid(double grid, const Vec2 &origin) {
+	for(int i = 0; i < points.Size(); i++)
+		points[i] = utils::ToGrid(points[i], grid, origin);
 }
 
 

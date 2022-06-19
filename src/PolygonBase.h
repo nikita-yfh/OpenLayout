@@ -12,6 +12,7 @@ public:
 	virtual void Rotate(const Vec2 &center, float angle) override;
 	virtual void MirrorHorizontal(float x) override;
 	virtual void MirrorVertical(float y) override;
+	virtual void ToGrid(double grid, const Vec2 &origin) override;
 protected:
 	void LoadPoints(File &file, bool onlySoldermask = false);
 	void SavePoints(File &file, bool onlySoldermask = false) const;

@@ -107,6 +107,12 @@ void Board::UpdateGrid(bool shift, bool ctrl) {
 		activeGrid = grid;
 }
 
+void Board::SnapSelectedToGrid() {
+	for(Object *object = objects; object; object = object->GetNext())
+		if(object->IsSelected())
+			object->ToGrid(grid, origin);
+}
+
 void Board::UpdateCamera(const Vec2 &delta) {
 	camera += delta;
 }

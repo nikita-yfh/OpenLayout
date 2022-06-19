@@ -143,6 +143,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(ID_ROTATE,					OpenLayoutFrame::Rotate)
 	EVT_MENU(ID_HMIRROR,				OpenLayoutFrame::MirrorHorizontal)
 	EVT_MENU(ID_VMIRROR,				OpenLayoutFrame::MirrorVertical)
+	EVT_MENU(ID_SNAP_GRID,				OpenLayoutFrame::SnapToGrid)
 	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
 	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
 	EVT_MENU(ID_ALIGN,					OpenLayoutFrame::ShowAlignMenu)
@@ -589,6 +590,10 @@ void OpenLayoutFrame::MirrorHorizontal(wxCommandEvent&) {
 }
 void OpenLayoutFrame::MirrorVertical(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->MirrorSelectedVertical();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::SnapToGrid(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->SnapSelectedToGrid();
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::Group(wxCommandEvent&) {

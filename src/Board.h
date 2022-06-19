@@ -40,6 +40,7 @@ public:
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);
+	void SnapSelectedToGrid();
 	void UpdateCamera(const Vec2 &delta);
 	void Zoom(float ratio, const Vec2 &mouse);
 	void ZoomBoard(const Vec2 &screenSize);

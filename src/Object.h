@@ -40,6 +40,7 @@ public:
 	virtual void Rotate(const Vec2 &center, float angle) = 0;
 	virtual void MirrorHorizontal(float x) = 0;
 	virtual void MirrorVertical(float y) = 0;
+	virtual void ToGrid(double grid, const Vec2 &origin) = 0;
 
 	void SetGroundDistance(float distance);
 	float GetGroundDistance() const;
