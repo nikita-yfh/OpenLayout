@@ -344,10 +344,10 @@ void LeftPanel::SetRectFill(wxCommandEvent &e) {
 }
 
 void LeftPanel::SetPadShape(wxCommandEvent &e) {
-	uint8_t shape = e.GetId() - ID_PAD_CIRCLE;
-	pcb.SetPadShape(shape);
+	padShape = e.GetId() - ID_PAD_CIRCLE;
+	pcb.SetPadShape(padShape);
 	
-	UpdatePad(pcb.GetMetallization(), shape);
+	UpdatePad(pcb.GetMetallization(), padShape);
 }
 
 void LeftPanel::ToggleMetallization(wxCommandEvent&) {

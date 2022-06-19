@@ -22,6 +22,8 @@ public:
 	virtual AABB GetPointsAABB() const override;
 	virtual bool TestPoint(const Vec2 &point) const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
+	virtual void MirrorHorizontal(float x) override;
+	virtual void MirrorVertical(float y) override;
 private:
 	void Draw(float halfwidth) const;
 

@@ -137,3 +137,15 @@ void Circle::Rotate(const Vec2 &center, float delta) {
 	endAngle += delta;
 }
 
+void Circle::MirrorHorizontal(float x) {
+	position.MirrorHorizontal(x);
+	utils::MirrorAngle(beginAngle, M_PI / 2.0f);
+	utils::MirrorAngle(endAngle, M_PI / 2.0f);
+}
+
+void Circle::MirrorVertical(float y) {
+	position.MirrorVertical(y);
+	utils::MirrorAngle(beginAngle, M_PI);
+	utils::MirrorAngle(endAngle, M_PI);
+}
+

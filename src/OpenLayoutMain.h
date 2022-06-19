@@ -38,6 +38,8 @@ private:
 	void SetBoardRight(wxCommandEvent&);
 
 	void Rotate(wxCommandEvent&);
+	void MirrorHorizontal(wxCommandEvent&);
+	void MirrorVertical(wxCommandEvent&);
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);
 	void ShowAlignMenu(wxCommandEvent&);

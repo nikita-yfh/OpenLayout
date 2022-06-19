@@ -1,5 +1,6 @@
 #include "Pad.h"
 #include "GLUtils.h"
+#include "Utils.h"
 
 template<typename T>
 static inline void Swap(T &a, T &b) {
@@ -114,4 +115,15 @@ void Pad::Rotate(const Vec2 &center, float delta) {
 	position = position.Rotate(delta, center);
 	angle += delta;
 }
+
+void Pad::MirrorHorizontal(float x) {
+	position.MirrorHorizontal(x);
+	utils::MirrorAngle(angle, M_PI / 2.0f);
+}
+
+void Pad::MirrorVertical(float y) {
+	position.MirrorVertical(y);
+	utils::MirrorAngle(angle, M_PI);
+}
+
 

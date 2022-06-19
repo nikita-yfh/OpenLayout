@@ -104,6 +104,14 @@ struct Vec2 {
 		) + center;
 	}
 
+	inline void MirrorHorizontal(float c) {
+		x = c * 2.0f - x;
+	}
+
+	inline void MirrorVertical(float c) {
+		y = c * 2.0f - y;
+	}
+
 	static inline void Rotate(Vec2 *array, int count, float angle, Vec2 center = {0.0f, 0.0f}) {
 		float s = sinf(angle);
 		float c = cosf(angle);

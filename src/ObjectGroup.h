@@ -30,6 +30,8 @@ public:
 	void UngroupSelected();
 
 	void RotateSelected(float angle);
+	void MirrorSelectedHorizontal();
+	void MirrorSelectedVertical();
 
 	void DeleteSelected();
 

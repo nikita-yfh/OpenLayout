@@ -25,6 +25,10 @@ inline T Mean(T a, T b) {
 	return (a + b) / 2;
 }
 
+inline void MirrorAngle(float &angle, float c) {
+	angle = c * 2.0f - angle;
+}
+
 inline bool OnSegment(const Vec2 &p, const Vec2 &q, const Vec2 &r) {
     if (q.x <= Max(p.x, r.x) && q.x >= Min(p.x, r.x) &&
             q.y <= Max(p.y, r.y) && q.y >= Min(p.y, r.y))

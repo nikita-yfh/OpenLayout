@@ -17,6 +17,8 @@ public:
 
 	virtual AABB GetPointsAABB() const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
+	virtual void MirrorHorizontal(float x) override;
+	virtual void MirrorVertical(float y) override;
 protected:
 
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);

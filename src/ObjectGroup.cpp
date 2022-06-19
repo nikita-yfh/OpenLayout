@@ -225,6 +225,20 @@ void ObjectGroup::RotateSelected(float angle) {
 			object->Rotate(center, angle);
 }
 
+void ObjectGroup::MirrorSelectedHorizontal() {
+	Vec2 center = GetSelectedCenter();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->MirrorHorizontal(center.x);
+}
+
+void ObjectGroup::MirrorSelectedVertical() {
+	Vec2 center = GetSelectedCenter();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->MirrorVertical(center.y);
+}
+
 Vec2 ObjectGroup::GetSelectedCenter() const {
 	const Object *first = GetFirstSelected();
 	if(!first)

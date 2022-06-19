@@ -34,3 +34,15 @@ void PolygonBase::SavePoints(File &file, bool onlySoldermask) const {
 void PolygonBase::Rotate(const Vec2 &center, float delta) {
 	Vec2::Rotate(&points[0], points.Size(), delta, center);
 }
+
+void PolygonBase::MirrorHorizontal(float x) {
+	for(int i = 0; i < points.Size(); i++)
+		points[i].MirrorHorizontal(x);
+}
+
+void PolygonBase::MirrorVertical(float y) {
+	for(int i = 0; i < points.Size(); i++)
+		points[i].MirrorVertical(y);
+}
+
+
