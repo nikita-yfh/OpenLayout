@@ -13,6 +13,7 @@ private:
 	PCB &pcb;
 	Settings &settings;
 	bool rectFill;
+	uint8_t padShape;
 
 	wxSpinCtrlDouble *trackSize;
 	wxSpinCtrlDouble *padSizeOuter;
