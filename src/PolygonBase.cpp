@@ -19,6 +19,10 @@ AABB PolygonBase::GetPointsAABB() const {
 	return AABB(min, max);
 }
 
+Vec2 PolygonBase::GetPosition() const {
+	return points[0];
+}
+
 void PolygonBase::LoadPoints(File &file, bool onlySoldermask) {
 	uint32_t count = file.Read<uint32_t>() - onlySoldermask;
 	points.Init(count);
@@ -46,9 +50,10 @@ void PolygonBase::MirrorVertical(float y) {
 		points[i].MirrorVertical(y);
 }
 
-void PolygonBase::ToGrid(double grid, const Vec2 &origin) {
+void PolygonBase::Move(const Vec2 &d) {
 	for(int i = 0; i < points.Size(); i++)
-		points[i] = utils::ToGrid(points[i], grid, origin);
+		points[i] += d;
 }
+
 
 

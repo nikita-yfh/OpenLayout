@@ -73,26 +73,26 @@ void Track::Draw(float halfWidth) const {
 		for(int i = 0; i < points.Size() - 1; i++)
 			normals[i] = (points[i + 1] - points[i]).Normal(halfWidth);
 
-		Vec2 pathBegin1 = points[0] - normals[0];
-		Vec2 pathBegin2 = points[0] + normals[0];
-		Vec2 pathEnd1 = points[points.Size() - 1] - normals[points.Size() - 2];
-		Vec2 pathEnd2 = points[points.Size() - 1] + normals[points.Size() - 2];
+		Vec2 pathBegin1 = points.First() - normals[0];
+		Vec2 pathBegin2 = points.First() + normals[0];
+		Vec2 pathEnd1 = points.Last() - normals[points.Size() - 2];
+		Vec2 pathEnd2 = points.Last() + normals[points.Size() - 2];
 
 		if(GetBeginStyle()) {
-			Vec2 delta = Vec2(points[1] - points[0], halfWidth);
+			Vec2 delta = Vec2(points[1] - points.First(), halfWidth);
 			pathBegin1 -= delta;
 			pathBegin2 -= delta;
 		} else {
-			glutils::DrawTriangleFan(points[0], points[0],
-				points[0] + normals[0], points[0] - normals[0], true);
+			glutils::DrawTriangleFan(points.First(), points.First(),
+				points.First() + normals[0], points.First() - normals[0], true);
 		}
 		if(GetEndStyle()) {
-			Vec2 delta = Vec2(points[points.Size() - 1] - points[points.Size() - 2], halfWidth);
+			Vec2 delta = Vec2(points.Last() - points[points.Size() - 2], halfWidth);
 			pathEnd1 -= delta;
 			pathEnd2 -= delta;
 		} else {
-			glutils::DrawTriangleFan(points[points.Size() - 1], points[points.Size() - 1],
-				points[points.Size() - 1] + normals[points.Size() - 2], points[points.Size() - 1] - normals[points.Size() - 2], false);
+			glutils::DrawTriangleFan(points.Last(), points.Last(),
+				points.Last() + normals[points.Size() - 2], points.Last() - normals[points.Size() - 2], false);
 		}
 
 		Vec2 intersections[points.Size() - 2];

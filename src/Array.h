@@ -79,6 +79,18 @@ public:
 	const T &operator[](uint32_t index) const {
 		return items[index];
 	}
+	T &First() {
+		return items[0];
+	}
+	const T &First() const {
+		return items[0];
+	}
+	T &Last() {
+		return items[count - 1];
+	}
+	const T &Last() const {
+		return items[count - 1];
+	}
 protected:
 	T *Find(T value) {
 		for(int i = 0; i < count; i++)
