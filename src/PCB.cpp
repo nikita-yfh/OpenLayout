@@ -32,12 +32,12 @@ void PCB::MoveSelectedBoardRight() {
 }
 
 void PCB::SetSelectedBoardLeft() {
-	utils::Swap(items[activeTab], items[0]);
+	utils::Swap(items[activeTab], First());
 	activeTab = 0;
 }
 
 void PCB::SetSelectedBoardRight() {
-	utils::Swap(items[activeTab], items[Size() - 1]);
+	utils::Swap(items[activeTab], Last());
 	activeTab = Size() - 1;
 }
 

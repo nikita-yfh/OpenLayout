@@ -134,27 +134,13 @@ void ObjectGroup::DeleteSelected() {
 }
 
 bool ObjectGroup::CanGroup() const {
-	const Object *first = nullptr;
-	uint32_t count = 0;
-	for(const Object *object = objects; object; object = object->next)
-		if(object->IsSelected()) {
-			if(!first)
-				first = object;
-			count++;
-		}
-	if(!first || count <= 1)
+	const Object *first = GetFirstSelected();
+	if(!first)
 		return false;
-	for(int i = 0; i < first->groups.Size(); i++) {
-		bool all = true;
-		for(const Object *object = first->next; object; object = object->next)
-			if(object->IsSelected() && !object->groups.Has(first->groups[i])) {
-				all = false;
-				break;
-			}
-		if(all)
-			return false;
-	}
-	return true;
+	for(const Object *object = first->next; object; object = object->next)
+		if(object->IsSelected() && object->groups.Last() != first->groups.Last())
+			return true;
+	return false;
 }
 bool ObjectGroup::CanUngroup() const {
 	uint32_t max = GetMaxSelectedGroup();

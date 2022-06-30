@@ -1,5 +1,6 @@
 #include "Board.h"
 #include "GLUtils.h"
+#include "Utils.h"
 #include "THTPad.h"
 #include "Circle.h"
 #include "Track.h"
@@ -109,8 +110,20 @@ void Board::UpdateGrid(bool shift, bool ctrl) {
 
 void Board::SnapSelectedToGrid() {
 	for(Object *object = objects; object; object = object->GetNext())
-		if(object->IsSelected())
-			object->ToGrid(grid, origin);
+		if(object->IsSelected() && object->groups.Empty())
+			object->Move(utils::ToGrid(object->GetPosition(), grid, origin) - object->GetPosition());
+	bool ok = true;
+	for(int i = 0; ok; i++) {
+		ok = false;
+		Vec2 delta;
+		for(Object *object = objects; object; object = object->GetNext())
+			if(object->IsSelected() && !object->groups.Empty() && object->groups.Last() == i) {
+				if(!ok)
+					delta = utils::ToGrid(object->GetPosition(), grid, origin) - object->GetPosition();
+				object->Move(delta);
+				ok = true;
+			}
+	}
 }
 
 void Board::UpdateCamera(const Vec2 &delta) {

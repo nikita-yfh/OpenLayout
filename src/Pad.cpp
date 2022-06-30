@@ -35,6 +35,10 @@ AABB Pad::GetPointsAABB() const {
 	return AABB(position, position);
 }
 
+Vec2 Pad::GetPosition() const {
+	return position;
+}
+
 void Pad::SaveConnections(const Object *objects, File &file) const {
 	file.Write<uint32_t>(connections.Size());
 	for(int i = 0; i < connections.Size(); i++) {
@@ -126,7 +130,6 @@ void Pad::MirrorVertical(float y) {
 	utils::MirrorAngle(angle, M_PI);
 }
 
-void Pad::ToGrid(double grid, const Vec2 &origin) {
-	position = utils::ToGrid(position, grid, origin);
+void Pad::Move(const Vec2 &d) {
+	position += d;
 }
-

@@ -27,6 +27,10 @@ AABB Circle::GetPointsAABB() const {
 	return aabb;
 }
 
+Vec2 Circle::GetPosition() const {
+	return position;
+}
+
 bool Circle::TestPoint(const Vec2 &point) const {
 	if(utils::PointInCircle(point, position, (diameter + width) * 0.5f) &&
 		!utils::PointInCircle(point, position, (diameter - width) * 0.5f))
@@ -149,7 +153,7 @@ void Circle::MirrorVertical(float y) {
 	utils::MirrorAngle(endAngle, M_PI);
 }
 
-void Circle::ToGrid(double grid, const Vec2 &origin) {
-	position = utils::ToGrid(position, grid, origin);
+void Circle::Move(const Vec2 &d) {
+	position += d;
 }
 

@@ -9,10 +9,11 @@ public:
 
 	virtual AABB GetAABB() const override;
 	virtual AABB GetPointsAABB() const override;
+	virtual Vec2 GetPosition() const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
 	virtual void MirrorHorizontal(float x) override;
 	virtual void MirrorVertical(float y) override;
-	virtual void ToGrid(double grid, const Vec2 &origin) override;
+	virtual void Move(const Vec2 &d) override;
 protected:
 	void LoadPoints(File &file, bool onlySoldermask = false);
 	void SavePoints(File &file, bool onlySoldermask = false) const;
