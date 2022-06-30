@@ -21,12 +21,6 @@ AABB Circle::GetAABB() const {
 	return AABB(position - radius, position + radius);
 }
 
-AABB Circle::GetPointsAABB() const {
-	AABB aabb(position, position);
-	aabb.Expand(diameter * 0.5f);
-	return aabb;
-}
-
 Vec2 Circle::GetPosition() const {
 	return position;
 }

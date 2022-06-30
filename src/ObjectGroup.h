@@ -33,6 +33,13 @@ public:
 	void MirrorSelectedHorizontal();
 	void MirrorSelectedVertical();
 
+	void AlignSelectedTop();
+	void AlignSelectedBottom();
+	void AlignSelectedLeft();
+	void AlignSelectedRight();
+	void AlignSelectedHCenter();
+	void AlignSelectedVCenter();
+
 	void DeleteSelected();
 
 	enum Layer {
@@ -49,6 +56,7 @@ protected:
 	uint32_t GetFreeGroup() const;
 	uint32_t GetMaxSelectedGroup() const;
 	Vec2 GetSelectedCenter() const;
+	AABB GetSelectedAABB() const;
 
 	Object *GetLast();
 	uint32_t GetObjectCount() const;

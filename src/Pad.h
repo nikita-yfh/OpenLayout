@@ -15,7 +15,6 @@ public:
 	virtual void UpdateConnections(Object *objects) override;
 	virtual void DrawConnections() const override;
 
-	virtual AABB GetPointsAABB() const override;
 	virtual Vec2 GetPosition() const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
 	virtual void MirrorHorizontal(float x) override;

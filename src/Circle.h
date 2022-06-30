@@ -19,7 +19,6 @@ public:
 		return CIRCLE;
 	}
 	virtual AABB GetAABB() const override;
-	virtual AABB GetPointsAABB() const override;
 	virtual Vec2 GetPosition() const override;
 	virtual bool TestPoint(const Vec2 &point) const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
