@@ -40,6 +40,12 @@ private:
 	void Rotate(wxCommandEvent&);
 	void MirrorHorizontal(wxCommandEvent&);
 	void MirrorVertical(wxCommandEvent&);
+	void AlignTop(wxCommandEvent&);
+	void AlignBottom(wxCommandEvent&);
+	void AlignLeft(wxCommandEvent&);
+	void AlignRight(wxCommandEvent&);
+	void AlignHCenter(wxCommandEvent&);
+	void AlignVCenter(wxCommandEvent&);
 	void SnapToGrid(wxCommandEvent&);
 	void Group(wxCommandEvent&);
 	void Ungroup(wxCommandEvent&);

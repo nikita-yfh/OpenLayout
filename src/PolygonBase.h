@@ -8,7 +8,6 @@ public:
 	PolygonBase(uint8_t layer, float width, const Vec2 *points, uint32_t count);
 
 	virtual AABB GetAABB() const override;
-	virtual AABB GetPointsAABB() const override;
 	virtual Vec2 GetPosition() const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
 	virtual void MirrorHorizontal(float x) override;

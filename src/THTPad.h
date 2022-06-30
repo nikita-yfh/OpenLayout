@@ -27,6 +27,7 @@ public:
 	bool HasMetallization() const;
 private:
 	void Draw(float halfSize, float distance) const;
+	uint8_t CalcPoints(Vec2 *points) const;
 	PadSize size;
 	enum{
 		CIRCLE = 1,

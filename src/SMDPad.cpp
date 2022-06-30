@@ -11,7 +11,9 @@ SMDPad *SMDPad::Clone() const {
 }
 
 AABB SMDPad::GetAABB() const {
-	return AABB(position - size * sqrtf(2.0f), position + size * sqrtf(2.0f));
+	Vec2 aabbSize = Vec2::Max((size.InvX().Rotate(angle) * 0.5f).Abs(),
+								(size.Rotate(angle) * 0.5f).Abs());
+	return AABB(position - aabbSize, position + aabbSize);
 }
 
 bool SMDPad::TestPoint(const Vec2 &point) const {

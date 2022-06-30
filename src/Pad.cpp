@@ -31,10 +31,6 @@ Pad::~Pad() {
 	}
 }
 
-AABB Pad::GetPointsAABB() const {
-	return AABB(position, position);
-}
-
 Vec2 Pad::GetPosition() const {
 	return position;
 }

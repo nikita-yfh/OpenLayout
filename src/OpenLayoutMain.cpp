@@ -143,6 +143,12 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MENU(ID_ROTATE,					OpenLayoutFrame::Rotate)
 	EVT_MENU(ID_HMIRROR,				OpenLayoutFrame::MirrorHorizontal)
 	EVT_MENU(ID_VMIRROR,				OpenLayoutFrame::MirrorVertical)
+	EVT_MENU(ID_ALIGN_TOP,				OpenLayoutFrame::AlignTop)
+	EVT_MENU(ID_ALIGN_BOTTOM,			OpenLayoutFrame::AlignBottom)
+	EVT_MENU(ID_ALIGN_LEFT,				OpenLayoutFrame::AlignLeft)
+	EVT_MENU(ID_ALIGN_RIGHT,			OpenLayoutFrame::AlignRight)
+	EVT_MENU(ID_ALIGN_HCENTER,			OpenLayoutFrame::AlignHCenter)
+	EVT_MENU(ID_ALIGN_VCENTER,			OpenLayoutFrame::AlignVCenter)
 	EVT_MENU(ID_SNAP_GRID,				OpenLayoutFrame::SnapToGrid)
 	EVT_MENU(ID_GROUP,					OpenLayoutFrame::Group)
 	EVT_MENU(ID_UNGROUP,				OpenLayoutFrame::Ungroup)
@@ -590,6 +596,30 @@ void OpenLayoutFrame::MirrorHorizontal(wxCommandEvent&) {
 }
 void OpenLayoutFrame::MirrorVertical(wxCommandEvent&) {
 	pcb.GetSelectedBoard()->MirrorSelectedVertical();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignTop(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedTop();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignBottom(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedBottom();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignLeft(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedLeft();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignRight(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedRight();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignHCenter(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedHCenter();
+	GetCanvas()->Refresh();
+}
+void OpenLayoutFrame::AlignVCenter(wxCommandEvent&) {
+	pcb.GetSelectedBoard()->AlignSelectedVCenter();
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::SnapToGrid(wxCommandEvent&) {

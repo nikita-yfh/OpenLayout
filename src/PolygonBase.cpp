@@ -6,17 +6,13 @@ PolygonBase::PolygonBase(uint8_t layer, float width, const Vec2 *array, uint32_t
 			: LineObject(layer, width), points(array, count), cutout(false) {}
 
 AABB PolygonBase::GetAABB() const {
-	return GetPointsAABB().Expand(width * 0.5f);
-}
-
-AABB PolygonBase::GetPointsAABB() const {
 	Vec2 min( FLT_MAX,  FLT_MAX);
 	Vec2 max(-FLT_MAX, -FLT_MAX);
 	for(int i = 0; i < points.Size(); i++) {
 		max = Vec2::Max(points[i], max);
 		min = Vec2::Min(points[i], min);
 	}
-	return AABB(min, max);
+	return AABB(min, max).Expand(width * 0.5f);
 }
 
 Vec2 PolygonBase::GetPosition() const {

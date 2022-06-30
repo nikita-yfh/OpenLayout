@@ -104,6 +104,10 @@ struct Vec2 {
 		) + center;
 	}
 
+	inline Vec2 Abs() const {
+		return Vec2(x > 0.0f ? x : -x, y > 0.0f ? y : -y);
+	}
+
 	inline void MirrorHorizontal(float c) {
 		x = c * 2.0f - x;
 	}

@@ -138,7 +138,7 @@ bool ObjectGroup::CanGroup() const {
 	if(!first)
 		return false;
 	for(const Object *object = first->next; object; object = object->next)
-		if(object->IsSelected() && object->groups.Last() != first->groups.Last())
+		if(object->IsSelected() && !object->groups.Empty() && object->groups.Last() != first->groups.Last())
 			return true;
 	return false;
 }
@@ -225,15 +225,59 @@ void ObjectGroup::MirrorSelectedVertical() {
 			object->MirrorVertical(center.y);
 }
 
-Vec2 ObjectGroup::GetSelectedCenter() const {
+void ObjectGroup::AlignSelectedTop() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(0.0f, aabb.lower.y - object->GetAABB().lower.y));
+}
+
+void ObjectGroup::AlignSelectedBottom() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(0.0f, aabb.upper.y - object->GetAABB().upper.y));
+}
+
+void ObjectGroup::AlignSelectedLeft() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(aabb.lower.x - object->GetAABB().lower.x, 0.0f));
+}
+
+void ObjectGroup::AlignSelectedRight() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(aabb.upper.x - object->GetAABB().upper.x, 0.0f));
+}
+
+void ObjectGroup::AlignSelectedHCenter() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(aabb.GetCenter().x - object->GetAABB().GetCenter().x, 0.0f));
+}
+
+void ObjectGroup::AlignSelectedVCenter() {
+	AABB aabb = GetSelectedAABB();
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(Vec2(0.0f, aabb.GetCenter().y - object->GetAABB().GetCenter().y));
+}
+
+AABB ObjectGroup::GetSelectedAABB() const {
 	const Object *first = GetFirstSelected();
-	if(!first)
-		return Vec2(FLT_MAX, FLT_MAX);
-	AABB aabb = first->GetPointsAABB();
+	AABB aabb = first->GetAABB();
 	for(const Object *object = first->next; object; object = object->next)
 		if(object->IsSelected())
-			aabb |= object->GetPointsAABB();
-	return aabb.GetCenter();
+			aabb |= object->GetAABB();
+	return aabb;
+}
+
+Vec2 ObjectGroup::GetSelectedCenter() const {
+	return GetSelectedAABB().GetCenter();
 }
 
 

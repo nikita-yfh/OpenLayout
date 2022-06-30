@@ -13,8 +13,17 @@ THTPad *THTPad::Clone() const {
 }
 
 AABB THTPad::GetAABB() const {
-	Vec2 maxRadius(size.out * 2.5f, size.out * 2.5f);
-	return AABB(position - maxRadius, position + maxRadius);
+	if(shape == CIRCLE)
+		return AABB(position, position).Expand(size.out * 0.5f);
+	if(shape == CIRCLE_E)
+		return AABB(position, position).Expand(Vec2(angle).Abs() * size.out * 0.5f).Expand(size.out * 0.5f);
+	Vec2 points[4];
+	uint8_t count = CalcPoints(points);
+	Vec2::Rotate(points, count, angle);
+	Vec2 max(0.0f, 0.0f);
+	for(uint8_t i = 0; i < count; i++)
+		max = Vec2::Max(max, points[i].Abs());
+	return AABB(position, position).Expand(max);
 }
 
 bool THTPad::TestPoint(const Vec2 &point) const {
@@ -74,42 +83,7 @@ void THTPad::SaveObject(File &file) const {
 	// is symmetrical to this
 	
 	Vec2 points[4];
-	int count = 0;
-
-	float radius = size.out * 0.5f;
-	float halfa = radius * 0.41421356; // tg(M_PI / 8)
-
-	switch(shape) {
-		case CIRCLE:
-		case CIRCLE_E:
-			points[0].Set(-radius, 0);
-			count = 1;
-			break;
-		case SQUARE:
-			points[0].Set(-radius, radius);
-			points[1].Set( radius, radius);
-			count = 2;
-			break;
-		case SQUARE_E:
-			points[0].Set(-size.out, radius);
-			points[1].Set( size.out, radius);
-			count = 2;
-			break;
-		case OCTAGON:
-			points[0].Set(-radius, halfa);
-			points[1].Set(-halfa, radius);
-			points[2].Set( halfa, radius);
-			points[3].Set( radius, halfa);
-			count = 4;
-			break;
-		case OCTAGON_E:
-			points[0].Set(-size.out, halfa);
-			points[1].Set(-radius - halfa, radius);
-			points[2].Set( radius + halfa, radius);
-			points[3].Set( size.out, halfa);
-			count = 4;
-			break;
-	}
+	uint8_t count = CalcPoints(points);
 
 	if(count) {
 		Vec2::Rotate(points, count, angle);
@@ -259,3 +233,35 @@ void THTPad::DrawDrillings() const {
 	glutils::DrawCircle(position, size.in / 2.0f);
 }
 
+uint8_t THTPad::CalcPoints(Vec2 *points) const {
+	float radius = size.out * 0.5f;
+	float halfa = radius * 0.41421356; // tg(M_PI / 8)
+
+	switch(shape) {
+		case CIRCLE:
+		case CIRCLE_E:
+			points[0].Set(-radius, 0);
+			return 1;
+		case SQUARE:
+			points[0].Set(-radius, radius);
+			points[1].Set( radius, radius);
+			return 2;
+		case SQUARE_E:
+			points[0].Set(-size.out, radius);
+			points[1].Set( size.out, radius);
+			return 2;
+		case OCTAGON:
+			points[0].Set(-radius, halfa);
+			points[1].Set(-halfa, radius);
+			points[2].Set( halfa, radius);
+			points[3].Set( radius, halfa);
+			return 4;
+		case OCTAGON_E:
+			points[0].Set(-size.out, halfa);
+			points[1].Set(-radius - halfa, radius);
+			points[2].Set( radius + halfa, radius);
+			points[3].Set( size.out, halfa);
+			return 4;
+	}
+	return 0;
+}
