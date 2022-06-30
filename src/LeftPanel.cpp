@@ -416,6 +416,7 @@ void LeftPanel::SelectGrid(wxCommandEvent &e) {
 	else //user grid
 		grid = settings.grids[id - ID_GRID_USER];
 	pcb.GetSelectedBoard()->SetGrid(grid);
+	GetParent()->Refresh();
 }
 
 void LeftPanel::UpdateGrid(wxUpdateUIEvent &e) {

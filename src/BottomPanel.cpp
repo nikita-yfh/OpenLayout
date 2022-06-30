@@ -238,6 +238,7 @@ void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
 
 void BottomPanel::SetLayer(wxCommandEvent &e) {
 	pcb.GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
+	GetParent()->Refresh();
 }
 
 void BottomPanel::SetGroundDistance(wxSpinDoubleEvent &e) {
