@@ -39,6 +39,7 @@ set(SOURCES
 )
 set(HEADERS
 	src/AABB.h
+	src/Align.h
 	src/App.h
 	src/Array.h
 	src/Board.h

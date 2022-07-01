@@ -17,6 +17,7 @@ public:
 	Object *GetFirstSelected();
 	const Object *GetFirstSelected() const;
 	bool IsSelected() const;
+	bool IsSelectedTwo() const;
 
 	Object *GetObjects();
 
@@ -33,12 +34,7 @@ public:
 	void MirrorSelectedHorizontal();
 	void MirrorSelectedVertical();
 
-	void AlignSelectedTop();
-	void AlignSelectedBottom();
-	void AlignSelectedLeft();
-	void AlignSelectedRight();
-	void AlignSelectedHCenter();
-	void AlignSelectedVCenter();
+	void AlignSelected(Vec2(*callback)(const AABB&, const AABB&));
 
 	void DeleteSelected();
 

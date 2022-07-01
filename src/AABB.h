@@ -60,6 +60,14 @@ public:
 		return true;
 	}
 
+	static inline AABB Invalid() {
+		return AABB(Vec2::Invalid(), Vec2::Invalid());
+	}
+
+	bool IsValid() const {
+		return lower.IsValid() && upper.IsValid();
+	}
+
 	inline AABB Expand(float f) {
 		return Expand(Vec2(f, f));
 	}
@@ -85,8 +93,12 @@ public:
 		return AABB(Vec2::Min(lower, other.lower), Vec2::Max(upper, other.upper));
 	}
 	inline void operator|=(const AABB &other) {
-		lower = Vec2::Min(lower, other.lower);
-		upper = Vec2::Max(upper, other.upper);
+		if(!IsValid())
+			Set(other.lower, other.upper);
+		else {
+			lower = Vec2::Min(lower, other.lower);
+			upper = Vec2::Max(upper, other.upper);
+		}
 	}
 	inline AABB operator|(const Vec2 &vec) {
 		return AABB(Vec2::Min(lower, vec), Vec2::Max(upper, vec));
