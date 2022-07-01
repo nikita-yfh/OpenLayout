@@ -78,6 +78,7 @@ private:
 
 	void UpdateUIObjects(wxUpdateUIEvent&);
 	void UpdateUISelection(wxUpdateUIEvent&);
+	void UpdateUISelectionTwo(wxUpdateUIEvent&);
 	void UpdateUIGroup(wxUpdateUIEvent&);
 	void UpdateUIUngroup(wxUpdateUIEvent&);
 	void UpdateUIMultilayer(wxUpdateUIEvent&);

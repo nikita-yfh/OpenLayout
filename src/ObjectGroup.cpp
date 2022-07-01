@@ -87,6 +87,17 @@ bool ObjectGroup::IsSelected() const {
 	return false;
 }
 
+bool ObjectGroup::IsSelectedTwo() const {
+	bool first = false;
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected()) {
+			if(first)
+				return true;
+			first = true;
+		}
+	return false;
+}
+
 bool ObjectGroup::SelectObject(const Vec2 &point) {
 	for(Object *object = objects; object; object = object->next)
 		if(object->GetAABB().TestPoint(point) && object->TestPoint(point)) {
@@ -225,46 +236,22 @@ void ObjectGroup::MirrorSelectedVertical() {
 			object->MirrorVertical(center.y);
 }
 
-void ObjectGroup::AlignSelectedTop() {
-	AABB aabb = GetSelectedAABB();
+void ObjectGroup::AlignSelected(Vec2(*callback)(const AABB&, const AABB&)) {
+	uint32_t max = GetMaxSelectedGroup();
+	AABB aabb[max + 1];
+	for(int i = 0; i <= max; i++)
+		aabb[i] = AABB::Invalid();
+	AABB all = GetSelectedAABB();
 	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(0.0f, aabb.lower.y - object->GetAABB().lower.y));
-}
-
-void ObjectGroup::AlignSelectedBottom() {
-	AABB aabb = GetSelectedAABB();
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(0.0f, aabb.upper.y - object->GetAABB().upper.y));
-}
-
-void ObjectGroup::AlignSelectedLeft() {
-	AABB aabb = GetSelectedAABB();
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(aabb.lower.x - object->GetAABB().lower.x, 0.0f));
-}
-
-void ObjectGroup::AlignSelectedRight() {
-	AABB aabb = GetSelectedAABB();
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(aabb.upper.x - object->GetAABB().upper.x, 0.0f));
-}
-
-void ObjectGroup::AlignSelectedHCenter() {
-	AABB aabb = GetSelectedAABB();
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(aabb.GetCenter().x - object->GetAABB().GetCenter().x, 0.0f));
-}
-
-void ObjectGroup::AlignSelectedVCenter() {
-	AABB aabb = GetSelectedAABB();
-	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
-			object->Move(Vec2(0.0f, aabb.GetCenter().y - object->GetAABB().GetCenter().y));
+		if(object->IsSelected() && !object->groups.Empty())
+			aabb[object->groups.Last()] |= object->GetAABB();
+	for(Object *object = objects; object; object = object->GetNext())
+		if(object->IsSelected()) {
+			if(object->groups.Empty())
+				object->Move(callback(all, object->GetAABB()));
+			else
+				object->Move(callback(all, aabb[object->groups.Last()]));
+		}
 }
 
 AABB ObjectGroup::GetSelectedAABB() const {

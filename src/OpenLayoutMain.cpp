@@ -4,6 +4,7 @@
 #include "LeftPanel.h"
 #include "SettingsDialog.h"
 #include "GLUtils.h"
+#include "Align.h"
 #include <wx/sysopt.h>
 #include <wx/msgdlg.h>
 
@@ -172,6 +173,7 @@ wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_UPDATE_UI(ID_ROTATE,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_HMIRROR,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_VMIRROR,			OpenLayoutFrame::UpdateUISelection)
+	EVT_UPDATE_UI(ID_ALIGN,				OpenLayoutFrame::UpdateUISelectionTwo)
 	EVT_UPDATE_UI(ID_SNAP_GRID,			OpenLayoutFrame::UpdateUISelection)
 	EVT_UPDATE_UI(ID_BOARD_DELETE,		OpenLayoutFrame::UpdateUIDeleteBoard)
 	EVT_UPDATE_UI(ID_BOARD_MOVE_LEFT,	OpenLayoutFrame::UpdateUIMoveBoardLeft)
@@ -599,27 +601,27 @@ void OpenLayoutFrame::MirrorVertical(wxCommandEvent&) {
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignTop(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedTop();
+	pcb.GetSelectedBoard()->AlignSelected(align::Top);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignBottom(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedBottom();
+	pcb.GetSelectedBoard()->AlignSelected(align::Bottom);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignLeft(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedLeft();
+	pcb.GetSelectedBoard()->AlignSelected(align::Left);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignRight(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedRight();
+	pcb.GetSelectedBoard()->AlignSelected(align::Right);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignHCenter(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedHCenter();
+	pcb.GetSelectedBoard()->AlignSelected(align::HCenter);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::AlignVCenter(wxCommandEvent&) {
-	pcb.GetSelectedBoard()->AlignSelectedVCenter();
+	pcb.GetSelectedBoard()->AlignSelected(align::VCenter);
 	GetCanvas()->Refresh();
 }
 void OpenLayoutFrame::SnapToGrid(wxCommandEvent&) {
@@ -720,6 +722,9 @@ void OpenLayoutFrame::UpdateUIObjects(wxUpdateUIEvent &e) {
 }
 void OpenLayoutFrame::UpdateUISelection(wxUpdateUIEvent &e) {
 	e.Enable(pcb.GetSelectedBoard()->IsSelected());
+}
+void OpenLayoutFrame::UpdateUISelectionTwo(wxUpdateUIEvent &e) {
+	e.Enable(pcb.GetSelectedBoard()->IsSelectedTwo());
 }
 void OpenLayoutFrame::UpdateUIGroup(wxUpdateUIEvent &e) {
 	e.Enable(pcb.GetSelectedBoard()->CanGroup());
