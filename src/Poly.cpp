@@ -120,7 +120,7 @@ void Poly::Draw(float halfWidth) const {
 	glStencilFunc(GL_EQUAL, 1, 1);
 	glStencilOp(GL_ZERO, GL_ZERO, GL_ZERO);
 
-	glRectf(0.0f, 0.0f, 500.0f, 500.0f);
+	glRectf(-500.0f, -500.0f, 500.0f, 500.0f);
 
 	glDisable(GL_STENCIL_TEST);
 }

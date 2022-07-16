@@ -5,7 +5,8 @@ class Poly : public PolygonBase {
 public:
 	Poly() : Poly(0, 0.0f, nullptr, 0) {}
 	Poly(uint8_t layer, float width, const Vec2 *points, uint32_t count)
-		: PolygonBase(layer, width, points, count) {}
+		: PolygonBase(layer, width, points, count), onlySoldermask(false),
+		cutout(false), hatched(false), customHatch(false), hatchSize(0.8f) {}
 
 	virtual Poly *Clone() const override;
 

@@ -33,6 +33,8 @@ set(SOURCES
 	src/SelectorPanel.cpp
 	src/Settings.cpp
 	src/SettingsDialog.cpp
+	src/SimpleCanvas.cpp
+	src/SpecialFormsDialog.cpp
 	src/SMDPad.cpp
 	src/THTPad.cpp
 	src/Track.cpp
@@ -70,6 +72,8 @@ set(HEADERS
 	src/SelectorPanel.h
 	src/Settings.h
 	src/SettingsDialog.h
+	src/SimpleCanvas.h
+	src/SpecialFormsDialog.h
 	src/SMDPad.h
 	src/THTPad.h
 	src/Track.h

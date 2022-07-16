@@ -38,6 +38,7 @@ private:
 
 	void ShowPadSizeMenu(wxCommandEvent&);
 	void ShowRectFillMenu(wxCommandEvent&);
+	void ShowSpecialFormsDialog(wxCommandEvent&);
 	void ShowGridMenu(wxCommandEvent&);
 	void ShowTrackMenu(wxCommandEvent&);
 	void ShowPadMenu(wxCommandEvent&);
