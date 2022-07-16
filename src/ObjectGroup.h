@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include "ColorScheme.h"
 
 class ObjectGroup {
 public:
@@ -20,6 +21,7 @@ public:
 	bool IsSelectedTwo() const;
 
 	Object *GetObjects();
+	AABB GetObjectsAABB() const;
 
 	bool SelectObject(const Vec2 &point);
 	void SelectAll();
@@ -37,6 +39,12 @@ public:
 	void AlignSelected(Vec2(*callback)(const AABB&, const AABB&));
 
 	void DeleteSelected();
+
+	void DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected) const;
+	void DrawGroundDistance(uint8_t activeLayer) const;
+	void DrawConnections() const;
+	void DrawSelected() const;
+	void DrawDrillings() const;
 
 	enum Layer {
 		LAYER_C1,

@@ -3,7 +3,6 @@
 #include "Object.h"
 #include "ObjectGroup.h"
 #include "ImageConfig.h"
-#include "ColorScheme.h"
 #include "Settings.h"
 #include "File.h"
 
@@ -23,6 +22,7 @@ public:
 
 	void SetName(const char *name);
 	const char *GetName() const;
+	const Vec2 &GetSize() const;
 
 	bool IsMultilayer() const;
 	bool ToggleMultilayer();
@@ -77,6 +77,9 @@ private:
 
 inline const char *Board::GetName() const {
 	return name;
+}
+inline const Vec2 &Board::GetSize() const {
+	return size;
 }
 inline void Board::SetName(const char *_name) {
 	strncpy(name, _name, 30);

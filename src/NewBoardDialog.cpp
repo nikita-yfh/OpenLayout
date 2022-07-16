@@ -14,7 +14,7 @@ extern "C" {
 
 NewBoardDialog::NewBoardDialog(wxWindow* parent)
 	: wxDialog(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
-	wxBoxSizer *allBox = new wxBoxSizer(wxVERTICAL);
+	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	{
 		wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
 		{
@@ -125,16 +125,12 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 			content->Add(buttons, 1, wxALL|wxEXPAND, 5);
 			content->Add(panelBox, 1, wxALL|wxEXPAND, 5);
 		}
-		allBox->Add(content, 1, wxALL|wxEXPAND, 5);
+		content->Add(content, 1, wxALL|wxEXPAND, 5);
 	}
 
 
-	wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
-	buttons->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
-	buttons->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	buttons->Realize();
-	allBox->Add(buttons, 0, wxALL|wxEXPAND, 5);
-	SetSizerAndFit(allBox);
+	content->Add(CreateSeparatedButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL, 5);
+	SetSizerAndFit(content);
 	SetAutoLayout(true);
 	panels[1]->Hide();
 	panels[2]->Hide();

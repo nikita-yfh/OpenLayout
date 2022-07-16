@@ -1,4 +1,6 @@
 #include "ObjectGroup.h"
+#include "GLUtils.h"
+#include "THTPad.h"
 
 ObjectGroup::ObjectGroup(const ObjectGroup &other) {
 	Object *last = nullptr;
@@ -84,8 +86,7 @@ bool ObjectGroup::IsSelected() const {
 	for(Object *object = objects; object; object = object->next)
 		if(object->IsSelected())
 			return true;
-	return false;
-}
+	return false; }
 
 bool ObjectGroup::IsSelectedTwo() const {
 	bool first = false;
@@ -254,6 +255,15 @@ void ObjectGroup::AlignSelected(Vec2(*callback)(const AABB&, const AABB&)) {
 		}
 }
 
+AABB ObjectGroup::GetObjectsAABB() const {
+	if(!objects)
+		return AABB::Invalid();
+	AABB aabb = objects->GetAABB();
+	for(const Object *object = objects->next; object; object = object->next)
+		aabb |= object->GetAABB();
+	return aabb;
+}
+
 AABB ObjectGroup::GetSelectedAABB() const {
 	const Object *first = GetFirstSelected();
 	AABB aabb = first->GetAABB();
@@ -265,6 +275,58 @@ AABB ObjectGroup::GetSelectedAABB() const {
 
 Vec2 ObjectGroup::GetSelectedCenter() const {
 	return GetSelectedAABB().GetCenter();
+}
+
+void ObjectGroup::DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected) const {
+	const uint8_t layers[7][7] = {
+		{LAYER_I1, LAYER_I2, LAYER_C2, LAYER_C1, LAYER_S2, LAYER_S1, LAYER_O},
+		{LAYER_C1, LAYER_C2, LAYER_I2, LAYER_I1, LAYER_S1, LAYER_S2, LAYER_O},
+		{LAYER_C1, LAYER_C2, LAYER_I1, LAYER_I2, LAYER_S1, LAYER_S2, LAYER_O},
+		{LAYER_I1, LAYER_I2, LAYER_C1, LAYER_C2, LAYER_S1, LAYER_S2, LAYER_O}
+	};
+	for(int i = 0; i < 7; i++) {
+		uint8_t layer = layers[3][i];
+		if(activeLayer == LAYER_C1 || activeLayer == LAYER_S1)
+			layer = layers[0][i];
+		else if(activeLayer == LAYER_I1)
+			layer = layers[1][i];
+		else if(activeLayer == LAYER_I2)
+			layer = layers[2][i];
+		colors.SetColor(COLOR_C1 + layer);
+		for(const Object *object = objects; object; object = object->GetNext())
+			if(object->GetLayer() == layer && (!object->IsSelected() || selected) &&
+					!(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
+				object->DrawObject();
+	}
+	colors.SetColor(COLOR_VIA);
+	for(const Object *object = objects; object; object = object->GetNext())
+		if(object->GetType() == Object::THT_PAD && !object->IsSelected() && ((THTPad*) object)->HasMetallization())
+			object->DrawObject();
+}
+
+void ObjectGroup::DrawGroundDistance(uint8_t activeLayer) const {
+	for(const Object *object = objects; object; object = object->GetNext())
+		if(object->GetLayer() == activeLayer)
+			object->DrawGroundDistance();
+}
+
+void ObjectGroup::DrawConnections() const {
+	glLineWidth(1.5f);
+	glBegin(GL_LINES);
+	for(const Object *object = objects; object; object = object->GetNext()) 
+		object->DrawConnections();
+	glEnd();
+}
+
+void ObjectGroup::DrawSelected() const {
+	for(const Object *object = objects; object; object = object->GetNext())
+		if(object->IsSelected())
+			object->DrawObject();
+}
+
+void ObjectGroup::DrawDrillings() const {
+	for(const Object *object = objects; object; object = object->GetNext())
+		object->DrawDrillings();
 }
 
 

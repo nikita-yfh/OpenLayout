@@ -2,6 +2,7 @@
 #include "Settings.h"
 #include "InputGridDialog.h"
 #include "GridBinderDialog.h"
+#include "SpecialFormsDialog.h"
 #include "Track.h"
 #include "SMDPad.h"
 #include "THTPad.h"
@@ -191,6 +192,7 @@ enum {
 wxBEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_TOOL_RCLICKED(ID_TOOL_PAD,							LeftPanel::ShowPadSizeMenu)
 	EVT_TOOL_RCLICKED(ID_TOOL_RECT,							LeftPanel::ShowRectFillMenu)
+	EVT_TOOL(ID_TOOL_FORM,									LeftPanel::ShowSpecialFormsDialog)
 	EVT_MENU(ID_METALLIZATION,								LeftPanel::ToggleMetallization)
 	EVT_MENU(ID_METALLIZATION,								LeftPanel::ToggleMetallization)
 	EVT_MENU_RANGE(ID_PAD_CIRCLE, ID_PAD_SQUARE_V,			LeftPanel::SetPadShape)
@@ -392,6 +394,11 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 	PopupToolbarMenu(menu, ID_TOOL_RECT - ID_TOOL_EDIT + 1);
 }
 
+void LeftPanel::ShowSpecialFormsDialog(wxCommandEvent&) {
+	SpecialFormsDialog *dialog = new SpecialFormsDialog(this, settings,
+		pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
+	dialog->ShowModal();
+}
 
 void LeftPanel::AddNewGrid(wxCommandEvent&) {
 	double grid = InputGridDialog::Show(this, settings, 1.0);

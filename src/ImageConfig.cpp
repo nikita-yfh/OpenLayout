@@ -108,13 +108,7 @@ void ImageConfigs::ShowDialog(wxWindow *parent, const ColorScheme &colors){
 		notebook->SetSelection(1);
 		content->Add(notebook, 1, wxALL|wxEXPAND, 5);
 	}
-	{
-		wxStdDialogButtonSizer *buttons = new wxStdDialogButtonSizer();
-		buttons->AddButton(new wxButton(dialog, wxID_OK));
-		buttons->AddButton(new wxButton(dialog, wxID_CANCEL));
-		buttons->Realize();
-		content->Add(buttons, 0, wxALL|wxEXPAND, 5);
-	}
+	content->Add(dialog->CreateSeparatedButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL, 5);
 	dialog->SetSizerAndFit(content);
 	dialog->Show();
 	for(int i = 0; i < 2; i++) {
