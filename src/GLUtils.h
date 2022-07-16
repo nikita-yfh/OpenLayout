@@ -19,6 +19,9 @@ inline float RadToDeg(float rad){
 inline float DegToRad(float deg){
 	return deg / 180.0f * M_PI;
 }
+inline float AngleMod(float rad) {
+	return fmod(rad, M_PI * 2.0f);
+}
 inline void Vertex(const Vec2 &p){
 	glVertex2f(p.x, p.y);
 }
