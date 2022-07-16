@@ -258,10 +258,25 @@ void SpecialFormsDialog::UpdatePreview() {
 		float radius = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_RADIUS))->GetValue();
 		float distance = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_DISTANCE))->GetValue();
 		float width = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_WIDTH))->GetValue();
-		float turns = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_TURNS))->GetValue();
-		bool square = ((wxRadioButton*) FindWindowById(ID_SPIRAL_SQUARE))->GetValue();
+		float qturns = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_TURNS))->GetValue() * 4;
+		if(((wxRadioButton*) FindWindowById(ID_SPIRAL_SQUARE))->GetValue()) {
+		} else {
+			float delta = (distance + width) / 8.0f;
+			Vec2 centers[4] = {
+				Vec2(-delta, -delta),
+				Vec2(-delta,  delta),
+				Vec2( delta,  delta),
+				Vec2( delta, -delta)
+			};
+			for(int qturn = 0; qturn < qturns; qturn++) {
+				float beginAngle = glutils::AngleMod(M_PI / 2.0f * qturn);
+				float endAngle = glutils::AngleMod(M_PI / 2.0f * (qturn + 1));
+				float diameter = (radius + (width + distance) * qturn / 4.0f) * 2.0f - distance;
+				objects.AddObjectBegin(new Circle(layer, width, centers[qturn % 4], diameter, beginAngle, endAngle));
+			}
+		}
 
-		float diameter = (radius + (width + distance) * turns) * 2.0f - distance;
+		float diameter = (radius + (width + distance) * qturns / 4.0f) * 2.0f - distance;
 		((wxStaticText*) FindWindowById(ID_SPIRAL_DIAMETER))->SetLabel(wxString::Format("%.3f", diameter));
 	} else { // TYPE_FRAME
 		uint8_t frameColumns = ((wxSpinCtrl*) FindWindowById(ID_FRAME_COLUMNS))->GetValue();

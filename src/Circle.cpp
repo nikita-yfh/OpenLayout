@@ -2,16 +2,6 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
-Circle::Circle(uint8_t layer, float width, const Vec2 &_position, float _diameter)
-					: LineObject(layer, width) {
-	position = _position;
-	beginAngle = 0.0f;
-	endAngle = 0.0f;
-	diameter = _diameter;
-	cutout = false;
-	fill = false;
-}
-
 Circle *Circle::Clone() const {
 	return new Circle(*this);
 }
