@@ -52,13 +52,17 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 		board->UnselectAll();
 	board->SelectObject(GetPos(e));
 	Refresh();
+	e.Skip();
 }
 void MainCanvas::OnLeftUp(wxMouseEvent &e) {
+	e.Skip();
 }
 void MainCanvas::OnMiddleDown(wxMouseEvent &e) {
 	dragPosition = GetPos(e);
+	e.Skip();
 }
 void MainCanvas::OnRightDown(wxMouseEvent &e) {
+	e.Skip();
 }
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	Vec2 delta = dragPosition - GetPos(e);
@@ -67,6 +71,7 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 		Refresh();
 	}
 	dragPosition = GetPos(e);
+	e.Skip();
 }
 void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
 	float ratio = zoomRatio;

@@ -12,6 +12,7 @@ public:
 	void AddObjectBegin(Object *object);
 	void AddObjectEnd(Object *object);
 	Object *AddObjectEnd(Object *object, Object *last);
+	void AddGroup(const ObjectGroup &group);
 
 	bool IsEmpty() const;
 

@@ -395,8 +395,11 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 }
 
 void LeftPanel::ShowSpecialFormsDialog(wxCommandEvent&) {
-	SpecialFormsDialog dialog(nullptr, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
-	dialog.ShowModal();
+	SpecialFormsDialog dialog(this, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
+	if(dialog.ShowModal() == wxID_OK) {
+		const ObjectGroup &objects = dialog.GetObjects();
+		pcb.GetSelectedBoard()->AddGroup(objects);
+	}
 }
 
 void LeftPanel::AddNewGrid(wxCommandEvent&) {
