@@ -21,7 +21,7 @@ static const int attribList[] = {
 static const float zoomRatio = 1.3f;
 
 MainCanvas::MainCanvas(wxWindow *parent, Board *_board, Settings &_settings)
-		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings) {
+		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings), placeObjectGroup(false) {
 	SetFocus();
 }
 
@@ -50,7 +50,10 @@ void MainCanvas::OnKey(wxKeyEvent &e) {
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 	if(!shift)
 		board->UnselectAll();
-	board->SelectObject(GetPos(e));
+	if(placeObjectGroup)
+		placeObjectGroup = false;
+	else
+		board->SelectObject(GetPos(e));
 	Refresh();
 	e.Skip();
 }
@@ -58,19 +61,29 @@ void MainCanvas::OnLeftUp(wxMouseEvent &e) {
 	e.Skip();
 }
 void MainCanvas::OnMiddleDown(wxMouseEvent &e) {
-	dragPosition = GetPos(e);
+	mousePosition = GetPos(e);
 	e.Skip();
 }
 void MainCanvas::OnRightDown(wxMouseEvent &e) {
+	if(placeObjectGroup) {
+		board->DeleteSelected();
+		placeObjectGroup = false;
+	}
 	e.Skip();
 }
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
-	Vec2 delta = dragPosition - GetPos(e);
-	if(e.MiddleIsDown()) {
-		board->UpdateCamera(delta);
-		Refresh();
+	if(placeObjectGroup) {
+		Vec2 mouse = board->ToGrid(GetPos(e));
+		Vec2 delta = mouse - placePosition;
+		placePosition = mouse;
+		board->MoveSelected(delta);
 	}
-	dragPosition = GetPos(e);
+	if(e.MiddleIsDown()) {
+		Vec2 delta = GetPos(e) - mousePosition;
+		board->UpdateCamera(delta);
+	}
+	mousePosition = GetPos(e);
+	Refresh();
 	e.Skip();
 }
 void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
@@ -82,6 +95,13 @@ void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
 
 	Refresh();
 	e.Skip();
+}
+
+void MainCanvas::PlaceObjectGroup(const ObjectGroup &objects) {
+	placeObjectGroup = true;
+	placePosition = board->ToGrid(mousePosition);
+	board->AddGroup(objects, placePosition);
+	Refresh();
 }
 
 Vec2 MainCanvas::GetMousePos(const wxMouseEvent &e) const {

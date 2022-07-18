@@ -37,6 +37,8 @@ public:
 	bool IsSelectedLayerCopper() const;
 	void SetSelectedLayer(uint8_t layer);
 
+	Vec2 ToGrid(const Vec2 &vec) const;
+
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);

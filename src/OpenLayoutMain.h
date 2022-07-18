@@ -14,6 +14,8 @@
 class OpenLayoutFrame : public wxFrame{
 public:
 	OpenLayoutFrame();
+
+	MainCanvas *GetCanvas();
 private:
 	wxToolBar *BuildToolBar();
 	wxMenuBar *BuildMenuBar();
@@ -88,7 +90,6 @@ private:
 
 	void SetRotationAngle(wxCommandEvent&);
 	void SelectPage(wxBookCtrlEvent&);
-	MainCanvas *GetCanvas();
 	void UpdatePages();
 
 	PCB pcb;

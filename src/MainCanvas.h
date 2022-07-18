@@ -6,12 +6,15 @@
 class MainCanvas : public wxGLCanvas {
 public:
 	MainCanvas(wxWindow *parent, Board *board, Settings &settings);
+	void PlaceObjectGroup(const ObjectGroup &objects);
 private:
 	Board *board;
 	Settings &settings;
 	bool shift;
 	bool ctrl;
-	Vec2 dragPosition;
+	Vec2 mousePosition;
+	Vec2 placePosition;
+	bool placeObjectGroup;
 
 	Vec2 GetMousePos(const wxMouseEvent&) const;
 	Vec2 GetPos(const wxMouseEvent&) const;

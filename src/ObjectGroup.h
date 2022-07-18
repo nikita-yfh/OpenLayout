@@ -12,7 +12,7 @@ public:
 	void AddObjectBegin(Object *object);
 	void AddObjectEnd(Object *object);
 	Object *AddObjectEnd(Object *object, Object *last);
-	void AddGroup(const ObjectGroup &group);
+	void AddGroup(const ObjectGroup &group, const Vec2 &position);
 
 	bool IsEmpty() const;
 
@@ -33,6 +33,7 @@ public:
 	void GroupSelected();
 	void UngroupSelected();
 
+	void MoveSelected(const Vec2 &d);
 	void RotateSelected(float angle);
 	void MirrorSelectedHorizontal();
 	void MirrorSelectedVertical();

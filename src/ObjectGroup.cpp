@@ -68,7 +68,7 @@ void ObjectGroup::AddObjectBegin(Object *object) {
 	objects = object;
 }
 
-void ObjectGroup::AddGroup(const ObjectGroup &group) {
+void ObjectGroup::AddGroup(const ObjectGroup &group, const Vec2 &position) {
 	uint32_t freeGroup = GetFreeGroup();
 	Object *last = nullptr;
 	Object *beginGroup = nullptr;
@@ -82,6 +82,8 @@ void ObjectGroup::AddGroup(const ObjectGroup &group) {
 		for(int i = 0; i < object->groups.Size(); i++)
 			object->groups[i] += freeGroup;
 		object->groups.Add(freeGroup);
+		object->Select();
+		object->Move(position);
 	}
 }
 
@@ -232,6 +234,13 @@ uint32_t ObjectGroup::GetMaxSelectedGroup() const {
 					max = object->groups[i];
 	return max;
 }
+
+void ObjectGroup::MoveSelected(const Vec2 &d) {
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(d);
+}
+
 
 void ObjectGroup::RotateSelected(float angle) {
 	Vec2 center = GetSelectedCenter();
