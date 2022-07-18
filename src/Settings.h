@@ -137,6 +137,7 @@ struct Settings {
 	float customRotationAngle;
 	uint8_t rotationAngleSel;
 
+	uint8_t selectedTool;
 	bool transparent;
 	bool capture;
 	uint8_t rubberband;

@@ -1,4 +1,5 @@
 #include "MainCanvas.h"
+#include "LeftPanel.h"
 
 wxBEGIN_EVENT_TABLE(MainCanvas, wxGLCanvas)
 	EVT_PAINT(MainCanvas::Draw)
@@ -18,7 +19,8 @@ static const int attribList[] = {
 	WX_GL_STENCIL_SIZE, 8, 0, 0
 };
 
-static const float zoomRatio = 1.3f;
+static const float zoomRatioWheel = 1.3f;
+static const float zoomRatioButtons = 1.4f;
 
 MainCanvas::MainCanvas(wxWindow *parent, Board *_board, Settings &_settings)
 		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings), placeObjectGroup(false) {
@@ -48,12 +50,17 @@ void MainCanvas::OnKey(wxKeyEvent &e) {
 }
 
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
-	if(!shift)
-		board->UnselectAll();
-	if(placeObjectGroup)
-		placeObjectGroup = false;
-	else
-		board->SelectObject(GetPos(e));
+	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
+		board->Zoom(zoomRatioButtons, GetMousePos(e));
+	else {
+		if(!shift)
+			board->UnselectAll();
+		if(placeObjectGroup) {
+			placeObjectGroup = false;
+			settings.selectedTool = TOOL_EDIT;
+		} else
+			board->SelectObject(GetPos(e));
+	}
 	Refresh();
 	e.Skip();
 }
@@ -65,15 +72,20 @@ void MainCanvas::OnMiddleDown(wxMouseEvent &e) {
 	e.Skip();
 }
 void MainCanvas::OnRightDown(wxMouseEvent &e) {
-	if(placeObjectGroup) {
+	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW) {
+		board->Zoom(1.0f / zoomRatioButtons, GetMousePos(e));
+		Refresh();
+	} else if(placeObjectGroup) {
 		board->DeleteSelected();
 		placeObjectGroup = false;
+		settings.selectedTool = TOOL_EDIT;
+		Refresh();
 	}
 	e.Skip();
 }
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	if(placeObjectGroup) {
-		Vec2 mouse = board->ToGrid(GetPos(e));
+		Vec2 mouse = board->ToActiveGrid(GetPos(e));
 		Vec2 delta = mouse - placePosition;
 		placePosition = mouse;
 		board->MoveSelected(delta);
@@ -87,7 +99,7 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	e.Skip();
 }
 void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
-	float ratio = zoomRatio;
+	float ratio = zoomRatioWheel;
 	if(e.GetWheelRotation() < 0)
 		ratio = 1.0f / ratio;
 

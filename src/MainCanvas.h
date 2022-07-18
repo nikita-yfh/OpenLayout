@@ -19,6 +19,8 @@ private:
 	Vec2 GetMousePos(const wxMouseEvent&) const;
 	Vec2 GetPos(const wxMouseEvent&) const;
 
+	void SwitchEditTool();
+
 	void Draw(wxPaintEvent&);
 	void OnKillFocus(wxFocusEvent&);
 	void OnMouseWheel(wxMouseEvent&);

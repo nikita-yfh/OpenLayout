@@ -193,7 +193,8 @@ enum {
 wxBEGIN_EVENT_TABLE(LeftPanel, wxPanel)
 	EVT_TOOL_RCLICKED(ID_TOOL_PAD,							LeftPanel::ShowPadSizeMenu)
 	EVT_TOOL_RCLICKED(ID_TOOL_RECT,							LeftPanel::ShowRectFillMenu)
-	EVT_TOOL(ID_TOOL_FORM,									LeftPanel::ShowSpecialFormsDialog)
+	EVT_TOOL_RANGE(ID_TOOL_EDIT, ID_TOOL_PHOTOVIEW,			LeftPanel::SelectTool)
+	EVT_UPDATE_UI_RANGE(ID_TOOL_EDIT, ID_TOOL_PHOTOVIEW,	LeftPanel::UpdateTools)
 	EVT_MENU(ID_METALLIZATION,								LeftPanel::ToggleMetallization)
 	EVT_MENU(ID_METALLIZATION,								LeftPanel::ToggleMetallization)
 	EVT_MENU_RANGE(ID_PAD_CIRCLE, ID_PAD_SQUARE_V,			LeftPanel::SetPadShape)
@@ -369,6 +370,19 @@ void LeftPanel::UpdatePad(bool metallization, uint8_t shape) {
 	toolbar->Realize();
 }
 
+void LeftPanel::SelectTool(wxCommandEvent &e) {
+	settings.selectedTool = e.GetId() - ID_TOOL_EDIT;
+	if(settings.selectedTool == TOOL_FORM) {
+		SpecialFormsDialog dialog(this, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
+		if(dialog.ShowModal() == wxID_OK)
+			((OpenLayoutFrame*) GetParent())->GetCanvas()->PlaceObjectGroup(dialog.GetObjects());
+	}
+}
+
+void LeftPanel::UpdateTools(wxUpdateUIEvent &e) {
+	e.Check(e.GetId() - ID_TOOL_EDIT == settings.selectedTool);
+}
+
 void LeftPanel::ShowPadSizeMenu(wxCommandEvent&) {
 	bool m = pcb.GetMetallization();
 	wxMenu *menu = new wxMenu();
@@ -393,12 +407,6 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 	AddItem(menu, ID_RECT_TRACK,	_("&Track"),	rect_track_xpm);
 	AddItem(menu, ID_RECT_ZONE,		_("&Zone"),		rect_zone_xpm);
 	PopupToolbarMenu(menu, ID_TOOL_RECT - ID_TOOL_EDIT + 1);
-}
-
-void LeftPanel::ShowSpecialFormsDialog(wxCommandEvent&) {
-	SpecialFormsDialog dialog(this, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
-	if(dialog.ShowModal() == wxID_OK)
-		((OpenLayoutFrame*) GetParent())->GetCanvas()->PlaceObjectGroup(dialog.GetObjects());
 }
 
 void LeftPanel::AddNewGrid(wxCommandEvent&) {

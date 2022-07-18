@@ -36,9 +36,11 @@ private:
 	void SetGridStyle(wxCommandEvent&);
 	void ToggleGrid(wxCommandEvent&);
 
+	void SelectTool(wxCommandEvent&);
+	void UpdateTools(wxUpdateUIEvent&);
+
 	void ShowPadSizeMenu(wxCommandEvent&);
 	void ShowRectFillMenu(wxCommandEvent&);
-	void ShowSpecialFormsDialog(wxCommandEvent&);
 	void ShowGridMenu(wxCommandEvent&);
 	void ShowTrackMenu(wxCommandEvent&);
 	void ShowPadMenu(wxCommandEvent&);
