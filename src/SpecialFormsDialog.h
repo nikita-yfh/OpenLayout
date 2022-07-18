@@ -10,6 +10,8 @@
 class SpecialFormsDialog : public wxDialog {
 public:
 	SpecialFormsDialog(wxWindow* parent, const Settings &settings, const Vec2 &boardSize, uint8_t layer);
+
+	const ObjectGroup &GetObjects() const;
 private:
 	void AutosizeFrame(wxCommandEvent&);
 	void UpdatePreview(wxSpinDoubleEvent&);
@@ -26,3 +28,6 @@ private:
 	wxDECLARE_EVENT_TABLE();
 };
 
+inline const ObjectGroup &SpecialFormsDialog::GetObjects() const {
+	return objects;
+}

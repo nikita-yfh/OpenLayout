@@ -68,6 +68,23 @@ void ObjectGroup::AddObjectBegin(Object *object) {
 	objects = object;
 }
 
+void ObjectGroup::AddGroup(const ObjectGroup &group) {
+	uint32_t freeGroup = GetFreeGroup();
+	Object *last = nullptr;
+	Object *beginGroup = nullptr;
+	for(const Object *object = group.objects; object; object = object->next) {
+		last = AddObjectEnd(object->Clone(), last);
+		if(!beginGroup)
+			beginGroup = last;
+	}
+	for(Object *object = objects; object; object = object->next) {
+		object->UpdateConnections(beginGroup);
+		for(int i = 0; i < object->groups.Size(); i++)
+			object->groups[i] += freeGroup;
+		object->groups.Add(freeGroup);
+	}
+}
+
 Object *ObjectGroup::GetFirstSelected() {
 	for(Object *object = objects; object; object = object->next)
 		if(object->IsSelected())
