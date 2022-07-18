@@ -62,6 +62,7 @@ void Settings::SetDefault() {
 	customRotationAngle = M_PI / 8.0f; // 22.5 deg
 	rotationAngleSel = 1; // 45 deg
 	
+	selectedTool = TOOL_EDIT;
 	transparent = false;
 	capture = true;
 	rubberband = RUBBERBAND_DISABLED;

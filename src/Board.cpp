@@ -112,6 +112,12 @@ Vec2 Board::ToGrid(const Vec2 &vec) const {
 	return utils::ToGrid(vec, grid, origin);
 }
 
+Vec2 Board::ToActiveGrid(const Vec2 &vec) const {
+	if(activeGrid == 0.0)
+		return vec;
+	return utils::ToGrid(vec, activeGrid, origin);
+}
+
 void Board::SnapSelectedToGrid() {
 	for(Object *object = objects; object; object = object->GetNext())
 		if(object->IsSelected() && object->groups.Empty())

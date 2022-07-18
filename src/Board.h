@@ -38,6 +38,7 @@ public:
 	void SetSelectedLayer(uint8_t layer);
 
 	Vec2 ToGrid(const Vec2 &vec) const;
+	Vec2 ToActiveGrid(const Vec2 &vec) const;
 
 	double GetGrid() const;
 	void SetGrid(double grid);
