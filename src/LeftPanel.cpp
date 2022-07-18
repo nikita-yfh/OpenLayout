@@ -395,7 +395,7 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 }
 
 void LeftPanel::ShowSpecialFormsDialog(wxCommandEvent&) {
-	SpecialFormsDialog *dialog = new SpecialFormsDialog(this, settings,
+	SpecialFormsDialog *dialog = new SpecialFormsDialog(nullptr, settings,
 		pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
 	dialog->ShowModal();
 }

@@ -105,9 +105,6 @@ void Circle::Draw(float halfwidth) const {
 			glutils::DrawSector(position + Vec2(-endAngle)   * radius, halfwidth, endAngle, endAngle + M_PI);
 		}
 	}
-	glBegin(GL_POINTS);
-	glutils::Vertex(position);
-	glEnd();
 }
 
 void Circle::DrawObject() const {
