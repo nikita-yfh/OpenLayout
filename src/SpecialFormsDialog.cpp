@@ -229,6 +229,7 @@ void SpecialFormsDialog::UpdatePreview(wxCommandEvent&) { UpdatePreview(); }
 
 void SpecialFormsDialog::UpdatePreview() {
 	uint8_t type = ((wxNotebook*) FindWindowById(ID_TYPE))->GetSelection();
+	objects.~ObjectGroup();
 	if(type == TYPE_POLYGON) {
 		float radius = ((wxSpinCtrlDouble*) FindWindowById(ID_POLYGON_RADIUS))->GetValue();
 		float width = ((wxSpinCtrlDouble*) FindWindowById(ID_POLYGON_WIDTH))->GetValue();
@@ -241,13 +242,12 @@ void SpecialFormsDialog::UpdatePreview() {
 			points[corner] = Vec2(angle) * radius;
 		}
 
-		objects.~ObjectGroup();
-		if(((wxCheckBox*) FindWindowById(ID_POLYGON_FILL))->IsChecked())
+		if(((wxCheckBox*) FindWindowById(ID_POLYGON_FILL))->IsChecked()) // Filled polygon
 			objects.AddObjectEnd(new Poly(layer, width, points, corners));
 		else {
-			points[corners] = points[0]; // loop
+			points[corners] = points[0]; // Loop
 			objects.AddObjectBegin(new Track(layer, width, points, corners + 1));
-			if(((wxCheckBox*) FindWindowById(ID_POLYGON_RAYS))->IsChecked()) {
+			if(((wxCheckBox*) FindWindowById(ID_POLYGON_RAYS))->IsChecked()) { // Add rays
 				for(int corner = 0; corner < corners; corner++) {
 					Vec2 line[2] = {Vec2(0.0f, 0.0f), points[corner]};
 					objects.AddObjectBegin(new Track(layer, width, line, 2));
@@ -260,33 +260,49 @@ void SpecialFormsDialog::UpdatePreview() {
 		float width = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_WIDTH))->GetValue();
 		int qturns = ((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_TURNS))->GetValue() * 4;
 
-		float delta = (distance + width) / 4.0f;
-		float radius = startRadius - delta / 2.0f;
-		if(radius < 0.0f) {
-			float newStartRadius = delta / 2.0f;
-			((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_RADIUS))->SetValue(newStartRadius);
-			return;
-		}
-
-		objects.~ObjectGroup();
-		if(((wxRadioButton*) FindWindowById(ID_SPIRAL_SQUARE))->GetValue()) {
-		} else {
+		float endDiameter;
+		if(((wxRadioButton*) FindWindowById(ID_SPIRAL_SQUARE))->GetValue()) { // Square spiral
+			Vec2 points[qturns + 1];
+			points[0].SetZero();
+			float delta = (distance + width) / 2.0f;
+			if(startRadius <= delta / 2.0f)
+				startRadius = delta / 2.0f + 0.1f;
+			float length = startRadius * 2.0f - delta;
+			for(int qturn = 0; qturn < qturns; qturn++) {
+				points[qturn + 1] = points[qturn];
+				if(qturn == qturns - 1) // End segment
+					length -= delta * 2.0f;
+				switch(qturn % 4) { // Direction
+				case 0: points[qturn + 1].x -= length; break;
+				case 1: points[qturn + 1].y -= length; break;
+				case 2: points[qturn + 1].x += length; break;
+				case 3: points[qturn + 1].y += length; break;
+				}
+				length += delta;
+			}
+			objects.AddObjectBegin(new Track(layer, width, points, qturns + 1));
+			endDiameter = length + width;
+		} else { // Round spiral
+			float delta = (distance + width) / 4.0f;
+			if(startRadius <= delta * 2.0f)
+				startRadius = delta * 2.0f + 0.1f;
+			float radius = startRadius / 2.0f - delta;
 			Vec2 centers[4] = {
-				Vec2(-delta, -delta),
-				Vec2(-delta,  delta),
-				Vec2( delta,  delta),
-				Vec2( delta, -delta)
+				Vec2(-delta / 2.0f, -delta / 2.0f),
+				Vec2(-delta / 2.0f,  delta / 2.0f),
+				Vec2( delta / 2.0f,  delta / 2.0f),
+				Vec2( delta / 2.0f, -delta / 2.0f)
 			};
 			for(int qturn = 0; qturn < qturns; qturn++) {
 				float beginAngle = glutils::AngleMod(M_PI / 2.0f * qturn);
 				float endAngle = glutils::AngleMod(M_PI / 2.0f * (qturn + 1));
 				objects.AddObjectBegin(new Circle(layer, width,
-					centers[qturn % 4] / 2.0f, radius * 2.0f, beginAngle, endAngle));
+					centers[qturn % 4], radius * 2.0f, beginAngle, endAngle));
 				radius += delta;
 			}
+			endDiameter = 2.0f * radius - 3.0f * delta + width;
 		}
-
-		float endDiameter = 2.0f * radius - 3.0f * delta + width;
+		((wxSpinCtrlDouble*) FindWindowById(ID_SPIRAL_RADIUS))->SetValue(startRadius);
 		((wxStaticText*) FindWindowById(ID_SPIRAL_DIAMETER))->SetLabel(wxString::Format("%.3f", endDiameter));
 	} else { // TYPE_FRAME
 		uint8_t frameColumns = ((wxSpinCtrl*) FindWindowById(ID_FRAME_COLUMNS))->GetValue();
@@ -299,7 +315,6 @@ void SpecialFormsDialog::UpdatePreview() {
 			((wxSpinCtrlDouble*) FindWindowById(ID_FRAME_WIDTH))->GetValue(),
 			((wxSpinCtrlDouble*) FindWindowById(ID_FRAME_HEIGHT))->GetValue()
 		);
-		objects.~ObjectGroup();
 	}
 	canvas->Refresh();
 }

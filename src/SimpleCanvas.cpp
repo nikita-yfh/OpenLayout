@@ -34,7 +34,7 @@ void SimpleCanvas::Draw(wxPaintEvent&) {
 			glOrtho(0.0f, screenSize.x / screenSize.y * size.y, size.y, 0.0f, 0.0f, 1.0f);
 			glutils::Translate(-aabb.lower + Vec2((screenSize.x / screenSize.y * size.y - size.x) / 2.0f, 0.0f));
 		} else {
-			glOrtho(0.0f, size.x, screenSize.y / screenSize.x * size.y, 0.0f, 0.0f, 1.0f);
+			glOrtho(0.0f, size.x, screenSize.y / screenSize.x * size.x, 0.0f, 0.0f, 1.0f);
 			glutils::Translate(-aabb.lower + Vec2(0.0f, (screenSize.y / screenSize.x * size.x - size.y) / 2.0f));
 		}
 		objects->DrawObjects(colors, ObjectGroup::LAYER_C2, true);
