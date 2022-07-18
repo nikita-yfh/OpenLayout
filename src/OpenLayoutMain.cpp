@@ -120,8 +120,6 @@ enum {
 	ID_PAGES
 };
 
-
-
 wxBEGIN_EVENT_TABLE(OpenLayoutFrame, wxFrame)
 	EVT_MOVE(							OpenLayoutFrame::Move)
 	EVT_SIZE(							OpenLayoutFrame::Resize)

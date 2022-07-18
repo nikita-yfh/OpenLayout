@@ -108,10 +108,14 @@ void Board::UpdateGrid(bool shift, bool ctrl) {
 		activeGrid = grid;
 }
 
+Vec2 Board::ToGrid(const Vec2 &vec) const {
+	return utils::ToGrid(vec, grid, origin);
+}
+
 void Board::SnapSelectedToGrid() {
 	for(Object *object = objects; object; object = object->GetNext())
 		if(object->IsSelected() && object->groups.Empty())
-			object->Move(utils::ToGrid(object->GetPosition(), grid, origin) - object->GetPosition());
+			object->Move(ToGrid(object->GetPosition()) - object->GetPosition());
 	bool ok = true;
 	for(int i = 0; ok; i++) {
 		ok = false;
@@ -119,7 +123,7 @@ void Board::SnapSelectedToGrid() {
 		for(Object *object = objects; object; object = object->GetNext())
 			if(object->IsSelected() && !object->groups.Empty() && object->groups.Last() == i) {
 				if(!ok)
-					delta = utils::ToGrid(object->GetPosition(), grid, origin) - object->GetPosition();
+					delta = ToGrid(object->GetPosition()) - object->GetPosition();
 				object->Move(delta);
 				ok = true;
 			}
@@ -127,7 +131,7 @@ void Board::SnapSelectedToGrid() {
 }
 
 void Board::UpdateCamera(const Vec2 &delta) {
-	camera += delta;
+	camera -= delta;
 }
 
 void Board::Zoom(float ratio, const Vec2 &mouse) {

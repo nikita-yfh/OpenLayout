@@ -1,5 +1,6 @@
 #include "LeftPanel.h"
 #include "Settings.h"
+#include "OpenLayoutMain.h"
 #include "InputGridDialog.h"
 #include "GridBinderDialog.h"
 #include "SpecialFormsDialog.h"
@@ -396,10 +397,8 @@ void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {
 
 void LeftPanel::ShowSpecialFormsDialog(wxCommandEvent&) {
 	SpecialFormsDialog dialog(this, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
-	if(dialog.ShowModal() == wxID_OK) {
-		const ObjectGroup &objects = dialog.GetObjects();
-		pcb.GetSelectedBoard()->AddGroup(objects);
-	}
+	if(dialog.ShowModal() == wxID_OK)
+		((OpenLayoutFrame*) GetParent())->GetCanvas()->PlaceObjectGroup(dialog.GetObjects());
 }
 
 void LeftPanel::AddNewGrid(wxCommandEvent&) {
