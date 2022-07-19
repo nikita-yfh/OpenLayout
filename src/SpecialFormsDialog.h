@@ -20,6 +20,7 @@ private:
 	void UpdatePreview(wxCommandEvent&);
 	void UpdatePreview();
 
+	const Settings &settings;
 	wxGLCanvas *canvas;
 	Vec2 boardSize;
 	uint8_t layer;

@@ -4,7 +4,8 @@
 class LineObject : public Object {
 public:
 	LineObject() {}
-	LineObject(uint8_t layer, float _width) : Object(layer) { width = _width; }
+	LineObject(uint8_t layer, float groundDistance, float _width)
+		: Object(layer, groundDistance), width(_width) {}
 
 	float GetWidth() const;
 	void SetWidth(float size);

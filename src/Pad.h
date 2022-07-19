@@ -6,8 +6,11 @@
 
 class Pad : public Object{
 public:
-	Pad() : Pad(0, Vec2(0.0f, 0.0f)) {}
-	Pad(uint8_t layer, const Vec2 &_position);
+	Pad() {}
+	Pad(uint8_t layer, float groundDistance, const Vec2 &_position)
+		: Object(layer, groundDistance), position(_position), thermal(false),
+		thermalStyle{0x55, 0x55, 0x55, 0x55}, thermalSize(0.4f), angle(0.0f) {}
+
 	~Pad();
 
 	virtual void SaveConnections(const Object *objects, File &file) const override;

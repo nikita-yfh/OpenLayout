@@ -6,8 +6,11 @@
 
 class Object {
 public:
-	Object() : Object(0) {}
-	Object(uint8_t layer);
+	Object() {}
+	Object(uint8_t _layer, float _groundDistance)
+		: prev(nullptr), next(nullptr), marker(""), componentID(0),
+		groundDistance(_groundDistance), soldermask(false), selected(false), layer(_layer) {}
+
 	virtual ~Object() {}
 
 	virtual Object *Clone() const = 0;
@@ -45,7 +48,9 @@ public:
 	void SetGroundDistance(float distance);
 	float GetGroundDistance() const;
 
+	bool IsPlaced() const;
 	bool IsSelected() const;
+	void SetPlaced();
 	void Select();
 	void Unselect();
 	void InvertSelection();
@@ -70,7 +75,7 @@ protected:
 	bool soldermask;
 	uint16_t componentID;
 
-	bool selected;
+	uint8_t selected;
 private:
 	Object *prev;
 	Object *next;
@@ -87,14 +92,20 @@ inline const Object *Object::GetNext() const {
 inline const Object *Object::GetPrev() const {
 	return prev;
 }
+inline bool Object::IsPlaced() const {
+	return selected == 2;
+}
 inline bool Object::IsSelected() const {
-	return selected;
+	return selected == 1;
+}
+inline void Object::SetPlaced() {
+	selected = 2;
 }
 inline void Object::Select() {
-	selected = true;
+	selected = 1;
 }
 inline void Object::Unselect() {
-	selected = false;
+	selected = 0;
 }
 inline void Object::InvertSelection() {
 	selected = !selected;

@@ -4,8 +4,9 @@
 
 class THTPad : public Pad {
 public:
-	THTPad() : THTPad(0, Vec2(0.0f, 0.0f), PadSize(0.0f, 0.0f)) {}
-	THTPad(uint8_t layer, const Vec2 &position, const PadSize &size);
+	THTPad() : THTPad(0, 0.0f, Vec2(0.0f, 0.0f), PadSize(0.0f, 0.0f)) {}
+	THTPad(uint8_t layer, float groundDistance, const Vec2 &position, const PadSize &_size)
+		: Pad(layer, groundDistance, position), size(_size), shape(0), through(false) {}
 
 	virtual THTPad *Clone() const override;
 

@@ -4,9 +4,9 @@
 
 class Circle : public LineObject {
 public:
-	Circle() : Circle(0, 0.0f, Vec2(0.0f, 0.0f), 0.0f, 0.0f, 0.0f) {}
-	Circle(uint8_t layer, float width, const Vec2 &_position, float _diameter, float _beginAngle, float _endAngle)
-		: LineObject(layer, width), position(_position), diameter(_diameter),
+	Circle() {}
+	Circle(uint8_t layer, float groundDistance, float width, const Vec2 &_position, float _diameter, float _beginAngle, float _endAngle)
+		: LineObject(layer, groundDistance, width), position(_position), diameter(_diameter),
 		beginAngle(_beginAngle), endAngle(_endAngle), cutout(false), fill(false) {}
 
 	virtual Circle *Clone() const override;

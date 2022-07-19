@@ -5,7 +5,9 @@
 class PolygonBase : public LineObject {
 public:
 	PolygonBase() {}
-	PolygonBase(uint8_t layer, float width, const Vec2 *points, uint32_t count);
+	PolygonBase(uint8_t layer, float groundDistance, float width, const Vec2 *array, uint32_t count)
+		: LineObject(layer, groundDistance, width), points(array, count), cutout(false) {}
+
 
 	virtual AABB GetAABB() const override;
 	virtual Vec2 GetPosition() const override;

@@ -68,21 +68,21 @@ void ObjectGroup::AddObjectBegin(Object *object) {
 	objects = object;
 }
 
-void ObjectGroup::AddGroup(const ObjectGroup &group, const Vec2 &position) {
+void ObjectGroup::PlaceGroup(const ObjectGroup &group, const Vec2 &position) {
 	uint32_t freeGroup = GetFreeGroup();
-	Object *last = nullptr;
+	Object *last = GetLast();
 	Object *beginGroup = nullptr;
 	for(const Object *object = group.objects; object; object = object->next) {
 		last = AddObjectEnd(object->Clone(), last);
 		if(!beginGroup)
 			beginGroup = last;
 	}
-	for(Object *object = objects; object; object = object->next) {
+	for(Object *object = beginGroup; object; object = object->next) {
 		object->UpdateConnections(beginGroup);
 		for(int i = 0; i < object->groups.Size(); i++)
 			object->groups[i] += freeGroup;
 		object->groups.Add(freeGroup);
-		object->Select();
+		object->SetPlaced();
 		object->Move(position);
 	}
 }
@@ -139,7 +139,8 @@ void ObjectGroup::InvertSelectionGroup(Object *o1) {
 
 void ObjectGroup::SelectAll() {
 	for(Object *object = objects; object; object = object->next)
-		object->Select();
+		if(!object->IsPlaced())
+			object->Select();
 }
 
 void ObjectGroup::UnselectAll() {
@@ -150,6 +151,23 @@ void ObjectGroup::UnselectAll() {
 void ObjectGroup::DeleteSelected() {
 	for(Object *object = objects; object;) {
 		if(object->IsSelected()) {
+			if(object->next)
+				object->next->prev = object->prev;
+			if(object->prev)
+				object->prev->next = object->next;
+			else
+				objects = object->next;
+			Object *temp = object;
+			object = object->next;
+			delete temp;
+		} else
+			object = object->next;
+	}
+}
+
+void ObjectGroup::CancelPlacing() {
+	for(Object *object = objects; object;) {
+		if(object->IsPlaced()) {
 			if(object->next)
 				object->next->prev = object->prev;
 			if(object->prev)
@@ -235,9 +253,9 @@ uint32_t ObjectGroup::GetMaxSelectedGroup() const {
 	return max;
 }
 
-void ObjectGroup::MoveSelected(const Vec2 &d) {
+void ObjectGroup::MovePlaced(const Vec2 &d) {
 	for(Object *object = objects; object; object = object->next)
-		if(object->IsSelected())
+		if(object->IsPlaced())
 			object->Move(d);
 }
 

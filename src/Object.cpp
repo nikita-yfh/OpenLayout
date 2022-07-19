@@ -5,18 +5,6 @@
 #include "Poly.h"
 #include "Circle.h"
 
-
-Object::Object(uint8_t _layer) {
-	prev = nullptr;
-	next = nullptr;
-	*marker = '\0';
-	componentID = 0;
-	groundDistance = 0.0f;
-	soldermask = false;
-	selected = false;
-	layer = _layer;
-}
-
 void Object::SaveGroups(File &file) const {
 	file.Write<uint32_t>(groups.Size());
 	for(int i = 0; i < groups.Size(); i++)
