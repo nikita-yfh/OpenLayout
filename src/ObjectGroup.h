@@ -12,7 +12,7 @@ public:
 	void AddObjectBegin(Object *object);
 	void AddObjectEnd(Object *object);
 	Object *AddObjectEnd(Object *object, Object *last);
-	void AddGroup(const ObjectGroup &group, const Vec2 &position);
+	void PlaceGroup(const ObjectGroup &group, const Vec2 &position);
 
 	bool IsEmpty() const;
 
@@ -33,7 +33,7 @@ public:
 	void GroupSelected();
 	void UngroupSelected();
 
-	void MoveSelected(const Vec2 &d);
+	void MovePlaced(const Vec2 &d);
 	void RotateSelected(float angle);
 	void MirrorSelectedHorizontal();
 	void MirrorSelectedVertical();
@@ -41,6 +41,7 @@ public:
 	void AlignSelected(Vec2(*callback)(const AABB&, const AABB&));
 
 	void DeleteSelected();
+	void CancelPlacing();
 
 	void DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected) const;
 	void DrawGroundDistance(uint8_t activeLayer) const;

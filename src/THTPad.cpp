@@ -2,12 +2,6 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
-THTPad::THTPad(uint8_t layer, const Vec2 &position, const PadSize &_size) : Pad(layer, position) {
-	size = _size;
-	shape = 0;
-	through = false;
-}
-
 THTPad *THTPad::Clone() const {
 	return new THTPad(*this);
 }

@@ -89,8 +89,8 @@ wxBEGIN_EVENT_TABLE(SpecialFormsDialog, wxDialog)
 	EVT_BUTTON(ID_FRAME_AUTOSIZE,				SpecialFormsDialog::AutosizeFrame)
 wxEND_EVENT_TABLE()
 
-SpecialFormsDialog::SpecialFormsDialog(wxWindow *parent, const Settings &settings, const Vec2 &_boardSize, uint8_t _layer)
-			: wxDialog(parent, wxID_ANY, _("Special forms")), boardSize(_boardSize), layer(_layer) {
+SpecialFormsDialog::SpecialFormsDialog(wxWindow *parent, const Settings &_settings, const Vec2 &_boardSize, uint8_t _layer)
+			: wxDialog(parent, wxID_ANY, _("Special forms")), settings(_settings), boardSize(_boardSize), layer(_layer) {
 	canvas = new SimpleCanvas(this, &objects, settings);
 	wxNotebook *notebook = new wxNotebook(this, ID_TYPE);
 
@@ -243,14 +243,14 @@ void SpecialFormsDialog::UpdatePreview() {
 		}
 
 		if(((wxCheckBox*) FindWindowById(ID_POLYGON_FILL))->IsChecked()) // Filled polygon
-			objects.AddObjectEnd(new Poly(layer, width, points, corners));
+			objects.AddObjectEnd(new Poly(layer, settings.groundDistance, width, points, corners));
 		else {
 			points[corners] = points[0]; // Loop
-			objects.AddObjectBegin(new Track(layer, width, points, corners + 1));
+			objects.AddObjectBegin(new Track(layer, settings.groundDistance, width, points, corners + 1));
 			if(((wxCheckBox*) FindWindowById(ID_POLYGON_RAYS))->IsChecked()) { // Add rays
 				for(int corner = 0; corner < corners; corner++) {
 					Vec2 line[2] = {Vec2(0.0f, 0.0f), points[corner]};
-					objects.AddObjectBegin(new Track(layer, width, line, 2));
+					objects.AddObjectBegin(new Track(layer, settings.groundDistance, width, line, 2));
 				}
 			}
 		}
@@ -280,7 +280,7 @@ void SpecialFormsDialog::UpdatePreview() {
 				}
 				length += delta;
 			}
-			objects.AddObjectBegin(new Track(layer, width, points, qturns + 1));
+			objects.AddObjectBegin(new Track(layer, settings.groundDistance, width, points, qturns + 1));
 			endDiameter = length + width;
 		} else { // Round spiral
 			float delta = (distance + width) / 4.0f;
@@ -296,7 +296,7 @@ void SpecialFormsDialog::UpdatePreview() {
 			for(int qturn = 0; qturn < qturns; qturn++) {
 				float beginAngle = glutils::AngleMod(M_PI / 2.0f * qturn);
 				float endAngle = glutils::AngleMod(M_PI / 2.0f * (qturn + 1));
-				objects.AddObjectBegin(new Circle(layer, width,
+				objects.AddObjectBegin(new Circle(layer, settings.groundDistance, width,
 					centers[qturn % 4], radius * 2.0f, beginAngle, endAngle));
 				radius += delta;
 			}

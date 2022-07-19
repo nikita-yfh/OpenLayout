@@ -16,14 +16,6 @@ static bool Clockwise(float a, float b, float c) {
 		return (b < a && b > c);
 }
 
-Pad::Pad(uint8_t layer, const Vec2 &_position) : Object(layer) {
-	position = _position;
-	thermal = false;
-	memset(thermalStyle, 0x55, 4);
-	thermalSize = 0.4f;
-	angle = 0.0f;
-}
-
 Pad::~Pad() {
 	for(int i = 0; i < connections.Size(); i++) {
 		Pad *connected = connections[i];

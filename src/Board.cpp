@@ -13,7 +13,7 @@ Board::Board(const char *_name, Type type, Vec2 innerSize, float border, bool or
 		size = innerSize;
 
 	if(type == Type::Round) {
-		Circle *circle = new Circle(LAYER_O, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x, 0.0f, 0.0f);
+		Circle *circle = new Circle(LAYER_O, 0.0f, 0.0f, innerSize * 0.5f + Vec2(border, border), innerSize.x, 0.0f, 0.0f);
 		AddObjectBegin(circle);
 	} else if(type == Type::Rectangle) {
 		const Vec2 points[] = {
@@ -23,7 +23,7 @@ Board::Board(const char *_name, Type type, Vec2 innerSize, float border, bool or
 			{border, border + innerSize.y},
 			{border, border}
 		};
-		Track *frame = new Track(LAYER_O, 0.0f, points, 5);
+		Track *frame = new Track(LAYER_O, 0.0f, 0.0f, points, 5);
 		AddObjectBegin(frame);
 	}
 	if(originTop)

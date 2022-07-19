@@ -76,7 +76,7 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 		board->Zoom(1.0f / zoomRatioButtons, GetMousePos(e));
 		Refresh();
 	} else if(placeObjectGroup) {
-		board->DeleteSelected();
+		board->CancelPlacing();
 		placeObjectGroup = false;
 		settings.selectedTool = TOOL_EDIT;
 		Refresh();
@@ -88,7 +88,7 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 		Vec2 mouse = board->ToActiveGrid(GetPos(e));
 		Vec2 delta = mouse - placePosition;
 		placePosition = mouse;
-		board->MoveSelected(delta);
+		board->MovePlaced(delta);
 	}
 	if(e.MiddleIsDown()) {
 		Vec2 delta = GetPos(e) - mousePosition;
@@ -112,7 +112,7 @@ void MainCanvas::OnMouseWheel(wxMouseEvent &e) {
 void MainCanvas::PlaceObjectGroup(const ObjectGroup &objects) {
 	placeObjectGroup = true;
 	placePosition = board->ToGrid(mousePosition);
-	board->AddGroup(objects, placePosition);
+	board->PlaceGroup(objects, placePosition);
 	Refresh();
 }
 

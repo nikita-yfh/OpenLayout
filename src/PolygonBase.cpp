@@ -2,9 +2,6 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
-PolygonBase::PolygonBase(uint8_t layer, float width, const Vec2 *array, uint32_t count)
-			: LineObject(layer, width), points(array, count), cutout(false) {}
-
 AABB PolygonBase::GetAABB() const {
 	Vec2 min( FLT_MAX,  FLT_MAX);
 	Vec2 max(-FLT_MAX, -FLT_MAX);
