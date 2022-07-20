@@ -309,7 +309,6 @@ LeftPanel::LeftPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		content->Add(sizer, 0, wxEXPAND | wxALL, 5);
 	}
 	SetSizer(content);
-	rectFill = false;
 }
 
 void LeftPanel::PopupToolbarMenu(wxMenu *menu, int n) {
@@ -339,11 +338,11 @@ void LeftPanel::AddCheckItem(wxMenu *parent, int id, const char *text, const wxB
 }
 
 void LeftPanel::SetRectFill(wxCommandEvent &e) {
-	rectFill = e.GetId() - ID_RECT_TRACK;
+	settings.rectFill = e.GetId() - ID_RECT_TRACK;
 	toolbar->DeleteTool(ID_TOOL_RECT);
 	const Tool &tool = tools[ID_TOOL_RECT - ID_TOOL_EDIT];
 	toolbar->InsertTool(ID_TOOL_RECT - ID_TOOL_EDIT, ID_TOOL_RECT, tool.label,
-		 rectFill ? rect_zone_xpm : rect_track_xpm, wxNullBitmap, wxITEM_RADIO, tool.tooltip);
+		 settings.rectFill ? rect_zone_xpm : rect_track_xpm, wxNullBitmap, wxITEM_RADIO, tool.tooltip);
 	toolbar->Realize();
 }
 

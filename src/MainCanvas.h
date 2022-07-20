@@ -7,6 +7,7 @@ class MainCanvas : public wxGLCanvas {
 public:
 	MainCanvas(wxWindow *parent, Board *board, Settings &settings);
 	void PlaceObjectGroup(const ObjectGroup &objects);
+	void PlaceObject(Object *object);
 
 	const Vec2 &GetMousePosition() const;
 private:
@@ -22,6 +23,7 @@ private:
 
 	uint8_t bendMode;
 	void BuildTrackEnd();
+	void BuildRect();
 	void FinishCreating();
 
 	Vec2 GetMousePos(const wxMouseEvent&) const;

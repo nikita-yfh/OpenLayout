@@ -140,6 +140,7 @@ struct Settings {
 	uint8_t selectedTool;
 	bool metallization;
 	uint8_t padShape;
+	bool rectFill;
 	bool transparent;
 	bool capture;
 	uint8_t rubberband;

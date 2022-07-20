@@ -64,6 +64,7 @@ void Settings::SetDefault() {
 	
 	metallization = false;
 	padShape = 0;
+	rectFill = false;
 	selectedTool = TOOL_EDIT;
 	transparent = false;
 	capture = true;
