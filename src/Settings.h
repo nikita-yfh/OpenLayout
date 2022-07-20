@@ -12,7 +12,7 @@ enum {
 	TOOL_EDIT,
 	TOOL_ZOOM,
 	TOOL_TRACK,
-	TOOL_PAD,
+	TOOL_THT_PAD,
 	TOOL_SMD_PAD,
 	TOOL_CIRCLE,
 	TOOL_RECTANGLE,
@@ -138,6 +138,8 @@ struct Settings {
 	uint8_t rotationAngleSel;
 
 	uint8_t selectedTool;
+	bool metallization;
+	uint8_t padShape;
 	bool transparent;
 	bool capture;
 	uint8_t rubberband;

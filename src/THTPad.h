@@ -4,9 +4,14 @@
 
 class THTPad : public Pad {
 public:
-	THTPad() : THTPad(0, 0.0f, Vec2(0.0f, 0.0f), PadSize(0.0f, 0.0f)) {}
-	THTPad(uint8_t layer, float groundDistance, const Vec2 &position, const PadSize &_size)
-		: Pad(layer, groundDistance, position), size(_size), shape(0), through(false) {}
+	THTPad() {}
+	THTPad(uint8_t layer, float groundDistance, const Vec2 &position, const PadSize &_size, uint8_t _shape, bool metallization)
+			: Pad(layer, groundDistance, position), size(_size), shape(_shape), through(metallization) {
+		if(shape > S_SQUARE_E) {
+			shape -= 3;
+			angle += M_PI / 2.0f;
+		}
+	}
 
 	virtual THTPad *Clone() const override;
 
@@ -30,13 +35,13 @@ private:
 	void Draw(float halfSize, float distance) const;
 	uint8_t CalcPoints(Vec2 *points) const;
 	PadSize size;
-	enum{
-		CIRCLE = 1,
-		OCTAGON,
-		SQUARE,
-		CIRCLE_E,
-		OCTAGON_E,
-		SQUARE_E,
+	enum {
+		S_CIRCLE,
+		S_OCTAGON,
+		S_SQUARE,
+		S_CIRCLE_E,
+		S_OCTAGON_E,
+		S_SQUARE_E,
 	};
 	uint8_t shape;
 	bool through;

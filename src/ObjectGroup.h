@@ -12,10 +12,13 @@ public:
 	void AddObjectBegin(Object *object);
 	void AddObjectEnd(Object *object);
 	Object *AddObjectEnd(Object *object, Object *last);
+
+	void PlaceObject(Object *object);
 	void PlaceGroup(const ObjectGroup &group, const Vec2 &position);
 
 	bool IsEmpty() const;
 
+	Object *GetFirstPlaced();
 	Object *GetFirstSelected();
 	const Object *GetFirstSelected() const;
 	bool IsSelected() const;

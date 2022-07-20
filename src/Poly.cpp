@@ -82,9 +82,6 @@ void Poly::DrawObject() const {
 }
 
 void Poly::Draw(float halfWidth) const {
-	if(points.Size() < 3)
-		return;
-
 	glClear(GL_STENCIL_BUFFER_BIT);
 
 	glEnable(GL_STENCIL_TEST);
@@ -92,15 +89,20 @@ void Poly::Draw(float halfWidth) const {
 	glStencilFunc(GL_NEVER, 1, 1);
 	glStencilOp(GL_INVERT, GL_INVERT, GL_INVERT);
 
-	glBegin(GL_TRIANGLE_FAN);
-	for(int i = 0; i < points.Size(); i++)
-		glutils::Vertex(points[i]);
-	glEnd();
+	if(!IsPlaced()) {
+		glBegin(GL_TRIANGLE_FAN);
+		for(int i = 0; i < points.Size(); i++)
+			glutils::Vertex(points[i]);
+		glEnd();
+	}
 
 	if(halfWidth != 0.0f) {
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 		glBegin(GL_QUADS);
 		for(int i = 0; i < points.Size(); i++) {
+			if(i == points.Size() - 1 && IsPlaced())
+				break;
+
 			const Vec2 &a = points[i];
 			const Vec2 &b = points[(i + 1) % points.Size()];
 
