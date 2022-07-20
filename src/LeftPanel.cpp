@@ -119,7 +119,7 @@ enum {
 	ID_TOOL_EDIT = 2000,
 	ID_TOOL_ZOOM,
 	ID_TOOL_TRACK,
-	ID_TOOL_PAD,
+	ID_TOOL_THT_PAD,
 	ID_TOOL_SMD,
 	ID_TOOL_CIRCLE,
 	ID_TOOL_RECT,
@@ -191,7 +191,7 @@ enum {
 };
 
 wxBEGIN_EVENT_TABLE(LeftPanel, wxPanel)
-	EVT_TOOL_RCLICKED(ID_TOOL_PAD,							LeftPanel::ShowPadSizeMenu)
+	EVT_TOOL_RCLICKED(ID_TOOL_THT_PAD,							LeftPanel::ShowPadSizeMenu)
 	EVT_TOOL_RCLICKED(ID_TOOL_RECT,							LeftPanel::ShowRectFillMenu)
 	EVT_TOOL_RANGE(ID_TOOL_EDIT, ID_TOOL_PHOTOVIEW,			LeftPanel::SelectTool)
 	EVT_UPDATE_UI_RANGE(ID_TOOL_EDIT, ID_TOOL_PHOTOVIEW,	LeftPanel::UpdateTools)
@@ -348,34 +348,36 @@ void LeftPanel::SetRectFill(wxCommandEvent &e) {
 }
 
 void LeftPanel::SetPadShape(wxCommandEvent &e) {
-	padShape = e.GetId() - ID_PAD_CIRCLE;
-	pcb.SetPadShape(padShape);
-	
-	UpdatePad(pcb.GetMetallization(), padShape);
+	settings.padShape = e.GetId() - ID_PAD_CIRCLE;
+	UpdatePad(settings.metallization, settings.padShape);
 }
 
 void LeftPanel::ToggleMetallization(wxCommandEvent&) {
-	UpdatePad(pcb.ToggleMetallization(), pcb.GetPadShape());
+	settings.metallization = !settings.metallization;
+	UpdatePad(settings.metallization, settings.padShape);
 }
 void LeftPanel::UpdateMetallization(wxUpdateUIEvent &e) {
-	static bool lastState = pcb.GetMetallization();
-	if(lastState != pcb.GetMetallization())
-		ToggleMetallization(e);
+	static bool lastState = settings.metallization;
+	if(lastState != settings.metallization)
+		settings.metallization = !settings.metallization;
 }
 void LeftPanel::UpdatePad(bool metallization, uint8_t shape) {
-	toolbar->DeleteTool(ID_TOOL_PAD);
-	const Tool &tool = tools[ID_TOOL_PAD - ID_TOOL_EDIT];
-	toolbar->InsertTool(ID_TOOL_PAD - ID_TOOL_EDIT, ID_TOOL_PAD, tool.label,
+	toolbar->DeleteTool(ID_TOOL_THT_PAD);
+	const Tool &tool = tools[ID_TOOL_THT_PAD - ID_TOOL_EDIT];
+	toolbar->InsertTool(ID_TOOL_THT_PAD - ID_TOOL_EDIT, ID_TOOL_THT_PAD, tool.label,
 			padBitmaps[metallization][shape], wxNullBitmap, wxITEM_RADIO, tool.tooltip);
 	toolbar->Realize();
 }
 
 void LeftPanel::SelectTool(wxCommandEvent &e) {
 	settings.selectedTool = e.GetId() - ID_TOOL_EDIT;
+	pcb.GetSelectedBoard()->CancelPlacing();
 	if(settings.selectedTool == TOOL_FORM) {
 		SpecialFormsDialog dialog(this, settings, pcb.GetSelectedBoard()->GetSize(), pcb.GetSelectedBoard()->GetSelectedLayer());
 		if(dialog.ShowModal() == wxID_OK)
 			((OpenLayoutFrame*) GetParent())->GetCanvas()->PlaceObjectGroup(dialog.GetObjects());
+		else
+			settings.selectedTool = TOOL_EDIT;
 	}
 }
 
@@ -384,22 +386,21 @@ void LeftPanel::UpdateTools(wxUpdateUIEvent &e) {
 }
 
 void LeftPanel::ShowPadSizeMenu(wxCommandEvent&) {
-	bool m = pcb.GetMetallization();
 	wxMenu *menu = new wxMenu();
-	AddItem(menu, ID_PAD_CIRCLE,	_("&Circular"),				padBitmaps[m][0]);
-	AddItem(menu, ID_PAD_OCTAGON,	_("&Ocragon"),				padBitmaps[m][1]);
-	AddItem(menu, ID_PAD_SQUARE,	_("&Square"),				padBitmaps[m][2]);
+	AddItem(menu, ID_PAD_CIRCLE,	_("&Circular"),				padBitmaps[settings.metallization][0]);
+	AddItem(menu, ID_PAD_OCTAGON,	_("&Ocragon"),				padBitmaps[settings.metallization][1]);
+	AddItem(menu, ID_PAD_SQUARE,	_("&Square"),				padBitmaps[settings.metallization][2]);
 	menu->AppendSeparator();
-	AddItem(menu, ID_PAD_CIRCLE_H,	_("&Rounded, horizontal"),	padBitmaps[m][3]);
-	AddItem(menu, ID_PAD_OCTAGON_H,	_("Oct&agon, horizontal"),	padBitmaps[m][4]);
-	AddItem(menu, ID_PAD_SQUARE_H,	_("R&ectangle, horizontal"),padBitmaps[m][5]);
+	AddItem(menu, ID_PAD_CIRCLE_H,	_("&Rounded, horizontal"),	padBitmaps[settings.metallization][3]);
+	AddItem(menu, ID_PAD_OCTAGON_H,	_("Oct&agon, horizontal"),	padBitmaps[settings.metallization][4]);
+	AddItem(menu, ID_PAD_SQUARE_H,	_("R&ectangle, horizontal"),padBitmaps[settings.metallization][5]);
 	menu->AppendSeparator();
-	AddItem(menu, ID_PAD_CIRCLE_V,	_("Ro&unded, vertical"),	padBitmaps[m][6]);
-	AddItem(menu, ID_PAD_OCTAGON_V,	_("Octa&gon, vertical"),	padBitmaps[m][7]);
-	AddItem(menu, ID_PAD_SQUARE_V,	_("Recta&ngle, vertical"),	padBitmaps[m][8]);
+	AddItem(menu, ID_PAD_CIRCLE_V,	_("Ro&unded, vertical"),	padBitmaps[settings.metallization][6]);
+	AddItem(menu, ID_PAD_OCTAGON_V,	_("Octa&gon, vertical"),	padBitmaps[settings.metallization][7]);
+	AddItem(menu, ID_PAD_SQUARE_V,	_("Recta&ngle, vertical"),	padBitmaps[settings.metallization][8]);
 	menu->AppendSeparator();
 	menu->AppendCheckItem(ID_METALLIZATION, _("Through pad\tF12"));
-	PopupToolbarMenu(menu, ID_TOOL_PAD - ID_TOOL_EDIT + 1);
+	PopupToolbarMenu(menu, ID_TOOL_THT_PAD - ID_TOOL_EDIT + 1);
 }
 
 void LeftPanel::ShowRectFillMenu(wxCommandEvent&) {

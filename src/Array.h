@@ -32,6 +32,21 @@ public:
 				new (&items[i]) T();
 		}
 	}
+	void Resize(uint32_t size) {
+		if(size < count) {
+			for(int i = size; i < count; i++)
+				items[i].~T();
+			count = size;
+			Resize();
+		} else if(size > count) {
+			uint32_t oldCount = count;
+			count = size;
+			Resize();
+			for(int i = oldCount; i < count; i++)
+				new (&items[i]) T();
+		}
+	}
+			
 	void Clear() {
 		if(items)
 			free(items);

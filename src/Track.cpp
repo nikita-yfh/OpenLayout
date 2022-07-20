@@ -68,7 +68,7 @@ void Track::Draw(float halfWidth) const {
 		for(int i = 0; i < points.Size(); i++)
 			glutils::Vertex(points[i]);
 		glEnd();
-	} else {
+	} else if (points.Size() > 1) {
 		Vec2 normals[points.Size() - 1];
 		for(int i = 0; i < points.Size() - 1; i++)
 			normals[i] = (points[i + 1] - points[i]).Normal(halfWidth);
@@ -157,7 +157,8 @@ void Track::Draw(float halfWidth) const {
 		}
 			
 		glEnd();
-	}
+	} else
+		glutils::DrawCircle(points[0], halfWidth);
 }
 
 void Track::DrawGroundDistance() const {

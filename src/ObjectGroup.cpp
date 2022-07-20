@@ -68,6 +68,11 @@ void ObjectGroup::AddObjectBegin(Object *object) {
 	objects = object;
 }
 
+void ObjectGroup::PlaceObject(Object *object) {
+	object->SetPlaced();
+	AddObjectBegin(object);
+}
+
 void ObjectGroup::PlaceGroup(const ObjectGroup &group, const Vec2 &position) {
 	uint32_t freeGroup = GetFreeGroup();
 	Object *last = GetLast();
@@ -85,6 +90,13 @@ void ObjectGroup::PlaceGroup(const ObjectGroup &group, const Vec2 &position) {
 		object->SetPlaced();
 		object->Move(position);
 	}
+}
+
+Object *ObjectGroup::GetFirstPlaced() {
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsPlaced())
+			return object;
+	return nullptr;
 }
 
 Object *ObjectGroup::GetFirstSelected() {
@@ -187,7 +199,7 @@ bool ObjectGroup::CanGroup() const {
 	if(!first)
 		return false;
 	for(const Object *object = first->next; object; object = object->next)
-		if(object->IsSelected() && !object->groups.Empty() && object->groups.Last() != first->groups.Last())
+		if(object->IsSelected() && (first->groups.Empty() || object->groups.Empty() || object->groups.Last() != first->groups.Last()))
 			return true;
 	return false;
 }

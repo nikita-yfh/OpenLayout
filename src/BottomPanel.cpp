@@ -1,4 +1,5 @@
 #include "BottomPanel.h"
+#include "OpenLayoutMain.h"
 
 #include <wx/sizer.h>
 #include <wx/radiobut.h>
@@ -227,9 +228,8 @@ void BottomPanel::UpdateMultilayer(wxUpdateUIEvent &e) {
 
 void BottomPanel::UpdatePosition(wxUpdateUIEvent &e) {
 	const char *unit = _("mm");
-	e.SetText(wxString::Format("X:\t%.3f \t%s\nY:\t%.03f \t%s",
-		pcb.GetMousePosition().x, unit,
-		pcb.GetMousePosition().y, unit));
+	const Vec2 &mouse = ((OpenLayoutFrame*) GetParent())->GetCanvas()->GetMousePosition();
+	e.SetText(wxString::Format("X:\t%.3f   %s\nY:\t%.03f   %s", mouse.x, unit, mouse.y, unit));
 }
 
 void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {

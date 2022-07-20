@@ -3,13 +3,6 @@
 
 static const uint32_t magic = 0xFFAA3306;
 
-PCB::PCB() {
-	activeTab = 0;
-	rubberband = RUBBERBAND_DISABLED;
-	capture = true;
-	metallization = false;
-	padShape = 0;
-}
 void PCB::AddBoard(Board *board) {
 	activeTab = Size();
 	Add(board);
