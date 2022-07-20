@@ -24,6 +24,7 @@ private:
 	uint8_t bendMode;
 	void BuildTrackEnd();
 	void BuildRect();
+	void BuildCircle();
 	void FinishCreating();
 
 	Vec2 GetMousePos(const wxMouseEvent&) const;

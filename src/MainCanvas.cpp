@@ -4,6 +4,8 @@
 #include "SMDPad.h"
 #include "Track.h"
 #include "Poly.h"
+#include "Circle.h"
+#include "Utils.h"
 
 wxBEGIN_EVENT_TABLE(MainCanvas, wxGLCanvas)
 	EVT_PAINT(MainCanvas::Draw)
@@ -77,7 +79,7 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
 		board->Zoom(zoomRatioButtons, GetMousePos(e));
 	else if(settings.selectedTool == TOOL_RECTANGLE || settings.selectedTool == TOOL_CIRCLE)
-		lastPlacedPoint = ((PolygonBase*) board->GetFirstPlaced())->points.First();
+		lastPlacedPoint = board->GetFirstPlaced()->GetPosition();
 	else if(settings.selectedTool == TOOL_TRACK || settings.selectedTool == TOOL_ZONE) {
 		const Array<Vec2> &points = ((PolygonBase*) board->GetFirstPlaced())->points;
 		if(settings.selectedTool == TOOL_ZONE && placedPoints > 1 && points.First() == points.Last()) {
@@ -126,9 +128,12 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	mousePosition = board->ToActiveGrid(GetPos(e));
 	if(board->GetFirstPlaced()) {
-		if(settings.selectedTool == TOOL_RECTANGLE && e.LeftIsDown())
-			BuildRect();
-		else if(placedPoints)
+		if(e.LeftIsDown()) {
+			if(settings.selectedTool == TOOL_RECTANGLE)
+				BuildRect();
+			else if(settings.selectedTool == TOOL_CIRCLE)
+				BuildCircle();
+		} else if(placedPoints)
 			BuildTrackEnd();
 		else {
 			Vec2 delta = mousePosition - placePosition;
@@ -145,6 +150,8 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 			creating = new Track(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
 		else if(settings.selectedTool == TOOL_ZONE || (settings.selectedTool == TOOL_RECTANGLE && settings.rectFill))
 			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
+		else if(settings.selectedTool == TOOL_CIRCLE)
+			creating = new Circle(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, mousePosition, 0.0f, 0.0f, 0.0f);
 		if(creating)
 			PlaceObject(creating);
 	} else
@@ -232,6 +239,12 @@ void MainCanvas::BuildRect() {
 		points[4] = lastPlacedPoint;
 	}
 	points.First() = lastPlacedPoint;
+}
+
+void MainCanvas::BuildCircle() {
+	Vec2 delta = (mousePosition - lastPlacedPoint).Abs();
+	float radius = utils::Max(delta.x, delta.y);
+	((Circle*) board->GetFirstPlaced())->SetDiameter(radius * 2.0f);
 }
 
 void MainCanvas::PlaceObject(Object *object) {
