@@ -17,6 +17,9 @@ public:
 	virtual void SaveObject(File &file) const override;
 	virtual void LoadObject(File &file) override;
 
+	float GetDiameter() const;
+	void SetDiameter(float d);
+
 	virtual uint8_t GetType() const override {
 		return CIRCLE;
 	}
@@ -39,3 +42,11 @@ private:
 
 	friend class ObjectGroup;
 };
+
+inline float Circle::GetDiameter() const {
+	return diameter;
+}
+
+inline void Circle::SetDiameter(float d) {
+	diameter = d;
+}
