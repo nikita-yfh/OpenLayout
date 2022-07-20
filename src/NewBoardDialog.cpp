@@ -13,10 +13,10 @@ extern "C" {
 }
 
 NewBoardDialog::NewBoardDialog(wxWindow* parent)
-	: wxDialog(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER) {
+	: wxDialog(parent, wxID_ANY, _("New board"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE) {
 	wxBoxSizer *content = new wxBoxSizer(wxVERTICAL);
 	{
-		wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
+		wxBoxSizer *hbox = new wxBoxSizer(wxHORIZONTAL);
 		{
 			wxFlexGridSizer *buttons = new wxFlexGridSizer(3, 2, 10, 10);
 			wxString text[3]= {
@@ -34,8 +34,8 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 			for(int q = 0; q < 3; q++){
 				types[q] = new wxRadioButton(this, wxID_ANY, text[q]);
 				bitmaps[q] = new wxBitmapButton(this, wxID_ANY, images[q]);
-				buttons->Add(bitmaps[q], 1, wxALL|wxEXPAND);
-				buttons->Add(types[q], 1, wxALL|wxEXPAND);
+				buttons->Add(bitmaps[q], 1, wxALL | wxEXPAND);
+				buttons->Add(types[q], 1, wxALL | wxEXPAND);
 			}
 
 			bitmaps[0]->Bind(wxEVT_BUTTON, &NewBoardDialog::SetEmpty, this);
@@ -65,7 +65,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 				all->Add(new wxStaticText(panels[0], wxID_ANY, _("Size of working-space:")), wxALIGN_LEFT);
 				all->Add(box, wxEXPAND);
 				panels[0]->SetSizerAndFit(all);
-				panelBox->Add(panels[0], 0, wxALL|wxEXPAND, 10);
+				panelBox->Add(panels[0], 0, wxALL | wxEXPAND, 10);
 			}
 			{
 				panels[1] = new wxPanel(this);
@@ -81,7 +81,7 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 				all->Add(new wxStaticText(panels[1], wxID_ANY, _("Round outline:")), wxALIGN_LEFT);
 				all->Add(box, wxEXPAND);
 				panels[1]->SetSizerAndFit(all);
-				panelBox->Add(panels[1], 0, wxALL|wxEXPAND, 10);
+				panelBox->Add(panels[1], 0, wxALL | wxEXPAND, 10);
 			}
 			{
 				panels[2] = new wxPanel(this);
@@ -91,13 +91,13 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 				box->Add(new wxStaticText(panels[2], wxID_ANY, _("Distance:")), 0, wxALIGN_CENTER);
 				border = new wxSpinCtrlDouble(panels[2], wxID_ANY, "20", wxDefaultPosition, wxDefaultSize, 0, 0, 500, 0, 0.05);
 				border->Bind(wxEVT_SPINCTRLDOUBLE, &NewBoardDialog::RecalcSize, this);
-				box->Add(border, 0, wxALL|wxEXPAND);
+				box->Add(border, 0, wxALL | wxEXPAND);
 				box->Add(new wxStaticText(panels[2], wxID_ANY, _("mm")), 0, wxALIGN_CENTER);
 
 				all->Add(new wxStaticText(panels[2], wxID_ANY, _("Distance from working-space:")), wxALIGN_LEFT);
 				all->Add(box, wxEXPAND);
 				panels[2]->SetSizerAndFit(all);
-				panelBox->Add(panels[2], 0, wxALL|wxEXPAND, 10);
+				panelBox->Add(panels[2], 0, wxALL | wxEXPAND, 10);
 			}
 			{
 				panels[3] = new wxPanel(this);
@@ -116,18 +116,17 @@ NewBoardDialog::NewBoardDialog(wxWindow* parent)
 				all->Add(new wxStaticText(panels[3], wxID_ANY, _("Resulting working-space:")), wxALIGN_LEFT);
 				all->Add(box, wxEXPAND);
 				panels[3]->SetSizerAndFit(all);
-				panelBox->Add(panels[3], 0, wxALL|wxEXPAND, 10);
+				panelBox->Add(panels[3], 0, wxALL | wxEXPAND, 10);
 			}
 
-			panelBox->Add(-1, -1, 1, wxALL|wxEXPAND, 5);
+			panelBox->Add(-1, -1, 1, wxALL | wxEXPAND, 5);
 			name = new wxTextCtrl(this, wxID_ANY, "New board");
 			panelBox->Add(name, 0, wxEXPAND, 5);
-			content->Add(buttons, 1, wxALL|wxEXPAND, 5);
-			content->Add(panelBox, 1, wxALL|wxEXPAND, 5);
+			hbox->Add(buttons, 1, wxALL | wxEXPAND, 5);
+			hbox->Add(panelBox, 1, wxALL | wxEXPAND, 5);
 		}
-		content->Add(content, 1, wxALL|wxEXPAND, 5);
+		content->Add(hbox, 1, wxALL | wxEXPAND, 5);
 	}
-
 
 	content->Add(CreateSeparatedButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxALL, 5);
 	SetSizerAndFit(content);
