@@ -76,11 +76,14 @@ void MainCanvas::OnLeaveWindow(wxMouseEvent &e) {
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
 		board->Zoom(zoomRatioButtons, GetMousePos(e));
+	else if(settings.selectedTool == TOOL_RECTANGLE || settings.selectedTool == TOOL_CIRCLE)
+		lastPlacedPoint = ((PolygonBase*) board->GetFirstPlaced())->points.First();
 	else if(settings.selectedTool == TOOL_TRACK || settings.selectedTool == TOOL_ZONE) {
 		const Array<Vec2> &points = ((PolygonBase*) board->GetFirstPlaced())->points;
-		if(settings.selectedTool == TOOL_ZONE && placedPoints > 1 && points.First() == points.Last())
+		if(settings.selectedTool == TOOL_ZONE && placedPoints > 1 && points.First() == points.Last()) {
+			placedPoints = points.Size() - 1;
 			FinishCreating();
-		else {
+		} else {
 			lastPlacedPoint = points.Last();
 			placedPoints = points.Size();
 		}
@@ -99,6 +102,13 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 	e.Skip();
 }
 void MainCanvas::OnLeftUp(wxMouseEvent &e) {
+	if(settings.selectedTool == TOOL_RECTANGLE || settings.selectedTool == TOOL_CIRCLE) {
+		if(mousePosition == lastPlacedPoint)
+			board->CancelPlacing();
+		else if(settings.selectedTool == TOOL_RECTANGLE && settings.rectFill && ((PolygonBase*) board->GetFirstPlaced())->points.Size() == 5)
+			((PolygonBase*) board->GetFirstPlaced())->points.RemoveLast();
+		board->UnselectAll();
+	}
 	e.Skip();
 }
 void MainCanvas::OnMiddleDown(wxMouseEvent &e) {
@@ -116,7 +126,9 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	mousePosition = board->ToActiveGrid(GetPos(e));
 	if(board->GetFirstPlaced()) {
-		if(placedPoints)
+		if(settings.selectedTool == TOOL_RECTANGLE && e.LeftIsDown())
+			BuildRect();
+		else if(placedPoints)
 			BuildTrackEnd();
 		else {
 			Vec2 delta = mousePosition - placePosition;
@@ -129,14 +141,12 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 			creating = new THTPad(board->GetSelectedLayer(), settings.groundDistance, mousePosition, settings.padSize, settings.padShape, settings.metallization);
 		else if(settings.selectedTool == TOOL_SMD_PAD)
 			creating = new SMDPad(board->GetSelectedLayer(), settings.groundDistance, mousePosition, settings.smdSize);
-		else if(settings.selectedTool == TOOL_TRACK)
+		else if(settings.selectedTool == TOOL_TRACK || (settings.selectedTool == TOOL_RECTANGLE && !settings.rectFill))
 			creating = new Track(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
-		else if(settings.selectedTool == TOOL_ZONE)
+		else if(settings.selectedTool == TOOL_ZONE || (settings.selectedTool == TOOL_RECTANGLE && settings.rectFill))
 			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
-		if(creating) {
-			placePosition = mousePosition;
-			board->PlaceObject(creating);
-		}
+		if(creating)
+			PlaceObject(creating);
 	} else
 		mousePosition = GetPos(e);
 	if(e.MiddleIsDown()) {
@@ -206,8 +216,32 @@ void MainCanvas::BuildTrackEnd() {
 	}
 }
 
+void MainCanvas::BuildRect() {
+	Array<Vec2> &points = ((PolygonBase*) board->GetFirstPlaced())->points;
+	uint8_t pointCount = 4;
+	if(mousePosition == lastPlacedPoint)
+		points.Resize(1);
+	else if(mousePosition.x == lastPlacedPoint.x || mousePosition.y == lastPlacedPoint.y) {
+		points.Resize(2);
+		points.Last() = mousePosition;
+	} else {
+		points.Resize(5);
+		points[1].Set(lastPlacedPoint.x, mousePosition.y);
+		points[2] = mousePosition;
+		points[3].Set(mousePosition.x, lastPlacedPoint.y);
+		points[4] = lastPlacedPoint;
+	}
+	points.First() = lastPlacedPoint;
+}
+
+void MainCanvas::PlaceObject(Object *object) {
+	placePosition = lastPlacedPoint = board->ToGrid(mousePosition);
+	board->PlaceObject(object);
+}
+
 void MainCanvas::PlaceObjectGroup(const ObjectGroup &objects) {
 	placePosition = board->ToGrid(mousePosition);
+	lastPlacedPoint = Vec2::Invalid();
 	board->PlaceGroup(objects, placePosition);
 	Refresh();
 }
