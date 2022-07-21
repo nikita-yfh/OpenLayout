@@ -26,6 +26,14 @@ inline T Mean(T a, T b) {
 	return (a + b) / 2;
 }
 
+static bool Clockwise(float a, float b, float c) {
+	if(c > a)
+		return (b < a || b > c);
+	else 
+		return (b < a && b > c);
+}
+
+
 inline void MirrorAngle(float &angle, float c) {
 	angle = c * 2.0f - angle;
 }

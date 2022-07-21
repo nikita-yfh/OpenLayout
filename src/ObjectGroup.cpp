@@ -130,13 +130,11 @@ bool ObjectGroup::IsSelectedTwo() const {
 	return false;
 }
 
-bool ObjectGroup::SelectObject(const Vec2 &point) {
+Object *ObjectGroup::TestPoint(const Vec2 &point) {
 	for(Object *object = objects; object; object = object->next)
-		if(object->GetAABB().TestPoint(point) && object->TestPoint(point)) {
-			InvertSelectionGroup(object);
-			return true;
-		}
-	return false;
+		if(object->GetAABB().TestPoint(point) && object->TestPoint(point))
+			return object;
+	return nullptr;
 }
 
 void ObjectGroup::InvertSelectionGroup(Object *o1) {
@@ -271,6 +269,11 @@ void ObjectGroup::MovePlaced(const Vec2 &d) {
 			object->Move(d);
 }
 
+void ObjectGroup::MoveSelected(const Vec2 &d) {
+	for(Object *object = objects; object; object = object->next)
+		if(object->IsSelected())
+			object->Move(d);
+}
 
 void ObjectGroup::RotateSelected(float angle) {
 	Vec2 center = GetSelectedCenter();

@@ -93,6 +93,8 @@ struct Vec2 {
 	}
 
 	inline float Angle() const {
+		if(y < 0.0f)
+			return M_PI * 2.0f + atan2f(y, x);
 		return atan2f(y, x);
 	}
 

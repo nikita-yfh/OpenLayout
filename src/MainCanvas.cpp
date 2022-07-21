@@ -76,6 +76,7 @@ void MainCanvas::OnLeaveWindow(wxMouseEvent &e) {
 }
 
 void MainCanvas::OnLeftDown(wxMouseEvent &e) {
+	Vec2 mouse = GetPos(e);
 	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
 		board->Zoom(zoomRatioButtons, GetMousePos(e));
 	else if(settings.selectedTool == TOOL_RECTANGLE || settings.selectedTool == TOOL_CIRCLE)
@@ -95,9 +96,17 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 				settings.selectedTool = TOOL_EDIT;
 			board->UnselectAll();
 		} else if(settings.selectedTool == TOOL_EDIT) {
-			if(!shift)
-				board->UnselectAll();
-			board->SelectObject(GetPos(e));
+			Object *object = board->TestPoint(mouse);
+			if(!object || !object->IsSelected() || shift) {
+				if(!shift)
+					board->UnselectAll();
+				if(object)
+					board->InvertSelectionGroup(object);
+			}
+			if(object) {
+				lastPlacedPoint = object->GetNearestPoint(mouse);
+				placePosition = board->ToActiveGrid(mouse);
+			}
 		}
 	}
 	Refresh();
@@ -127,7 +136,14 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 }
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 	mousePosition = board->ToActiveGrid(GetPos(e));
-	if(board->GetFirstPlaced()) {
+	if(settings.selectedTool == TOOL_EDIT && e.LeftIsDown()) {
+		if(board->IsSelected()) {
+			Vec2 mouse = board->ToActiveGrid(GetPos(e), lastPlacedPoint);
+			Vec2 delta = mouse - placePosition;
+			placePosition = mouse;
+			board->MoveSelected(delta);
+		}
+	} else if(board->GetFirstPlaced()) {
 		if(e.LeftIsDown()) {
 			if(settings.selectedTool == TOOL_RECTANGLE)
 				BuildRect();
@@ -136,8 +152,9 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 		} else if(placedPoints)
 			BuildTrackEnd();
 		else {
-			Vec2 delta = mousePosition - placePosition;
-			placePosition = mousePosition;
+			Vec2 mouse = board->ToActiveGrid(GetPos(e), lastPlacedPoint);
+			Vec2 delta = mouse - placePosition;
+			placePosition = mouse;
 			board->MovePlaced(delta);
 		}
 	} else if(settings.selectedTool >= TOOL_TRACK && settings.selectedTool <= TOOL_ZONE) {

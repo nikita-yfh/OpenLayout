@@ -5,6 +5,10 @@
 #include "Poly.h"
 #include "Circle.h"
 
+Vec2 Object::GetNearestPoint(const Vec2 &point) const {
+	return GetPosition();
+}
+
 void Object::SaveGroups(File &file) const {
 	file.Write<uint32_t>(groups.Size());
 	for(int i = 0; i < groups.Size(); i++)

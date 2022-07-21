@@ -27,7 +27,8 @@ public:
 	Object *GetObjects();
 	AABB GetObjectsAABB() const;
 
-	bool SelectObject(const Vec2 &point);
+	Object *TestPoint(const Vec2 &point);
+	void InvertSelectionGroup(Object *object);
 	void SelectAll();
 	void UnselectAll();
 
@@ -37,6 +38,7 @@ public:
 	void UngroupSelected();
 
 	void MovePlaced(const Vec2 &d);
+	void MoveSelected(const Vec2 &d);
 	void RotateSelected(float angle);
 	void MirrorSelectedHorizontal();
 	void MirrorSelectedVertical();
@@ -62,7 +64,6 @@ public:
 		LAYER_O,
 	};
 protected:
-	void InvertSelectionGroup(Object *object);
 	uint32_t GetFreeGroup() const;
 	uint32_t GetMaxSelectedGroup() const;
 	Vec2 GetSelectedCenter() const;

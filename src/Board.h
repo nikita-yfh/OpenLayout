@@ -39,6 +39,7 @@ public:
 
 	Vec2 ToGrid(const Vec2 &vec) const;
 	Vec2 ToActiveGrid(const Vec2 &vec) const;
+	Vec2 ToActiveGrid(const Vec2 &vec, const Vec2 &customOrigin) const;
 
 	double GetGrid() const;
 	void SetGrid(double grid);
