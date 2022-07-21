@@ -2,20 +2,6 @@
 #include "GLUtils.h"
 #include "Utils.h"
 
-template<typename T>
-static inline void Swap(T &a, T &b) {
-	T c = a;
-	a = b;
-	b = c;
-}
-
-static bool Clockwise(float a, float b, float c) {
-	if(c > a)
-		return (b < a || b > c);
-	else 
-		return (b < a && b > c);
-}
-
 Pad::~Pad() {
 	for(int i = 0; i < connections.Size(); i++) {
 		Pad *connected = connections[i];
@@ -65,9 +51,9 @@ uint32_t Pad::ReadArray(File &file, Vec2 *points, const Vec2 &shift) {
 		points[i] -= shift;
 	}
 	bool wrap = false;
-	if(count >= 3 && !Clockwise(points[0].Angle(), points[1].Angle(), points[2].Angle()))
+	if(count >= 3 && !utils::Clockwise(points[0].Angle(), points[1].Angle(), points[2].Angle()))
 		for(int i = 0; i < count / 2; i++)
-			Swap(points[i], points[count - i - 1]);
+			utils::Swap(points[i], points[count - i - 1]);
 	return count;
 }
 
