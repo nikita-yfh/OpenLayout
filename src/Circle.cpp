@@ -16,6 +16,8 @@ Vec2 Circle::GetPosition() const {
 }
 
 Vec2 Circle::GetNearestPoint(const Vec2 &point) const {
+	if(beginAngle == endAngle) // Common
+		return position;
 	float angle = ((point - position).InvY()).Angle();
 	float end = endAngle;
 	if(end <= beginAngle)
@@ -23,10 +25,10 @@ Vec2 Circle::GetNearestPoint(const Vec2 &point) const {
 	if(angle <= beginAngle)
 		angle += M_PI * 2.0f;
 	float d = (angle - beginAngle) / (endAngle - beginAngle);
-	/* if(d <= 1.0f / 6.0f) */
-	/* 	return position + Vec2(-beginAngle) * diameter * 0.5f; */
-	/* else if(d >= 5.0f / 6.0f) */
-	/* 	return position + Vec2(-endAngle) * diameter * 0.5f; */
+	if(d <= 1.0f / 6.0f)
+		return position + Vec2(-beginAngle) * diameter * 0.5f;
+	else if(d >= 5.0f / 6.0f)
+		return position + Vec2(-endAngle) * diameter * 0.5f;
 	return position;
 }
 

@@ -10,6 +10,7 @@ public:
 
 	virtual AABB GetAABB() const override;
 	virtual Vec2 GetPosition() const override;
+	virtual Vec2 GetNearestPoint(const Vec2 &point) const override;
 	virtual void Rotate(const Vec2 &center, float angle) override;
 	virtual void MirrorHorizontal(float x) override;
 	virtual void MirrorVertical(float y) override;

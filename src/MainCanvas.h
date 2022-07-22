@@ -17,8 +17,8 @@ private:
 	bool ctrl;
 	Vec2 dragPosition;
 	Vec2 mousePosition;
-	Vec2 placePosition;
 	Vec2 lastPlacedPoint;
+	Vec2 mouseDelta;
 	uint32_t placedPoints;
 
 	uint8_t bendMode;
@@ -29,6 +29,8 @@ private:
 
 	Vec2 GetMousePos(const wxMouseEvent&) const;
 	Vec2 GetPos(const wxMouseEvent&) const;
+
+	void DrawCrosshair(const Vec2 &position) const;
 
 	void Draw(wxPaintEvent&);
 	void OnLeaveWindow(wxMouseEvent&);
