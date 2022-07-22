@@ -16,6 +16,19 @@ Vec2 PolygonBase::GetPosition() const {
 	return points[0];
 }
 
+Vec2 PolygonBase::GetNearestPoint(const Vec2 &point) const {
+	Vec2 nearestPoint;
+	float minDistanceSq = FLT_MAX;
+	for(int i = 0; i < points.Size(); i++) {
+		float distance = (point - points[i]).LengthSq();
+		if(distance < minDistanceSq) {
+			nearestPoint = points[i];
+			minDistanceSq = distance;
+		}
+	}
+	return nearestPoint;
+}
+
 void PolygonBase::LoadPoints(File &file, bool onlySoldermask) {
 	uint32_t count = file.Read<uint32_t>() - onlySoldermask;
 	points.Init(count);

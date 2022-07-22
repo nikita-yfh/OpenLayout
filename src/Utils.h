@@ -26,6 +26,10 @@ inline T Mean(T a, T b) {
 	return (a + b) / 2;
 }
 
+inline float Sq(float value) {
+	return value * value;
+}
+
 static bool Clockwise(float a, float b, float c) {
 	if(c > a)
 		return (b < a || b > c);

@@ -30,14 +30,36 @@ static const float zoomRatioWheel = 1.3f;
 static const float zoomRatioButtons = 1.4f;
 
 MainCanvas::MainCanvas(wxWindow *parent, Board *_board, Settings &_settings)
-		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings), placedPoints(0), bendMode(0), lastPlacedPoint(Vec2::Invalid()) {
+		: wxGLCanvas(parent, wxID_ANY, attribList), board(_board), settings(_settings),
+		placedPoints(0), bendMode(0), lastPlacedPoint(Vec2::Invalid()), mousePosition(Vec2::Invalid()) {
 	SetFocus();
+}
+
+void MainCanvas::DrawCrosshair(const Vec2 &position) const {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+	glColor4ub(255, 255, 255, 255);
+	glVertex2f(-1000000.0f, position.y);
+	glVertex2f( 1000000.0f, position.y);
+	glVertex2f(position.x, -1000000.0f);
+	glVertex2f(position.x,  1000000.0f);
+	glColor4ub(255, 255, 255, 100);
+	glVertex2f(position.x - 1000000.0f, position.y - 1000000.0f);
+	glVertex2f(position.x + 1000000.0f, position.y + 1000000.0f);
+	glVertex2f(position.x + 1000000.0f, position.y - 1000000.0f);
+	glVertex2f(position.x - 1000000.0f, position.y + 1000000.0f);
+	glEnd();
+	glDisable(GL_BLEND);
 }
 
 void MainCanvas::Draw(wxPaintEvent&) {
 	static wxGLContext context(this);
 	SetCurrent(context);
 	board->Draw(settings, Vec2(GetSize().x, GetSize().y));
+	if(lastPlacedPoint.IsValid())
+		DrawCrosshair(mousePosition);
 	glFlush();
 	SwapBuffers();
 }
@@ -71,6 +93,7 @@ void MainCanvas::OnKeyUp(wxKeyEvent &e) {
 void MainCanvas::OnLeaveWindow(wxMouseEvent &e) {
 	if(board->GetFirstPlaced() && board->GetFirstPlaced()->groups.Empty() && !placedPoints) {
 		board->CancelPlacing();
+		lastPlacedPoint = Vec2::Invalid();
 		Refresh();
 	}
 }
@@ -83,7 +106,7 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 		lastPlacedPoint = board->GetFirstPlaced()->GetPosition();
 	else if(settings.selectedTool == TOOL_TRACK || settings.selectedTool == TOOL_ZONE) {
 		const Array<Vec2> &points = ((PolygonBase*) board->GetFirstPlaced())->points;
-		if(settings.selectedTool == TOOL_ZONE && placedPoints > 1 && points.First() == points.Last()) {
+		if(settings.selectedTool == TOOL_ZONE && placedPoints > 1 && (points.First() - points.Last()).LengthSq() < utils::Sq(settings.trackSize / 2.0f)) {
 			placedPoints = points.Size() - 1;
 			FinishCreating();
 		} else {
@@ -104,8 +127,8 @@ void MainCanvas::OnLeftDown(wxMouseEvent &e) {
 					board->InvertSelectionGroup(object);
 			}
 			if(object) {
-				lastPlacedPoint = object->GetNearestPoint(mouse);
-				placePosition = board->ToActiveGrid(mouse);
+				mousePosition = lastPlacedPoint = object->GetNearestPoint(mouse);
+				mouseDelta = mouse - mousePosition;
 			}
 		}
 	}
@@ -119,6 +142,9 @@ void MainCanvas::OnLeftUp(wxMouseEvent &e) {
 		else if(settings.selectedTool == TOOL_RECTANGLE && settings.rectFill && ((PolygonBase*) board->GetFirstPlaced())->points.Size() == 5)
 			((PolygonBase*) board->GetFirstPlaced())->points.RemoveLast();
 		board->UnselectAll();
+	} else if(settings.selectedTool == TOOL_EDIT) {
+		lastPlacedPoint = Vec2::Invalid();
+		Refresh();
 	}
 	e.Skip();
 }
@@ -135,29 +161,32 @@ void MainCanvas::OnRightDown(wxMouseEvent &e) {
 	e.Skip();
 }
 void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
-	mousePosition = board->ToActiveGrid(GetPos(e));
+	Vec2 mouse = GetPos(e);
 	if(settings.selectedTool == TOOL_EDIT && e.LeftIsDown()) {
 		if(board->IsSelected()) {
-			Vec2 mouse = board->ToActiveGrid(GetPos(e), lastPlacedPoint);
-			Vec2 delta = mouse - placePosition;
-			placePosition = mouse;
+			Vec2 _mouse = board->ToActiveGrid(mouse - mouseDelta, lastPlacedPoint);
+			Vec2 delta = _mouse - mousePosition;
+			mousePosition = _mouse;
 			board->MoveSelected(delta);
 		}
 	} else if(board->GetFirstPlaced()) {
 		if(e.LeftIsDown()) {
+			mousePosition = board->ToActiveGrid(mouse);
 			if(settings.selectedTool == TOOL_RECTANGLE)
 				BuildRect();
 			else if(settings.selectedTool == TOOL_CIRCLE)
 				BuildCircle();
-		} else if(placedPoints)
+		} else if(placedPoints) {
+			mousePosition = board->ToActiveGrid(mouse);
 			BuildTrackEnd();
-		else {
-			Vec2 mouse = board->ToActiveGrid(GetPos(e), lastPlacedPoint);
-			Vec2 delta = mouse - placePosition;
-			placePosition = mouse;
+		} else {
+			Vec2 _mouse = board->ToActiveGrid(mouse, lastPlacedPoint);
+			Vec2 delta = _mouse - mousePosition;
+			mousePosition = _mouse;
 			board->MovePlaced(delta);
 		}
 	} else if(settings.selectedTool >= TOOL_TRACK && settings.selectedTool <= TOOL_ZONE) {
+		mousePosition = board->ToActiveGrid(mouse);
 		Object *creating = nullptr;
 		if(settings.selectedTool == TOOL_THT_PAD)
 			creating = new THTPad(board->GetSelectedLayer(), settings.groundDistance, mousePosition, settings.padSize, settings.padShape, settings.metallization);
@@ -172,9 +201,9 @@ void MainCanvas::OnMouseMotion(wxMouseEvent &e) {
 		if(creating)
 			PlaceObject(creating);
 	} else
-		mousePosition = GetPos(e);
+		mousePosition = mouse;
 	if(e.MiddleIsDown()) {
-		Vec2 delta = GetPos(e) - dragPosition;
+		Vec2 delta = mouse - dragPosition;
 		board->UpdateCamera(delta);
 	}
 	dragPosition = GetPos(e);
@@ -201,7 +230,6 @@ void MainCanvas::FinishCreating() {
 		if(placedPoints == 0)
 			settings.selectedTool = TOOL_EDIT;
 		board->CancelPlacing();
-		Refresh();
 	}
 	placedPoints = 0;
 	lastPlacedPoint = Vec2::Invalid();
@@ -265,14 +293,13 @@ void MainCanvas::BuildCircle() {
 }
 
 void MainCanvas::PlaceObject(Object *object) {
-	placePosition = lastPlacedPoint = board->ToGrid(mousePosition);
+	mousePosition = lastPlacedPoint = board->ToGrid(mousePosition);
 	board->PlaceObject(object);
 }
 
 void MainCanvas::PlaceObjectGroup(const ObjectGroup &objects) {
-	placePosition = board->ToGrid(mousePosition);
-	lastPlacedPoint = Vec2::Invalid();
-	board->PlaceGroup(objects, placePosition);
+	lastPlacedPoint = board->ToActiveGrid(mousePosition);
+	board->PlaceGroup(objects, mousePosition);
 	Refresh();
 }
 
