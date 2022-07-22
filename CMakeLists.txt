@@ -17,6 +17,7 @@ set(SOURCES
 	src/GridBinderDialog.cpp
 	src/InputGridDialog.cpp
 	src/ImageConfig.cpp
+	src/LayerCheckBox.cpp
 	src/MacroPanel.cpp
 	src/MacroPreview.cpp
 	src/MainCanvas.cpp
@@ -54,6 +55,7 @@ set(HEADERS
 	src/GridBinderDialog.h
 	src/InputGridDialog.h
 	src/ImageConfig.h
+	src/LayerCheckBox.h
 	src/LineObject.h
 	src/MacroPanel.h
 	src/MacroPreview.h
