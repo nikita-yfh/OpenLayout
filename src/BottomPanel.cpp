@@ -1,5 +1,6 @@
 #include "BottomPanel.h"
 #include "OpenLayoutMain.h"
+#include "LayerCheckBox.h"
 
 #include <wx/sizer.h>
 #include <wx/radiobut.h>
@@ -103,7 +104,7 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		: wxPanel(parent), pcb(_pcb), settings(_settings) {
 	wxBoxSizer *content = new wxBoxSizer(wxHORIZONTAL);
 	{
-		wxStaticText *position = new wxStaticText(this, ID_POSITION, wxEmptyString);
+		wxStaticText *position = new wxStaticText(this, ID_POSITION, wxEmptyString, wxDefaultPosition, wxSize(100, -1));
 		content->Add(position, 0, wxALIGN_CENTER | wxALL, 5);
 	}
 	content->Add(new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL), 0, wxEXPAND);
@@ -127,13 +128,16 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 			_("I2 = Inner Layer 2 (multilayer)"),
 			_("O = PCB-Outline")
 		};
-		grid->Add(new wxStaticText(this, wxID_ANY, _("visible")), 0, wxALIGN_CENTER);
+		grid->Add(new wxStaticText(this, wxID_ANY, _("visible")), 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 10);
 		for(int i = 0; i < 7; i++) {
-			wxStaticText *text = new wxStaticText(this, ID_C1_TEXT + i, colorNames[i]);
-			text->SetToolTip(colorHelp[i]);
-			grid->Add(text, 1, wxALIGN_CENTER);
+			LayerCheckBox *checkbox = new LayerCheckBox(this, ID_C1_TEXT + i, colorNames[i]);
+			checkbox->SetForegroundColour(settings.GetColorScheme()[COLOR_C1 + i]);
+			if(i == ObjectGroup::LAYER_C2)
+				checkbox->Enable(false);
+			checkbox->SetToolTip(colorHelp[i]);
+			grid->Add(checkbox, 1, wxEXPAND);
 		}
-		grid->Add(new wxStaticText(this, wxID_ANY, _("active")), 0, wxALIGN_CENTER);
+		grid->Add(new wxStaticText(this, wxID_ANY, _("active")), 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 10);
 		for(int i = 0; i < 7; i++) {
 			wxRadioButton *button = new wxRadioButton(this, ID_C1 + i, wxEmptyString);
 			button->SetToolTip(colorHelp[i]);
