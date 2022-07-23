@@ -39,13 +39,13 @@ enum {
 	ID_I1,
 	ID_I2,
 	ID_O,
-	ID_C1_TEXT,
-	ID_S1_TEXT,
-	ID_C2_TEXT,
-	ID_S2_TEXT,
-	ID_I1_TEXT,
-	ID_I2_TEXT,
-	ID_O_TEXT,
+	ID_C1_SHOW,
+	ID_S1_SHOW,
+	ID_C2_SHOW,
+	ID_S2_SHOW,
+	ID_I1_SHOW,
+	ID_I2_SHOW,
+	ID_O_SHOW,
 
 	ID_HELP,
 	ID_GROUND,
@@ -57,18 +57,17 @@ enum {
 	ID_CUTOUT_POLYGON
 };
 
+#define EVT_RADIOBUTTON_RANGE(id1, id2, func) wx__DECLARE_EVT2(wxEVT_RADIOBUTTON, id1, id2, wxCommandEventHandler(func))
+#define EVT_CHECKBOX_RANGE(id1, id2, func) wx__DECLARE_EVT2(wxEVT_CHECKBOX, id1, id2, wxCommandEventHandler(func))
+
 wxBEGIN_EVENT_TABLE(BottomPanel, wxPanel)
 	EVT_UPDATE_UI(ID_POSITION,					BottomPanel::UpdatePosition)
 	EVT_UPDATE_UI_RANGE(ID_I1,		ID_I2,		BottomPanel::UpdateMultilayer)
-	EVT_UPDATE_UI_RANGE(ID_I1_TEXT,	ID_I2_TEXT,	BottomPanel::UpdateMultilayer)
+	EVT_UPDATE_UI_RANGE(ID_I1_SHOW,	ID_I2_SHOW,	BottomPanel::UpdateMultilayer)
 	EVT_UPDATE_UI_RANGE(ID_C1,		ID_O,		BottomPanel::UpdateLayers)
-	EVT_RADIOBUTTON(ID_C1,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_S1,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_C2,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_S2,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_I1,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_I2,						BottomPanel::SetLayer)
-	EVT_RADIOBUTTON(ID_O,						BottomPanel::SetLayer)
+	EVT_UPDATE_UI_RANGE(ID_C1_SHOW,	ID_O_SHOW,	BottomPanel::UpdateLayersVisible)
+	EVT_RADIOBUTTON_RANGE(ID_C1,	ID_O,		BottomPanel::SetLayer)
+	EVT_CHECKBOX_RANGE(ID_C1_SHOW,	ID_O_SHOW,	BottomPanel::SetLayerVisible)
 	EVT_BUTTON(ID_HELP,							BottomPanel::ShowLayerInfo)
 	EVT_BUTTON(ID_GROUND,						BottomPanel::ToggleGround)
 	EVT_BUTTON(ID_CAPTURE,						BottomPanel::ToggleCapture)
@@ -130,10 +129,8 @@ BottomPanel::BottomPanel(wxWindow *parent, PCB &_pcb, Settings &_settings)
 		};
 		grid->Add(new wxStaticText(this, wxID_ANY, _("visible")), 0, wxALIGN_CENTER | wxLEFT | wxRIGHT, 10);
 		for(int i = 0; i < 7; i++) {
-			LayerCheckBox *checkbox = new LayerCheckBox(this, ID_C1_TEXT + i, colorNames[i]);
+			LayerCheckBox *checkbox = new LayerCheckBox(this, ID_C1_SHOW + i, colorNames[i]);
 			checkbox->SetForegroundColour(settings.GetColorScheme()[COLOR_C1 + i]);
-			if(i == ObjectGroup::LAYER_C2)
-				checkbox->Enable(false);
 			checkbox->SetToolTip(colorHelp[i]);
 			grid->Add(checkbox, 1, wxEXPAND);
 		}
@@ -240,8 +237,19 @@ void BottomPanel::UpdateLayers(wxUpdateUIEvent &e) {
 	e.Check(e.GetId() - ID_C1 == pcb.GetSelectedBoard()->GetSelectedLayer());
 }
 
+void BottomPanel::UpdateLayersVisible(wxUpdateUIEvent &e) {
+	e.Check(pcb.GetSelectedBoard()->IsLayerVisible(e.GetId() - ID_C1_SHOW));
+	e.Enable(pcb.GetSelectedBoard()->GetSelectedLayer() != e.GetId() - ID_C1_SHOW);
+}
+
 void BottomPanel::SetLayer(wxCommandEvent &e) {
 	pcb.GetSelectedBoard()->SetSelectedLayer(e.GetId() - ID_C1);
+	pcb.GetSelectedBoard()->SetLayerVisible(e.GetId() - ID_C1, true);
+	GetParent()->Refresh();
+}
+
+void BottomPanel::SetLayerVisible(wxCommandEvent &e) {
+	pcb.GetSelectedBoard()->SetLayerVisible(e.GetId() - ID_C1_SHOW, e.GetInt());
 	GetParent()->Refresh();
 }
 

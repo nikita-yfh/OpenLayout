@@ -14,8 +14,12 @@ public:
 			const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
 			long style = 0, const wxString& name = "LayerCheckBox");
 
+	bool GetValue() const;
+	void SetValue(bool state);
+
 private:
 	virtual wxSize DoGetBestSize() const override;
+	virtual void DoUpdateWindowUI(wxUpdateUIEvent&) override;
 
 	void OnPaint(wxPaintEvent&);
 	void OnLeftDown(wxMouseEvent&);
@@ -24,5 +28,3 @@ private:
 
 	wxDECLARE_EVENT_TABLE();
 };
-
-

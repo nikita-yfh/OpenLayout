@@ -142,6 +142,13 @@ void Board::SnapSelectedToGrid() {
 	}
 }
 
+Object *Board::TestPoint(const Vec2 &point) {
+	for(Object *object = objects; object; object = object->GetNext())
+		if(object->GetAABB().TestPoint(point) && object->TestPoint(point) && layerVisible[object->GetLayer()])
+			return object;
+	return nullptr;
+}
+
 void Board::UpdateCamera(const Vec2 &delta) {
 	camera -= delta;
 }
@@ -238,14 +245,14 @@ void Board::Draw(const Settings &settings, const Vec2 &screenSize) const {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE);
 	}
-	DrawObjects(colors, activeLayer, false);
+	DrawObjects(colors, activeLayer, false, layerVisible);
 	glDisable(GL_BLEND);
 
 	colors.SetColor(COLOR_SELO);
 	DrawSelected();
 
 	colors.SetDrillingsColor(settings.drill);
-	DrawDrillings();
+	DrawDrillings(layerVisible);
 
 	colors.SetColor(COLOR_CON);
 	DrawConnections();
@@ -305,3 +312,18 @@ void Board::DrawGrid(const Settings &settings, const Vec2 &screenSize) const {
 		}
 	}
 }
+
+void Board::DrawConnections() const {
+	glLineWidth(1.5f);
+	glBegin(GL_LINES);
+	for(const Object *object = objects; object; object = object->GetNext()) 
+		object->DrawConnections();
+	glEnd();
+}
+
+void Board::DrawSelected() const {
+	for(const Object *object = objects; object; object = object->GetNext())
+		if(object->IsSelected())
+			object->DrawObject();
+}
+
