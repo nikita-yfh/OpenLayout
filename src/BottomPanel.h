@@ -12,7 +12,9 @@ private:
 	void UpdatePosition(wxUpdateUIEvent &e);
 	void UpdateMultilayer(wxUpdateUIEvent &e);
 	void UpdateLayers(wxUpdateUIEvent &e);
+	void UpdateLayersVisible(wxUpdateUIEvent &e);
 	void SetLayer(wxCommandEvent &e);
+	void SetLayerVisible(wxCommandEvent &e);
 	void ShowLayerInfo(wxCommandEvent&);
 	void UpdateGround(wxUpdateUIEvent &e);
 	void UpdateCutout(wxUpdateUIEvent &e);

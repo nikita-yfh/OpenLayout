@@ -27,7 +27,6 @@ public:
 	Object *GetObjects();
 	AABB GetObjectsAABB() const;
 
-	Object *TestPoint(const Vec2 &point);
 	void InvertSelectionGroup(Object *object);
 	void SelectAll();
 	void UnselectAll();
@@ -48,11 +47,9 @@ public:
 	void DeleteSelected();
 	void CancelPlacing();
 
-	void DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected) const;
+	void DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected, const bool *layerVisible = nullptr) const;
 	void DrawGroundDistance(uint8_t activeLayer) const;
-	void DrawConnections() const;
-	void DrawSelected() const;
-	void DrawDrillings() const;
+	void DrawDrillings(const bool *layerVisible = nullptr) const;
 
 	enum Layer {
 		LAYER_C1,

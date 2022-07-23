@@ -130,13 +130,6 @@ bool ObjectGroup::IsSelectedTwo() const {
 	return false;
 }
 
-Object *ObjectGroup::TestPoint(const Vec2 &point) {
-	for(Object *object = objects; object; object = object->next)
-		if(object->GetAABB().TestPoint(point) && object->TestPoint(point))
-			return object;
-	return nullptr;
-}
-
 void ObjectGroup::InvertSelectionGroup(Object *o1) {
 	bool selected = !o1->selected;
 	o1->selected = selected;
@@ -336,7 +329,7 @@ Vec2 ObjectGroup::GetSelectedCenter() const {
 	return GetSelectedAABB().GetCenter();
 }
 
-void ObjectGroup::DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected) const {
+void ObjectGroup::DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bool selected, const bool *layerVisible) const {
 	const uint8_t layers[7][7] = {
 		{LAYER_I1, LAYER_I2, LAYER_C2, LAYER_C1, LAYER_S2, LAYER_S1, LAYER_O},
 		{LAYER_C1, LAYER_C2, LAYER_I2, LAYER_I1, LAYER_S1, LAYER_S2, LAYER_O},
@@ -353,7 +346,7 @@ void ObjectGroup::DrawObjects(const ColorScheme &colors, uint8_t activeLayer, bo
 			layer = layers[2][i];
 		colors.SetColor(COLOR_C1 + layer);
 		for(const Object *object = objects; object; object = object->GetNext())
-			if(object->GetLayer() == layer && (!object->IsSelected() || selected) &&
+			if(object->GetLayer() == layer && (!object->IsSelected() || selected) && (!layerVisible || layerVisible[object->GetLayer()]) &&
 					!(object->GetType() == Object::THT_PAD && ((THTPad*) object)->HasMetallization()))
 				object->DrawObject();
 	}
@@ -369,23 +362,10 @@ void ObjectGroup::DrawGroundDistance(uint8_t activeLayer) const {
 			object->DrawGroundDistance();
 }
 
-void ObjectGroup::DrawConnections() const {
-	glLineWidth(1.5f);
-	glBegin(GL_LINES);
-	for(const Object *object = objects; object; object = object->GetNext()) 
-		object->DrawConnections();
-	glEnd();
-}
-
-void ObjectGroup::DrawSelected() const {
+void ObjectGroup::DrawDrillings(const bool *layerVisible) const {
 	for(const Object *object = objects; object; object = object->GetNext())
-		if(object->IsSelected())
-			object->DrawObject();
-}
-
-void ObjectGroup::DrawDrillings() const {
-	for(const Object *object = objects; object; object = object->GetNext())
-		object->DrawDrillings();
+		if(!layerVisible || layerVisible[object->GetLayer()])
+			object->DrawDrillings();
 }
 
 

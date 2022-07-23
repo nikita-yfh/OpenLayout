@@ -27,8 +27,8 @@ public:
 	bool IsMultilayer() const;
 	bool ToggleMultilayer();
 
+	void SetLayerVisible(uint8_t layer, bool state);
 	bool IsLayerVisible(uint8_t layer) const;
-	bool ToggleLayerVisible(uint8_t layer);
 
 	bool GetCurrentLayerGround() const;
 	bool ToggleCurrentLayerGround();
@@ -36,10 +36,11 @@ public:
 	uint8_t GetSelectedLayer() const;
 	bool IsSelectedLayerCopper() const;
 	void SetSelectedLayer(uint8_t layer);
-
 	Vec2 ToGrid(const Vec2 &vec) const;
 	Vec2 ToActiveGrid(const Vec2 &vec) const;
 	Vec2 ToActiveGrid(const Vec2 &vec, const Vec2 &customOrigin) const;
+
+	Object *TestPoint(const Vec2 &point);
 
 	double GetGrid() const;
 	void SetGrid(double grid);
@@ -53,6 +54,8 @@ public:
 
 	void Draw(const Settings &settings, const Vec2 &screenSize) const;
 	void DrawGrid(const Settings &settings, const Vec2 &screenSize) const;
+	void DrawConnections() const;
+	void DrawSelected() const;
 
 	Vec2 ConvertToCoords(const Vec2 &vec) const;
 	Vec2 ConvertFromCoords(const Vec2 &vec) const;
@@ -68,8 +71,8 @@ private:
 
 	char name[30];
 	Vec2 size;
-	uint8_t groundPane[7];
-	uint8_t layerVisible[7];
+	bool groundPane[7];
+	bool layerVisible[7];
 	uint8_t activeLayer;
 	bool multilayer;
 	double grid;
@@ -94,19 +97,18 @@ inline uint8_t Board::GetSelectedLayer() const {
 inline void Board::SetSelectedLayer(uint8_t layer) {
 	activeLayer = layer;
 }
+inline void Board::SetLayerVisible(uint8_t layer, bool state) {
+	layerVisible[layer] = state;
+}
+inline bool Board::IsLayerVisible(uint8_t layer) const {
+	return layerVisible[layer];
+}
 inline bool Board::IsMultilayer() const {
 	return multilayer;
 }
 inline bool Board::ToggleMultilayer() {
 	multilayer = !multilayer;
 	return multilayer;
-}
-inline bool Board::IsLayerVisible(uint8_t layer) const {
-	return layerVisible[layer];
-}
-inline bool Board::ToggleLayerVisible(uint8_t layer) {
-	layerVisible[layer] = !layerVisible[layer];
-	return layerVisible[layer];
 }
 inline bool Board::GetCurrentLayerGround() const {
 	return groundPane[activeLayer];
