@@ -1,9 +1,8 @@
-#include "App.h"
-#include "OpenLayoutMain.h"
-IMPLEMENT_APP(OpenLayoutApp);
+#include <QCoreApplication>
 
-bool OpenLayoutApp::OnInit() {
-	OpenLayoutFrame *frame = new OpenLayoutFrame();
-	frame->Show();
-	return true;
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+    
+    return a.exec();
 }
