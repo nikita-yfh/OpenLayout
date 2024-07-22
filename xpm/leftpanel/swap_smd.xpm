@@ -1,5 +1,5 @@
 /* XPM */
-static char * swap_smd_xpm[] = {
+static const char * swap_smd_xpm[] = {
 "24 8 2 1",
 " 	c None",
 ".	c #000000",

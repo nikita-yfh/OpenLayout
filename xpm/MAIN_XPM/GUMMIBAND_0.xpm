@@ -1,6 +1,6 @@
 /* XPM */
-static char *GUMMIBAND_0[] = {
-/* columns rows colors chars-per-pixel */
+static const char *GUMMIBAND_0[] = {
+/* columns rows colors const chars-per-pixel */
 "28 28 256 2 ",
 "   c black",
 ".  c #800000",

@@ -1,6 +1,6 @@
 /* XPM */
-static char *metallization_xpm[] = {
-/* columns rows colors chars-per-pixel */
+static const char *metallization_xpm[] = {
+/* columns rows colors const chars-per-pixel */
 "16 16 16 1 ",
 "  c black",
 ". c #800000",

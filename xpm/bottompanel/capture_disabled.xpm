@@ -1,6 +1,6 @@
 /* XPM */
-static char *capture_disabled_xpm[] = {
-/* columns rows colors chars-per-pixel */
+static const char *capture_disabled_xpm[] = {
+/* columns rows colors const chars-per-pixel */
 "28 28 16 1 ",
 "  c black",
 ". c #800000",

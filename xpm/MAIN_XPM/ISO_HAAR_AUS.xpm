@@ -1,6 +1,6 @@
 /* XPM */
-static char *ISO_HAAR_AUS[] = {
-/* columns rows colors chars-per-pixel */
+static const char *ISO_HAAR_AUS[] = {
+/* columns rows colors const chars-per-pixel */
 "17 17 16 1 ",
 "  c black",
 ". c #800000",

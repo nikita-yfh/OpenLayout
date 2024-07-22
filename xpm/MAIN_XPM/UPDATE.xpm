@@ -1,6 +1,6 @@
 /* XPM */
-static char *UPDATE[] = {
-/* columns rows colors chars-per-pixel */
+static const char *UPDATE[] = {
+/* columns rows colors const chars-per-pixel */
 "20 20 256 2 ",
 "   c black",
 ".  c #800000",

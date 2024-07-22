@@ -1,5 +1,5 @@
 /* XPM */
-static char * rubberband_small_xpm[] = {
+static const char * rubberband_small_xpm[] = {
 "28 28 2 1",
 " 	c None",
 ".	c #373737",

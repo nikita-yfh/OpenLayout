@@ -1,6 +1,6 @@
 /* XPM */
-static char *VOLL[] = {
-/* columns rows colors chars-per-pixel */
+static const char *VOLL[] = {
+/* columns rows colors const chars-per-pixel */
 "7 7 16 1 ",
 "  c black",
 ". c #800000",

@@ -1,6 +1,6 @@
 /* XPM */
-static char *QUAD[] = {
-/* columns rows colors chars-per-pixel */
+static const char *QUAD[] = {
+/* columns rows colors const chars-per-pixel */
 "130 110 16 1 ",
 "  c black",
 ". c #800000",

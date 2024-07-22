@@ -1,5 +1,5 @@
 /* XPM */
-static char * ground_enabled_xpm[] = {
+static const char * ground_enabled_xpm[] = {
 "26 26 3 1",
 " 	c #000080",
 ".	c #FFFFFF",

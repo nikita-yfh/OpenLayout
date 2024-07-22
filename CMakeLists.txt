@@ -4,10 +4,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 
 set(SOURCES
-	src/App.cpp
+    src/MainWindow.cpp
+    src/main.cpp
 )
 set(HEADERS
-	src/App.h
+    src/MainWindow.h
+    src/Locale.h
 )
 
 add_executable(openlayout ${SOURCES} ${HEADERS})

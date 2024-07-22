@@ -1,6 +1,6 @@
 /* XPM */
-static char *LAYER_ZU[] = {
-/* columns rows colors chars-per-pixel */
+static const char *LAYER_ZU[] = {
+/* columns rows colors const chars-per-pixel */
 "8 16 16 1 ",
 "  c black",
 ". c #800000",

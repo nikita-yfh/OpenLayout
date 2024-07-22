@@ -1,5 +1,5 @@
 /* XPM */
-static char * photoview_xpm[] = {
+static const char * photoview_xpm[] = {
 "16 16 16 1",
 " 	c None",
 ".	c #606080",

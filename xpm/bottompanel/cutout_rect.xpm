@@ -1,5 +1,5 @@
 /* XPM */
-static char * cutout_rect_xpm[] = {
+static const char * cutout_rect_xpm[] = {
 "14 9 2 1",
 " 	c None",
 ".	c #000000",

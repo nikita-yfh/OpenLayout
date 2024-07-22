@@ -1,5 +1,5 @@
 /* XPM */
-static char * zoom_board_xpm[] = {
+static const char * zoom_board_xpm[] = {
 "20 20 4 1",
 " 	c None",
 ".	c #000000",

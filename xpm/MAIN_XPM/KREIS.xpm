@@ -1,6 +1,6 @@
 /* XPM */
-static char *KREIS[] = {
-/* columns rows colors chars-per-pixel */
+static const char *KREIS[] = {
+/* columns rows colors const chars-per-pixel */
 "102 104 16 1 ",
 "  c black",
 ". c #800000",

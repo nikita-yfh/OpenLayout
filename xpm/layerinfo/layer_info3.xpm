@@ -1,5 +1,5 @@
 /* XPM */
-static char * layer_info3_xpm[] = {
+static const char * layer_info3_xpm[] = {
 "355 67 18 1",
 " 	c None",
 ".	c #000000",

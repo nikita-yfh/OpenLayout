@@ -1,6 +1,6 @@
 /* XPM */
-static char *RAD2[] = {
-/* columns rows colors chars-per-pixel */
+static const char *RAD2[] = {
+/* columns rows colors const chars-per-pixel */
 "10 16 256 2 ",
 "   c black",
 ".  c #800000",

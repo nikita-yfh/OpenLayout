@@ -1,5 +1,5 @@
 /* XPM */
-static char * mirror_h_xpm[] = {
+static const char * mirror_h_xpm[] = {
 "20 20 4 1",
 " 	c None",
 ".	c #0000FF",

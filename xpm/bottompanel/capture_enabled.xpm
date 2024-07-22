@@ -1,5 +1,5 @@
 /* XPM */
-static char * capture_enabled_xpm[] = {
+static const char * capture_enabled_xpm[] = {
 "28 28 5 1",
 " 	c None",
 ".	c #FF0000",

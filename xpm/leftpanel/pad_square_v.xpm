@@ -1,5 +1,5 @@
 /* XPM */
-static char * pad_square_v_xpm[] = {
+static const char * pad_square_v_xpm[] = {
 "16 16 4 1",
 " 	c None",
 ".	c #000000",
