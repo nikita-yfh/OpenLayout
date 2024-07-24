@@ -2,6 +2,7 @@
 #include "Locale.h"
 
 #include <QLayout>
+#include <QToolButton>
 
 #include "xpm/leftpanel/autoroute.xpm"
 #include "xpm/leftpanel/ch_grid.xpm"
@@ -45,49 +46,54 @@
 #include "xpm/leftpanel/track.xpm"
 #include "xpm/leftpanel/zoom.xpm"
 
-MyToolButton::MyToolButton(QWidget *parent, QIcon icon, const char *text) : QToolButton(parent) {
-    setIcon(icon);
-    setText(text);
-    setCheckable(true);
-
-    connect(parent, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(onChangeOrientation(Qt::Orientation)));
-    connect(this, SIGNAL(pressed()), parent, SLOT(onButtonClicked()));
-}
-
-void MyToolButton::onChangeOrientation(Qt::Orientation orientation) {
-    if(orientation == Qt::Vertical) {
-        setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-        setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    } else {
-        setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
-        setToolButtonStyle(Qt::ToolButtonIconOnly);
-    }
-}
-
 ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    actions[Edit]           = addWidget(new MyToolButton(this, QIcon(QPixmap(edit_xpm)),          _("Edit")));
-    actions[Zoom]           = addWidget(new MyToolButton(this, QIcon(QPixmap(zoom_xpm)),          _("Zoom")));
-    actions[Track]          = addWidget(new MyToolButton(this, QIcon(QPixmap(track_xpm)),         _("Track")));
-    actions[Pad]            = addWidget(new MyToolButton(this, QIcon(QPixmap(pad_circle_xpm)),    _("Pad")));
-    actions[SMDPad]         = addWidget(new MyToolButton(this, QIcon(QPixmap(smd_xpm)),           _("SMD-Pad")));
-    actions[Circle]         = addWidget(new MyToolButton(this, QIcon(QPixmap(circle_xpm)),        _("Circle")));
-    actions[Rect]           = addWidget(new MyToolButton(this, QIcon(QPixmap(rect_track_xpm)),    _("Rectangle")));
-    actions[Zone]           = addWidget(new MyToolButton(this, QIcon(QPixmap(polygon_xpm)),       _("Zone")));
-    actions[SpecialForm]    = addWidget(new MyToolButton(this, QIcon(QPixmap(special_xpm)),       _("Special form")));
-    actions[Text]           = addWidget(new MyToolButton(this, QIcon(QPixmap(text_xpm)),          _("Text")));
-    actions[SolderMask]     = addWidget(new MyToolButton(this, QIcon(QPixmap(mask_xpm)),          _("Solder mask")));
-    actions[Connections]    = addWidget(new MyToolButton(this, QIcon(QPixmap(connections_xpm)),   _("Connections")));
-    actions[Autoroute]      = addWidget(new MyToolButton(this, QIcon(QPixmap(autoroute_xpm)),     _("Autoroute")));
-    actions[Test]           = addWidget(new MyToolButton(this, QIcon(QPixmap(test_xpm)),          _("Test")));
-    actions[Measure]        = addWidget(new MyToolButton(this, QIcon(QPixmap(measure_xpm)),       _("Measure")));
-    actions[Photoview]      = addWidget(new MyToolButton(this, QIcon(QPixmap(photoview_xpm)),     _("Photoview")));
+    actions[Edit]           = addAction(QIcon(QPixmap(edit_xpm)),          _("Edit"));
+    actions[Zoom]           = addAction(QIcon(QPixmap(zoom_xpm)),          _("Zoom"));
+    actions[Track]          = addAction(QIcon(QPixmap(track_xpm)),         _("Track"));
+    actions[Pad]            = addAction(QIcon(QPixmap(pad_circle_xpm)),    _("Pad"));
+    actions[SMDPad]         = addAction(QIcon(QPixmap(smd_xpm)),           _("SMD-Pad"));
+    actions[Circle]         = addAction(QIcon(QPixmap(circle_xpm)),        _("Circle"));
+    actions[Rect]           = addAction(QIcon(QPixmap(rect_track_xpm)),    _("Rectangle"));
+    actions[Zone]           = addAction(QIcon(QPixmap(polygon_xpm)),       _("Zone"));
+    actions[SpecialForm]    = addAction(QIcon(QPixmap(special_xpm)),       _("Special form"));
+    actions[Text]           = addAction(QIcon(QPixmap(text_xpm)),          _("Text"));
+    actions[SolderMask]     = addAction(QIcon(QPixmap(mask_xpm)),          _("Solder mask"));
+    actions[Connections]    = addAction(QIcon(QPixmap(connections_xpm)),   _("Connections"));
+    actions[Autoroute]      = addAction(QIcon(QPixmap(autoroute_xpm)),     _("Autoroute"));
+    actions[Test]           = addAction(QIcon(QPixmap(test_xpm)),          _("Test"));
+    actions[Measure]        = addAction(QIcon(QPixmap(measure_xpm)),       _("Measure"));
+    actions[Photoview]      = addAction(QIcon(QPixmap(photoview_xpm)),     _("Photoview"));
+
+    QActionGroup *group = new QActionGroup(this);
+    for(QAction *action : actions) {
+        action->setCheckable(true);
+        action->setActionGroup(group);
+        connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(onChangeOrientation(Qt::Orientation)));
+    }
 
     setOrientation(Qt::Vertical);
 }
 
-void ToolPanel::onButtonClicked() {
-    for(QAction *action : actions)
-        action->setChecked(false);
+void ToolPanel::onChangeOrientation(Qt::Orientation orientation) {
+    int minSize = 0;
+    for(QAction *action : actions) {
+        QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(action));
+        minSize = qMax(minSize, button->sizeHint().width());
+    }
+    for(QAction *action : actions) {
+        QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(action));
+        if(button) {
+            button->setMinimumWidth(minSize);
+            if(orientation == Qt::Vertical) {
+                button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+                button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+            } else {
+                button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
+                button->setToolButtonStyle(Qt::ToolButtonIconOnly);
+            }
+        }
+    }
 }
+

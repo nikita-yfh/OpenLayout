@@ -1,5 +1,4 @@
 #include <QToolBar>
-#include <QToolButton>
 
 class ToolPanel : public QToolBar {
     Q_OBJECT
@@ -29,14 +28,6 @@ public:
     };
 private:
     QAction *actions[TOOL_COUNT];
-public slots:
-    void onButtonClicked();
-};
-
-class MyToolButton : public QToolButton {
-    Q_OBJECT
-public:
-    MyToolButton(QWidget *parent, QIcon icon, const char *text);
 public slots:
     void onChangeOrientation(Qt::Orientation orientation);
 };
