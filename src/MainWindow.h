@@ -1,14 +1,18 @@
 #include <QMainWindow>
 #include <QtWidgets>
 
+#include "ToolPanel.h"
+
 class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 private:
-    void CreateToolBars();
+    void createToolBar();
+    void createToolPanel();
     QToolBar *toolBarMain, *toolBarHistory, *toolBarClipboard,
              *toolBarActions, *toolBarZoom, *toolBarPCB, *toolBarPanels;
+    ToolPanel *tools;
 
     QAction *newAct, *openAct, *saveAct, *printAct, *undoAct, *redoAct,
             *cutAct, *copyAct, *pasteAct, *deleteAct, *duplicateAct,

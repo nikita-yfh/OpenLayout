@@ -1,14 +1,17 @@
 project(openlayout)
 
+set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 
 set(SOURCES
     src/MainWindow.cpp
+    src/ToolPanel.cpp
     src/main.cpp
 )
 set(HEADERS
     src/MainWindow.h
+    src/ToolPanel.h
     src/Locale.h
 )
 

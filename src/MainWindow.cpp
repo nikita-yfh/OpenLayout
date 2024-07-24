@@ -43,8 +43,12 @@
 #include "xpm/toolbar/zoom_selection.xpm"
 #include "xpm/toolbar/zoom_prev.xpm"
 
-MainWindow::MainWindow(QWidget *parent)
-            : QMainWindow(parent) {
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    createToolBar();
+    createToolPanel();
+}
+
+void MainWindow::createToolBar() {
     toolBarMain = addToolBar(_("File"));
     newAct          =        toolBarMain->addAction(QIcon(QPixmap(new_xpm)),        _("New"));
     openAct         =        toolBarMain->addAction(QIcon(QPixmap(open_xpm)),       _("Open"));
@@ -63,11 +67,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     toolBarActions = addToolBar(_("Actions"));
     duplicateAct    =    toolBarActions->addAction(QIcon(QPixmap(duplicate_xpm)),   _("Duplicate"));
+    QAction *rotateAct = toolBarActions->addAction(QIcon(QPixmap(rotate_xpm)),      _("Rotate"));
 
-    QToolButton *rotateButton = new QToolButton(this);
-    rotateButton->setIcon(QIcon(QPixmap(rotate_xpm)));
-    rotateButton->setText(_("Rotate"));
-    rotateButton->setPopupMode(QToolButton::MenuButtonPopup);
     { // Create menu for rotate button
         QMenu *rotateMenu = new QMenu();
         rotate90Act = rotateMenu->addAction(_("90°"));
@@ -91,17 +92,16 @@ MainWindow::MainWindow(QWidget *parent)
         rotateGroup->addAction(rotateCustomAct);
         rotateGroup->setExclusive(true);
 
-        rotateButton->setMenu(rotateMenu);
+        rotateAct->setMenu(rotateMenu);
+        ((QToolButton*)toolBarActions->widgetForAction(rotateAct))->setPopupMode(QToolButton::MenuButtonPopup);
     }
 
-    toolBarActions->addWidget(rotateButton);
     mirrorHAct      =    toolBarActions->addAction(QIcon(QPixmap(mirror_h_xpm)),    _("Mirror horizontal"));
     mirrorVAct      =    toolBarActions->addAction(QIcon(QPixmap(mirror_v_xpm)),    _("Mirror vertical"));
 
     QToolButton *alignButton = new QToolButton(this);
     alignButton->setIcon(QIcon(QPixmap(align_xpm)));
     alignButton->setText(_("Align elements"));
-    alignButton->setPopupMode(QToolButton::InstantPopup);
     { // Create menu for align button
         QMenu *alignMenu = new QMenu();
         alignTopAct    = alignMenu->addAction(QIcon(QPixmap(align_top_xpm)),        _("Align top"));
@@ -125,7 +125,6 @@ MainWindow::MainWindow(QWidget *parent)
     QToolButton *zoomButton = new QToolButton(this);
     zoomButton->setIcon(QIcon(QPixmap(zoom_any_xpm)));
     zoomButton->setText(_("Zoom functions"));
-    zoomButton->setPopupMode(QToolButton::InstantPopup);
     { // Create menu for zoom button
         QMenu *zoomMenu = new QMenu();
         zoomPreviousAct = zoomMenu->addAction(QIcon(QPixmap(zoom_prev_xpm)),        _("Zoom previous"));
@@ -160,6 +159,11 @@ MainWindow::MainWindow(QWidget *parent)
     propertiesAct->setCheckable(true);
     DRCAct->setCheckable(true);
     macroAct->setCheckable(true);
+}
+
+void MainWindow::createToolPanel() {
+    tools = new ToolPanel(this);
+    addToolBar(Qt::LeftToolBarArea, tools);
 }
 
 MainWindow::~MainWindow() {
