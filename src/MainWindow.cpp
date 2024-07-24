@@ -93,7 +93,7 @@ void MainWindow::createToolBar() {
         rotateGroup->setExclusive(true);
 
         rotateAct->setMenu(rotateMenu);
-        ((QToolButton*)toolBarActions->widgetForAction(rotateAct))->setPopupMode(QToolButton::MenuButtonPopup);
+        qobject_cast<QToolButton*>(toolBarActions->widgetForAction(rotateAct))->setPopupMode(QToolButton::MenuButtonPopup);
     }
 
     mirrorHAct      =    toolBarActions->addAction(QIcon(QPixmap(mirror_h_xpm)),    _("Mirror horizontal"));
@@ -108,7 +108,7 @@ void MainWindow::createToolBar() {
         alignHAct      = alignMenu->addAction(QIcon(QPixmap(align_hcenter_xpm)),    _("Align horizontal-center"));
         alignVAct      = alignMenu->addAction(QIcon(QPixmap(align_vcenter_xpm)),    _("Align vertical-center"));
         alignAct->setMenu(alignMenu);
-        ((QToolButton*)toolBarActions->widgetForAction(alignAct))->setPopupMode(QToolButton::InstantPopup);
+        qobject_cast<QToolButton*>(toolBarActions->widgetForAction(alignAct))->setPopupMode(QToolButton::InstantPopup);
     }
 
     snapGridAct    =    toolBarActions->addAction(QIcon(QPixmap(to_grid_xpm)),      _("Snap to grid"));
@@ -128,7 +128,7 @@ void MainWindow::createToolBar() {
         zoomObjectsAct  = zoomMenu->addAction(QIcon(QPixmap(zoom_objects_xpm)),     _("Zoom objects"));
         zoomSelectionAct= zoomMenu->addAction(QIcon(QPixmap(zoom_selection_xpm)),   _("Zoom selection"));
         zoomAct->setMenu(zoomMenu);
-        ((QToolButton*)toolBarActions->widgetForAction(zoomAct))->setPopupMode(QToolButton::InstantPopup);
+        qobject_cast<QToolButton*>(toolBarActions->widgetForAction(zoomAct))->setPopupMode(QToolButton::InstantPopup);
     }
 
     toolBarPCB = addToolBar(_("PCB actions"));
