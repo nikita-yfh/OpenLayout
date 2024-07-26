@@ -2,6 +2,7 @@
 #include <QtWidgets>
 
 #include "ToolPanel.h"
+#include "GridPanel.h"
 
 class MainWindow : public QMainWindow {
 public:
@@ -9,10 +10,12 @@ public:
     ~MainWindow();
 private:
     void createToolBar();
-    void createToolPanel();
+    void createLeftPanel();
+
     QToolBar *toolBarMain, *toolBarHistory, *toolBarClipboard,
              *toolBarActions, *toolBarZoom, *toolBarPCB, *toolBarPanels;
-    ToolPanel *tools;
+    ToolPanel *toolPanel;
+    GridPanel *gridPanel;
 
     QAction *newAct, *openAct, *saveAct, *printAct, *undoAct, *redoAct,
             *cutAct, *copyAct, *pasteAct, *deleteAct, *duplicateAct,

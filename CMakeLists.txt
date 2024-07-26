@@ -7,11 +7,13 @@ find_package(Qt5Widgets REQUIRED)
 set(SOURCES
     src/MainWindow.cpp
     src/ToolPanel.cpp
+    src/GridPanel.cpp
     src/main.cpp
 )
 set(HEADERS
     src/MainWindow.h
     src/ToolPanel.h
+    src/GridPanel.h
     src/Locale.h
 )
 

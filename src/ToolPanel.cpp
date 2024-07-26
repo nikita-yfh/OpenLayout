@@ -90,6 +90,10 @@ ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
     createPadTypeMenu();
     createRectTypeMenu();
 
+    currentMetallization = false;
+    currentRectFill = false;
+    currentPadType = PAD_CIRCLE;
+
     setOrientation(Qt::Vertical);
 }
 

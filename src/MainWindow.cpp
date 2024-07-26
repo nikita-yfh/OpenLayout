@@ -45,7 +45,7 @@
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     createToolBar();
-    createToolPanel();
+    createLeftPanel();
 }
 
 void MainWindow::createToolBar() {
@@ -119,7 +119,7 @@ void MainWindow::createToolBar() {
     ungroupAct     =    toolBarActions->addAction(QIcon(QPixmap(group_off_xpm)),    _("Split group"));
 
     toolBarZoom = addToolBar(_("Zoom functions"));
-    QAction *zoomAct =  toolBarActions->addAction(QIcon(QPixmap(zoom_any_xpm)),     _("Zoom functions"));
+    QAction *zoomAct =  toolBarZoom->addAction(QIcon(QPixmap(zoom_any_xpm)),        _("Zoom functions"));
     { // Create menu for zoom button
         QMenu *zoomMenu = new QMenu();
         zoomPreviousAct = zoomMenu->addAction(QIcon(QPixmap(zoom_prev_xpm)),        _("Zoom previous"));
@@ -128,7 +128,7 @@ void MainWindow::createToolBar() {
         zoomObjectsAct  = zoomMenu->addAction(QIcon(QPixmap(zoom_objects_xpm)),     _("Zoom objects"));
         zoomSelectionAct= zoomMenu->addAction(QIcon(QPixmap(zoom_selection_xpm)),   _("Zoom selection"));
         zoomAct->setMenu(zoomMenu);
-        qobject_cast<QToolButton*>(toolBarActions->widgetForAction(zoomAct))->setPopupMode(QToolButton::InstantPopup);
+        qobject_cast<QToolButton*>(toolBarZoom->widgetForAction(zoomAct))->setPopupMode(QToolButton::InstantPopup);
     }
 
     toolBarPCB = addToolBar(_("PCB actions"));
@@ -156,9 +156,12 @@ void MainWindow::createToolBar() {
     macroAct->setCheckable(true);
 }
 
-void MainWindow::createToolPanel() {
-    tools = new ToolPanel(this);
-    addToolBar(Qt::LeftToolBarArea, tools);
+void MainWindow::createLeftPanel() {
+    toolPanel = new ToolPanel(this);
+    addToolBar(Qt::LeftToolBarArea, toolPanel);
+
+    gridPanel = new GridPanel(this);
+    addToolBar(Qt::LeftToolBarArea, gridPanel);
 }
 
 MainWindow::~MainWindow() {
