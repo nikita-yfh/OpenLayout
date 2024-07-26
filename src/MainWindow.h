@@ -1,8 +1,10 @@
+#pragma once
 #include <QMainWindow>
 #include <QtWidgets>
 
 #include "ToolPanel.h"
 #include "GridPanel.h"
+#include "Settings.h"
 
 class MainWindow : public QMainWindow {
 public:
@@ -26,4 +28,6 @@ private:
             *zoomPreviousAct, *zoomBoardAct, *zoomObjectsAct, *zoomSelectionAct,
             *transparentAct, *projectInfoAct, *bitmapAct,
             *selectorAct, *componentAct, *propertiesAct, *DRCAct, *macroAct;
+
+    Settings settings;
 };

@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "Locale.h"
 
+#include "SettingsDialog.h"
+
 #include <QIcon>
 #include <QAction>
 
@@ -154,6 +156,10 @@ void MainWindow::createToolBar() {
     propertiesAct->setCheckable(true);
     DRCAct->setCheckable(true);
     macroAct->setCheckable(true);
+
+
+    SettingsDialog dialog(settings, this);
+    dialog.exec();
 }
 
 void MainWindow::createLeftPanel() {
