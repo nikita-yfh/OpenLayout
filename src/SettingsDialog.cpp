@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QSignalMapper>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -88,41 +89,32 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
             hlayout->addWidget(drillings);
         }
 
-        QCheckBox *boardZoom        = new QCheckBox(_("Show Board-Zoom"), tab);
-        QCheckBox *darkGround       = new QCheckBox(_("Darken ground-plane"), tab);
-        QCheckBox *allGround        = new QCheckBox(_("Show ground-plane of all layers simulteneous"), tab);
-        QCheckBox *testConnections  = new QCheckBox(_("Consider connections (rubberbands) in TEST mode"), tab);
-        QCheckBox *testBlinking     = new QCheckBox(_("Blinking TEST mode"), tab);
-        QCheckBox *ctrlCaptureSize  = new QCheckBox(_("Double-click takes size parameter of elements"), tab);
-        QCheckBox *limitTextHeight  = new QCheckBox(_("Limit text height (track width min. 0.15 mm)"), tab);
-        QCheckBox *alwaysReadable   = new QCheckBox(_("Component ID and value always readable after rotating"), tab);
-        QCheckBox *optimize         = new QCheckBox(_("Optimize nodes of a track automatically"), tab);
-        QCheckBox *originLeftTop    = new QCheckBox(_("Orogin top/left (instead of bottom/left)"), tab);
-        QCheckBox *originExport     = new QCheckBox(_("Use origin in CAM-export (Gerber/Excellon/HPGL)"), tab);
+        const int CHECKBOXES_COUNT = 11;
+		const char *checkboxText[]= {
+			_("Show Board-Zoom"),
+			_("Darken ground-plane"),
+			_("Show ground-plane of all layers simultaneos"),
+			_("Consider connections (rubberbands) in TEST mode"),
+			_("Blinking TEST mode"),
+			_("Double-click takes size parameters of elements"),
+			_("Limit text height (track width min. 0.15 mm)"),
+			_("Components ID and value always readable after rotating"),
+			_("Optimize nodes of a track automatically"),
+			_("Origin top/left (instead of bottom/left)"),
+			_("Use origin in CAM-export (Gerber/Excellon/HPGL)")
+		};
 
-        boardZoom->setChecked(settings.boardZoom);
-        darkGround->setChecked(settings.darkGround);
-        allGround->setChecked(settings.allGround);
-        testConnections->setChecked(settings.testConnections);
-        testBlinking->setChecked(settings.testBlinking);
-        ctrlCaptureSize->setChecked(settings.ctrlCaptureSize);
-        limitTextHeight->setChecked(settings.limitTextHeight);
-        alwaysReadable->setChecked(settings.alwaysReadable);
-        optimize->setChecked(settings.optimize);
-        originLeftTop->setChecked(settings.originLeftTop);
-        originExport->setChecked(settings.originExport);
+        QSignalMapper *mapper = new QSignalMapper(this);
 
-        tabLayout->addWidget(boardZoom);
-        tabLayout->addWidget(darkGround);
-        tabLayout->addWidget(allGround);
-        tabLayout->addWidget(testConnections);
-        tabLayout->addWidget(testBlinking);
-        tabLayout->addWidget(ctrlCaptureSize);
-        tabLayout->addWidget(limitTextHeight);
-        tabLayout->addWidget(alwaysReadable);
-        tabLayout->addWidget(optimize);
-        tabLayout->addWidget(originLeftTop);
-        tabLayout->addWidget(originExport);
+        for(int i = 0; i < CHECKBOXES_COUNT; i++) {
+            QCheckBox *checkbox = new QCheckBox(checkboxText[i], tab);
+            checkbox->setChecked(settings[i]);
+            connect(checkbox, SIGNAL(toggled(bool)), mapper, SLOT(map()));
+            mapper->setMapping(checkbox, i);
+            tabLayout->addWidget(checkbox);
+        }
+
+        connect(mapper, SIGNAL(mappedInt(int)), this, SLOT(OnCheckboxToggled(int)));
 
         tabs->addTab(tab, _("General settings"));
     }
@@ -185,6 +177,18 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
     }
 }
 
+void SettingsDialog::OnUnitsChanged(int index) {
+    settings.units = index;
+}
+
+void SettingsDialog::OnDrillChanged(int index) {
+    settings.drill = index;
+}
+
+void SettingsDialog::OnCheckboxToggled(int index) {
+    settings[index] = !settings[index];
+}
+
 void SettingsDialog::OnColorSchemeChanged(int index) {
     for(int i = 0; i < COLOR_COUNT; i++)
         settings.GetColorScheme()[i] = colorPickerButtons[i]->GetColor();
@@ -197,16 +201,9 @@ void SettingsDialog::OnColorSchemeChanged(int index) {
     resetColorsButton->setEnabled(index != COLOR_SCHEME_DEFAULT);
 }
 
-void SettingsDialog::OnUnitsChanged(int index) {
-    settings.units = index;
-}
-
-void SettingsDialog::OnDrillChanged(int index) {
-    settings.drill = index;
-}
-
 void SettingsDialog::OnResetColorScheme() {
     settings.GetColorScheme().SetDefault();
     for(int i = 0; i < COLOR_COUNT; i++)
         colorPickerButtons[i]->SetColor(settings.GetColorScheme()[i]);
 }
+

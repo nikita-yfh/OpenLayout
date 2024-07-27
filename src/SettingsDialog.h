@@ -16,9 +16,12 @@ private:
 
     Settings settings;
 public slots:
-    void OnColorSchemeChanged(int index);
     void OnUnitsChanged(int index);
     void OnDrillChanged(int index);
 
+    void OnCheckboxToggled(int index);
+
+    void OnColorSchemeChanged(int index);
     void OnResetColorScheme();
+
 };
