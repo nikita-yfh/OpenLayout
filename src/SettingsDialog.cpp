@@ -1,5 +1,6 @@
 #include "SettingsDialog.h"
 #include "Locale.h"
+#include "ColorPickerButton.h"
 
 #include <QLabel>
 #include <QTabWidget>
@@ -63,28 +64,27 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent) : Q
     {  // General settings
         QWidget *tab = new QWidget(tabs);
         QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+        tabLayout->setSpacing(2);
 
         {
             QHBoxLayout *hlayout = new QHBoxLayout();
             tabLayout->addLayout(hlayout);
 
-            QLabel *unitsLabel = new QLabel(_("Base unit:"), tab);
-            unitsLabel->setAlignment(Qt::AlignCenter);
-            hlayout->addWidget(unitsLabel);
+            hlayout->addWidget(new QLabel(_("Base unit:"), tab));
 
             QComboBox *units = new QComboBox(tab);
             units->addItem(_("mm"));
             units->addItem(_("mil (1/1000 of inch)"));
+            units->setCurrentIndex(settings.units);
             hlayout->addWidget(units);
 
-            QLabel *drillingsLabel = new QLabel(_("Drillings:"), tab);
-            drillingsLabel->setAlignment(Qt::AlignCenter);
-            hlayout->addWidget(drillingsLabel);
+            hlayout->addWidget(new QLabel(_("Drillings:"), tab));
 
             QComboBox *drillings = new QComboBox(tab);
             drillings->addItem(_("Background color"));
             drillings->addItem(_("White"));
             drillings->addItem(_("Black"));
+            units->setCurrentIndex(settings.drill);
             hlayout->addWidget(drillings);
         }
 
@@ -127,5 +127,54 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent) : Q
         tabs->addTab(tab, _("General settings"));
     }
     {  // Colors
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+
+        {
+            QHBoxLayout *hlayout = new QHBoxLayout();
+            tabLayout->addLayout(hlayout);
+
+            hlayout->addWidget(new QLabel(_("Color scheme:"), tab));
+
+            QComboBox *scheme = new QComboBox(tab);
+            scheme->addItem(_("Standart"));
+            for(int i = 0; i < COLOR_SCHEME_COUNT; i++)
+                scheme->addItem(QString::asprintf(_("User %d"), i + 1));
+            hlayout->addWidget(scheme);
+            hlayout->addStretch(1);
+        }
+
+		const char* colorNames[]= {
+			_("C1 (Copper-Top)"),
+			_("Background"),
+			_("S1 (Silkscreen-Top)"),
+			_("Grid-lines"),
+			_("C2 (Copper-Bottom)"),
+			_("Grid-dots"),
+			_("S2 (Silkscreen-Bottom)"),
+			_("Connections"),
+			_("I1 (Copper-Inner 1)"),
+			_("Via"),
+			_("I2 (Copper-Inner 2)"),
+			_("Selected object"),
+			_("O (Outline)"),
+			_("Selection zone")
+		};
+
+        QGridLayout *grid = new QGridLayout();
+        tabLayout->addLayout(grid);
+
+        const ColorScheme &colorScheme = oldSettings.GetColorScheme();
+
+        for(int i = 0; i < COLOR_COUNT; i++) {
+            const int DIV = ((COLOR_COUNT + 1) / 2);
+            ColorPickerButton *picker = new ColorPickerButton(colorScheme[i], tab);
+            grid->addWidget(picker, i % DIV, i / DIV * 2);
+            grid->addWidget(new QLabel(colorNames[i], tab), i % DIV, i / DIV * 2 + 1);
+        }
+        grid->setColumnStretch(1, 1);
+        grid->setColumnStretch(3, 1);
+
+        tabs->addTab(tab, _("Colors"));
     }
 }

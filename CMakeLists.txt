@@ -12,6 +12,7 @@ set(SOURCES
     src/Settings.cpp
     src/File.cpp
     src/ColorScheme.cpp
+    src/ColorPickerButton.cpp
     src/main.cpp
 )
 set(HEADERS
@@ -24,6 +25,7 @@ set(HEADERS
     src/Vec2.h
     src/PadSize.h
     src/ColorScheme.h
+    src/ColorPickerButton.h
     src/Locale.h
 )
 

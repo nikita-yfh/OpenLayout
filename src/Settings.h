@@ -69,6 +69,8 @@ enum {
 	ANGLE_CUSTOM
 };
 
+const int COLOR_SCHEME_COUNT = 3;
+
 struct Settings {
 	Settings();
 	void SetDefault();
@@ -107,7 +109,7 @@ struct Settings {
 	uint8_t drill;
 	uint8_t gridStyle;
 
-	ColorScheme colors[3]; //user color schemes
+	ColorScheme colors[COLOR_SCHEME_COUNT]; //user color schemes
 	uint8_t selectedColorScheme; //0-Standart; 1-User1; 2-User2; 3-User3;
 
 	uint16_t copperThickness;
