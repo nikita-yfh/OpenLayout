@@ -84,11 +84,11 @@ ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
     for(QAction *action : actions) {
         action->setCheckable(true);
         action->setActionGroup(group);
-        connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(onChangeOrientation(Qt::Orientation)));
+        connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(OnChangeOrientation(Qt::Orientation)));
     }
 
-    createPadTypeMenu();
-    createRectTypeMenu();
+    CreatePadTypeMenu();
+    CreateRectTypeMenu();
 
     currentMetallization = false;
     currentRectFill = false;
@@ -97,7 +97,7 @@ ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
     setOrientation(Qt::Vertical);
 }
 
-void ToolPanel::createPadTypeMenu() {
+void ToolPanel::CreatePadTypeMenu() {
     qobject_cast<QToolButton*>(widgetForAction(actions[TOOL_PAD]))->setPopupMode(QToolButton::MenuButtonPopup);
     QMenu *padMenu = new QMenu(this);
     padTypes[PAD_CIRCLE]     = padMenu->addAction(_("Circular"));
@@ -119,30 +119,30 @@ void ToolPanel::createPadTypeMenu() {
         padMapper->setMapping(padTypes[i], i);
         padTypes[i]->setIcon(QIcon(QPixmap(padBitmaps[0][i])));
     }
-    connect(padMapper, SIGNAL(mappedInt(int)), this, SLOT(onSettedPadType(int)));
+    connect(padMapper, SIGNAL(mappedInt(int)), this, SLOT(OnSettedPadType(int)));
 
     metallization            = padMenu->addAction(_("Through pad"));
     metallization->setCheckable(true);
     metallization->setShortcut(QKeySequence(Qt::Key_F12));
-    connect(metallization, SIGNAL(toggled(bool)), this, SLOT(onToggleMetallization(bool)));
+    connect(metallization, SIGNAL(toggled(bool)), this, SLOT(OnToggleMetallization(bool)));
 
     actions[TOOL_PAD]->setMenu(padMenu);
 }
 
-void ToolPanel::createRectTypeMenu() {
+void ToolPanel::CreateRectTypeMenu() {
     qobject_cast<QToolButton*>(widgetForAction(actions[TOOL_RECT]))->setPopupMode(QToolButton::MenuButtonPopup);
 
     QMenu *rectMenu = new QMenu(this);
     QAction *rectTrackAct =  rectMenu->addAction(QIcon(QPixmap(rect_track_xpm)), _("Track"));
     QAction *rectZoneAct  =  rectMenu->addAction(QIcon(QPixmap(rect_zone_xpm)),  _("Zone"));
 
-    connect(rectTrackAct, SIGNAL(triggered(bool)), this, SLOT(onSettedRectTrack()));
-    connect(rectZoneAct,  SIGNAL(triggered(bool)), this, SLOT(onSettedRectZone()));
+    connect(rectTrackAct, SIGNAL(triggered(bool)), this, SLOT(OnSettedRectTrack()));
+    connect(rectZoneAct,  SIGNAL(triggered(bool)), this, SLOT(OnSettedRectZone()));
 
     actions[TOOL_RECT]->setMenu(rectMenu);
 }
 
-void ToolPanel::onChangeOrientation(Qt::Orientation orientation) {
+void ToolPanel::OnChangeOrientation(Qt::Orientation orientation) {
     int minSize = 0;
     if(orientation == Qt::Vertical)
         for(QAction *action : actions) {
@@ -164,24 +164,24 @@ void ToolPanel::onChangeOrientation(Qt::Orientation orientation) {
     }
 }
 
-void ToolPanel::onToggleMetallization(bool checked) {
+void ToolPanel::OnToggleMetallization(bool checked) {
     currentMetallization = checked;
     for(int i = 0; i < PAD_COUNT; i++)
         padTypes[i]->setIcon(QIcon(QPixmap(padBitmaps[checked][i])));
     actions[TOOL_PAD]->setIcon(QIcon(QPixmap(padBitmaps[currentMetallization][currentPadType])));
 }
 
-void ToolPanel::onSettedPadType(int type) {
+void ToolPanel::OnSettedPadType(int type) {
     currentPadType = (PadType) type;
     actions[TOOL_PAD]->setIcon(QIcon(QPixmap(padBitmaps[currentMetallization][currentPadType])));
 }
 
-void ToolPanel::onSettedRectTrack() {
+void ToolPanel::OnSettedRectTrack() {
     currentRectFill = false;
     actions[TOOL_RECT]->setIcon(QIcon(QPixmap(rect_track_xpm)));
 }
 
-void ToolPanel::onSettedRectZone() {
+void ToolPanel::OnSettedRectZone() {
     currentRectFill = true;
     actions[TOOL_RECT]->setIcon(QIcon(QPixmap(rect_zone_xpm)));
 }

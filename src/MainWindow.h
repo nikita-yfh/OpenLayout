@@ -11,8 +11,8 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 private:
-    void createToolBar();
-    void createLeftPanel();
+    void CreateToolBar();
+    void CreateLeftPanel();
 
     QToolBar *toolBarMain, *toolBarHistory, *toolBarClipboard,
              *toolBarActions, *toolBarZoom, *toolBarPCB, *toolBarPanels;

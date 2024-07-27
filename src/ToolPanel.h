@@ -43,15 +43,15 @@ public:
         PAD_COUNT
     };
 
-    inline bool getCurrentMetallization() {
+    inline bool GetCurrentMetallization() {
         return currentMetallization;
     }
 
-    inline PadType getCurrentPadType() {
+    inline PadType GetCurrentPadType() {
         return currentPadType;
     }
 
-    inline bool getCurrentRectFill() {
+    inline bool GetCurrentRectFill() {
         return currentRectFill;
     }
 private:
@@ -65,12 +65,12 @@ private:
     bool currentMetallization;
     PadType currentPadType;
 
-    void createPadTypeMenu();
-    void createRectTypeMenu();
+    void CreatePadTypeMenu();
+    void CreateRectTypeMenu();
 public slots:
-    void onChangeOrientation(Qt::Orientation orientation);
-    void onToggleMetallization(bool);
-    void onSettedPadType(int);
-    void onSettedRectTrack();
-    void onSettedRectZone();
+    void OnChangeOrientation(Qt::Orientation orientation);
+    void OnToggleMetallization(bool);
+    void OnSettedPadType(int);
+    void OnSettedRectTrack();
+    void OnSettedRectZone();
 };

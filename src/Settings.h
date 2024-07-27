@@ -69,7 +69,14 @@ enum {
 	ANGLE_CUSTOM
 };
 
-const int COLOR_SCHEME_COUNT = 3;
+enum {
+    COLOR_SCHEME_DEFAULT,
+    COLOR_SCHEME_1,
+    COLOR_SCHEME_2,
+    COLOR_SCHEME_3,
+
+    COLOR_SCHEME_COUNT
+};
 
 struct Settings {
 	Settings();
@@ -110,7 +117,7 @@ struct Settings {
 	uint8_t gridStyle;
 
 	ColorScheme colors[COLOR_SCHEME_COUNT]; //user color schemes
-	uint8_t selectedColorScheme; //0-Standart; 1-User1; 2-User2; 3-User3;
+	uint8_t selectedColorScheme;
 
 	uint16_t copperThickness;
 	uint16_t tempEnhance;

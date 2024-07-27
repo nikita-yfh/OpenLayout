@@ -8,11 +8,14 @@ public:
     ColorPickerButton(const QColor &color, QWidget *parent);
     ~ColorPickerButton() {};
 
-    void setColor(const QColor &color);
+    void SetColor(const QColor &color);
+    const QColor &GetColor() {
+        return color;
+    }
 private:
     QColor color;
 signals:
-    void colorChanged(const QColor &color);
+    void ColorChanged(const QColor &color);
 private slots:
-    void onClicked();
+    void OnClicked();
 };

@@ -46,11 +46,11 @@
 #include "xpm/toolbar/zoom_prev.xpm"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
-    createToolBar();
-    createLeftPanel();
+    CreateToolBar();
+    CreateLeftPanel();
 }
 
-void MainWindow::createToolBar() {
+void MainWindow::CreateToolBar() {
     toolBarMain = addToolBar(_("File"));
     newAct          =        toolBarMain->addAction(QIcon(QPixmap(new_xpm)),        _("New"));
     openAct         =        toolBarMain->addAction(QIcon(QPixmap(open_xpm)),       _("Open"));
@@ -162,7 +162,7 @@ void MainWindow::createToolBar() {
     dialog.exec();
 }
 
-void MainWindow::createLeftPanel() {
+void MainWindow::CreateLeftPanel() {
     toolPanel = new ToolPanel(this);
     addToolBar(Qt::LeftToolBarArea, toolPanel);
 

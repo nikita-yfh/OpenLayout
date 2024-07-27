@@ -1,6 +1,5 @@
 #include "SettingsDialog.h"
 #include "Locale.h"
-#include "ColorPickerButton.h"
 
 #include <QLabel>
 #include <QTabWidget>
@@ -53,7 +52,8 @@ public:
     }
 };
 
-SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent) : QDialog(parent) {
+SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
+                                    : QDialog(parent), settings(oldSettings) {
     setWindowTitle(_("General settings"));
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
@@ -100,17 +100,17 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent) : Q
         QCheckBox *originLeftTop    = new QCheckBox(_("Orogin top/left (instead of bottom/left)"), tab);
         QCheckBox *originExport     = new QCheckBox(_("Use origin in CAM-export (Gerber/Excellon/HPGL)"), tab);
 
-        boardZoom->setChecked(oldSettings.boardZoom);
-        darkGround->setChecked(oldSettings.darkGround);
-        allGround->setChecked(oldSettings.allGround);
-        testConnections->setChecked(oldSettings.testConnections);
-        testBlinking->setChecked(oldSettings.testBlinking);
-        ctrlCaptureSize->setChecked(oldSettings.ctrlCaptureSize);
-        limitTextHeight->setChecked(oldSettings.limitTextHeight);
-        alwaysReadable->setChecked(oldSettings.alwaysReadable);
-        optimize->setChecked(oldSettings.optimize);
-        originLeftTop->setChecked(oldSettings.originLeftTop);
-        originExport->setChecked(oldSettings.originExport);
+        boardZoom->setChecked(settings.boardZoom);
+        darkGround->setChecked(settings.darkGround);
+        allGround->setChecked(settings.allGround);
+        testConnections->setChecked(settings.testConnections);
+        testBlinking->setChecked(settings.testBlinking);
+        ctrlCaptureSize->setChecked(settings.ctrlCaptureSize);
+        limitTextHeight->setChecked(settings.limitTextHeight);
+        alwaysReadable->setChecked(settings.alwaysReadable);
+        optimize->setChecked(settings.optimize);
+        originLeftTop->setChecked(settings.originLeftTop);
+        originExport->setChecked(settings.originExport);
 
         tabLayout->addWidget(boardZoom);
         tabLayout->addWidget(darkGround);
@@ -138,43 +138,75 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent) : Q
 
             QComboBox *scheme = new QComboBox(tab);
             scheme->addItem(_("Standart"));
-            for(int i = 0; i < COLOR_SCHEME_COUNT; i++)
-                scheme->addItem(QString::asprintf(_("User %d"), i + 1));
+            for(int i = 1; i < COLOR_SCHEME_COUNT; i++)
+                scheme->addItem(QString::asprintf(_("User %d"), i));
+            connect(scheme, SIGNAL(currentIndexChanged(int)), this, SLOT(OnColorSchemeChanged(int)));
             hlayout->addWidget(scheme);
             hlayout->addStretch(1);
         }
 
 		const char* colorNames[]= {
 			_("C1 (Copper-Top)"),
-			_("Background"),
 			_("S1 (Silkscreen-Top)"),
-			_("Grid-lines"),
 			_("C2 (Copper-Bottom)"),
-			_("Grid-dots"),
 			_("S2 (Silkscreen-Bottom)"),
-			_("Connections"),
 			_("I1 (Copper-Inner 1)"),
-			_("Via"),
 			_("I2 (Copper-Inner 2)"),
-			_("Selected object"),
 			_("O (Outline)"),
+			_("Background"),
+			_("Grid-lines"),
+			_("Grid-dots"),
+			_("Connections"),
+			_("Via"),
+			_("Selected object"),
 			_("Selection zone")
 		};
 
         QGridLayout *grid = new QGridLayout();
         tabLayout->addLayout(grid);
 
-        const ColorScheme &colorScheme = oldSettings.GetColorScheme();
+        const ColorScheme &colorScheme = settings.GetColorScheme();
 
         for(int i = 0; i < COLOR_COUNT; i++) {
             const int DIV = ((COLOR_COUNT + 1) / 2);
-            ColorPickerButton *picker = new ColorPickerButton(colorScheme[i], tab);
-            grid->addWidget(picker, i % DIV, i / DIV * 2);
+            colorPickerButtons[i] = new ColorPickerButton(colorScheme[i], tab);
+            colorPickerButtons[i]->setEnabled(false);
+            grid->addWidget(colorPickerButtons[i], i % DIV, i / DIV * 2);
             grid->addWidget(new QLabel(colorNames[i], tab), i % DIV, i / DIV * 2 + 1);
         }
         grid->setColumnStretch(1, 1);
         grid->setColumnStretch(3, 1);
 
+        resetColorsButton = new QPushButton(_("Reset scheme to default"), this);
+        connect(resetColorsButton, SIGNAL(clicked()), this, SLOT(OnResetColorScheme()));
+        tabLayout->addWidget(resetColorsButton, 0, Qt::AlignRight);
+
         tabs->addTab(tab, _("Colors"));
     }
+}
+
+void SettingsDialog::OnColorSchemeChanged(int index) {
+    for(int i = 0; i < COLOR_COUNT; i++)
+        settings.GetColorScheme()[i] = colorPickerButtons[i]->GetColor();
+
+    settings.selectedColorScheme = index;
+    for(int i = 0; i < COLOR_COUNT; i++) {
+        colorPickerButtons[i]->setEnabled(index != COLOR_SCHEME_DEFAULT);
+        colorPickerButtons[i]->SetColor(settings.GetColorScheme()[i]);
+    }
+    resetColorsButton->setEnabled(index != COLOR_SCHEME_DEFAULT);
+}
+
+void SettingsDialog::OnUnitsChanged(int index) {
+    settings.units = index;
+}
+
+void SettingsDialog::OnDrillChanged(int index) {
+    settings.drill = index;
+}
+
+void SettingsDialog::OnResetColorScheme() {
+    settings.GetColorScheme().SetDefault();
+    for(int i = 0; i < COLOR_COUNT; i++)
+        colorPickerButtons[i]->SetColor(settings.GetColorScheme()[i]);
 }
