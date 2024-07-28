@@ -1,6 +1,7 @@
 #pragma once
 #include <QDialog>
 #include <QPushButton>
+#include <QLineEdit>
 
 #include "Settings.h"
 #include "ColorPickerButton.h"
@@ -14,6 +15,7 @@ public:
 private:
     ColorPickerButton *colorPickerButtons[COLOR_COUNT];
     QPushButton *resetColorsButton;
+    QLineEdit *macroPath;
 
     Settings settings;
 public slots:
@@ -26,4 +28,8 @@ public slots:
     void OnResetColorScheme();
 
     void OnSameDirToggled(bool state);
+
+    void OnMacroDirChange();
+    void OnMacroDirReset();
+    void OnMacroDirOpenFM();
 };

@@ -2,6 +2,8 @@
 #include "Locale.h"
 
 #include <QLabel>
+#include <QStringList>
+#include <QProcess>
 #include <QTabWidget>
 #include <QStylePainter>
 #include <QStyleOptionTab>
@@ -11,6 +13,7 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSignalMapper>
+#include <QFileDialog>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -169,7 +172,7 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         grid->setColumnStretch(1, 1);
         grid->setColumnStretch(3, 1);
 
-        resetColorsButton = new QPushButton(_("Reset scheme to default"), this);
+        resetColorsButton = new QPushButton(_("Reset scheme to default"), tab);
         connect(resetColorsButton, SIGNAL(clicked()), this, SLOT(OnResetColorScheme()));
         tabLayout->addWidget(resetColorsButton, 0, Qt::AlignRight);
 
@@ -192,9 +195,9 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         tabLayout->addWidget(scannedCopies);
 
         tabLayout->addWidget(new QLabel("Leave this fields empty, if you want OpenLayout to remember\n"
-										"the last used directories.", this));
+										"the last used directories.", tab));
 
-        QCheckBox *sameDirs = new QCheckBox(_("Use the same folder for all file types"), this);
+        QCheckBox *sameDirs = new QCheckBox(_("Use the same folder for all file types"), tab);
         tabLayout->addWidget(sameDirs);
 
         tabLayout->addStretch(1);
@@ -207,6 +210,40 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         tabs->addTab(tab, _("Working directories"));
     }
+    { // Macro-Directory
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+        tabLayout->setSpacing(15);
+
+        tabLayout->addWidget(new QLabel(_("Root-Directory for macros:"), tab));
+
+        macroPath = new QLineEdit(settings.macroDir, tab);
+        macroPath->setReadOnly(true);
+        tabLayout->addWidget(macroPath);
+
+        QGridLayout *grid = new QGridLayout();
+        tabLayout->addLayout(grid);
+
+        QPushButton *changeButton = new QPushButton(_("Change..."),    tab);
+        QPushButton *resetButton  = new QPushButton(_("Reset"),        tab);
+        QPushButton *fmButton     = new QPushButton(_("File manager"), tab);
+        connect(changeButton, SIGNAL(clicked()), this, SLOT(OnMacroDirChange()));
+        connect(resetButton,  SIGNAL(clicked()), this, SLOT(OnMacroDirReset()));
+        connect(fmButton,     SIGNAL(clicked()), this, SLOT(OnMacroDirOpenFM()));
+
+        grid->addWidget(changeButton, 0, 0);
+        grid->addWidget(resetButton,  1, 0);
+        grid->addWidget(fmButton,     2, 0);
+        grid->addWidget(new QLabel(_("Only change this setting, if you have moved\n"
+                                        "your Macro-Directory to another drive or directory"),  tab), 0, 1);
+        grid->addWidget(new QLabel(_("This will reset the Macro-Directory to default setting"), tab), 1, 1);
+        grid->addWidget(new QLabel(_("Opens the Macro-Directory in the file manager"),          tab), 2, 1);
+        grid->setColumnStretch(1, 1);
+        tabLayout->addStretch(1);
+
+        tabs->addTab(tab, _("Macro-Directory"));
+    }
+
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
@@ -241,5 +278,29 @@ void SettingsDialog::OnResetColorScheme() {
 
 void SettingsDialog::OnSameDirToggled(bool state) {
     settings.sameDir = state;
+}
+
+void SettingsDialog::OnMacroDirChange() {
+    QFileDialog dialog(this, _("Select a new folder"), settings.macroDir);
+    dialog.setFileMode(QFileDialog::Directory);
+
+    if (dialog.exec() == QDialog::Accepted) {
+        strncpy(settings.macroDir, dialog.selectedFiles().at(0).toUtf8(), sizeof(settings.macroDir));
+        macroPath->setText(settings.macroDir);
+    }
+}
+
+void SettingsDialog::OnMacroDirReset() {
+    settings.SetDefaultMacroPath();
+    macroPath->setText(settings.macroDir);
+}
+
+void SettingsDialog::OnMacroDirOpenFM() {
+#ifdef _WIN32
+    const char *fm = "explorer";
+#else
+    const char *fm = "xdg-open";
+#endif
+    QProcess::startDetached(fm, QStringList(settings.macroDir));
 }
 
