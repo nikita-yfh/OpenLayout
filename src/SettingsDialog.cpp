@@ -14,6 +14,7 @@
 #include <QCheckBox>
 #include <QSignalMapper>
 #include <QFileDialog>
+#include <QSpinBox>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -243,6 +244,28 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         tabs->addTab(tab, _("Macro-Directory"));
     }
+    { // Undo-Depth
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+        tabLayout->setSpacing(20);
+
+        QSpinBox *spinBox = new QSpinBox(tab);
+        spinBox->setMinimum(0);
+        spinBox->setMaximum(MAX_UNDO_DEPTH);
+        spinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        spinBox->setValue(settings.undoDepth);
+        connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(OnUndoDepthChanged(int)));
+        tabLayout->addWidget(spinBox);
+
+        tabLayout->addWidget(new QLabel(
+            QString::asprintf("Here you can define the maximum number of UNDO operations.\n"
+                              "The maximum is %d operations\n"
+                              "If your system runs very slowly while working with big layouts, \n"
+                              "you can decrease this value down to 1.", MAX_UNDO_DEPTH), tab));
+        tabLayout->addStretch(1);
+
+        tabs->addTab(tab, _("Undo-Depth"));
+    }
 
 }
 
@@ -302,5 +325,9 @@ void SettingsDialog::OnMacroDirOpenFM() {
     const char *fm = "xdg-open";
 #endif
     QProcess::startDetached(fm, QStringList(settings.macroDir));
+}
+
+void SettingsDialog::OnUndoDepthChanged(int depth) {
+    settings.undoDepth = depth;
 }
 

@@ -32,4 +32,6 @@ public slots:
     void OnMacroDirChange();
     void OnMacroDirReset();
     void OnMacroDirOpenFM();
+
+    void OnUndoDepthChanged(int depth);
 };

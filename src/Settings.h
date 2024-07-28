@@ -78,6 +78,8 @@ enum {
     COLOR_SCHEME_COUNT
 };
 
+const int MAX_UNDO_DEPTH = 50;
+
 struct Settings {
 	Settings();
 	void SetDefault();
