@@ -175,6 +175,38 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         tabs->addTab(tab, _("Colors"));
     }
+    { // Working directories
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+
+        DirChooserButton *layExport     = new DirChooserButton("Layout files",   settings.layExport,     sizeof(settings.layExport), tab);
+        DirChooserButton *gbrExport     = new DirChooserButton("Gerber export",  settings.gbrExport,     sizeof(settings.gbrExport), tab);
+        DirChooserButton *bmpExport     = new DirChooserButton("Bitmap export",  settings.bmpExport,     sizeof(settings.bmpExport), tab);
+        DirChooserButton *hpglExport    = new DirChooserButton("HPGL export",    settings.hpglExport,    sizeof(settings.hpglExport), tab);
+        DirChooserButton *scannedCopies = new DirChooserButton("Scanned copies", settings.scannedCopies, sizeof(settings.scannedCopies), tab);
+
+        tabLayout->addWidget(layExport);
+        tabLayout->addWidget(gbrExport);
+        tabLayout->addWidget(bmpExport);
+        tabLayout->addWidget(hpglExport);
+        tabLayout->addWidget(scannedCopies);
+
+        tabLayout->addWidget(new QLabel("Leave this fields empty, if you want OpenLayout to remember\n"
+										"the last used directories.", this));
+
+        QCheckBox *sameDirs = new QCheckBox(_("Use the same folder for all file types"), this);
+        tabLayout->addWidget(sameDirs);
+
+        tabLayout->addStretch(1);
+
+        connect(sameDirs, SIGNAL(toggled(bool)), gbrExport,     SLOT(setDisabled(bool)));
+        connect(sameDirs, SIGNAL(toggled(bool)), bmpExport,     SLOT(setDisabled(bool)));
+        connect(sameDirs, SIGNAL(toggled(bool)), hpglExport,    SLOT(setDisabled(bool)));
+        connect(sameDirs, SIGNAL(toggled(bool)), scannedCopies, SLOT(setDisabled(bool)));
+        connect(sameDirs, SIGNAL(toggled(bool)), this,          SLOT(OnSameDirToggled(bool)));
+
+        tabs->addTab(tab, _("Working directories"));
+    }
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
@@ -205,5 +237,9 @@ void SettingsDialog::OnResetColorScheme() {
     settings.GetColorScheme().SetDefault();
     for(int i = 0; i < COLOR_COUNT; i++)
         colorPickerButtons[i]->SetColor(settings.GetColorScheme()[i]);
+}
+
+void SettingsDialog::OnSameDirToggled(bool state) {
+    settings.sameDir = state;
 }
 

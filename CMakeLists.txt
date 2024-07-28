@@ -13,6 +13,7 @@ set(SOURCES
     src/File.cpp
     src/ColorScheme.cpp
     src/ColorPickerButton.cpp
+    src/DirChooserButton.cpp
     src/main.cpp
 )
 set(HEADERS
@@ -26,6 +27,7 @@ set(HEADERS
     src/PadSize.h
     src/ColorScheme.h
     src/ColorPickerButton.h
+    src/DirChooserButton.h
     src/Locale.h
 )
 

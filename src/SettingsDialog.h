@@ -4,6 +4,7 @@
 
 #include "Settings.h"
 #include "ColorPickerButton.h"
+#include "DirChooserButton.h"
 
 class SettingsDialog : public QDialog {
     Q_OBJECT
@@ -24,4 +25,5 @@ public slots:
     void OnColorSchemeChanged(int index);
     void OnResetColorScheme();
 
+    void OnSameDirToggled(bool state);
 };
