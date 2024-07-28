@@ -250,7 +250,7 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         tabLayout->setSpacing(20);
 
         QSpinBox *spinBox = new QSpinBox(tab);
-        spinBox->setMinimum(0);
+        spinBox->setMinimum(1);
         spinBox->setMaximum(MAX_UNDO_DEPTH);
         spinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         spinBox->setValue(settings.undoDepth);
@@ -258,15 +258,45 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         tabLayout->addWidget(spinBox);
 
         tabLayout->addWidget(new QLabel(
-            QString::asprintf("Here you can define the maximum number of UNDO operations.\n"
-                              "The maximum is %d operations\n"
-                              "If your system runs very slowly while working with big layouts, \n"
-                              "you can decrease this value down to 1.", MAX_UNDO_DEPTH), tab));
+            QString::asprintf(_("Here you can define the maximum number of UNDO operations.\n"
+                                "The maximum is %d operations\n"
+                                "If your system runs very slowly while working with big layouts, \n"
+                                "you can decrease this value down to 1."), MAX_UNDO_DEPTH), tab));
         tabLayout->addStretch(1);
 
         tabs->addTab(tab, _("Undo-Depth"));
     }
+    { // I-max
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
 
+        QGridLayout *grid = new QGridLayout();
+        tabLayout->addLayout(grid);
+
+        grid->addWidget(new QLabel(_("Copper-Thickness in µm"),     tab), 0, 0);
+        grid->addWidget(new QLabel(_("Temperature enchance in °C"), tab), 1, 0);
+
+        QSpinBox *copperThickness = new QSpinBox(tab);
+        copperThickness->setMinimum(1);
+        copperThickness->setMaximum(299);
+        copperThickness->setValue(settings.copperThickness);
+        connect(copperThickness, SIGNAL(valueChanged(int)), this, SLOT(OnCopperThicknessChanged(int)));
+
+        QSpinBox *tempEnhance = new QSpinBox(tab);
+        tempEnhance->setMinimum(1);
+        tempEnhance->setMaximum(299);
+        tempEnhance->setValue(settings.tempEnhance);
+        connect(tempEnhance, SIGNAL(valueChanged(int)), this, SLOT(OnTempEnhanceChanged(int)));
+
+        grid->addWidget(copperThickness, 0, 1);
+        grid->addWidget(tempEnhance,     1, 1);
+
+        tabLayout->addWidget(new QLabel(
+                _("The calculation of the max. current-carrying capacity for a track, \n"
+                  "is only a coarse approximate value.\n"
+                  "The real value is depending on many other factors and the environment.\n"), tab), 1);
+        tabs->addTab(tab, _("Imax"));
+    }
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
@@ -329,5 +359,13 @@ void SettingsDialog::OnMacroDirOpenFM() {
 
 void SettingsDialog::OnUndoDepthChanged(int depth) {
     settings.undoDepth = depth;
+}
+
+void SettingsDialog::OnCopperThicknessChanged(int value) {
+    settings.copperThickness = value;
+}
+
+void SettingsDialog::OnTempEnhanceChanged(int value) {
+    settings.tempEnhance = value;
 }
 

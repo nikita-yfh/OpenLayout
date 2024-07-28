@@ -34,4 +34,7 @@ public slots:
     void OnMacroDirOpenFM();
 
     void OnUndoDepthChanged(int depth);
+
+    void OnCopperThicknessChanged(int);
+    void OnTempEnhanceChanged(int);
 };
