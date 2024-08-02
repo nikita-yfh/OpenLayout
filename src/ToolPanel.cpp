@@ -47,7 +47,26 @@
 #include "xpm/leftpanel/track.xpm"
 #include "xpm/leftpanel/zoom.xpm"
 
-static const char * const *padBitmaps[2][9] = {
+const char *ToolPanel::toolNames[TOOL_COUNT] = {
+    _("Edit"),
+    _("Zoom"),
+    _("Track"),
+    _("Pad"),
+    _("SMD-Pad"),
+    _("Circle"),
+    _("Rectangle"),
+    _("Zone"),
+    _("Special form"),
+    _("Text"),
+    _("Solder mask"),
+    _("Connections"),
+    _("Autoroute"),
+    _("Test"),
+    _("Measure"),
+    _("Photoview")
+};
+
+static const char * const *padBitmaps[2][ToolPanel::PAD_COUNT] = {
 	{
 		pad_circle_xpm,		pad_octagon_xpm,	pad_square_xpm,
 		pad_circle_h_xpm,	pad_octagon_h_xpm,	pad_square_h_xpm,
@@ -60,32 +79,37 @@ static const char * const *padBitmaps[2][9] = {
 	}
 };
 
+static const char * const *toolBitmaps[ToolPanel::TOOL_COUNT] = {
+    edit_xpm,   
+    zoom_xpm,   
+    track_xpm,  
+    pad_circle_xpm,
+    smd_xpm,    
+    circle_xpm, 
+    rect_track_xpm,
+    polygon_xpm,
+    special_xpm,
+    text_xpm,   
+    mask_xpm,   
+    connections_xpm,
+    autoroute_xpm,
+    test_xpm,   
+    measure_xpm,
+    photoview_xpm,
+};
+
 ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    actions[TOOL_EDIT]           = addAction(QIcon(QPixmap(edit_xpm)),          _("Edit"));
-    actions[TOOL_ZOOM]           = addAction(QIcon(QPixmap(zoom_xpm)),          _("Zoom"));
-    actions[TOOL_TRACK]          = addAction(QIcon(QPixmap(track_xpm)),         _("Track"));
-    actions[TOOL_PAD]            = addAction(QIcon(QPixmap(pad_circle_xpm)),    _("Pad"));
-    actions[TOOL_SMD_PAD]        = addAction(QIcon(QPixmap(smd_xpm)),           _("SMD-Pad"));
-    actions[TOOL_CIRCLE]         = addAction(QIcon(QPixmap(circle_xpm)),        _("Circle"));
-    actions[TOOL_RECT]           = addAction(QIcon(QPixmap(rect_track_xpm)),    _("Rectangle"));
-    actions[TOOL_ZONE]           = addAction(QIcon(QPixmap(polygon_xpm)),       _("Zone"));
-    actions[TOOL_SPECIAL_FORM]   = addAction(QIcon(QPixmap(special_xpm)),       _("Special form"));
-    actions[TOOL_TEXT]           = addAction(QIcon(QPixmap(text_xpm)),          _("Text"));
-    actions[TOOL_SOLDER_MASK]    = addAction(QIcon(QPixmap(mask_xpm)),          _("Solder mask"));
-    actions[TOOL_CONNECTIONS]    = addAction(QIcon(QPixmap(connections_xpm)),   _("Connections"));
-    actions[TOOL_AUTOROUTE]      = addAction(QIcon(QPixmap(autoroute_xpm)),     _("Autoroute"));
-    actions[TOOL_TEST]           = addAction(QIcon(QPixmap(test_xpm)),          _("Test"));
-    actions[TOOL_MEASURE]        = addAction(QIcon(QPixmap(measure_xpm)),       _("Measure"));
-    actions[TOOL_PHOTOVIEW]      = addAction(QIcon(QPixmap(photoview_xpm)),     _("Photoview"));
-
     QActionGroup *group = new QActionGroup(this);
-    for(QAction *action : actions) {
-        action->setCheckable(true);
-        action->setActionGroup(group);
-        connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(OnChangeOrientation(Qt::Orientation)));
+
+    for(int i = 0; i < TOOL_COUNT; i++) {
+        actions[i] = addAction(QIcon(QPixmap(toolBitmaps[i])), toolNames[i]);
+        actions[i]->setCheckable(true);
+        actions[i]->setActionGroup(group);
     }
+
+    connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(OnChangeOrientation(Qt::Orientation)));
 
     CreatePadTypeMenu();
     CreateRectTypeMenu();

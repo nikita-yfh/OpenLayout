@@ -1,4 +1,7 @@
 #pragma once
+
+#include "Locale.h"
+
 #include <QToolBar>
 #include <QSignalMapper>
 
@@ -29,6 +32,8 @@ public:
         TOOL_COUNT
     };
 
+    static const char *toolNames[TOOL_COUNT];
+
     enum PadType {
         PAD_CIRCLE,
         PAD_OCTAGON,
@@ -43,15 +48,15 @@ public:
         PAD_COUNT
     };
 
-    inline bool GetCurrentMetallization() {
+    inline bool GetCurrentMetallization() const {
         return currentMetallization;
     }
 
-    inline PadType GetCurrentPadType() {
+    inline PadType GetCurrentPadType() const {
         return currentPadType;
     }
 
-    inline bool GetCurrentRectFill() {
+    inline bool GetCurrentRectFill() const {
         return currentRectFill;
     }
 private:

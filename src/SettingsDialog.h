@@ -2,6 +2,8 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QComboBox>
+#include <QTreeWidget>
 
 #include "Settings.h"
 #include "ColorPickerButton.h"
@@ -16,9 +18,11 @@ private:
     ColorPickerButton *colorPickerButtons[COLOR_COUNT];
     QPushButton *resetColorsButton;
     QLineEdit *macroPath;
+    QTreeWidget *keyList;
+    QComboBox *keyChoose;
 
     Settings settings;
-public slots:
+private slots:
     void OnUnitsChanged(int index);
     void OnDrillChanged(int index);
 
@@ -37,4 +41,7 @@ public slots:
 
     void OnCopperThicknessChanged(int);
     void OnTempEnhanceChanged(int);
+
+    void OnToolSelected(QTreeWidgetItem *item, int column);
+    void OnKeyChanged(int index);
 };

@@ -1,5 +1,6 @@
 #include "SettingsDialog.h"
 #include "Locale.h"
+#include "ToolPanel.h"
 
 #include <QLabel>
 #include <QStringList>
@@ -10,11 +11,13 @@
 #include <QTabBar>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QComboBox>
 #include <QCheckBox>
 #include <QSignalMapper>
 #include <QFileDialog>
 #include <QSpinBox>
+#include <QTreeWidget>
+#include <QStringList>
+#include <QMessageBox>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -297,6 +300,43 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
                   "The real value is depending on many other factors and the environment.\n"), tab), 1);
         tabs->addTab(tab, _("Imax"));
     }
+    { // Hotkeys
+        QWidget *tab = new QWidget(tabs);
+        QHBoxLayout *tabLayout = new QHBoxLayout(tab);
+
+        keyList = new QTreeWidget(tab);
+        QStringList header;
+        header << _("Mode") << _("Key");
+        keyList->setHeaderLabels(header);
+
+        connect(keyList, SIGNAL(itemPressed(QTreeWidgetItem*, int)), this, SLOT(OnToolSelected(QTreeWidgetItem*, int)));
+
+        for(int i = 0; i < TOOL_COUNT; i++) {
+            QTreeWidgetItem *item = new QTreeWidgetItem(keyList);
+            item->setText(0, ToolPanel::toolNames[i]);
+            if(settings.toolKeys[i] == Qt::Key_Escape)
+                item->setText(1, "ESC");
+            else if(settings.toolKeys[i] >= Qt::Key_A && settings.toolKeys[i] <= Qt::Key_Z)
+                item->setText(1, QString(settings.toolKeys[i]));
+            keyList->addTopLevelItem(item);
+        }
+        tabLayout->addWidget(keyList, 2);
+
+        QVBoxLayout *vlayout = new QVBoxLayout();
+        tabLayout->addLayout(vlayout, 1);
+        vlayout->addStretch(1);
+        vlayout->addWidget(new QLabel(_("Change hotkey"), tab));
+
+        keyChoose = new QComboBox(tab);
+        keyChoose->addItem("ESC");
+        for(char i = 'A'; i <= 'Z'; i++)
+            keyChoose->addItem(QString(i));
+        connect(keyChoose, SIGNAL(activated(int)), this, SLOT(OnKeyChanged(int)));
+        vlayout->addWidget(keyChoose);
+        vlayout->addStretch(1);
+
+        tabs->addTab(tab, _("Hotkeys"));
+    }
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
@@ -369,3 +409,32 @@ void SettingsDialog::OnTempEnhanceChanged(int value) {
     settings.tempEnhance = value;
 }
 
+void SettingsDialog::OnToolSelected(QTreeWidgetItem *item, int column) {
+    int tool = keyList->indexOfTopLevelItem(item);
+    Qt::Key key = settings.toolKeys[tool];
+    if(key == Qt::Key_Escape)
+        keyChoose->setCurrentIndex(0);
+    if(key >= Qt::Key_A && key <= Qt::Key_Z)
+        keyChoose->setCurrentIndex(key - Qt::Key_A + 1);
+}
+
+void SettingsDialog::OnKeyChanged(int index) {
+    Qt::Key key = Qt::Key_Escape;
+    QString keyStr = "ESC";
+
+    if(index > 0) {
+        key = Qt::Key(Qt::Key_A + index - 1);
+        keyStr = QString(key);
+    }
+
+    for(int i = 0; i < TOOL_COUNT; i++) {
+        if(settings.toolKeys[i] == key) {
+            QMessageBox(QMessageBox::Warning, QString(), QString(_("The hotkey \"%1\" is already in use")).arg(keyStr),
+                    QMessageBox::Ok, this).exec();
+            return;
+        }
+    }
+
+    keyList->currentItem()->setText(1, keyStr);
+    settings.toolKeys[keyList->indexOfTopLevelItem(keyList->currentItem())] = key;
+}

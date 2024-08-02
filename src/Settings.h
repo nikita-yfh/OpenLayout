@@ -10,8 +10,6 @@
 #include <QSize>
 
 #define PATH_LENGTH 256
-#define ESCAPE 27
-
 enum {
 	TOOL_EDIT,
 	TOOL_ZOOM,
@@ -124,7 +122,7 @@ struct Settings {
 	uint16_t copperThickness;
 	uint16_t tempEnhance;
 
-	char toolKeys[TOOL_COUNT]; //key bindings for tools
+    Qt::Key toolKeys[TOOL_COUNT]; //key bindings for tools
 
 	bool measure45Lines;
 	bool measureShow;

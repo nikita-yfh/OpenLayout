@@ -67,11 +67,11 @@ void Settings::SetDefault() {
 	rubberband = RUBBERBAND_DISABLED;
 	groundDistance = 0.4f;
 
-	const char defKeys[TOOL_COUNT]= {
-		ESCAPE, 'Z', 'L', 'P',
-		'S', 'R', 'Q', 'F',
-		'N', 'T', 'C', 'A',
-		'X', 'M', 'V', 'O'
+	const Qt::Key defKeys[TOOL_COUNT] = {
+        Qt::Key_Escape, Qt::Key_Z, Qt::Key_L, Qt::Key_P,
+		Qt::Key_S, Qt::Key_R, Qt::Key_Q, Qt::Key_F,
+		Qt::Key_N, Qt::Key_T, Qt::Key_C, Qt::Key_A,
+		Qt::Key_X, Qt::Key_M, Qt::Key_V, Qt::Key_O
 	};
 	memcpy(toolKeys, defKeys, sizeof(defKeys));
 
@@ -242,7 +242,7 @@ void Settings::Save(File &file) const {
 	file.Write<uint16_t>(copperThickness);
 	file.Write<uint16_t>(tempEnhance);
 	for(int i = 0; i < TOOL_COUNT; i++)
-		file.Write<char>(toolKeys[i]);
+		file.Write<uint32_t>(toolKeys[i]);
 	file.Write<bool>(measure45Lines);
 	file.Write<bool>(measureShow);
 	file.Write<bool>(measureBig);
@@ -320,7 +320,7 @@ void Settings::Load(File &file) {
 	copperThickness = file.Read<uint16_t>();
 	tempEnhance = file.Read<uint16_t>();
 	for(int i = 0; i < TOOL_COUNT; i++)
-		toolKeys[i] = file.Read<char>();
+		toolKeys[i] = (Qt::Key) file.Read<uint32_t>();
 	measure45Lines = file.Read<bool>();
 	measureShow = file.Read<bool>();
 	measureBig = file.Read<bool>();
