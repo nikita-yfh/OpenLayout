@@ -422,6 +422,7 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
             QWidget *intervalWidget = new QWidget(tab);
             intervalWidget->setEnabled(settings.autosave);
             connect(autosave, SIGNAL(toggled(bool)), intervalWidget, SLOT(setEnabled(bool)));
+            connect(autosave, SIGNAL(toggled(bool)), this, SLOT(OnAutosaveToggled(bool)));
             tabLayout->addWidget(intervalWidget);
 
             QHBoxLayout *intervalLayout = new QHBoxLayout(intervalWidget);
@@ -433,6 +434,7 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
             autosaveTimer->setMinimum(1);
             autosaveTimer->setMaximum(60);
             autosaveTimer->setValue(settings.autosaveTimer);
+            connect(autosaveTimer, SIGNAL(valueChanged(int)), this, SLOT(OnAutosaveTimerChanged(int)));
             intervalLayout->addWidget(autosaveTimer);
 
             intervalLayout->addWidget(new QLabel(_("min"), intervalWidget));

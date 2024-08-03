@@ -107,6 +107,8 @@ ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
         actions[i] = addAction(QIcon(QPixmap(toolBitmaps[i])), toolNames[i]);
         actions[i]->setCheckable(true);
         actions[i]->setActionGroup(group);
+
+        QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(actions[i]));
     }
 
     connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(OnChangeOrientation(Qt::Orientation)));
@@ -171,16 +173,15 @@ void ToolPanel::OnChangeOrientation(Qt::Orientation orientation) {
     if(orientation == Qt::Vertical)
         for(QAction *action : actions) {
             QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(action));
+            button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+            button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             minSize = qMax(minSize, button->sizeHint().width());
         }
     for(QAction *action : actions) {
         QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(action));
         if(button) {
             button->setMinimumWidth(minSize);
-            if(orientation == Qt::Vertical) {
-                button->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-                button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-            } else {
+            if(orientation == Qt::Horizontal) {
                 button->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
                 button->setToolButtonStyle(Qt::ToolButtonIconOnly);
             }
