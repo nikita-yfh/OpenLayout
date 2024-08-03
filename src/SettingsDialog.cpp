@@ -18,6 +18,8 @@
 #include <QTreeWidget>
 #include <QStringList>
 #include <QMessageBox>
+#include <QRadioButton>
+#include <QButtonGroup>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -337,6 +339,68 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         tabs->addTab(tab, _("Hotkeys"));
     }
+    { // Crosshair
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+
+        QCheckBox *measure45Lines = new QCheckBox(_("Show 45° lines"), tab);
+        measure45Lines->setChecked(settings.measure45Lines);
+        tabLayout->addWidget(measure45Lines);
+
+        QCheckBox *measureShow = new QCheckBox(_("Show coordinates on crosshair"), tab);
+        measureShow->setChecked(settings.measureShow);
+        tabLayout->addWidget(measureShow);
+
+        {   
+            QWidget *coordWidget = new QWidget(tab);
+            tabLayout->addWidget(coordWidget);
+            QVBoxLayout *coordLayout = new QVBoxLayout(coordWidget);
+            connect(measureShow, SIGNAL(clicked(bool)), coordWidget, SLOT(setEnabled(bool)));
+            coordLayout->setContentsMargins(25, 0, 0, 0);
+
+            QCheckBox *measureTp = new QCheckBox(_("Transparent"), coordWidget);
+            measureTp->setChecked(settings.measureTp);
+            coordLayout->addWidget(measureTp);
+
+            QCheckBox *measureBig = new QCheckBox(_("Big Text"), coordWidget);
+            measureBig->setChecked(settings.measureBig);
+            coordLayout->addWidget(measureBig);
+
+            {
+                QHBoxLayout *textLayout = new QHBoxLayout();
+                coordLayout->addLayout(textLayout);
+
+                QVBoxLayout *radioLayout = new QVBoxLayout();
+                textLayout->addLayout(radioLayout);
+                
+                {
+                    QRadioButton *blackButton = new QRadioButton(_("Black background"), coordWidget);
+                    radioLayout->addWidget(blackButton);
+                    blackButton->setChecked(!settings.measureLight);
+
+                    QRadioButton *whiteButton = new QRadioButton(_("White background"), coordWidget);
+                    radioLayout->addWidget(whiteButton);
+                    whiteButton->setChecked(settings.measureLight);
+
+                    QButtonGroup *buttonGroup = new QButtonGroup(coordWidget);
+                    buttonGroup->setExclusive(true);
+                    buttonGroup->addButton(blackButton, 0);
+                    buttonGroup->addButton(whiteButton, 1);
+
+                    connect(buttonGroup, SIGNAL(idClicked(int)), this, SLOT(OnExampleColorChanged(int)));
+                }
+
+                exampleText = new QLabel(_("X:  12.280 mm\nY:  14.640 mm"), coordWidget);
+                exampleText->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
+                textLayout->addWidget(exampleText);
+                OnExampleColorChanged(settings.measureLight);
+            }
+        }
+
+        tabLayout->addStretch(1);
+
+        tabs->addTab(tab, _("Crosshair"));
+    }
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
@@ -438,3 +502,20 @@ void SettingsDialog::OnKeyChanged(int index) {
     keyList->currentItem()->setText(1, keyStr);
     settings.toolKeys[keyList->indexOfTopLevelItem(keyList->currentItem())] = key;
 }
+
+void SettingsDialog::OnMeasure45Toggled  (bool value) { settings.measure45Lines = value; }
+void SettingsDialog::OnMeasureShowToggled(bool value) { settings.measureShow    = value; }
+void SettingsDialog::OnMeasureTpToggled  (bool value) { settings.measureTp      = value; }
+void SettingsDialog::OnMeasureBigToggled (bool value) { settings.measureBig     = value; }
+
+void SettingsDialog::OnExampleColorChanged(int light) {
+    if(light)
+        exampleText->setStyleSheet("QLabel { background-color: white; color: black;"
+                                   "border-style: solid; border-width: 1px; border-color: black }");
+    else
+        exampleText->setStyleSheet("QLabel { background-color: black; color: white;"
+                                   "border-style: solid; border-width: 1px; border-color: black }");
+
+    settings.measureLight = light;
+}
+

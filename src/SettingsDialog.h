@@ -4,6 +4,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QTreeWidget>
+#include <QLabel>
 
 #include "Settings.h"
 #include "ColorPickerButton.h"
@@ -20,6 +21,7 @@ private:
     QLineEdit *macroPath;
     QTreeWidget *keyList;
     QComboBox *keyChoose;
+    QLabel *exampleText;
 
     Settings settings;
 private slots:
@@ -44,4 +46,10 @@ private slots:
 
     void OnToolSelected(QTreeWidgetItem *item, int column);
     void OnKeyChanged(int index);
+
+    void OnMeasure45Toggled  (bool value);
+    void OnMeasureShowToggled(bool value);
+    void OnMeasureTpToggled  (bool value);
+    void OnMeasureBigToggled (bool value);
+    void OnExampleColorChanged(int light);
 };
