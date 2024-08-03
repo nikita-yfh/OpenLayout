@@ -25,6 +25,10 @@ private:
 
     Settings settings;
 private slots:
+    const Settings &GetSettings() {
+        return settings;
+    }
+
     void OnUnitsChanged(int index);
     void OnDrillChanged(int index);
 

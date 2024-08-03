@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QRadioButton>
 #include <QButtonGroup>
+#include <QDialogButtonBox>
 
 class VerticalTabBar : public QTabBar {
 public:
@@ -446,6 +447,10 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         tabs->addTab(tab, _("AutoSave"));
     }
+    QDialogButtonBox *buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttons, SIGNAL(rejected()), this, SLOT(reject()));
+    mainLayout->addWidget(buttons);
 }
 
 void SettingsDialog::OnUnitsChanged(int index) {
