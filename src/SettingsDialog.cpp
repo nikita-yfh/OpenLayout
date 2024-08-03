@@ -203,16 +203,19 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         tabLayout->addWidget(new QLabel("Leave this fields empty, if you want OpenLayout to remember\n"
 										"the last used directories.", tab));
 
-        QCheckBox *sameDirs = new QCheckBox(_("Use the same folder for all file types"), tab);
-        tabLayout->addWidget(sameDirs);
+        QCheckBox *sameDir = new QCheckBox(_("Use the same folder for all file types"), tab);
+        sameDir->setChecked(settings.sameDir);
+        tabLayout->addWidget(sameDir);
 
         tabLayout->addStretch(1);
 
-        connect(sameDirs, SIGNAL(toggled(bool)), gbrExport,     SLOT(setDisabled(bool)));
-        connect(sameDirs, SIGNAL(toggled(bool)), bmpExport,     SLOT(setDisabled(bool)));
-        connect(sameDirs, SIGNAL(toggled(bool)), hpglExport,    SLOT(setDisabled(bool)));
-        connect(sameDirs, SIGNAL(toggled(bool)), scannedCopies, SLOT(setDisabled(bool)));
-        connect(sameDirs, SIGNAL(toggled(bool)), this,          SLOT(OnSameDirToggled(bool)));
+        connect(sameDir, SIGNAL(toggled(bool)), gbrExport,     SLOT(setDisabled(bool)));
+        connect(sameDir, SIGNAL(toggled(bool)), bmpExport,     SLOT(setDisabled(bool)));
+        connect(sameDir, SIGNAL(toggled(bool)), hpglExport,    SLOT(setDisabled(bool)));
+        connect(sameDir, SIGNAL(toggled(bool)), scannedCopies, SLOT(setDisabled(bool)));
+        connect(sameDir, SIGNAL(toggled(bool)), this,          SLOT(OnSameDirToggled(bool)));
+
+        emit sameDir->toggled(settings.sameDir);
 
         tabs->addTab(tab, _("Working directories"));
     }
@@ -330,6 +333,7 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         vlayout->addWidget(new QLabel(_("Change hotkey"), tab));
 
         keyChoose = new QComboBox(tab);
+        keyChoose->setEnabled(false);
         keyChoose->addItem("ESC");
         for(char i = 'A'; i <= 'Z'; i++)
             keyChoose->addItem(QString(i));
@@ -353,7 +357,9 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
 
         {   
             QWidget *coordWidget = new QWidget(tab);
+            coordWidget->setEnabled(settings.measureShow);
             tabLayout->addWidget(coordWidget);
+
             QVBoxLayout *coordLayout = new QVBoxLayout(coordWidget);
             connect(measureShow, SIGNAL(clicked(bool)), coordWidget, SLOT(setEnabled(bool)));
             coordLayout->setContentsMargins(25, 0, 0, 0);
@@ -400,6 +406,43 @@ SettingsDialog::SettingsDialog(const Settings &oldSettings, QWidget *parent)
         tabLayout->addStretch(1);
 
         tabs->addTab(tab, _("Crosshair"));
+    }
+    { // AutoSave
+        QWidget *tab = new QWidget(tabs);
+        QVBoxLayout *tabLayout = new QVBoxLayout(tab);
+        tabLayout->setSpacing(15);
+
+        tabLayout->addWidget(new QLabel(_("Save layout periodical\n"
+                                    "to a separate backup file (*.bak)"), tab));
+
+        QCheckBox *autosave = new QCheckBox(_("Activate AutoSave"), tab);
+        tabLayout->addWidget(autosave);
+
+        {
+            QWidget *intervalWidget = new QWidget(tab);
+            intervalWidget->setEnabled(settings.autosave);
+            connect(autosave, SIGNAL(toggled(bool)), intervalWidget, SLOT(setEnabled(bool)));
+            tabLayout->addWidget(intervalWidget);
+
+            QHBoxLayout *intervalLayout = new QHBoxLayout(intervalWidget);
+            intervalLayout->setContentsMargins(25, 0, 0, 0);
+
+            intervalLayout->addWidget(new QLabel(_("Interval:"), intervalWidget));
+
+            QSpinBox *autosaveTimer = new QSpinBox(intervalWidget);
+            autosaveTimer->setMinimum(1);
+            autosaveTimer->setMaximum(60);
+            autosaveTimer->setValue(settings.autosaveTimer);
+            intervalLayout->addWidget(autosaveTimer);
+
+            intervalLayout->addWidget(new QLabel(_("min"), intervalWidget));
+            intervalLayout->addStretch(1);
+        }
+
+        autosave->setChecked(settings.autosave);
+        tabLayout->addStretch(1);
+
+        tabs->addTab(tab, _("AutoSave"));
     }
 }
 
@@ -480,6 +523,7 @@ void SettingsDialog::OnToolSelected(QTreeWidgetItem *item, int column) {
         keyChoose->setCurrentIndex(0);
     if(key >= Qt::Key_A && key <= Qt::Key_Z)
         keyChoose->setCurrentIndex(key - Qt::Key_A + 1);
+    keyChoose->setEnabled(true);
 }
 
 void SettingsDialog::OnKeyChanged(int index) {
@@ -519,3 +563,5 @@ void SettingsDialog::OnExampleColorChanged(int light) {
     settings.measureLight = light;
 }
 
+void SettingsDialog::OnAutosaveToggled     (bool value) { settings.autosave      = value; }
+void SettingsDialog::OnAutosaveTimerChanged(int  value) { settings.autosaveTimer = value; }

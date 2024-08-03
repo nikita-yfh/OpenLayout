@@ -52,4 +52,7 @@ private slots:
     void OnMeasureTpToggled  (bool value);
     void OnMeasureBigToggled (bool value);
     void OnExampleColorChanged(int light);
+
+    void OnAutosaveToggled(bool value);
+    void OnAutosaveTimerChanged(int value);
 };
