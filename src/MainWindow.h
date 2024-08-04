@@ -11,6 +11,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
 private:
+    void CreateMenuBar();
     void CreateToolBar();
     void CreateLeftPanel();
 

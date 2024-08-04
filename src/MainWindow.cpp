@@ -48,6 +48,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     CreateToolBar();
     CreateLeftPanel();
+    CreateMenuBar();
 }
 
 void MainWindow::CreateToolBar() {
@@ -156,10 +157,6 @@ void MainWindow::CreateToolBar() {
     propertiesAct->setCheckable(true);
     DRCAct->setCheckable(true);
     macroAct->setCheckable(true);
-
-
-    SettingsDialog dialog(settings, this);
-    dialog.exec();
 }
 
 void MainWindow::CreateLeftPanel() {
@@ -168,6 +165,242 @@ void MainWindow::CreateLeftPanel() {
 
     gridPanel = new GridPanel(this);
     addToolBar(Qt::LeftToolBarArea, gridPanel);
+}
+
+void MainWindow::CreateMenuBar() {
+    QMenuBar *menuBar = this->menuBar();
+
+    QAction *ID_NEW_ACT = new QAction(_("&New"), this);
+    QAction *ID_OPEN_ACT = new QAction(_("&Open"), this);
+    QAction *ID_SAVE_ACT = new QAction(_("&Save"), this);
+    QAction *ID_SAVEAS_ACT = new QAction(_("&Save as"), this);
+    QAction *ID_SAVE_MACRO_ACT = new QAction(_("Save as &macro"), this);
+    QAction *ID_AUTOSAVE_ACT = new QAction(_("A&utoSave"), this);
+    QAction *ID_GERBER_IMPORT_ACT = new QAction(_("&Gerber-Import"), this);
+    QAction *ID_GERBER_EXPORT_ACT = new QAction(_("Gerber Export"), this);
+    QAction *ID_DRILL_DATA_ACT = new QAction(_("Drill data (Excellon)"), this);
+    QAction *ID_ISOLATION_ACT = new QAction(_("Isolation milling (HPGL, *.plt)"), this);
+    QAction *ID_SAVE_BMP_ACT = new QAction(_("Bitmap (*.bmp)"), this);
+    QAction *ID_SAVE_JPG_ACT = new QAction(_("JPG (*.jpg)"), this);
+    QAction *ID_SAVE_GIF_ACT = new QAction(_("GIF (*.gif)"), this);
+    QAction *ID_SAVE_EMP_ACT = new QAction(_("EMP (*.emp)"), this);
+    QAction *ID_SAVE_PNG_ACT = new QAction(_("PNG (*.png)"), this);
+    QAction *ID_DIRECTORIES_ACT = new QAction(_("&Directories"), this);
+    QAction *ID_PRINT_SETUP_ACT = new QAction(_("P&rinter setup"), this);
+    QAction *ID_PRINT_ACT = new QAction(_("&Print"), this);
+    QAction *ID_EXIT_ACT = new QAction(_("&Exit"), this);
+
+    QAction *ID_UNDO_ACT = new QAction(_("&Undo"), this);
+    QAction *ID_REDO_ACT = new QAction(_("&Redo"), this);
+    QAction *ID_COPY_ACT = new QAction(_("C&opy"), this);
+    QAction *ID_CUT_ACT = new QAction(_("&Cut"), this);
+    QAction *ID_PASTE_ACT = new QAction(_("&Paste"), this);
+    QAction *ID_DUPLICATE_ACT = new QAction(_("Dup&licate"), this);
+    QAction *ID_DELETE_ACT = new QAction(_("&Delete"), this);
+    QAction *ID_SELECTALL_ACT = new QAction(_("Select &all"), this);
+
+    QAction *ID_NEW_ACT = new QAction(_("&Add new board"), this);
+    QAction *ID_BOARD_PROPERTIES_ACT = new QAction(_("&Properties"), this);
+    QAction *ID_BOARD_COPY_ACT = new QAction(_("&Copy board"), this);
+    QAction *ID_BOARD_DELETE_ACT = new QAction(_("&Delete board"), this);
+    QAction *ID_BOARD_SET_RIGHT_ACT = new QAction(_("Set board to &right"), this);
+    QAction *ID_BOARD_SET_LEFT_ACT = new QAction(_("Set board to &left"), this);
+    QAction *ID_BOARD_MOVE_RIGHT_ACT = new QAction(_("&Move board to right"), this);
+    QAction *ID_BOARD_MOVE_LEFT_ACT = new QAction(_("M&ove board to left"), this);
+    QAction *ID_BOARD_IMPORT_ACT = new QAction(_("&Import pages from file"), this);
+    QAction *ID_BOARD_SAVE_ACT = new QAction(_("&Save pages to file"), this);
+
+    QAction *ID_ROTATE_ACT = new QAction(_("&Rotate"), this);
+    QAction *ID_HMIRROR_ACT = new QAction(_("Mirror &horisontal"), this);
+    QAction *ID_VMIRROR_ACT = new QAction(_("Mirror &vertical"), this);
+    QAction *ID_GROUP_ACT = new QAction(_("Build &group"), this);
+    QAction *ID_UNGROUP_ACT = new QAction(_("Split gro&up"), this);
+    QAction *ID_CHANGE_SIDE_ACT = new QAction(_("&Change board side"), this);
+    QAction *ID_LAYER_C1_ACT = new QAction(_("&C1"), this);
+    QAction *ID_LAYER_S1_ACT = new QAction(_("S&1"), this);
+    QAction *ID_LAYER_C2_ACT = new QAction(_("C&2"), this);
+    QAction *ID_LAYER_S2_ACT = new QAction(_("&S2"), this);
+    QAction *ID_LAYER_I1_ACT = new QAction(_("I1"), this);
+    QAction *ID_LAYER_I2_ACT = new QAction(_("&I2"), this);
+    QAction *ID_LAYER_O_ACT = new QAction(_("&O"), this);
+    QAction *ID_SNAP_GRID_ACT = new QAction(_("S&nap to grid"), this);
+    QAction *ID_MASSIVE_ACT = new QAction(_("&Tile / Arrange circular"), this);
+
+    QAction *ID_INFO_ACT = new QAction(_("&Project info"), this);
+    QAction *ID_LIST_DRILLINGS_ACT = new QAction(_("&List drillings"), this);
+    QAction *ID_SCANNED_COPY_ACT = new QAction(_("&Scanned copy"), this);
+    QAction *ID_FOOTPRINT_ACT = new QAction(_("&Footprint-Wizard"), this);
+    QAction *ID_RESET_MASK_ACT = new QAction(_("R&eset solder mask"), this);
+    QAction *ID_REMOVE_CONNECTIONS_ACT = new QAction(_("&Remove connections (rubberbands)"), this);
+    QAction *ID_DELETE_OUTSIDE_ACT = new QAction(_("&Delete elements outside the board"), this);
+    QAction *ID_ELEMENT_EXPORT_ACT = new QAction(_("Te&xt-IO: Export elements"), this);
+    QAction *ID_ELEMENT_IMPORT_ACT = new QAction(_("&Text-IO: Import elements"), this);
+
+    QAction *ID_PROPERTIES_ACT = new QAction(_("&General settings"), this);
+    QAction *ID_PANEL_MACRO_ACT = new QAction(_("&Macro-Library"), this);
+    QAction *ID_PANEL_PROPERTIES_ACT = new QAction(_("&Properties-Panel"), this);
+    QAction *ID_PANEL_DRC_ACT = new QAction(_("&DRC-Panel"), this);
+    QAction *ID_PANEL_COMPONENTS_ACT = new QAction(_("&Components-Panel"), this);
+    QAction *ID_PANEL_SELECTOR_ACT = new QAction(_("S&elector-Panel"), this);
+    ID_PANEL_MACRO_ACT->setCheckable(true);
+    ID_PANEL_PROPERTIES_ACT->setCheckable(true);
+    ID_PANEL_DRC_ACT->setCheckable(true);
+    ID_PANEL_COMPONENTS_ACT->setCheckable(true);
+    ID_PANEL_SELECTOR_ACT->setCheckable(true);
+    QAction *ID_ZOOM_BOARD_ACT = new QAction(_("Zoom &board"), this);
+    QAction *ID_ZOOM_OBJECTS_ACT = new QAction(_("Zoom &objects"), this);
+    QAction *ID_ZOOM_SELECTION_ACT = new QAction(_("Zoom &selection"), this);
+
+    QAction *ID_ABOUT_ACT = new QAction(_("&About"), this);
+
+    ID_NEW_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+    ID_OPEN_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_O));
+    ID_SAVE_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
+    ID_SAVEAS_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_S));
+    ID_PRINT_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_P));
+    ID_EXIT_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
+    ID_UNDO_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Z));
+    ID_REDO_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Y));
+    ID_COPY_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_C));
+    ID_CUT_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_X));
+    ID_PASTE_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_V));
+    ID_DUPLICATE_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_D));
+    ID_DUPLICATE_ACT->setShortcut(QKeySequence(Qt::Key_Delete));
+    ID_SELECTALL_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_A));
+    ID_ROTATE_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
+    ID_HMIRROR_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_H));
+    ID_VMIRROR_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_T));
+    ID_GROUP_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
+    ID_UNGROUP_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_U));
+    ID_CHANGE_SIDE_ACT->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+
+	{ //File
+		QMenu *menu = menuBar->addMenu(_("&File"));
+        menu->addAction(ID_NEW_ACT);
+        menu->addAction(ID_OPEN_ACT);
+        menu->addAction(ID_SAVE_ACT);
+        menu->addAction(ID_SAVEAS_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_SAVE_MACRO_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_AUTOSAVE_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_GERBER_IMPORT_ACT);
+		menu->addSeparator();
+		{ //File->Export
+            QMenu *submenu = menu->addMenu(_("&Export..."));
+
+            submenu->addAction(ID_GERBER_EXPORT_ACT);
+            submenu->addAction(ID_DRILL_DATA_ACT);
+			submenu->addSeparator();
+            submenu->addAction(ID_ISOLATION_ACT);
+			submenu->addSeparator();
+            submenu->addAction(ID_SAVE_BMP_ACT);
+            submenu->addAction(ID_SAVE_JPG_ACT);
+            submenu->addAction(ID_SAVE_GIF_ACT);
+            submenu->addAction(ID_SAVE_EMP_ACT);
+            submenu->addAction(ID_SAVE_PNG_ACT);
+		}
+		menu->addSeparator();
+        menu->addAction(ID_DIRECTORIES_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_PRINT_SETUP_ACT);
+        menu->addAction(ID_PRINT_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_EXIT_ACT);
+	}
+	{ //Edit
+		QMenu *menu = menuBar->addMenu(_("&Edit"));
+
+        menu->addAction(ID_UNDO_ACT);
+        menu->addAction(ID_REDO_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_COPY_ACT);
+        menu->addAction(ID_CUT_ACT);
+        menu->addAction(ID_PASTE_ACT);
+        menu->addAction(ID_DUPLICATE_ACT);
+        menu->addAction(ID_DELETE_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_SELECTALL_ACT);
+	}
+	{ //Board
+		QMenu *menu = menuBar->addMenu(_("&Board"));
+
+        menu->addAction(ID_NEW_ACT);
+        menu->addAction(ID_BOARD_PROPERTIES_ACT);
+        menu->addAction(ID_BOARD_COPY_ACT);
+        menu->addAction(ID_BOARD_DELETE_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_BOARD_SET_RIGHT_ACT);
+        menu->addAction(ID_BOARD_SET_LEFT_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_BOARD_MOVE_RIGHT_ACT);
+        menu->addAction(ID_BOARD_MOVE_LEFT_ACT);
+        menu->addAction(ID_BOARD_IMPORT_ACT);
+        menu->addAction(ID_BOARD_SAVE_ACT);
+	}
+	{ //Functions
+		QMenu *menu = menuBar->addMenu(_("F&unctions"));
+
+        menu->addAction(ID_ROTATE_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_HMIRROR_ACT);
+        menu->addAction(ID_VMIRROR_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_GROUP_ACT);
+        menu->addAction(ID_UNGROUP_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_CHANGE_SIDE_ACT);
+		{ //Functions->Set to layer
+			QMenu *submenu = menu->addMenu(_("&Set to layer..."));
+
+            submenu->addAction(ID_LAYER_C1_ACT);
+            submenu->addAction(ID_LAYER_S1_ACT);
+            submenu->addAction(ID_LAYER_C2_ACT);
+            submenu->addAction(ID_LAYER_S2_ACT);
+            submenu->addAction(ID_LAYER_I1_ACT);
+            submenu->addAction(ID_LAYER_I2_ACT);
+            submenu->addAction(ID_LAYER_O_ACT);
+		}
+		menu->addSeparator();
+        menu->addAction(ID_SNAP_GRID_ACT);
+        menu->addAction(ID_MASSIVE_ACT);
+	}
+	{ //Extras
+		QMenu *menu = menuBar->addMenu(_("E&xtras"));
+
+        menu->addAction(ID_INFO_ACT);
+        menu->addAction(ID_LIST_DRILLINGS_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_SCANNED_COPY_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_FOOTPRINT_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_RESET_MASK_ACT);
+        menu->addAction(ID_REMOVE_CONNECTIONS_ACT);
+        menu->addAction(ID_DELETE_OUTSIDE_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_ELEMENT_IMPORT_ACT);
+        menu->addAction(ID_ELEMENT_EXPORT_ACT);
+	}
+	{ //Options
+		QMenu *menu = menuBar->addMenu(_("&Options"));
+        menu->addAction(ID_PROPERTIES_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_PANEL_MACRO_ACT);
+        menu->addAction(ID_PANEL_PROPERTIES_ACT);
+        menu->addAction(ID_PANEL_DRC_ACT);
+        menu->addAction(ID_PANEL_COMPONENTS_ACT);
+        menu->addAction(ID_PANEL_SELECTOR_ACT);
+		menu->addSeparator();
+        menu->addAction(ID_ZOOM_BOARD_ACT);
+        menu->addAction(ID_ZOOM_OBJECTS_ACT);
+        menu->addAction(ID_ZOOM_SELECTION_ACT);
+	}
+	{ //Help
+		QMenu *menu = menuBar->addMenu(_("&Help"));
+        menu->addAction(ID_ABOUT_ACT);
+	}
 }
 
 MainWindow::~MainWindow() {
