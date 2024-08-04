@@ -46,6 +46,7 @@
 #include "xpm/toolbar/zoom_prev.xpm"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    CreateActions();
     CreateToolBar();
     CreateLeftPanel();
     CreateMenuBar();
@@ -53,24 +54,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 
 void MainWindow::CreateToolBar() {
     toolBarMain = addToolBar(_("File"));
-    newAct          =        toolBarMain->addAction(QIcon(QPixmap(new_xpm)),        _("New"));
-    openAct         =        toolBarMain->addAction(QIcon(QPixmap(open_xpm)),       _("Open"));
-    saveAct         =        toolBarMain->addAction(QIcon(QPixmap(save_xpm)),       _("Save"));
-    printAct        =        toolBarMain->addAction(QIcon(QPixmap(print_xpm)),      _("Print"));
+    toolBarMain->addAction(boardNewAct);
+    toolBarMain->addAction(openAct);
+    toolBarMain->addAction(saveAct);
+    toolBarMain->addAction(printAct);
 
     toolBarHistory = addToolBar(_("History"));
-    undoAct         =     toolBarHistory->addAction(QIcon(QPixmap(undo_xpm)),       _("Undo"));
-    redoAct         =     toolBarHistory->addAction(QIcon(QPixmap(redo_xpm)),       _("Redo"));
+    toolBarHistory->addAction(undoAct);
+    toolBarHistory->addAction(redoAct);
 
     toolBarClipboard = addToolBar(_("Clipboard"));
-    cutAct          =   toolBarClipboard->addAction(QIcon(QPixmap(cut_xpm)),        _("Cut"));
-    copyAct         =   toolBarClipboard->addAction(QIcon(QPixmap(copy_xpm)),       _("Copy"));
-    pasteAct        =   toolBarClipboard->addAction(QIcon(QPixmap(paste_xpm)),      _("Paste"));
-    deleteAct       =   toolBarClipboard->addAction(QIcon(QPixmap(delete_xpm)),     _("Delete"));
+    toolBarClipboard->addAction(cutAct);
+    toolBarClipboard->addAction(copyAct);
+    toolBarClipboard->addAction(pasteAct);
+    toolBarClipboard->addAction(deleteAct);
 
     toolBarActions = addToolBar(_("Actions"));
-    duplicateAct    =    toolBarActions->addAction(QIcon(QPixmap(duplicate_xpm)),   _("Duplicate"));
-    QAction *rotateAct = toolBarActions->addAction(QIcon(QPixmap(rotate_xpm)),      _("Rotate"));
+    toolBarActions->addAction(duplicateAct);
+
+    toolBarActions->addAction(rotateAct);
 
     { // Create menu for rotate button
         QMenu *rotateMenu = new QMenu();
@@ -99,8 +101,8 @@ void MainWindow::CreateToolBar() {
         qobject_cast<QToolButton*>(toolBarActions->widgetForAction(rotateAct))->setPopupMode(QToolButton::MenuButtonPopup);
     }
 
-    mirrorHAct      =    toolBarActions->addAction(QIcon(QPixmap(mirror_h_xpm)),    _("Mirror horizontal"));
-    mirrorVAct      =    toolBarActions->addAction(QIcon(QPixmap(mirror_v_xpm)),    _("Mirror vertical"));
+    toolBarActions->addAction(hmirrorAct);
+    toolBarActions->addAction(vmirrorAct);
     QAction *alignAct =  toolBarActions->addAction(QIcon(QPixmap(align_xpm)),       _("Align elements"));
     { // Create menu for align button
         QMenu *alignMenu = new QMenu();
@@ -114,31 +116,31 @@ void MainWindow::CreateToolBar() {
         qobject_cast<QToolButton*>(toolBarActions->widgetForAction(alignAct))->setPopupMode(QToolButton::InstantPopup);
     }
 
-    snapGridAct    =    toolBarActions->addAction(QIcon(QPixmap(to_grid_xpm)),      _("Snap to grid"));
+    toolBarActions->addAction(snapGridAct);
     toolBarActions->addSeparator();
-    removeConAct   =    toolBarActions->addAction(QIcon(QPixmap(remove_con_xpm)),   _("Remove connections (rubberbands)"));
+    toolBarActions->addAction(removeConAct);
     toolBarActions->addSeparator();
-    groupAct       =    toolBarActions->addAction(QIcon(QPixmap(group_on_xpm)),     _("Build group"));
-    ungroupAct     =    toolBarActions->addAction(QIcon(QPixmap(group_off_xpm)),    _("Split group"));
-
+    toolBarActions->addAction(groupAct);
+    toolBarActions->addAction(ungroupAct);
     toolBarZoom = addToolBar(_("Zoom functions"));
-    QAction *zoomAct =  toolBarZoom->addAction(QIcon(QPixmap(zoom_any_xpm)),        _("Zoom functions"));
+    QAction *zoomAct =  toolBarZoom->addAction(QIcon(QPixmap(zoom_any_xpm)),       _("Zoom functions"));
     { // Create menu for zoom button
         QMenu *zoomMenu = new QMenu();
-        zoomPreviousAct = zoomMenu->addAction(QIcon(QPixmap(zoom_prev_xpm)),        _("Zoom previous"));
+        zoomMenu->addAction(zoomPreviousAct);
         zoomMenu->addSeparator();
-        zoomBoardAct    = zoomMenu->addAction(QIcon(QPixmap(zoom_board_xpm)),       _("Zoom board"));
-        zoomObjectsAct  = zoomMenu->addAction(QIcon(QPixmap(zoom_objects_xpm)),     _("Zoom objects"));
-        zoomSelectionAct= zoomMenu->addAction(QIcon(QPixmap(zoom_selection_xpm)),   _("Zoom selection"));
+        zoomMenu->addAction(zoomBoardAct);
+        zoomMenu->addAction(zoomObjectsAct);
+        zoomMenu->addAction(zoomSelectionAct);
+
         zoomAct->setMenu(zoomMenu);
         qobject_cast<QToolButton*>(toolBarZoom->widgetForAction(zoomAct))->setPopupMode(QToolButton::InstantPopup);
     }
 
     toolBarPCB = addToolBar(_("PCB actions"));
-    transparentAct =        toolBarPCB->addAction(QIcon(QPixmap(transparent_xpm)),  _("Toggle transparent mode"));
+    toolBarPCB->addAction(transparentAct);
     transparentAct->setCheckable(true);
-    projectInfoAct =        toolBarPCB->addAction(QIcon(QPixmap(info_xpm)),         _("Show project-info"));
-    bitmapAct      =        toolBarPCB->addAction(QIcon(QPixmap(bitmap_xpm)),       _("Scanned copy..."));
+    toolBarPCB->addAction(projectInfoAct);
+    toolBarPCB->addAction(bitmapAct);
 
     toolBarPanels = addToolBar(_("Panel visibility"));
     {
@@ -146,17 +148,11 @@ void MainWindow::CreateToolBar() {
         panelsSpacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         toolBarPanels->addWidget(panelsSpacer);
     }
-    selectorAct    =     toolBarPanels->addAction(QIcon(QPixmap(selector_xpm)),     _("Show/hide Selector-Panel"));
-    componentAct   =     toolBarPanels->addAction(QIcon(QPixmap(components_xpm)),   _("Show/hide Component-Panel"));
-    propertiesAct  =     toolBarPanels->addAction(QIcon(QPixmap(properties_xpm)),   _("Show/hide Properties-Panel"));
-    DRCAct         =     toolBarPanels->addAction(QIcon(QPixmap(drc_xpm)),          _("Show/hide DRC-Panel"));
-    macroAct       =     toolBarPanels->addAction(QIcon(QPixmap(macro_xpm)),        _("Show/hide Macro-Library"));
-
-    selectorAct->setCheckable(true);
-    componentAct->setCheckable(true);
-    propertiesAct->setCheckable(true);
-    DRCAct->setCheckable(true);
-    macroAct->setCheckable(true);
+    toolBarPanels->addAction(panelSelectorAct);
+    toolBarPanels->addAction(panelComponentsAct);
+    toolBarPanels->addAction(panelPropertiesAct);
+    toolBarPanels->addAction(panelDrcAct);
+    toolBarPanels->addAction(panelMacroAct);
 }
 
 void MainWindow::CreateLeftPanel() {
@@ -167,91 +163,85 @@ void MainWindow::CreateLeftPanel() {
     addToolBar(Qt::LeftToolBarArea, gridPanel);
 }
 
-void MainWindow::CreateMenuBar() {
-    QMenuBar *menuBar = this->menuBar();
-
-    QAction *newAct              = new QAction(_("&New"), this);
-    QAction *openAct             = new QAction(_("&Open"), this);
-    QAction *saveAct             = new QAction(_("&Save"), this);
-    QAction *saveasAct           = new QAction(_("&Save as"), this);
-    QAction *saveMacroAct        = new QAction(_("Save as &macro"), this);
-    QAction *autosaveAct         = new QAction(_("A&utoSave"), this);
-    QAction *gerberImportAct     = new QAction(_("&Gerber-Import"), this);
-    QAction *gerberExportAct     = new QAction(_("Gerber Export"), this);
-    QAction *drillDataAct        = new QAction(_("Drill data (Excellon)"), this);
-    QAction *isolationAct        = new QAction(_("Isolation milling (HPGL, *.plt)"), this);
-    QAction *saveBmpAct          = new QAction(_("Bitmap (*.bmp)"), this);
-    QAction *saveJpgAct          = new QAction(_("JPG (*.jpg)"), this);
-    QAction *saveGifAct          = new QAction(_("GIF (*.gif)"), this);
-    QAction *saveEmpAct          = new QAction(_("EMP (*.emp)"), this);
-    QAction *savePngAct          = new QAction(_("PNG (*.png)"), this);
-    QAction *directoriesAct      = new QAction(_("&Directories"), this);
-    QAction *printSetupAct       = new QAction(_("P&rinter setup"), this);
-    QAction *printAct            = new QAction(_("&Print"), this);
-    QAction *exitAct             = new QAction(_("&Exit"), this);
-
-    QAction *undoAct             = new QAction(_("&Undo"), this);
-    QAction *redoAct             = new QAction(_("&Redo"), this);
-    QAction *copyAct             = new QAction(_("C&opy"), this);
-    QAction *cutAct              = new QAction(_("&Cut"), this);
-    QAction *pasteAct            = new QAction(_("&Paste"), this);
-    QAction *duplicateAct        = new QAction(_("Dup&licate"), this);
-    QAction *deleteAct           = new QAction(_("&Delete"), this);
-    QAction *selectallAct        = new QAction(_("Select &all"), this);
-
-    QAction *boardNewAct         = new QAction(_("&Add new board"), this);
-    QAction *boardPropertiesAct  = new QAction(_("&Properties"), this);
-    QAction *boardCopyAct        = new QAction(_("&Copy board"), this);
-    QAction *boardDeleteAct      = new QAction(_("&Delete board"), this);
-    QAction *boardSetRightAct    = new QAction(_("Set board to &right"), this);
-    QAction *boardSetLeftAct     = new QAction(_("Set board to &left"), this);
-    QAction *boardMoveRightAct   = new QAction(_("&Move board to right"), this);
-    QAction *boardMoveLeftAct    = new QAction(_("M&ove board to left"), this);
-    QAction *boardImportAct      = new QAction(_("&Import pages from file"), this);
-    QAction *boardSaveAct        = new QAction(_("&Save pages to file"), this);
-
-    QAction *rotateAct           = new QAction(_("&Rotate"), this);
-    QAction *hmirrorAct          = new QAction(_("Mirror &horisontal"), this);
-    QAction *vmirrorAct          = new QAction(_("Mirror &vertical"), this);
-    QAction *groupAct            = new QAction(_("Build &group"), this);
-    QAction *ungroupAct          = new QAction(_("Split gro&up"), this);
-    QAction *changeSideAct       = new QAction(_("&Change board side"), this);
-    QAction *layerC1Act          = new QAction(_("&C1"), this);
-    QAction *layerS1Act          = new QAction(_("S&1"), this);
-    QAction *layerC2Act          = new QAction(_("C&2"), this);
-    QAction *layerS2Act          = new QAction(_("&S2"), this);
-    QAction *layerI1Act          = new QAction(_("I1"), this);
-    QAction *layerI2Act          = new QAction(_("&I2"), this);
-    QAction *layerOAct           = new QAction(_("&O"), this);
-    QAction *snapGrAct           = new QAction(_("S&nap to grid"), this);
-    QAction *massiveAct          = new QAction(_("&Tile / Arrange circular"), this);
-
-    QAction *infoAct             = new QAction(_("&Project info"), this);
-    QAction *listDrillingsAct    = new QAction(_("&List drillings"), this);
-    QAction *scannedCopyAct      = new QAction(_("&Scanned copy"), this);
-    QAction *footprintAct        = new QAction(_("&Footprint-Wizard"), this);
-    QAction *resetMaskAct        = new QAction(_("R&eset solder mask"), this);
-    QAction *removeConnectionsAct= new QAction(_("&Remove connections (rubberbands)"), this);
-    QAction *deleteOutsideAct    = new QAction(_("&Delete elements outside the board"), this);
-    QAction *elementExportAct    = new QAction(_("Te&xt-IO: Export elements"), this);
-    QAction *elementImportAct    = new QAction(_("&Text-IO: Import elements"), this);
-
-    QAction *propertiesAct       = new QAction(_("&General settings"), this);
-    QAction *panelMacroAct       = new QAction(_("&Macro-Library"), this);
-    QAction *panelPropertiesAct  = new QAction(_("&Properties-Panel"), this);
-    QAction *panelDrcAct         = new QAction(_("&DRC-Panel"), this);
-    QAction *panelComponentsAct  = new QAction(_("&Components-Panel"), this);
-    QAction *panelSelectorAct    = new QAction(_("S&elector-Panel"), this);
+void MainWindow::CreateActions() {
+    newAct              = new QAction(_("&New"), this);
+    openAct             = new QAction(QIcon(QPixmap(open_xpm)),_("&Open"), this);
+    saveAct             = new QAction(QIcon(QPixmap(save_xpm)),_("&Save"), this);
+    saveasAct           = new QAction(_("S&ave as"), this);
+    saveMacroAct        = new QAction(_("Save as &macro"), this);
+    autosaveAct         = new QAction(_("A&utoSave"), this);
+    gerberImportAct     = new QAction(_("&Gerber-Import"), this);
+    gerberExportAct     = new QAction(_("Gerber Export"), this);
+    drillDataAct        = new QAction(_("Drill data (Excellon)"), this);
+    isolationAct        = new QAction(_("Isolation milling (HPGL, *.plt)"), this);
+    saveBmpAct          = new QAction(_("Bitmap (*.bmp)"), this);
+    saveJpgAct          = new QAction(_("JPG (*.jpg)"), this);
+    saveGifAct          = new QAction(_("GIF (*.gif)"), this);
+    saveEmpAct          = new QAction(_("EMP (*.emp)"), this);
+    savePngAct          = new QAction(_("PNG (*.png)"), this);
+    directoriesAct      = new QAction(_("&Directories"), this);
+    printSetupAct       = new QAction(_("P&rinter setup"), this);
+    printAct            = new QAction(QIcon(QPixmap(print_xpm)), _("&Print"), this);
+    exitAct             = new QAction(_("&Exit"), this);
+    undoAct             = new QAction(QIcon(QPixmap(undo_xpm)), _("&Undo"), this);
+    redoAct             = new QAction(QIcon(QPixmap(redo_xpm)), _("&Redo"), this);
+    copyAct             = new QAction(QIcon(QPixmap(copy_xpm)), _("C&opy"), this);
+    cutAct              = new QAction(QIcon(QPixmap(cut_xpm)), _("&Cut"), this);
+    pasteAct            = new QAction(QIcon(QPixmap(paste_xpm)), _("&Paste"), this);
+    duplicateAct        = new QAction(QIcon(QPixmap(duplicate_xpm)), _("Dup&licate"), this);
+    deleteAct           = new QAction(QIcon(QPixmap(delete_xpm)), _("&Delete"), this);
+    selectallAct        = new QAction(_("Select &all"), this);
+    boardNewAct         = new QAction(QIcon(QPixmap(new_xpm)), _("&Add new board"), this);
+    boardPropAct        = new QAction(_("&Properties"), this);
+    boardCopyAct        = new QAction(_("&Copy board"), this);
+    boardDeleteAct      = new QAction(_("&Delete board"), this);
+    boardSetRightAct    = new QAction(_("Set board to &right"), this);
+    boardSetLeftAct     = new QAction(_("Set board to &left"), this);
+    boardMoveRightAct   = new QAction(_("&Move board to right"), this);
+    boardMoveLeftAct    = new QAction(_("M&ove board to left"), this);
+    boardImportAct      = new QAction(_("&Import pages from file"), this);
+    boardSaveAct        = new QAction(_("&Save pages to file"), this);
+    rotateAct           = new QAction(QIcon(QPixmap(rotate_xpm)), _("&Rotate"), this);
+    hmirrorAct          = new QAction(QIcon(QPixmap(mirror_h_xpm)), _("Mirror &horisontal"), this);
+    vmirrorAct          = new QAction(QIcon(QPixmap(mirror_v_xpm)), _("Mirror &vertical"), this);
+    groupAct            = new QAction(QIcon(QPixmap(group_on_xpm)), _("Build &group"), this);
+    ungroupAct          = new QAction(QIcon(QPixmap(group_off_xpm)), _("Split gro&up"), this);
+    changeSideAct       = new QAction(_("&Change board side"), this);
+    layerC1Act          = new QAction(_("&C1"), this);
+    layerS1Act          = new QAction(_("S&1"), this);
+    layerC2Act          = new QAction(_("C&2"), this);
+    layerS2Act          = new QAction(_("&S2"), this);
+    layerI1Act          = new QAction(_("I1"), this);
+    layerI2Act          = new QAction(_("&I2"), this);
+    layerOAct           = new QAction(_("&O"), this);
+    snapGridAct         = new QAction(QIcon(QPixmap(to_grid_xpm)), _("S&nap to grid"), this);
+    massiveAct          = new QAction(_("&Tile / Arrange circular"), this);
+    projectInfoAct      = new QAction(QIcon(QPixmap(info_xpm)), _("&Project info"), this);
+    listDrillingsAct    = new QAction(_("&List drillings"), this);
+    bitmapAct           = new QAction(QIcon(QPixmap(bitmap_xpm)), _("&Scanned copy"), this);
+    footprintAct        = new QAction(_("&Footprint-Wizard"), this);
+    resetMaskAct        = new QAction(_("R&eset solder mask"), this);
+    removeConAct        = new QAction(QIcon(QPixmap(remove_con_xpm)), _("&Remove connections (rubberbands)"), this);
+    deleteOutsideAct    = new QAction(_("&Delete elements outside the board"), this);
+    elementExportAct    = new QAction(_("Te&xt-IO: Export elements"), this);
+    elementImportAct    = new QAction(_("&Text-IO: Import elements"), this);
+    settingsAct         = new QAction(_("&General settings"), this);
+    panelMacroAct       = new QAction(QIcon(QPixmap(macro_xpm)),_("&Macro-Library"), this);
+    panelPropertiesAct  = new QAction(QIcon(QPixmap(properties_xpm)),_("&Properties-Panel"), this);
+    panelDrcAct         = new QAction(QIcon(QPixmap(drc_xpm)),_("&DRC-Panel"), this);
+    panelComponentsAct  = new QAction(QIcon(QPixmap(components_xpm)),_("&Components-Panel"), this);
+    panelSelectorAct    = new QAction(QIcon(QPixmap(selector_xpm)),_("S&elector-Panel"), this);
     panelMacroAct     ->setCheckable(true);
     panelPropertiesAct->setCheckable(true);
     panelDrcAct       ->setCheckable(true);
     panelComponentsAct->setCheckable(true);
     panelSelectorAct  ->setCheckable(true);
-    QAction *zoomBoardAct        = new QAction(_("Zoom &board"), this);
-    QAction *zoomObjectsAct      = new QAction(_("Zoom &objects"), this);
-    QAction *zoomSelectionAct    = new QAction(_("Zoom &selection"), this);
-
-    QAction *aboutAct = new QAction(_("&About"), this);
+    transparentAct      = new QAction(QIcon(QPixmap(transparent_xpm)),    _("Toggle transparent mode"), this);
+    zoomPreviousAct     = new QAction(QIcon(QPixmap(zoom_prev_xpm)),      _("&Zoom previous"), this);
+    zoomBoardAct        = new QAction(QIcon(QPixmap(zoom_board_xpm)),     _("Zoom &board"), this);
+    zoomObjectsAct      = new QAction(QIcon(QPixmap(zoom_objects_xpm)),   _("Zoom &objects"), this);
+    zoomSelectionAct    = new QAction(QIcon(QPixmap(zoom_selection_xpm)), _("Zoom &selection"), this);
+    aboutAct            = new QAction(_("&About"), this);
 
     newAct        ->setShortcut(QKeySequence::New);
     openAct       ->setShortcut(QKeySequence::Open);
@@ -273,6 +263,11 @@ void MainWindow::CreateMenuBar() {
     groupAct      ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
     ungroupAct    ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_U));
     changeSideAct ->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
+
+}
+
+void MainWindow::CreateMenuBar() {
+    QMenuBar *menuBar = this->menuBar();
 
 	{ //File
 		QMenu *menu = menuBar->addMenu(_("&File"));
@@ -327,7 +322,7 @@ void MainWindow::CreateMenuBar() {
 		QMenu *menu = menuBar->addMenu(_("&Board"));
 
         menu->addAction(boardNewAct);
-        menu->addAction(boardPropertiesAct);
+        menu->addAction(boardPropAct);
         menu->addAction(boardCopyAct);
         menu->addAction(boardDeleteAct);
 		menu->addSeparator();
@@ -336,6 +331,7 @@ void MainWindow::CreateMenuBar() {
 		menu->addSeparator();
         menu->addAction(boardMoveRightAct);
         menu->addAction(boardMoveLeftAct);
+		menu->addSeparator();
         menu->addAction(boardImportAct);
         menu->addAction(boardSaveAct);
 	}
@@ -363,21 +359,21 @@ void MainWindow::CreateMenuBar() {
             submenu->addAction(layerOAct);
 		}
 		menu->addSeparator();
-        menu->addAction(snapGrAct);
+        menu->addAction(snapGridAct);
         menu->addAction(massiveAct);
 	}
 	{ //Extras
 		QMenu *menu = menuBar->addMenu(_("E&xtras"));
 
-        menu->addAction(infoAct);
+        menu->addAction(projectInfoAct);
         menu->addAction(listDrillingsAct);
 		menu->addSeparator();
-        menu->addAction(scannedCopyAct);
+        menu->addAction(bitmapAct);
 		menu->addSeparator();
         menu->addAction(footprintAct);
 		menu->addSeparator();
         menu->addAction(resetMaskAct);
-        menu->addAction(removeConnectionsAct);
+        menu->addAction(removeConAct);
         menu->addAction(deleteOutsideAct);
 		menu->addSeparator();
         menu->addAction(elementImportAct);
@@ -385,7 +381,7 @@ void MainWindow::CreateMenuBar() {
 	}
 	{ //Options
 		QMenu *menu = menuBar->addMenu(_("&Options"));
-        menu->addAction(propertiesAct);
+        menu->addAction(settingsAct);
 		menu->addSeparator();
         menu->addAction(panelMacroAct);
         menu->addAction(panelPropertiesAct);
