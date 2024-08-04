@@ -103,15 +103,15 @@ void MainWindow::CreateToolBar() {
 
     toolBarActions->addAction(hmirrorAct);
     toolBarActions->addAction(vmirrorAct);
-    QAction *alignAct =  toolBarActions->addAction(QIcon(QPixmap(align_xpm)),       _("Align elements"));
+    toolBarActions->addAction(alignAct);
     { // Create menu for align button
         QMenu *alignMenu = new QMenu();
-        alignTopAct    = alignMenu->addAction(QIcon(QPixmap(align_top_xpm)),        _("Align top"));
-        alignBottomAct = alignMenu->addAction(QIcon(QPixmap(align_bottom_xpm)),     _("Align bottom"));
-        alignLeftAct   = alignMenu->addAction(QIcon(QPixmap(align_left_xpm)),       _("Align left"));
-        alignRightAct  = alignMenu->addAction(QIcon(QPixmap(align_right_xpm)),      _("Align right"));
-        alignHAct      = alignMenu->addAction(QIcon(QPixmap(align_hcenter_xpm)),    _("Align horizontal-center"));
-        alignVAct      = alignMenu->addAction(QIcon(QPixmap(align_vcenter_xpm)),    _("Align vertical-center"));
+        alignMenu->addAction(alignTopAct);
+        alignMenu->addAction(alignBottomAct);
+        alignMenu->addAction(alignLeftAct);
+        alignMenu->addAction(alignRightAct);
+        alignMenu->addAction(alignHAct);
+        alignMenu->addAction(alignVAct);
         alignAct->setMenu(alignMenu);
         qobject_cast<QToolButton*>(toolBarActions->widgetForAction(alignAct))->setPopupMode(QToolButton::InstantPopup);
     }
@@ -123,7 +123,7 @@ void MainWindow::CreateToolBar() {
     toolBarActions->addAction(groupAct);
     toolBarActions->addAction(ungroupAct);
     toolBarZoom = addToolBar(_("Zoom functions"));
-    QAction *zoomAct =  toolBarZoom->addAction(QIcon(QPixmap(zoom_any_xpm)),       _("Zoom functions"));
+    toolBarZoom->addAction(zoomAct);
     { // Create menu for zoom button
         QMenu *zoomMenu = new QMenu();
         zoomMenu->addAction(zoomPreviousAct);
@@ -164,9 +164,50 @@ void MainWindow::CreateLeftPanel() {
 }
 
 void MainWindow::CreateActions() {
+    boardNewAct         = new QAction(QIcon(QPixmap(new_xpm)),            _("&Add new board"), this);
+    openAct             = new QAction(QIcon(QPixmap(open_xpm)),           _("&Open"), this);
+    saveAct             = new QAction(QIcon(QPixmap(save_xpm)),           _("&Save"), this);
+    printAct            = new QAction(QIcon(QPixmap(print_xpm)),          _("&Print"), this);
+    undoAct             = new QAction(QIcon(QPixmap(undo_xpm)),           _("&Undo"), this);
+    redoAct             = new QAction(QIcon(QPixmap(redo_xpm)),           _("&Redo"), this);
+    copyAct             = new QAction(QIcon(QPixmap(copy_xpm)),           _("C&opy"), this);
+    cutAct              = new QAction(QIcon(QPixmap(cut_xpm)),            _("&Cut"), this);
+    pasteAct            = new QAction(QIcon(QPixmap(paste_xpm)),          _("&Paste"), this);
+    duplicateAct        = new QAction(QIcon(QPixmap(duplicate_xpm)),      _("Dup&licate"), this);
+    deleteAct           = new QAction(QIcon(QPixmap(delete_xpm)),         _("&Delete"), this);
+    rotateAct           = new QAction(QIcon(QPixmap(rotate_xpm)),         _("&Rotate"), this);
+    hmirrorAct          = new QAction(QIcon(QPixmap(mirror_h_xpm)),       _("Mirror &horisontal"), this);
+    vmirrorAct          = new QAction(QIcon(QPixmap(mirror_v_xpm)),       _("Mirror &vertical"), this);
+    alignAct            = new QAction(QIcon(QPixmap(align_xpm)),          _("Align elements"), this);
+    alignTopAct         = new QAction(QIcon(QPixmap(align_top_xpm)),      _("Align top"), this);
+    alignBottomAct      = new QAction(QIcon(QPixmap(align_bottom_xpm)),   _("Align bottom"), this);
+    alignLeftAct        = new QAction(QIcon(QPixmap(align_left_xpm)),     _("Align left"), this);
+    alignRightAct       = new QAction(QIcon(QPixmap(align_right_xpm)),    _("Align right"), this);
+    alignHAct           = new QAction(QIcon(QPixmap(align_hcenter_xpm)),  _("Align horizontal-center"), this);
+    alignVAct           = new QAction(QIcon(QPixmap(align_vcenter_xpm)),  _("Align vertical-center"), this);
+    snapGridAct         = new QAction(QIcon(QPixmap(to_grid_xpm)),        _("S&nap to grid"), this);
+    removeConAct        = new QAction(QIcon(QPixmap(remove_con_xpm)),     _("&Remove connections (rubberbands)"), this);
+    groupAct            = new QAction(QIcon(QPixmap(group_on_xpm)),       _("Build &group"), this);
+    ungroupAct          = new QAction(QIcon(QPixmap(group_off_xpm)),      _("Split gro&up"), this);
+    transparentAct      = new QAction(QIcon(QPixmap(transparent_xpm)),    _("Toggle transparent mode"), this);
+    zoomAct             = new QAction(QIcon(QPixmap(zoom_any_xpm)),       _("Zoom functions"), this);
+    zoomPreviousAct     = new QAction(QIcon(QPixmap(zoom_prev_xpm)),      _("&Zoom previous"), this);
+    zoomBoardAct        = new QAction(QIcon(QPixmap(zoom_board_xpm)),     _("Zoom &board"), this);
+    zoomObjectsAct      = new QAction(QIcon(QPixmap(zoom_objects_xpm)),   _("Zoom &objects"), this);
+    zoomSelectionAct    = new QAction(QIcon(QPixmap(zoom_selection_xpm)), _("Zoom &selection"), this);
+    projectInfoAct      = new QAction(QIcon(QPixmap(info_xpm)),           _("&Project info"), this);
+    bitmapAct           = new QAction(QIcon(QPixmap(bitmap_xpm)),         _("&Scanned copy"), this);
+    panelMacroAct       = new QAction(QIcon(QPixmap(macro_xpm)),          _("&Macro-Library"), this);
+    panelPropertiesAct  = new QAction(QIcon(QPixmap(properties_xpm)),     _("&Properties-Panel"), this);
+    panelDrcAct         = new QAction(QIcon(QPixmap(drc_xpm)),            _("&DRC-Panel"), this);
+    panelComponentsAct  = new QAction(QIcon(QPixmap(components_xpm)),     _("&Components-Panel"), this);
+    panelSelectorAct    = new QAction(QIcon(QPixmap(selector_xpm)),       _("S&elector-Panel"), this);
+    panelMacroAct     ->setCheckable(true);
+    panelPropertiesAct->setCheckable(true);
+    panelDrcAct       ->setCheckable(true);
+    panelComponentsAct->setCheckable(true);
+    panelSelectorAct  ->setCheckable(true);
     newAct              = new QAction(_("&New"), this);
-    openAct             = new QAction(QIcon(QPixmap(open_xpm)),_("&Open"), this);
-    saveAct             = new QAction(QIcon(QPixmap(save_xpm)),_("&Save"), this);
     saveasAct           = new QAction(_("S&ave as"), this);
     saveMacroAct        = new QAction(_("Save as &macro"), this);
     autosaveAct         = new QAction(_("A&utoSave"), this);
@@ -181,17 +222,8 @@ void MainWindow::CreateActions() {
     savePngAct          = new QAction(_("PNG (*.png)"), this);
     directoriesAct      = new QAction(_("&Directories"), this);
     printSetupAct       = new QAction(_("P&rinter setup"), this);
-    printAct            = new QAction(QIcon(QPixmap(print_xpm)), _("&Print"), this);
     exitAct             = new QAction(_("&Exit"), this);
-    undoAct             = new QAction(QIcon(QPixmap(undo_xpm)), _("&Undo"), this);
-    redoAct             = new QAction(QIcon(QPixmap(redo_xpm)), _("&Redo"), this);
-    copyAct             = new QAction(QIcon(QPixmap(copy_xpm)), _("C&opy"), this);
-    cutAct              = new QAction(QIcon(QPixmap(cut_xpm)), _("&Cut"), this);
-    pasteAct            = new QAction(QIcon(QPixmap(paste_xpm)), _("&Paste"), this);
-    duplicateAct        = new QAction(QIcon(QPixmap(duplicate_xpm)), _("Dup&licate"), this);
-    deleteAct           = new QAction(QIcon(QPixmap(delete_xpm)), _("&Delete"), this);
     selectallAct        = new QAction(_("Select &all"), this);
-    boardNewAct         = new QAction(QIcon(QPixmap(new_xpm)), _("&Add new board"), this);
     boardPropAct        = new QAction(_("&Properties"), this);
     boardCopyAct        = new QAction(_("&Copy board"), this);
     boardDeleteAct      = new QAction(_("&Delete board"), this);
@@ -201,11 +233,6 @@ void MainWindow::CreateActions() {
     boardMoveLeftAct    = new QAction(_("M&ove board to left"), this);
     boardImportAct      = new QAction(_("&Import pages from file"), this);
     boardSaveAct        = new QAction(_("&Save pages to file"), this);
-    rotateAct           = new QAction(QIcon(QPixmap(rotate_xpm)), _("&Rotate"), this);
-    hmirrorAct          = new QAction(QIcon(QPixmap(mirror_h_xpm)), _("Mirror &horisontal"), this);
-    vmirrorAct          = new QAction(QIcon(QPixmap(mirror_v_xpm)), _("Mirror &vertical"), this);
-    groupAct            = new QAction(QIcon(QPixmap(group_on_xpm)), _("Build &group"), this);
-    ungroupAct          = new QAction(QIcon(QPixmap(group_off_xpm)), _("Split gro&up"), this);
     changeSideAct       = new QAction(_("&Change board side"), this);
     layerC1Act          = new QAction(_("&C1"), this);
     layerS1Act          = new QAction(_("S&1"), this);
@@ -214,33 +241,14 @@ void MainWindow::CreateActions() {
     layerI1Act          = new QAction(_("I1"), this);
     layerI2Act          = new QAction(_("&I2"), this);
     layerOAct           = new QAction(_("&O"), this);
-    snapGridAct         = new QAction(QIcon(QPixmap(to_grid_xpm)), _("S&nap to grid"), this);
     massiveAct          = new QAction(_("&Tile / Arrange circular"), this);
-    projectInfoAct      = new QAction(QIcon(QPixmap(info_xpm)), _("&Project info"), this);
     listDrillingsAct    = new QAction(_("&List drillings"), this);
-    bitmapAct           = new QAction(QIcon(QPixmap(bitmap_xpm)), _("&Scanned copy"), this);
     footprintAct        = new QAction(_("&Footprint-Wizard"), this);
     resetMaskAct        = new QAction(_("R&eset solder mask"), this);
-    removeConAct        = new QAction(QIcon(QPixmap(remove_con_xpm)), _("&Remove connections (rubberbands)"), this);
     deleteOutsideAct    = new QAction(_("&Delete elements outside the board"), this);
     elementExportAct    = new QAction(_("Te&xt-IO: Export elements"), this);
     elementImportAct    = new QAction(_("&Text-IO: Import elements"), this);
     settingsAct         = new QAction(_("&General settings"), this);
-    panelMacroAct       = new QAction(QIcon(QPixmap(macro_xpm)),_("&Macro-Library"), this);
-    panelPropertiesAct  = new QAction(QIcon(QPixmap(properties_xpm)),_("&Properties-Panel"), this);
-    panelDrcAct         = new QAction(QIcon(QPixmap(drc_xpm)),_("&DRC-Panel"), this);
-    panelComponentsAct  = new QAction(QIcon(QPixmap(components_xpm)),_("&Components-Panel"), this);
-    panelSelectorAct    = new QAction(QIcon(QPixmap(selector_xpm)),_("S&elector-Panel"), this);
-    panelMacroAct     ->setCheckable(true);
-    panelPropertiesAct->setCheckable(true);
-    panelDrcAct       ->setCheckable(true);
-    panelComponentsAct->setCheckable(true);
-    panelSelectorAct  ->setCheckable(true);
-    transparentAct      = new QAction(QIcon(QPixmap(transparent_xpm)),    _("Toggle transparent mode"), this);
-    zoomPreviousAct     = new QAction(QIcon(QPixmap(zoom_prev_xpm)),      _("&Zoom previous"), this);
-    zoomBoardAct        = new QAction(QIcon(QPixmap(zoom_board_xpm)),     _("Zoom &board"), this);
-    zoomObjectsAct      = new QAction(QIcon(QPixmap(zoom_objects_xpm)),   _("Zoom &objects"), this);
-    zoomSelectionAct    = new QAction(QIcon(QPixmap(zoom_selection_xpm)), _("Zoom &selection"), this);
     aboutAct            = new QAction(_("&About"), this);
 
     newAct        ->setShortcut(QKeySequence::New);
