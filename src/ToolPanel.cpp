@@ -6,10 +6,6 @@
 #include <QMenu>
 
 #include "xpm/leftpanel/autoroute.xpm"
-#include "xpm/leftpanel/ch_grid.xpm"
-#include "xpm/leftpanel/ch_pad.xpm"
-#include "xpm/leftpanel/ch_smd.xpm"
-#include "xpm/leftpanel/ch_track.xpm"
 #include "xpm/leftpanel/circle.xpm"
 #include "xpm/leftpanel/connections.xpm"
 #include "xpm/leftpanel/cross.xpm"

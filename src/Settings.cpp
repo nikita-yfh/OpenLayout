@@ -35,6 +35,7 @@ void Settings::SetDefault() {
 	*hpglExport = '\0';
 	*scannedCopies = '\0';
 	grids.Clear();
+    grids.Add(0.2);
 	SetDefaultMacroPath();
 
 	units = UNITS_MM;
@@ -177,24 +178,24 @@ const ColorScheme &Settings::GetColorScheme() const {
 
 QString Settings::GetGridStr(double grid) const {
 	if(units == UNITS_MIL)
-		return QString::asprintf("%g mil", grid / 0.0254, _("mil"));
+		return QString("%1 %2").arg(grid / 0.0254).arg(_("mil"));
 	char mm[50];
 	if(snprintf(mm, 50, "%g", grid) > 6) //if µm more compact
-		return QString::asprintf("%g %s", grid * 1000.0, _("\x00b5m"));
+		return QString("%1 %2").arg(grid * 1000.0).arg(_("µm"));
 	else
-		return QString::asprintf("%g %s", grid, _("mm"));
+		return QString("%1 %2").arg(grid).arg(_("mm"));
 }
 
 QString Settings::GetStr(float value) const {
 	if(units == UNITS_MIL)
-		return QString::asprintf("%.01f %s", value / 0.0254, _("mil"));
-	return QString::asprintf("%.02f %s", value, _("mm"));
+		return QString("%1 %2").arg(value / 0.0254).arg(_("mil"));
+    return QString("%1 %2").arg(value).arg(_("mm"));
 }
 
 QString Settings::GetStr(const Vec2 &value) const {
 	if(units == UNITS_MIL)
-		return QString::asprintf("%.01f x %.01f %s", value.x / 0.0254, value.y / 0.0254, _("mil"));
-	return QString::asprintf("%.02f x %.02f %s", value.x, value.y, _("mm"));
+		return QString("%1 x %2 %3").arg(value.x / 0.0254).arg(value.y / 0.0254).arg(_("mil"));
+    return QString("%1 x %2 %3").arg(value.x).arg(value.y).arg(_("mm"));
 }
 
 QString Settings::GetStr(const PadSize &value) const {

@@ -16,6 +16,8 @@ private:
     void CreateToolBar();
     void CreateLeftPanel();
 
+    Settings settings;
+
     QToolBar *toolBarMain, *toolBarHistory, *toolBarClipboard,
              *toolBarActions, *toolBarZoom, *toolBarPCB, *toolBarPanels;
     ToolPanel *toolPanel;
