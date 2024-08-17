@@ -7,6 +7,15 @@
 
 #include "xpm/leftpanel/ch_grid.xpm"
 
+static const int GRID_VALUE_MASK = 0x0FFFF;
+static const int GRID_TYPE_MASK  = 0xF0000;
+
+enum {
+    GRID_NORMAL_FLAG = 0x10000,
+    GRID_METRIC_FLAG = 0x20000,
+    GRID_USER_FLAG   = 0x40000
+};
+
 static const double normalGrids[] = {
 	0.0396875, 0.079375, 0.15875,
 	0.3175, 0.635, 1.27, 2.54, 5.08
@@ -42,7 +51,7 @@ void GridPanel::OnClick() {
         QAction *action = new QAction(settings.GetGridStr(normalGrids[i]), menu);
         action->setCheckable(true);
         connect(action, SIGNAL(triggered(bool)), setGridMapper, SLOT(map()));
-        setGridMapper->setMapping(action, i);
+        setGridMapper->setMapping(action, i | GRID_NORMAL_FLAG);
         menu->addAction(action);
         group->addAction(action);
     }
@@ -52,7 +61,7 @@ void GridPanel::OnClick() {
         QAction *action = new QAction(settings.GetGridStr(metricGrids[i]), menu);
         action->setCheckable(true);
         connect(action, SIGNAL(triggered(bool)), setGridMapper, SLOT(map()));
-        setGridMapper->setMapping(action, i + NORMAL_GRIDS_COUNT);
+        setGridMapper->setMapping(action, i | GRID_METRIC_FLAG);
         metricMenu->addAction(action);
         group->addAction(action);
     }
@@ -64,7 +73,7 @@ void GridPanel::OnClick() {
             QAction *action = new QAction(settings.GetGridStr(settings.grids[i]), menu);
             action->setCheckable(true);
             connect(action, SIGNAL(triggered(bool)), setGridMapper, SLOT(map()));
-            setGridMapper->setMapping(action, i + NORMAL_GRIDS_COUNT + METRIC_GRIDS_COUNT);
+            setGridMapper->setMapping(action, i | GRID_USER_FLAG);
             userMenu->addAction(action);
             group->addAction(action);
         }
@@ -89,14 +98,16 @@ void GridPanel::OnClick() {
     delete menu;
 }
 
-void GridPanel::OnGridSetted(int index) {
+void GridPanel::OnGridSetted(int value) {
     double grid = 0.0;
-    if(index < NORMAL_GRIDS_COUNT)
+
+    int index = value & GRID_VALUE_MASK;
+    if(value & GRID_NORMAL_FLAG)
         grid = normalGrids[index];
-    else if(index < METRIC_GRIDS_COUNT + NORMAL_GRIDS_COUNT)
-        grid = metricGrids[index - NORMAL_GRIDS_COUNT];
-    else if(index < settings.grids.Size() + METRIC_GRIDS_COUNT + NORMAL_GRIDS_COUNT)
-        grid = settings.grids[index - NORMAL_GRIDS_COUNT - METRIC_GRIDS_COUNT];
+    else if(value & GRID_METRIC_FLAG)
+        grid = metricGrids[index];
+    else if(value & GRID_USER_FLAG)
+        grid = settings.grids[index];
     else return;
 
     gridButton->setText(settings.GetGridStr(grid));
