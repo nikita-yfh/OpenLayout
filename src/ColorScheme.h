@@ -35,10 +35,10 @@ public:
 
 	void SetDefault();
 
-	/* void SetColor(uint8_t id) const; */
-	/* void SetGroundColor(uint8_t id) const; */
-	/* void SetBackgroundClearColor() const; */
-	/* void SetDrillingsColor(uint8_t drill) const; */
+	void SetColor(uint8_t id) const;
+	void SetGroundColor(uint8_t id) const;
+	void SetBackgroundClearColor() const;
+	void SetDrillingsColor(uint8_t drill) const;
 
 private:
 	void ReadColor(File &file, Color &color);

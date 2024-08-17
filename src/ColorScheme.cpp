@@ -1,18 +1,13 @@
 #include "ColorScheme.h"
 #include "Settings.h"
 
-union ColorU {
-	QRgb color;
-	struct {
-		uint8_t red;
-		uint8_t green;
-		uint8_t blue;
-		uint8_t alpha;
-	};
-	ColorU(const Color &_color) {
-		color = _color.rgba();
-	}
-};
+#include <QtOpenGL>
+
+static const float DARKER_COEF = 5.0f / 3.0f * 100.0f;
+
+static void SetGLColor(const Color &color) {
+    glColor4ub(color.red(), color.green(), color.blue(), color.alpha());
+}
 
 ColorScheme::ColorScheme() {
 	SetDefault();
@@ -34,26 +29,25 @@ void ColorScheme::SetDefault() {
 	colors[COLOR_SELO]		= Color(255,170,255);
 	colors[COLOR_SELR]		= Color(0,	255,255);
 }
-/* void ColorScheme::SetColor(uint8_t index) const { */
-/* 	ColorU color(colors[index]); */
-/* 	glColor4ub(color.red, color.green, color.blue, 50); */
-/* } */
-/* void ColorScheme::SetGroundColor(uint8_t index) const { */
-/* 	ColorU color(colors[index]); */
-/* 	glColor4f(color.red / 425.0f, color.green / 425.0f, color.blue / 425.0f, color.alpha / 255.0f); */
-/* } */
-/* void ColorScheme::SetBackgroundClearColor() const { */
-/* 	ColorU color(colors[COLOR_BGR]); */
-/* 	glClearColor(color.red / 425.0f, color.green / 425.0f, color.blue / 425.0f, color.alpha / 255.0f); */
-/* } */
-/* void ColorScheme::SetDrillingsColor(uint8_t drill) const { */
-/* 	if(drill == DRILL_BGR) */
-/* 		SetColor(COLOR_BGR); */
-/* 	else if(drill == DRILL_BLACK) */
-/* 		glColor4ub(0, 0, 0, 255); */
-/* 	else */
-/* 		glColor4ub(255, 255, 255, 255); */
-/* } */
+void ColorScheme::SetColor(uint8_t index) const {
+	Color color(colors[index]);
+    color.setAlpha(50);
+    SetGLColor(color);
+}
+void ColorScheme::SetGroundColor(uint8_t index) const {
+    SetGLColor(colors[index].darker(DARKER_COEF));
+}
+void ColorScheme::SetBackgroundClearColor() const {
+    SetGLColor(colors[COLOR_BGR].darker(DARKER_COEF));
+}
+void ColorScheme::SetDrillingsColor(uint8_t drill) const {
+	if(drill == DRILL_BGR)
+		SetColor(COLOR_BGR);
+	else if(drill == DRILL_BLACK)
+        SetGLColor(Qt::black);
+	else
+        SetGLColor(Qt::white);
+}
 void ColorScheme::WriteColor(File &file, const Color &color) const {
 	file.Write<QRgb>(color.rgba());
 }
