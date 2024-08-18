@@ -164,7 +164,7 @@ void MainWindow::CreateToolBar() {
 }
 
 void MainWindow::CreateLeftPanel() {
-    toolPanel = new ToolPanel(this);
+    toolPanel = new ToolPanel(settings, this);
     addToolBar(Qt::LeftToolBarArea, toolPanel);
 
     gridPanel = new GridPanel(settings, this);

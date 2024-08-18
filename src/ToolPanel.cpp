@@ -94,18 +94,22 @@ static const char * const *toolBitmaps[ToolPanel::TOOL_COUNT] = {
     photoview_xpm,
 };
 
-ToolPanel::ToolPanel (QWidget *parent) : QToolBar(_("Tools"), parent) {
+ToolPanel::ToolPanel (Settings &_settings, QWidget *parent)
+                 : settings(_settings), QToolBar(_("Tools"), parent) {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     QActionGroup *group = new QActionGroup(this);
+    QSignalMapper *toolMapper = new QSignalMapper(this);
 
     for(int i = 0; i < TOOL_COUNT; i++) {
         actions[i] = addAction(QIcon(QPixmap(toolBitmaps[i])), toolNames[i]);
         actions[i]->setCheckable(true);
         actions[i]->setActionGroup(group);
 
-        QToolButton *button = qobject_cast<QToolButton*>(widgetForAction(actions[i]));
+        connect(actions[i], SIGNAL(triggered(bool)), toolMapper, SLOT(map()));
+        toolMapper->setMapping(actions[i], i);
     }
+    connect(toolMapper, SIGNAL(mappedInt(int)), this, SLOT(OnSettedTool(int)));
 
     connect(this, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(OnChangeOrientation(Qt::Orientation)));
 
@@ -135,7 +139,7 @@ void ToolPanel::CreatePadTypeMenu() {
     padTypes[PAD_SQUARE_V]   = padMenu->addAction(_("Rectangle, vertical"));
     padMenu->addSeparator();
 
-    padMapper = new QSignalMapper(padMenu);
+    QSignalMapper *padMapper = new QSignalMapper(padMenu);
     for(int i = 0; i < PAD_COUNT; i++) {
         connect(padTypes[i], SIGNAL(triggered(bool)), padMapper, SLOT(map()));
         padMapper->setMapping(padTypes[i], i);
@@ -195,6 +199,10 @@ void ToolPanel::OnToggleMetallization(bool checked) {
 void ToolPanel::OnSettedPadType(int type) {
     currentPadType = (PadType) type;
     actions[TOOL_PAD]->setIcon(QIcon(QPixmap(padBitmaps[currentMetallization][currentPadType])));
+}
+
+void ToolPanel::OnSettedTool(int tool) {
+    settings.selectedTool = tool;
 }
 
 void ToolPanel::OnSettedRectTrack() {

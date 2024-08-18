@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Locale.h"
+#include "Settings.h"
 
 #include <QToolBar>
 #include <QSignalMapper>
@@ -8,7 +9,7 @@
 class ToolPanel : public QToolBar {
     Q_OBJECT
 public:
-    ToolPanel(QWidget *parent = nullptr);
+    ToolPanel(Settings &settings, QWidget *parent = nullptr);
     ~ToolPanel() {}
 
     enum ToolType {
@@ -64,11 +65,10 @@ private:
     QAction *padTypes[PAD_COUNT];
     QAction *metallization;
 
-    QSignalMapper *padMapper;
-
     bool currentRectFill;
     bool currentMetallization;
     PadType currentPadType;
+    Settings &settings;
 
     void CreatePadTypeMenu();
     void CreateRectTypeMenu();
@@ -76,6 +76,7 @@ public slots:
     void OnChangeOrientation(Qt::Orientation orientation);
     void OnToggleMetallization(bool);
     void OnSettedPadType(int);
+    void OnSettedTool(int);
     void OnSettedRectTrack();
     void OnSettedRectZone();
 };
