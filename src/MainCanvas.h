@@ -21,6 +21,8 @@ public:
 
 public slots:
     void FinishCreating();
+signals:
+    void ToolChanged(int tool);
 
 protected:
     void initializeGL() override;
@@ -42,6 +44,8 @@ private:
     void OnWheelEvent(QWheelEvent *event);
     void OnLeftDownEvent(QMouseEvent *event);
     void OnLeftUpEvent(QMouseEvent *event);
+    void OnRightDownEvent(QMouseEvent *event);
+    void OnMiddleDownEvent(QMouseEvent *event);
     void OnMouseMotionEvent(QMouseEvent *event);
     void OnKeyPressEvent(QKeyEvent *event);
     void OnKeyReleaseEvent(QKeyEvent *event);

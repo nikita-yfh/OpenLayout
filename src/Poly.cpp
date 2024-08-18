@@ -89,7 +89,7 @@ void Poly::Draw(float halfWidth) const {
 	glStencilFunc(GL_NEVER, 1, 1);
 	glStencilOp(GL_INVERT, GL_INVERT, GL_INVERT);
 
-	if(!IsPlaced()) {
+	if(isRect || !IsPlaced()) {
 		glBegin(GL_TRIANGLE_FAN);
 		for(int i = 0; i < points.Size(); i++)
 			glutils::Vertex(points[i]);
@@ -100,7 +100,7 @@ void Poly::Draw(float halfWidth) const {
 		glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
 		glBegin(GL_QUADS);
 		for(int i = 0; i < points.Size(); i++) {
-			if(i == points.Size() - 1 && IsPlaced())
+			if(i == points.Size() - 1 && IsPlaced() && !isRect)
 				break;
 
 			const Vec2 &a = points[i];

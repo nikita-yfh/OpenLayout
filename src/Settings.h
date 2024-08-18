@@ -30,6 +30,7 @@ enum {
 
 	TOOL_COUNT //16
 };
+
 enum {
 	UNITS_MM,
 	UNITS_MIL

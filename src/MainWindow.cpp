@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setCentralWidget(mainCanvas);
 
     connect(toolPanel, SIGNAL(ToolChanged()), mainCanvas, SLOT(FinishCreating()));
+    connect(mainCanvas, SIGNAL(ToolChanged(int)), toolPanel, SLOT(OnToolChanged(int)));
 }
 
 void MainWindow::CreateToolBar() {

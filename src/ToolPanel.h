@@ -2,6 +2,7 @@
 
 #include "Locale.h"
 #include "Settings.h"
+#include "THTPad.h"
 
 #include <QToolBar>
 #include <QSignalMapper>
@@ -12,73 +13,25 @@ public:
     ToolPanel(Settings &settings, QWidget *parent = nullptr);
     ~ToolPanel() {}
 
-    enum ToolType {
-        TOOL_EDIT,
-        TOOL_ZOOM,
-        TOOL_TRACK,
-        TOOL_PAD,
-        TOOL_SMD_PAD,
-        TOOL_CIRCLE,
-        TOOL_RECT,
-        TOOL_ZONE,
-        TOOL_SPECIAL_FORM,
-        TOOL_TEXT,
-        TOOL_SOLDER_MASK,
-        TOOL_CONNECTIONS,
-        TOOL_AUTOROUTE,
-        TOOL_TEST,
-        TOOL_MEASURE,
-        TOOL_PHOTOVIEW,
-
-        TOOL_COUNT
-    };
-
     static const char *toolNames[TOOL_COUNT];
 
-    enum PadType {
-        PAD_CIRCLE,
-        PAD_OCTAGON,
-        PAD_SQUARE,
-        PAD_CIRCLE_H,
-        PAD_OCTAGON_H,
-        PAD_SQUARE_H,
-        PAD_CIRCLE_V,
-        PAD_OCTAGON_V,
-        PAD_SQUARE_V,
-
-        PAD_COUNT
-    };
-
-    inline bool GetCurrentMetallization() const {
-        return currentMetallization;
-    }
-
-    inline PadType GetCurrentPadType() const {
-        return currentPadType;
-    }
-
-    inline bool GetCurrentRectFill() const {
-        return currentRectFill;
-    }
 private:
     QAction *actions[TOOL_COUNT];
-    QAction *padTypes[PAD_COUNT];
+    QAction *padTypes[THTPad::S_COUNT];
     QAction *metallization;
 
-    bool currentRectFill;
-    bool currentMetallization;
-    PadType currentPadType;
     Settings &settings;
 
-    void CreatePadTypeMenu();
+    void CreatePadShapeMenu();
     void CreateRectTypeMenu();
 public slots:
     void OnChangeOrientation(Qt::Orientation orientation);
     void OnToggleMetallization(bool);
-    void OnSettedPadType(int);
-    void OnSettedTool(int);
     void OnSettedRectTrack();
     void OnSettedRectZone();
+
+    void OnPadShapeChanged(int);
+    void OnToolChanged(int);
 signals:
     void ToolChanged();
 };

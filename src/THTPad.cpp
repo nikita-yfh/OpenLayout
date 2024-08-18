@@ -9,7 +9,7 @@ THTPad *THTPad::Clone() const {
 AABB THTPad::GetAABB() const {
 	if(shape == S_CIRCLE)
 		return AABB(position, position).Expand(size.out * 0.5f);
-	if(shape == S_CIRCLE_E)
+	if(shape == S_CIRCLE_H)
 		return AABB(position, position).Expand(Vec2(angle).Abs() * size.out * 0.5f).Expand(size.out * 0.5f);
 	Vec2 points[4];
 	uint8_t count = CalcPoints(points);
@@ -26,20 +26,20 @@ bool THTPad::TestPoint(const Vec2 &point) const {
 	switch(shape) {
 	case S_CIRCLE:
 		return utils::PointInCircle(point, position, radius);
-	case S_CIRCLE_E:
+	case S_CIRCLE_H:
 		if(utils::PointInCircle(_point, Vec2(-radius, 0.0f), radius))
 			return true;
 		if(utils::PointInCircle(_point, Vec2( radius, 0.0f), radius))
 			return true;
 	case S_SQUARE:
 		return abs(_point.x) < radius && abs(_point.y) < radius;
-	case S_SQUARE_E:
+	case S_SQUARE_H:
 		return abs(_point.x) < size.out && abs(_point.y) < radius;
 	case S_OCTAGON:
 		if(abs(_point.x) > radius || abs(_point.y) > radius)
 			return false;
 		return abs(_point.x) + abs(_point.y) < radius * sqrtf(2.0f);
-	case S_OCTAGON_E:
+	case S_OCTAGON_H:
 		if(abs(_point.x) > size.out || abs(_point.y) > radius)
 			return false;
 		return abs(_point.x) + abs(_point.y) < radius * (sqrtf(2.0f) + 1.0f);
@@ -113,26 +113,26 @@ void THTPad::LoadObject(File &file) {
 
 	switch(shape) {
 		case S_CIRCLE:
-		case S_CIRCLE_E:
-		case S_CIRCLE_E + 3:
+		case S_CIRCLE_H:
+		case S_CIRCLE_V:
 			angle = points[1].Angle();
 			break;
 		case S_OCTAGON:
-		case S_OCTAGON_E:
+		case S_OCTAGON_H:
 			angle = Vec2::Mean(points[3], points[4]).Angle();
 			break;
-		case S_OCTAGON_E + 3:
+        case S_OCTAGON_V:
 			angle = Vec2::Mean(points[5], points[6]).Angle();
 			break;
 		case S_SQUARE:
-		case S_SQUARE_E:
+        case S_SQUARE_H:
 			angle = Vec2::Mean(points[1], points[2]).Angle();
 			break;
-		case S_SQUARE_E + 3:
+        case S_SQUARE_V:
 			angle = Vec2::Mean(points[2], points[3]).Angle();
 			break;
 	}
-	if(shape > S_SQUARE_E) {
+	if(shape > S_SQUARE_H) {
 		for(int i = 0; i < 4; i++)
 			thermalStyle[i] = (thermalStyle[i] >> 2) | (thermalStyle[i] << 6);
 		shape -= 3;
@@ -151,14 +151,14 @@ void THTPad::Draw(float halfSize, float distance) const {
 		glutils::DrawRectangle(Vec2(halfSize + distance, halfSize + distance));
 		glPopMatrix();
 		break;
-	case S_SQUARE_E:
+	case S_SQUARE_H:
 		glPushMatrix();
 		glutils::Translate(position);
 		glutils::Rotate(angle);
 		glutils::DrawRectangle(Vec2(halfSize * 2.0f + distance, halfSize + distance));
 		glPopMatrix();
 		break;
-	case S_CIRCLE_E:
+	case S_CIRCLE_H:
 		glBegin(GL_TRIANGLE_FAN);
 		glutils::Vertex(position);
 		for(float i = angle + M_PI / 2.0f; i < angle + M_PI * 3.0f / 2.0f; i += glutils::stepAngle)
@@ -190,7 +190,7 @@ void THTPad::Draw(float halfSize, float distance) const {
 		}
 		glPopMatrix();
 		break;
-	case S_OCTAGON_E:
+	case S_OCTAGON_H:
 		glPushMatrix();
 		glutils::Translate(position);
 		glutils::Rotate(angle);
@@ -233,14 +233,14 @@ uint8_t THTPad::CalcPoints(Vec2 *points) const {
 
 	switch(shape) {
 		case S_CIRCLE:
-		case S_CIRCLE_E:
+		case S_CIRCLE_H:
 			points[0].Set(-radius, 0);
 			return 1;
 		case S_SQUARE:
 			points[0].Set(-radius, radius);
 			points[1].Set( radius, radius);
 			return 2;
-		case S_SQUARE_E:
+		case S_SQUARE_H:
 			points[0].Set(-size.out, radius);
 			points[1].Set( size.out, radius);
 			return 2;
@@ -250,7 +250,7 @@ uint8_t THTPad::CalcPoints(Vec2 *points) const {
 			points[2].Set( halfa, radius);
 			points[3].Set( radius, halfa);
 			return 4;
-		case S_OCTAGON_E:
+		case S_OCTAGON_H:
 			points[0].Set(-size.out, halfa);
 			points[1].Set(-radius - halfa, radius);
 			points[2].Set( radius + halfa, radius);

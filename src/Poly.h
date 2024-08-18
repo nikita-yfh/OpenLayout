@@ -4,8 +4,8 @@
 class Poly : public PolygonBase {
 public:
 	Poly() {}
-	Poly(uint8_t layer, float groundDistance, float width, const Vec2 *points, uint32_t count)
-		: PolygonBase(layer, groundDistance, width, points, count), onlySoldermask(false),
+	Poly(uint8_t layer, float groundDistance, float width, const Vec2 *points, uint32_t count, bool _isRect)
+		: PolygonBase(layer, groundDistance, width, points, count), isRect(_isRect), onlySoldermask(false),
 		cutout(false), hatched(false), customHatch(false), hatchSize(0.8f) {}
 
 	virtual Poly *Clone() const override;
@@ -30,6 +30,7 @@ private:
 	bool hatched;
 	uint8_t customHatch;
 	float hatchSize;
+    bool isRect;
 
 	friend class ObjectGroup;
 };

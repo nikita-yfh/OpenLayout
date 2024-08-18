@@ -45,11 +45,15 @@ bool MainCanvas::eventFilter(QObject *obj, QEvent *event) {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
             if(mouseEvent->buttons() & Qt::LeftButton)
                 OnLeftDownEvent(mouseEvent);
+            if(mouseEvent->buttons() & Qt::RightButton)
+                OnRightDownEvent(mouseEvent);
+            if(mouseEvent->buttons() & Qt::MiddleButton)
+                OnMiddleDownEvent(mouseEvent);
             }
             break;
         case QEvent::MouseButtonRelease: {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
-            if(mouseEvent->buttons() & Qt::LeftButton)
+            if(mouseEvent->button() == Qt::LeftButton)
                 OnLeftUpEvent(mouseEvent);
             }
             break;
@@ -122,12 +126,25 @@ void MainCanvas::OnLeftDownEvent(QMouseEvent *event) {
     repaint();
 }
 
+void MainCanvas::OnMiddleDownEvent(QMouseEvent *event) {
+	dragPosition = board->ConvertToCoords(event->pos());
+}
+
+void MainCanvas::OnRightDownEvent(QMouseEvent *event) {
+	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
+		board->Zoom(1.0f / zoomRatioButtons, event->pos());
+	else if(settings.selectedTool != TOOL_EDIT) {
+		if(placedPointCount == 0)
+            emit ToolChanged(TOOL_EDIT);
+		FinishCreating();
+    }
+    repaint();
+}
+
 void MainCanvas::OnLeftUpEvent(QMouseEvent *event) {
 	if(settings.selectedTool == TOOL_RECTANGLE || settings.selectedTool == TOOL_CIRCLE) {
 		if(mousePosition == lastPlacedPoint)
 			board->CancelPlacing();
-		else if(settings.selectedTool == TOOL_RECTANGLE && settings.rectFill && ((PolygonBase*) board->GetFirstPlaced())->points.Size() == 5)
-			((PolygonBase*) board->GetFirstPlaced())->points.RemoveLast();
 		board->UnselectAll();
 	} else if(settings.selectedTool == TOOL_EDIT) {
 		lastPlacedPoint = Vec2::Invalid();
@@ -169,8 +186,10 @@ void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
 			creating = new SMDPad(board->GetSelectedLayer(), settings.groundDistance, mousePosition, settings.smdSize);
 		else if(settings.selectedTool == TOOL_TRACK || (settings.selectedTool == TOOL_RECTANGLE && !settings.rectFill))
 			creating = new Track(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
-		else if(settings.selectedTool == TOOL_ZONE || (settings.selectedTool == TOOL_RECTANGLE && settings.rectFill))
-			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1);
+		else if(settings.selectedTool == TOOL_ZONE)
+			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1, false);
+		else if(settings.selectedTool == TOOL_RECTANGLE && settings.rectFill)
+			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1, true);
 		else if(settings.selectedTool == TOOL_CIRCLE)
 			creating = new Circle(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, mousePosition, 0.0f, 0.0f, 0.0f);
 		if(creating)

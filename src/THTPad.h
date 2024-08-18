@@ -7,7 +7,7 @@ public:
 	THTPad() {}
 	THTPad(uint8_t layer, float groundDistance, const Vec2 &position, const PadSize &_size, uint8_t _shape, bool metallization)
 			: Pad(layer, groundDistance, position), size(_size), shape(_shape), through(metallization) {
-		if(shape > S_SQUARE_E) {
+		if(shape > S_SQUARE_H) {
 			shape -= 3;
 			angle += M_PI / 2.0f;
 		}
@@ -31,18 +31,24 @@ public:
 	const PadSize &GetSize() const;
 	void SetSize(const PadSize &size);
 	bool HasMetallization() const;
-private:
-	void Draw(float halfSize, float distance) const;
-	uint8_t CalcPoints(Vec2 *points) const;
-	PadSize size;
+
 	enum {
 		S_CIRCLE,
 		S_OCTAGON,
 		S_SQUARE,
-		S_CIRCLE_E,
-		S_OCTAGON_E,
-		S_SQUARE_E,
+		S_CIRCLE_H,
+		S_OCTAGON_H,
+		S_SQUARE_H,
+		S_CIRCLE_V,
+		S_OCTAGON_V,
+		S_SQUARE_V,
+
+        S_COUNT
 	};
+private:
+	void Draw(float halfSize, float distance) const;
+	uint8_t CalcPoints(Vec2 *points) const;
+	PadSize size;
 	uint8_t shape;
 	bool through;
 
