@@ -64,11 +64,11 @@ void PolygonBase::Move(const Vec2 &d) {
 }
 
 int PolygonBase::GetPlacePointCount(const Vec2 &d){
-	if(d.x < FLT_EPSILON || d.y < FLT_EPSILON)
+	if(d.x < FLT_EPSILON && d.y < FLT_EPSILON)
         return 0;
 	else if(d.x < FLT_EPSILON || d.y < FLT_EPSILON)
         return 1;
-    else if(abs(d.x - d.y) < 0.00001f && (bendMode == BEND_45_1 || bendMode == BEND_45_2))
+    else if(abs(d.x - d.y) < FLT_EPSILON && (bendMode == BEND_45_1 || bendMode == BEND_45_2))
         return 1;
     else if(bendMode == BEND_DIRECT)
         return 1;
