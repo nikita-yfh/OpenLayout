@@ -16,6 +16,7 @@ set(SOURCES
     src/GridPanel.cpp
     src/ImageConfig.cpp
     src/main.cpp
+    src/MainCanvas.cpp
     src/MainWindow.cpp
     src/Object.cpp
     src/ObjectGroup.cpp
@@ -45,6 +46,7 @@ set(HEADERS
     src/ImageConfig.h
     src/LineObject.h
     src/Locale.h
+    src/MainCanvas.h
     src/MainWindow.h
     src/ObjectGroup.h
     src/Object.h

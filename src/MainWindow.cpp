@@ -2,9 +2,11 @@
 #include "Locale.h"
 
 #include "SettingsDialog.h"
+#include "MainCanvas.h"
 
 #include <QIcon>
 #include <QAction>
+#include <QVBoxLayout>
 
 #include "xpm/toolbar/align_bottom.xpm"
 #include "xpm/toolbar/align_hcenter.xpm"
@@ -46,10 +48,16 @@
 #include "xpm/toolbar/zoom_prev.xpm"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    File file("/storage/diy/pcb/1.lay6", "rb");
+    pcb.Load(file);
+
     CreateActions();
     CreateToolBar();
     CreateLeftPanel();
     CreateMenuBar();
+
+    MainCanvas *canvas = new MainCanvas(pcb.GetSelectedBoard(), settings, this);
+    setCentralWidget(canvas);
 }
 
 void MainWindow::CreateToolBar() {

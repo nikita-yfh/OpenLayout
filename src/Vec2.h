@@ -4,6 +4,7 @@
 #include "File.h"
 
 #include <QPoint>
+#include <QPointF>
 #include <QSize>
 
 struct Vec2 {
@@ -18,12 +19,15 @@ struct Vec2 {
 		x = cosf(angle);
 		y = sinf(angle);
 	}
-	inline explicit Vec2(const Vec2 &vec, float length) {
+	inline Vec2(const Vec2 &vec, float length) {
 		float oldLength = vec.Length();
 		float k = length / oldLength;
 		Set(vec.x * k, vec.y * k);
 	}
 	inline Vec2(const QPoint &point) {
+		Set(point.x(), point.y());
+	}
+	inline Vec2(const QPointF &point) {
 		Set(point.x(), point.y());
 	}
 	inline Vec2(const QSize &size) {

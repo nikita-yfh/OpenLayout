@@ -4,6 +4,7 @@
 
 #include "ToolPanel.h"
 #include "GridPanel.h"
+#include "PCB.h"
 #include "Settings.h"
 
 class MainWindow : public QMainWindow {
@@ -42,4 +43,6 @@ private:
             *selectallAct, *settingsAct, *snapGridAct, *transparentAct, *undoAct,
             *ungroupAct, *vmirrorAct, *zoomAct, *zoomBoardAct, *zoomObjectsAct,
             *zoomPreviousAct, *zoomSelectionAct;
+    
+    PCB pcb;
 };
