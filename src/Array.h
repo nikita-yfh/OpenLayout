@@ -144,12 +144,13 @@ public:
 		Resize();
 		items[count - 1] = value;
 	}
-	void Remove(const T &value) {
+	bool Remove(const T &value) {
 		T *i = Find(value);
-		if(!i) return;
+		if(!i) return false;
 		count--;
 		*i = items[count]; // Move last item to deleted
 		Resize();
+        return true;
 	}
 };
 

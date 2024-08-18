@@ -70,7 +70,19 @@ void Pad::WriteSymmetricalArray(File &file, const Vec2 *points, uint32_t count, 
 void Pad::DrawConnections() const {
 	for(int i = 0; i < connections.Size(); i++) {
 		const Pad *pad = connections[i];
-		if(pad > this) { // will draw connection once
+		if(pad > this && !(IsSelected() && pad->IsSelected())) { // will draw connection once
+			glutils::Vertex(position);
+			glutils::Vertex(pad->position);
+		}
+	}
+}
+
+void Pad::DrawConnectionsSelected() const {
+    if(!IsSelected())
+        return;
+	for(int i = 0; i < connections.Size(); i++) {
+		const Pad *pad = connections[i];
+		if(pad > this && pad->IsSelected()) { // will draw connection once
 			glutils::Vertex(position);
 			glutils::Vertex(pad->position);
 		}
@@ -87,6 +99,23 @@ void Pad::UpdateConnections(Object *objects) {
 		}
 		connections[i] = (Pad*) newConnection;
 	}
+}
+
+Object *Pad::TestConnections(const Vec2 &mousePos, float radius) const {
+    for(int i = 0; i < connections.Size(); i++)
+        if(Vec2::DistanceSegmentToPoint(position, connections[i]->position, mousePos) < radius)
+            return connections[i];
+    return nullptr;
+}
+
+void Pad::RemoveConnections(Object *object) {
+    if(connections.Remove(static_cast<Pad*>(object)))
+        object->RemoveConnections(this);
+}
+
+void Pad::AddConnection(Pad *object) {
+    if(!connections.Remove(object))
+        connections.Add(object);
 }
 
 void Pad::Rotate(const Vec2 &center, float delta) {

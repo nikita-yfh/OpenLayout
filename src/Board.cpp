@@ -144,12 +144,12 @@ void Board::SnapSelectedToGrid() {
 
 Object *Board::TestPoint(const Vec2 &point) {
 	for(Object *object = objects; object; object = object->GetNext())
-		if((object->GetType() == Object::THT_PAD || object->GetType() == Object::SMD_PAD) &&
-				object->GetAABB().TestPoint(point) && object->TestPoint(point) && layerVisible[object->GetLayer()])
+		if(object->IsPad() && object->GetAABB().TestPoint(point) &&
+                object->TestPoint(point) && layerVisible[object->GetLayer()])
 			return object;
 	for(Object *object = objects; object; object = object->GetNext())
-		if(object->GetType() != Object::THT_PAD && object->GetType() != Object::SMD_PAD &&
-				object->GetAABB().TestPoint(point) && object->TestPoint(point) && layerVisible[object->GetLayer()])
+		if(!object->IsPad() && object->GetAABB().TestPoint(point) &&
+                object->TestPoint(point) && layerVisible[object->GetLayer()])
 			return object;
 	return nullptr;
 }

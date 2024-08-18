@@ -9,8 +9,8 @@
 
 MainCanvas::MainCanvas(Board *_board, Settings &_settings, QWidget *parent)
                 : board(_board), settings(_settings), QOpenGLWidget(parent),
-                  placedPointCount(0), lastPlacedPoint(Vec2::Invalid()),
-                  mousePosition(Vec2::Invalid()), shiftFlag(false), ctrlFlag(false) {
+                  placedPointCount(0), lastPlacedPoint(Vec2::Invalid()), mousePosition(Vec2::Invalid()),
+                  firstConnectionPad(nullptr), secondConnectionPad(nullptr), firstConnectionPointSelected(false) {
     installEventFilter(this);
     setMouseTracking(true);
     grabKeyboard();
@@ -41,7 +41,8 @@ void MainCanvas::FinishCreating() {
 
 bool MainCanvas::eventFilter(QObject *obj, QEvent *event) {
     switch (event->type()) {
-        case QEvent::MouseButtonPress: {
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonDblClick: {
             QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
             if(mouseEvent->buttons() & Qt::LeftButton)
                 OnLeftDownEvent(mouseEvent);
@@ -104,15 +105,27 @@ void MainCanvas::OnLeftDownEvent(QMouseEvent *event) {
 			lastPlacedPoint = points.Last();
 			placedPointCount = points.Size();
 		}
-	} else {
+	} else if(settings.selectedTool == TOOL_CONNECTIONS) {
+        if(firstConnectionPointSelected && secondConnectionPad) {
+            firstConnectionPad->AddConnection(secondConnectionPad);
+            secondConnectionPad->AddConnection(firstConnectionPad);
+            firstConnectionPad = secondConnectionPad = nullptr;
+            firstConnectionPointSelected = false;
+            board->UnselectAll();
+        } else {
+            if(firstConnectionPad)
+                firstConnectionPointSelected = true;
+        }
+    } else {
 		if(board->GetFirstPlaced()) {
 			if(!board->GetFirstPlaced()->groups.Empty())
 				settings.selectedTool = TOOL_EDIT;
 			board->UnselectAll();
 		} else if(settings.selectedTool == TOOL_EDIT) {
 			Object *object = board->TestPoint(mouse);
-			if(!object || !object->IsSelected() || shiftFlag) {
-				if(!shiftFlag)
+            bool shift = event->modifiers() & Qt::ShiftModifier;
+			if(!object || !object->IsSelected() || shift) {
+				if(!shift)
 					board->UnselectAll();
 				if(object)
 					board->InvertSelectionGroup(object);
@@ -194,8 +207,25 @@ void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
 			creating = new Circle(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, mousePosition, 0.0f, 0.0f, 0.0f);
 		if(creating)
 			PlaceObject(creating);
-	} else
+    } else
 		mousePosition = mouse;
+
+	if(settings.selectedTool == TOOL_CONNECTIONS) {
+        if(firstConnectionPointSelected) {
+            if(secondConnectionPad)
+                secondConnectionPad->Unselect();
+            secondConnectionPad = board->TestPointPad(mouse);
+            if(secondConnectionPad)
+                secondConnectionPad->Select();
+        } else {
+            if(firstConnectionPad)
+                firstConnectionPad->Unselect();
+            firstConnectionPad = board->TestPointPad(mouse);
+            if(firstConnectionPad)
+                firstConnectionPad->Select();
+        }
+    }
+
 	if(event->buttons() & Qt::MiddleButton) {
 		Vec2 delta = mouse - dragPosition;
 		board->UpdateCamera(delta);
@@ -232,8 +262,8 @@ void MainCanvas::OnLeaveWindowEvent() {
 }
 
 void MainCanvas::UpdateBoardGrid(QKeyEvent *event) {
-	shiftFlag = event->modifiers() & Qt::ShiftModifier;
-	ctrlFlag  = event->modifiers() & Qt::ControlModifier;
+	bool shiftFlag = event->modifiers() & Qt::ShiftModifier;
+	bool ctrlFlag  = event->modifiers() & Qt::ControlModifier;
 	board->UpdateGrid(shiftFlag, ctrlFlag);
 }
 

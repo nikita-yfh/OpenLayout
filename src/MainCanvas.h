@@ -3,6 +3,7 @@
 #include "Board.h"
 #include "Settings.h"
 #include "Vec2.h"
+#include "Pad.h"
 
 #include <QOpenGLWidget>
 #include <QEvent>
@@ -32,14 +33,14 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private:
-	bool shiftFlag;
-	bool ctrlFlag;
-
 	Vec2 dragPosition;
 	Vec2 mousePosition;
 	Vec2 lastPlacedPoint;
 	Vec2 mouseDelta;
 	uint32_t placedPointCount;
+    Pad *firstConnectionPad;
+    Pad *secondConnectionPad;
+    bool firstConnectionPointSelected;
 
     void OnWheelEvent(QWheelEvent *event);
     void OnLeftDownEvent(QMouseEvent *event);

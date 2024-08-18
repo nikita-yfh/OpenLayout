@@ -94,6 +94,24 @@ struct Vec2 {
 		return a.x * b.x + a.y * b.y;
 	}
 
+    static inline Vec2 Proj(const Vec2 &a, const Vec2 &b) {
+        float k = Dot(a, b) / Dot(b, b);
+        return b * k;
+    }
+
+    static inline float DistanceSegmentToPoint(const Vec2 &a, const Vec2 &b, const Vec2 &point) {
+        Vec2 ap = point - a;
+        Vec2 ab = b - a;
+        Vec2 d = Proj(ap, ab) + a;
+        Vec2 ad = d - a;
+        float koef = abs(ab.x) > abs(ab.y) ? ad.x / ab.x : ad.y / ad.y;
+        if(koef <= 0.0f)
+            return (point - a).Length();
+        else if(koef >= 1.0f)
+            return (point - b).Length();
+        return (point - d).Length();
+    }
+
 	static inline float Angle(const Vec2 &a, const Vec2 &b) {
 		return acos(Dot(a, b) / sqrt(a.LengthSq() * b.LengthSq()));
 	}

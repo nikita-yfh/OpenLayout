@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2.h"
 #include "Object.h"
+#include "Pad.h"
 #include "ObjectGroup.h"
 #include "ImageConfig.h"
 #include "Settings.h"
@@ -41,6 +42,7 @@ public:
 	Vec2 ToActiveGrid(const Vec2 &vec, const Vec2 &customOrigin) const;
 
 	Object *TestPoint(const Vec2 &point);
+	inline Pad *TestPointPad(const Vec2 &point);
 
 	double GetGrid() const;
 	void SetGrid(double grid);
@@ -131,4 +133,10 @@ inline void Board::SetOriginTop() {
 }
 inline void Board::SetOriginBottom() {
 	origin = Vec2(0.0f, size.y);
+}
+inline Pad *Board::TestPointPad(const Vec2 &point) {
+    Object *object = TestPoint(point);
+    if(!object || !object->IsPad())
+        return nullptr;
+    return static_cast<Pad*>(object);
 }

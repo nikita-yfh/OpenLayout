@@ -19,6 +19,7 @@ public:
 	virtual void DrawObject() const = 0;
 	virtual void DrawDrillings() const {}
 	virtual void DrawConnections() const {}
+	virtual void DrawConnectionsSelected() const {}
 
 	virtual void SaveObject(File &file) const = 0;
 	virtual void LoadObject(File &file) = 0;
@@ -27,6 +28,8 @@ public:
 	virtual void LoadConnections(Object *objects, File &file) {}
 
 	virtual void UpdateConnections(Object *objects) {}
+    virtual Object *TestConnections(const Vec2 &pos, float radius) const { return nullptr; }
+    virtual void RemoveConnections(Object *object) {}
 
 	void Save(File &file) const;
 	static Object *Load(File &file);
@@ -36,6 +39,7 @@ public:
 	const Object *GetPrev() const;
 	uint8_t GetLayer() const;
 
+    inline bool IsPad() const;
 	virtual uint8_t GetType() const = 0;
 	virtual AABB GetAABB() const = 0;
 	virtual Vec2 GetPosition() const = 0;
@@ -119,4 +123,7 @@ inline void Object::SetGroundDistance(float distance) {
 }
 inline float Object::GetGroundDistance() const {
 	return groundDistance;
+}
+inline bool Object::IsPad() const {
+    return GetType() == THT_PAD || GetType() == SMD_PAD;
 }
