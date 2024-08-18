@@ -19,7 +19,9 @@ public:
 	virtual uint8_t GetType() const override {
 		return POLY;
 	}
-	virtual bool TestPoint(const Vec2 &point) const;
+	virtual bool TestPoint(const Vec2 &point) const override;
+
+    virtual void BuildRect(const Vec2 &mousePosition) override;
 private:
 	void Draw(float halfWidth) const;
 

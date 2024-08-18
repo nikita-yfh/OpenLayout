@@ -19,6 +19,8 @@ public:
 		return TRACK;
 	}
 	virtual bool TestPoint(const Vec2 &point) const;
+
+    virtual void BuildRect(const Vec2 &mousePosition) override;
 private:
 	void Draw(float halfWidth) const;
 	inline bool GetBeginStyle() const {

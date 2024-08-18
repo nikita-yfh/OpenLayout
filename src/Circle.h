@@ -31,6 +31,8 @@ public:
 	virtual void MirrorHorizontal(float x) override;
 	virtual void MirrorVertical(float y) override;
 	virtual void Move(const Vec2 &d);
+
+    void BuildCircle(const Vec2 &mousePosition);
 private:
 	void Draw(float halfwidth) const;
 

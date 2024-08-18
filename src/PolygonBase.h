@@ -38,6 +38,8 @@ public:
     // returns count of new points after mouse click
     static int GetPlacePointCount(const Vec2 &mouseDelta);
     void BuildTrackEnd(const Vec2 &mousePosition, int placedPointCount);
+
+    virtual void BuildRect(const Vec2 &mousePosition) = 0;
 protected:
 	void LoadPoints(File &file, bool onlySoldermask = false);
 	void SavePoints(File &file, bool onlySoldermask = false) const;

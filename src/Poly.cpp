@@ -127,3 +127,9 @@ void Poly::Draw(float halfWidth) const {
 	glDisable(GL_STENCIL_TEST);
 }
 
+void Poly::BuildRect(const Vec2 &mousePosition) {
+    points.Resize(4);
+    points[1].Set(points[0].x, mousePosition.y);
+    points[2] = mousePosition;
+    points[3].Set(mousePosition.x, points[0].y);
+}

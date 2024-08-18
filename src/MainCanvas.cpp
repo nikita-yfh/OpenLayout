@@ -215,27 +215,13 @@ void MainCanvas::BuildTrackEnd() {
 }
 
 void MainCanvas::BuildRect() {
-	Array<Vec2> &points = ((PolygonBase*) board->GetFirstPlaced())->points;
-	uint8_t pointCount = 4;
-	if(mousePosition == lastPlacedPoint)
-		points.Resize(1);
-	else if(mousePosition.x == lastPlacedPoint.x || mousePosition.y == lastPlacedPoint.y) {
-		points.Resize(2);
-		points.Last() = mousePosition;
-	} else {
-		points.Resize(5);
-		points[1].Set(lastPlacedPoint.x, mousePosition.y);
-		points[2] = mousePosition;
-		points[3].Set(mousePosition.x, lastPlacedPoint.y);
-		points[4] = lastPlacedPoint;
-	}
-	points.First() = lastPlacedPoint;
+    PolygonBase *poly = static_cast<PolygonBase*>(board->GetFirstPlaced());
+    poly->BuildRect(mousePosition);
 }
 
 void MainCanvas::BuildCircle() {
-	Vec2 delta = (mousePosition - lastPlacedPoint).Abs();
-	float radius = utils::Max(delta.x, delta.y);
-	((Circle*) board->GetFirstPlaced())->SetDiameter(radius * 2.0f);
+    Circle *circle = static_cast<Circle*>(board->GetFirstPlaced());
+    circle->BuildCircle(mousePosition);
 }
 
 void MainCanvas::PlaceObject(Object *object) {

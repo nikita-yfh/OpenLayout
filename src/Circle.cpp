@@ -160,3 +160,8 @@ void Circle::Move(const Vec2 &d) {
 	position += d;
 }
 
+void Circle::BuildCircle(const Vec2 &mousePosition) {
+	Vec2 delta = (mousePosition - position).Abs();
+	float radius = utils::Max(delta.x, delta.y);
+    diameter = radius * 2.0f;
+}

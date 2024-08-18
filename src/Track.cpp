@@ -173,3 +173,10 @@ void Track::DrawObject() const {
 		Draw(width / 2.0f);
 }
 
+void Track::BuildRect(const Vec2 &mousePosition) {
+    points.Resize(5);
+    points[1].Set(points[0].x, mousePosition.y);
+    points[2] = mousePosition;
+    points[3].Set(mousePosition.x, points[0].y);
+    points[4] = points[0];
+}
