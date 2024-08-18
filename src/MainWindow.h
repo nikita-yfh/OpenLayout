@@ -6,6 +6,7 @@
 #include "GridPanel.h"
 #include "PCB.h"
 #include "Settings.h"
+#include "MainCanvas.h"
 
 class MainWindow : public QMainWindow {
 public:
@@ -23,6 +24,7 @@ private:
              *toolBarActions, *toolBarZoom, *toolBarPCB, *toolBarPanels;
     ToolPanel *toolPanel;
     GridPanel *gridPanel;
+    MainCanvas *mainCanvas;
 
     QAction *aboutAct, *alignAct, *alignBottomAct, *alignHAct, *alignLeftAct,
             *alignRightAct, *alignTopAct, *alignVAct, *autosaveAct, *bitmapAct,

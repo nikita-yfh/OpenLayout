@@ -203,6 +203,7 @@ void ToolPanel::OnSettedPadType(int type) {
 
 void ToolPanel::OnSettedTool(int tool) {
     settings.selectedTool = tool;
+    emit ToolChanged();
 }
 
 void ToolPanel::OnSettedRectTrack() {

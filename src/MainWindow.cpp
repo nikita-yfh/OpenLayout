@@ -2,7 +2,6 @@
 #include "Locale.h"
 
 #include "SettingsDialog.h"
-#include "MainCanvas.h"
 
 #include <QIcon>
 #include <QAction>
@@ -56,8 +55,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     CreateLeftPanel();
     CreateMenuBar();
 
-    MainCanvas *canvas = new MainCanvas(pcb.GetSelectedBoard(), settings, this);
-    setCentralWidget(canvas);
+    mainCanvas = new MainCanvas(pcb.GetSelectedBoard(), settings, this);
+    setCentralWidget(mainCanvas);
+
+    connect(toolPanel, SIGNAL(ToolChanged()), mainCanvas, SLOT(FinishCreating()));
 }
 
 void MainWindow::CreateToolBar() {

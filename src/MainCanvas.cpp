@@ -32,13 +32,11 @@ void MainCanvas::FinishCreating() {
 	if(placedPointCount >= 3 || (placedPointCount == 2 && settings.selectedTool == TOOL_TRACK)) {
 		((PolygonBase*) board->GetFirstPlaced())->points.Resize(placedPointCount);
 		board->UnselectAll();
-	} else {
-		if(placedPointCount == 0)
-			settings.selectedTool = TOOL_EDIT;
+	} else
 		board->CancelPlacing();
-	}
 	placedPointCount = 0;
 	lastPlacedPoint = Vec2::Invalid();
+    repaint();
 }
 
 bool MainCanvas::eventFilter(QObject *obj, QEvent *event) {
@@ -62,10 +60,13 @@ bool MainCanvas::eventFilter(QObject *obj, QEvent *event) {
             OnWheelEvent(static_cast<QWheelEvent*>(event));
             break;
         case QEvent::KeyPress:
-            OnKeyPress(static_cast<QKeyEvent*>(event));
+            OnKeyPressEvent(static_cast<QKeyEvent*>(event));
             break;
         case QEvent::KeyRelease:
-            OnKeyRelease(static_cast<QKeyEvent*>(event));
+            OnKeyReleaseEvent(static_cast<QKeyEvent*>(event));
+            break;
+        case QEvent::Leave:
+            OnLeaveWindowEvent();
             break;
     }
     return false;
@@ -184,7 +185,7 @@ void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
     repaint();
 }
 
-void MainCanvas::OnKeyPress(QKeyEvent *event) {
+void MainCanvas::OnKeyPressEvent(QKeyEvent *event) {
     UpdateBoardGrid(event);
 	if(!event->modifiers()) {
         int key = event->key();
@@ -198,9 +199,17 @@ void MainCanvas::OnKeyPress(QKeyEvent *event) {
     repaint();
 }
 
-void MainCanvas::OnKeyRelease(QKeyEvent *event) {
+void MainCanvas::OnKeyReleaseEvent(QKeyEvent *event) {
     UpdateBoardGrid(event);
     repaint();
+}
+
+void MainCanvas::OnLeaveWindowEvent() {
+	if(board->GetFirstPlaced() && board->GetFirstPlaced()->groups.Empty() && !placedPointCount) {
+		board->CancelPlacing();
+		lastPlacedPoint = Vec2::Invalid();
+        repaint();
+	}
 }
 
 void MainCanvas::UpdateBoardGrid(QKeyEvent *event) {

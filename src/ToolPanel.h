@@ -79,4 +79,6 @@ public slots:
     void OnSettedTool(int);
     void OnSettedRectTrack();
     void OnSettedRectZone();
+signals:
+    void ToolChanged();
 };

@@ -19,6 +19,9 @@ public:
     void PlaceObject(Object *object);
     void PlaceObjectGroup(const ObjectGroup &objects);
 
+public slots:
+    void FinishCreating();
+
 protected:
     void initializeGL() override;
     void paintGL() override;
@@ -40,11 +43,11 @@ private:
     void OnLeftDownEvent(QMouseEvent *event);
     void OnLeftUpEvent(QMouseEvent *event);
     void OnMouseMotionEvent(QMouseEvent *event);
-    void OnKeyPress(QKeyEvent *event);
-    void OnKeyRelease(QKeyEvent *event);
+    void OnKeyPressEvent(QKeyEvent *event);
+    void OnKeyReleaseEvent(QKeyEvent *event);
+    void OnLeaveWindowEvent();
     void UpdateBoardGrid(QKeyEvent *event);
 
-    void FinishCreating();
     void BuildTrackEnd();
     void BuildRect();
     void BuildCircle();
