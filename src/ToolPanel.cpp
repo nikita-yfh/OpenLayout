@@ -1,5 +1,6 @@
 #include "ToolPanel.h"
 #include "Locale.h"
+#include "Tool.h"
 
 #include <QLayout>
 #include <QToolButton>
@@ -101,6 +102,8 @@ ToolPanel::ToolPanel (Settings &_settings, QWidget *parent)
     QActionGroup *group = new QActionGroup(this);
     QSignalMapper *toolMapper = new QSignalMapper(this);
 
+    /* const Array<Tool::Uncreated> &tools = Tool::GetTools(); */
+
     for(int i = 0; i < TOOL_COUNT; i++) {
         actions[i] = addAction(QIcon(QPixmap(toolBitmaps[i])), toolNames[i]);
         actions[i]->setCheckable(true);
@@ -109,6 +112,11 @@ ToolPanel::ToolPanel (Settings &_settings, QWidget *parent)
         connect(actions[i], SIGNAL(triggered(bool)), toolMapper, SLOT(map()));
         toolMapper->setMapping(actions[i], i);
     }
+
+    /* for(int i = 0; i < tools.Size(); i++) { */
+    /*     actions[i] = addAction(QIcon(QPixmap(tools[i].icon)), tools[i].name); */
+    /* } */
+
     connect(toolMapper, SIGNAL(mappedInt(int)), this, SLOT(OnToolChanged(int)));
     actions[settings.selectedTool]->setChecked(true);
 

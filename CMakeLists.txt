@@ -5,6 +5,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
 
+include_directories("src" "src/tools")
+
 set(SOURCES
     src/Board.cpp
     src/Circle.cpp
@@ -31,6 +33,10 @@ set(SOURCES
     src/THTPad.cpp
     src/ToolPanel.cpp
     src/Track.cpp
+    src/tools/Tool.cpp
+    src/tools/ConnectionsTool.cpp
+    src/tools/EditTool.cpp
+    src/tools/ZoomTool.cpp
 )
 set(HEADERS
     src/AABB.h
@@ -63,6 +69,10 @@ set(HEADERS
     src/ToolPanel.h
     src/Track.h
     src/Vec2.h
+    src/tools/Tool.h
+    src/tools/ConnectionsTool.h
+    src/tools/EditTool.h
+    src/tools/ZoomTool.h
 )
 
 add_executable(openlayout ${SOURCES} ${HEADERS})
