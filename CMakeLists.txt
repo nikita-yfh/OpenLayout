@@ -5,11 +5,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenGL REQUIRED)
 
-include_directories("src" "src/tools")
+include_directories("src" "src/tools" "src/objects")
 
 set(SOURCES
     src/Board.cpp
-    src/Circle.cpp
     src/ColorPickerButton.cpp
     src/ColorScheme.cpp
     src/DirChooserButton.cpp
@@ -17,26 +16,29 @@ set(SOURCES
     src/GLUtils.cpp
     src/GridPanel.cpp
     src/ImageConfig.cpp
-    src/main.cpp
     src/MainCanvas.cpp
+    src/main.cpp
     src/MainWindow.cpp
-    src/Object.cpp
     src/ObjectGroup.cpp
-    src/Pad.cpp
     src/PCB.cpp
-    src/Poly.cpp
-    src/PolygonBase.cpp
     src/ProjectInfo.cpp
     src/Settings.cpp
     src/SettingsDialog.cpp
-    src/SMDPad.cpp
-    src/THTPad.cpp
     src/ToolPanel.cpp
-    src/Track.cpp
-    src/tools/Tool.cpp
+
+    src/objects/Circle.cpp
+    src/objects/Object.cpp
+    src/objects/Pad.cpp
+    src/objects/Poly.cpp
+    src/objects/PolygonBase.cpp
+    src/objects/SMDPad.cpp
+    src/objects/THTPad.cpp
+    src/objects/Track.cpp
+
     src/tools/ConnectionsTool.cpp
     src/tools/EditTool.cpp
     src/tools/PadTool.cpp
+    src/tools/Tool.cpp
     src/tools/ZoomTool.cpp
 )
 
@@ -44,7 +46,6 @@ set(HEADERS
     src/AABB.h
     src/Array.h
     src/Board.h
-    src/Circle.h
     src/ColorPickerButton.h
     src/ColorScheme.h
     src/DirChooserButton.h
@@ -52,29 +53,34 @@ set(HEADERS
     src/GLUtils.h
     src/GridPanel.h
     src/ImageConfig.h
-    src/LineObject.h
     src/Locale.h
     src/MainCanvas.h
     src/MainWindow.h
     src/ObjectGroup.h
-    src/Object.h
-    src/Pad.h
-    src/PCB.h
     src/PadSize.h
-    src/PolygonBase.h
-    src/Poly.h
+    src/PCB.h
     src/ProjectInfo.h
     src/SettingsDialog.h
     src/Settings.h
-    src/SMDPad.h
-    src/THTPad.h
     src/ToolPanel.h
-    src/Track.h
+    src/Utils.h
     src/Vec2.h
-    src/tools/Tool.h
+
+    src/objects/Circle.h
+    src/objects/LineObject.h
+    src/objects/Object.h
+    src/objects/Pad.h
+    src/objects/PolygonBase.h
+    src/objects/Poly.h
+    src/objects/SMDPad.h
+    src/objects/THTPad.h
+    src/objects/Track.h
     src/tools/ConnectionsTool.h
+
     src/tools/EditTool.h
     src/tools/PadTool.h
+    src/tools/RectTool.h
+    src/tools/Tool.h
     src/tools/ZoomTool.h
 )
 
