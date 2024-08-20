@@ -36,8 +36,10 @@ set(SOURCES
     src/tools/Tool.cpp
     src/tools/ConnectionsTool.cpp
     src/tools/EditTool.cpp
+    src/tools/PadTool.cpp
     src/tools/ZoomTool.cpp
 )
+
 set(HEADERS
     src/AABB.h
     src/Array.h
@@ -72,6 +74,7 @@ set(HEADERS
     src/tools/Tool.h
     src/tools/ConnectionsTool.h
     src/tools/EditTool.h
+    src/tools/PadTool.h
     src/tools/ZoomTool.h
 )
 

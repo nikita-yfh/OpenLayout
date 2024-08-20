@@ -4,7 +4,7 @@
 #include "AABB.h"
 #include "Array.h"
 
-class Pad : public Object{
+class Pad : public Object {
 public:
 	Pad() {}
 	Pad(uint8_t layer, float groundDistance, const Vec2 &_position)

@@ -9,11 +9,11 @@ class Tool;
 typedef Tool *(*toolCreate_t)(Board*, const Settings&);
 typedef const char **xpm_t;
 
-#define REGISTER_TOOL(TOOL, ID, NAME, XPM)                                  \
-    static Tool *_CreateTool(Board *board, const Settings &settings) {      \
-        return new TOOL(board, settings);                                   \
-    }                                                                       \
-    static int _dummyId = Tool::RegisterTool(_CreateTool, ID, NAME, XPM);  
+#define REGISTER_TOOL(TOOL, ID, NAME, XPM)                                        \
+    static Tool *_CreateTool##TOOL(Board *board, const Settings &settings) {      \
+        return new TOOL(board, settings);                                         \
+    }                                                                             \
+    static int _dummyId##TOOL = Tool::RegisterTool(_CreateTool##TOOL, ID, NAME, XPM);  
 
 
 class Tool {
