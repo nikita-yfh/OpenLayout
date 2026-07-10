@@ -1,6 +1,15 @@
 #include "THTPad.h"
 #include "GLUtils.h"
 #include "Utils.h"
+#include "../Gerber.h"
+
+void THTPad::ExportGerber(GerberWriter &w) const {
+	// shape % 3: 0 = circle, 1 = octagon (approximated as circle), 2 = square
+	int ap = (shape % 3 == S_SQUARE) ? w.rect(size.out, size.out)
+	                                 : w.circle(size.out);
+	w.select(ap);
+	w.flash(position);
+}
 
 THTPad *THTPad::Clone() const {
 	return new THTPad(*this);

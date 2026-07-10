@@ -1,6 +1,12 @@
 #include "SMDPad.h"
 #include "GLUtils.h"
 #include "Utils.h"
+#include "../Gerber.h"
+
+void SMDPad::ExportGerber(GerberWriter &w) const {
+	w.select(w.rect(size.x, size.y));
+	w.flash(position);
+}
 
 SMDPad *SMDPad::Clone() const {
 	return new SMDPad(*this);

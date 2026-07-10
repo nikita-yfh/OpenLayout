@@ -25,6 +25,7 @@ public:
 	void SetTab(uint32_t n);
 	uint32_t GetTab() const;
 	Board *GetSelectedBoard();
+	void SetSelectedBoard(Board *board);
 
 	ProjectInfo info;
 private:
@@ -33,6 +34,9 @@ private:
 
 inline Board *PCB::GetSelectedBoard() {
 	return items[activeTab];
+}
+inline void PCB::SetSelectedBoard(Board *board) {
+	items[activeTab] = board;
 }
 inline bool PCB::CanMoveLeft() const {
 	return activeTab != 0;

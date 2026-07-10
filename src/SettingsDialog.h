@@ -15,6 +15,8 @@ class SettingsDialog : public QDialog {
 public:
     SettingsDialog(const Settings &oldSettings, QWidget *parent);
     ~SettingsDialog() {}
+
+    const Settings &Result() const { return settings; }
 private:
     ColorPickerButton *colorPickerButtons[COLOR_COUNT];
     QPushButton *resetColorsButton;

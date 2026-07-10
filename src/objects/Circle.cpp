@@ -1,6 +1,14 @@
 #include "Circle.h"
 #include "GLUtils.h"
 #include "Utils.h"
+#include "../Gerber.h"
+
+void Circle::ExportGerber(GerberWriter &w) const {
+	if(!fill)
+		return;   // only filled discs map cleanly to a flashed aperture
+	w.select(w.circle(diameter));
+	w.flash(position);
+}
 
 Circle *Circle::Clone() const {
 	return new Circle(*this);

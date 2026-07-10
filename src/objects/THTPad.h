@@ -27,6 +27,8 @@ public:
 	}
 	virtual AABB GetAABB() const override;
 	virtual bool TestPoint(const Vec2 &point) const;
+	virtual float GetDrillDiameter() const override { return size.in; }
+	virtual void ExportGerber(GerberWriter &w) const override;
 
 	const PadSize &GetSize() const;
 	void SetSize(const PadSize &size);

@@ -31,6 +31,7 @@ public:
 	virtual void MirrorHorizontal(float x) override;
 	virtual void MirrorVertical(float y) override;
 	virtual void Move(const Vec2 &d);
+	virtual void ExportGerber(GerberWriter &w) const override;
 
     void BuildCircle(const Vec2 &mousePosition);
 private:

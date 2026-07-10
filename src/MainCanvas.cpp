@@ -1,5 +1,6 @@
 #include "MainCanvas.h"
 
+#include "GLUtils.h"
 #include "THTPad.h"
 #include "SMDPad.h"
 #include "Track.h"
@@ -13,7 +14,10 @@ MainCanvas::MainCanvas(Board *_board, Settings &_settings, QWidget *parent)
                   firstConnectionPad(nullptr), secondConnectionPad(nullptr), firstConnectionPointSelected(false) {
     installEventFilter(this);
     setMouseTracking(true);
-    grabKeyboard();
+    // Receive key events via focus instead of a global grabKeyboard(): the
+    // grab routes events to this widget even while a modal dialog is open,
+    // which floods GTK with WIDGET_REALIZED_FOR_EVENT warnings.
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 void MainCanvas::initializeGL() {
@@ -21,6 +25,51 @@ void MainCanvas::initializeGL() {
 
 void MainCanvas::paintGL() {
     board->Draw(settings, currentSize);
+    if(selecting)
+        DrawSelectionRect();
+    if(settings.selectedTool == TOOL_MEASURE && measuring)
+        DrawMeasure();
+}
+
+void MainCanvas::DrawMeasure() const {
+    // Board::Draw leaves the camera/zoom projection set, so we draw in mm.
+    glColor3f(0.0f, 0.45f, 0.85f);
+    glLineWidth(1.0f);
+    glBegin(GL_LINES);
+    glutils::Vertex(measureStart);
+    glutils::Vertex(measureEnd);
+    glEnd();
+    glPointSize(5.0f);
+    glBegin(GL_POINTS);
+    glutils::Vertex(measureStart);
+    glutils::Vertex(measureEnd);
+    glEnd();
+}
+
+void MainCanvas::EmitMeasure() {
+    Vec2 d = measureEnd - measureStart;
+    // Board Y grows downward; negate it so the reported angle is mathematical.
+    float angle = atan2f(-d.y, d.x) * 180.0f / M_PI;
+    emit Measured(QString("%1: %2 mm    dx: %3    dy: %4    %5: %6°")
+        .arg(QString::fromUtf8("Δ"))
+        .arg(d.Length(), 0, 'f', 3)
+        .arg(d.x, 0, 'f', 3)
+        .arg(-d.y, 0, 'f', 3)
+        .arg(QString::fromUtf8("∠"))
+        .arg(angle, 0, 'f', 1));
+}
+
+void MainCanvas::DrawSelectionRect() const {
+    // Drawn in board coordinates: Board::Draw leaves the projection set up
+    // with the camera/zoom transform.
+    glColor3f(0.4f, 0.4f, 0.4f);
+    glLineWidth(1.0f);
+    glBegin(GL_LINE_LOOP);
+    glutils::Vertex(Vec2(selectStart.x, selectStart.y));
+    glutils::Vertex(Vec2(selectEnd.x,   selectStart.y));
+    glutils::Vertex(Vec2(selectEnd.x,   selectEnd.y));
+    glutils::Vertex(Vec2(selectStart.x, selectEnd.y));
+    glEnd();
 }
 
 void MainCanvas::resizeGL(int w, int h) {
@@ -29,14 +78,15 @@ void MainCanvas::resizeGL(int w, int h) {
 }
 
 void MainCanvas::FinishCreating() {
-	if(placedPointCount >= 3 || (placedPointCount == 2 && settings.selectedTool == TOOL_TRACK)) {
-		((PolygonBase*) board->GetFirstPlaced())->points.Resize(placedPointCount);
+	Object *placed = board->GetFirstPlaced();
+	if(placed && (placedPointCount >= 3 || (placedPointCount == 2 && settings.selectedTool == TOOL_TRACK))) {
+		((PolygonBase*) placed)->points.Resize(placedPointCount);
 		board->UnselectAll();
 	} else
 		board->CancelPlacing();
 	placedPointCount = 0;
 	lastPlacedPoint = Vec2::Invalid();
-    repaint();
+    update();
 }
 
 bool MainCanvas::eventFilter(QObject *obj, QEvent *event) {
@@ -82,12 +132,12 @@ static const float zoomRatioButtons = 1.4f;
 
 void MainCanvas::OnWheelEvent(QWheelEvent *event) {
 	float ratio = zoomRatioWheel;
-	if(event->pixelDelta().y() < 0)
+	if(event->angleDelta().y() < 0)
 		ratio = 1.0f / ratio;
 
 	board->Zoom(ratio, event->position());
 
-    repaint();
+    update();
 }
 
 void MainCanvas::OnLeftDownEvent(QMouseEvent *event) {
@@ -116,6 +166,18 @@ void MainCanvas::OnLeftDownEvent(QMouseEvent *event) {
             if(firstConnectionPad)
                 firstConnectionPointSelected = true;
         }
+    } else if(settings.selectedTool == TOOL_MEASURE) {
+        measuring = true;
+        measureStart = measureEnd = board->ToActiveGrid(mouse);
+        EmitMeasure();
+    } else if(settings.selectedTool == TOOL_SOLDER_MASK) {
+        Object *object = board->TestPoint(mouse);
+        if(object) {
+            emit BeforeChange();        // snapshot for undo
+            board->ToggleSoldermask(object);
+        }
+    } else if(settings.selectedTool == TOOL_TEST) {
+        board->SelectConnected(board->TestPoint(mouse));
     } else {
 		if(board->GetFirstPlaced()) {
 			if(!board->GetFirstPlaced()->groups.Empty())
@@ -133,10 +195,15 @@ void MainCanvas::OnLeftDownEvent(QMouseEvent *event) {
 			if(object) {
 				mousePosition = lastPlacedPoint = object->GetNearestPoint(mouse);
 				mouseDelta = mouse - mousePosition;
+				dragStarted = true;       // arm undo snapshot for a potential move
+			} else {
+				// Empty space: begin a rubber-band selection.
+				selecting = true;
+				selectStart = selectEnd = mouse;
 			}
 		}
 	}
-    repaint();
+    update();
 }
 
 void MainCanvas::OnMiddleDownEvent(QMouseEvent *event) {
@@ -146,12 +213,18 @@ void MainCanvas::OnMiddleDownEvent(QMouseEvent *event) {
 void MainCanvas::OnRightDownEvent(QMouseEvent *event) {
 	if(settings.selectedTool == TOOL_ZOOM || settings.selectedTool == TOOL_PHOTOVIEW)
 		board->Zoom(1.0f / zoomRatioButtons, event->pos());
+	else if(settings.selectedTool == TOOL_MEASURE) {
+		measuring = false;
+		emit Measured(QString());
+	}
+	else if(settings.selectedTool == TOOL_TEST)
+		board->UnselectAll();
 	else if(settings.selectedTool != TOOL_EDIT) {
 		if(placedPointCount == 0)
             emit ToolChanged(TOOL_EDIT);
 		FinishCreating();
     }
-    repaint();
+    update();
 }
 
 void MainCanvas::OnLeftUpEvent(QMouseEvent *event) {
@@ -160,15 +233,31 @@ void MainCanvas::OnLeftUpEvent(QMouseEvent *event) {
 			board->CancelPlacing();
 		board->UnselectAll();
 	} else if(settings.selectedTool == TOOL_EDIT) {
+		dragStarted = false;
+		if(selecting) {
+			selecting = false;
+			board->SelectInRect(AABB(Vec2::Min(selectStart, selectEnd),
+			                         Vec2::Max(selectStart, selectEnd)));
+		}
 		lastPlacedPoint = Vec2::Invalid();
-        repaint();
+        update();
 	}
 }
 
 void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
     Vec2 mouse(board->ConvertToCoords(event->pos()));
+	if(settings.selectedTool == TOOL_MEASURE && (event->buttons() & Qt::LeftButton)) {
+		measureEnd = board->ToActiveGrid(mouse);
+		EmitMeasure();
+	}
 	if(settings.selectedTool == TOOL_EDIT && (event->buttons() & Qt::LeftButton)) {
-		if(board->IsSelected()) {
+		if(selecting) {
+			selectEnd = mouse;
+		} else if(board->IsSelected()) {
+			if(dragStarted) {          // snapshot once, before the drag moves anything
+				emit BeforeChange();
+				dragStarted = false;
+			}
 			Vec2 _mouse = board->ToActiveGrid(mouse - mouseDelta, lastPlacedPoint);
 			Vec2 delta = _mouse - mousePosition;
 			mousePosition = _mouse;
@@ -205,8 +294,10 @@ void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
 			creating = new Poly(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, &mousePosition, 1, true);
 		else if(settings.selectedTool == TOOL_CIRCLE)
 			creating = new Circle(board->GetSelectedLayer(), settings.groundDistance, settings.trackSize, mousePosition, 0.0f, 0.0f, 0.0f);
-		if(creating)
+		if(creating) {
+			emit BeforeChange();      // snapshot for undo before adding the object
 			PlaceObject(creating);
+		}
     } else
 		mousePosition = mouse;
 
@@ -231,7 +322,7 @@ void MainCanvas::OnMouseMotionEvent(QMouseEvent *event) {
 		board->UpdateCamera(delta);
 	}
     dragPosition = board->ConvertToCoords(event->pos());
-    repaint();
+    update();
 }
 
 void MainCanvas::OnKeyPressEvent(QKeyEvent *event) {
@@ -244,20 +335,22 @@ void MainCanvas::OnKeyPressEvent(QKeyEvent *event) {
             PolygonBase::ChangeBendMode();
 			BuildTrackEnd();
 		}
+		if(key == Qt::Key_Delete)
+			board->DeleteSelected();
 	}
-    repaint();
+    update();
 }
 
 void MainCanvas::OnKeyReleaseEvent(QKeyEvent *event) {
     UpdateBoardGrid(event);
-    repaint();
+    update();
 }
 
 void MainCanvas::OnLeaveWindowEvent() {
 	if(board->GetFirstPlaced() && board->GetFirstPlaced()->groups.Empty() && !placedPointCount) {
 		board->CancelPlacing();
 		lastPlacedPoint = Vec2::Invalid();
-        repaint();
+        update();
 	}
 }
 
@@ -290,6 +383,40 @@ void MainCanvas::PlaceObject(Object *object) {
 void MainCanvas::PlaceObjectGroup(const ObjectGroup &objects) {
 	lastPlacedPoint = board->ToActiveGrid(mousePosition);
 	board->PlaceGroup(objects, mousePosition);
-    repaint();
+    update();
+}
+
+void MainCanvas::Copy() {
+	ObjectGroup *copied = board->CopySelected();
+	if(copied) {
+		delete clipboard;
+		clipboard = copied;
+	}
+}
+
+void MainCanvas::Cut() {
+	ObjectGroup *copied = board->CopySelected();
+	if(copied) {
+		delete clipboard;
+		clipboard = copied;
+		board->DeleteSelected();
+		update();
+	}
+}
+
+void MainCanvas::Paste() {
+	if(clipboard) {
+		board->UnselectAll();
+		PlaceObjectGroup(*clipboard);
+	}
+}
+
+void MainCanvas::Duplicate() {
+	ObjectGroup *dup = board->CopySelected();
+	if(dup) {
+		board->UnselectAll();
+		PlaceObjectGroup(*dup);
+		delete dup;
+	}
 }
 

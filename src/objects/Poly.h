@@ -20,6 +20,7 @@ public:
 		return POLY;
 	}
 	virtual bool TestPoint(const Vec2 &point) const override;
+	virtual void ExportGerber(GerberWriter &w) const override;
 
     virtual void BuildRect(const Vec2 &mousePosition) override;
 private:

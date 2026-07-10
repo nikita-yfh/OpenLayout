@@ -19,6 +19,7 @@ public:
 		return TRACK;
 	}
 	virtual bool TestPoint(const Vec2 &point) const;
+	virtual void ExportGerber(GerberWriter &w) const override;
 
     virtual void BuildRect(const Vec2 &mousePosition) override;
 private:

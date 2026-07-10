@@ -1,6 +1,18 @@
 #include "Poly.h"
 #include "GLUtils.h"
 #include "Utils.h"
+#include "../Gerber.h"
+
+void Poly::ExportGerber(GerberWriter &w) const {
+	if(points.Size() < 3)
+		return;
+	w.beginRegion();
+	w.moveTo(points[0]);
+	for(uint32_t i = 1; i < points.Size(); i++)
+		w.lineTo(points[i]);
+	w.lineTo(points[0]);
+	w.endRegion();
+}
 
 Poly *Poly::Clone() const {
 	return new Poly(*this);

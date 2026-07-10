@@ -4,6 +4,7 @@
 #include "Track.h"
 #include "Poly.h"
 #include "Circle.h"
+#include "Text.h"
 
 Vec2 Object::GetNearestPoint(const Vec2 &point) const {
 	return GetPosition();
@@ -26,8 +27,8 @@ void Object::Save(File &file) const{
 }
 
 Object *Object::Load(File &file){
-	Object *object;
 	uint8_t type = file.Read<uint8_t>();
+	Object *object = nullptr;
 	switch(type){
 		case THT_PAD:
 			object = new THTPad();
@@ -41,11 +42,14 @@ Object *Object::Load(File &file){
 		case TRACK:
 			object = new Track();
 			break;
-		case TEXT:
-			break;
 		case SMD_PAD:
 			object = new SMDPad();
 			break;
+		case TEXT:
+			object = new Text();
+			break;
+		default:                 // unknown / unsupported type
+			return nullptr;
 	}
 	object->LoadObject(file);
 	return object;

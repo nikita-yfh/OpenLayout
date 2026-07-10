@@ -1,6 +1,20 @@
 #include "Track.h"
 #include "GLUtils.h"
 #include "Utils.h"
+#include "../Gerber.h"
+
+void Track::ExportGerber(GerberWriter &w) const {
+	if(points.Size() == 0)
+		return;
+	w.select(w.circle(width));
+	if(points.Size() == 1) {
+		w.flash(points[0]);
+		return;
+	}
+	w.moveTo(points[0]);
+	for(uint32_t i = 1; i < points.Size(); i++)
+		w.lineTo(points[i]);
+}
 
 Track *Track::Clone() const {
 	return new Track(*this);

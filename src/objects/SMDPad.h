@@ -20,6 +20,7 @@ public:
 	}
 	virtual AABB GetAABB() const override;
 	virtual bool TestPoint(const Vec2 &point) const override;
+	virtual void ExportGerber(GerberWriter &w) const override;
 
 	const Vec2 &GetSize() const;
 	void SetSize(const Vec2 &size);

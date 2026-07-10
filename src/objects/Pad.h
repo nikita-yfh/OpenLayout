@@ -18,6 +18,7 @@ public:
 	virtual void UpdateConnections(Object *objects) override;
     virtual Object *TestConnections(const Vec2 &pos, float radius) const override;
     virtual void RemoveConnections(Object *object) override;
+    virtual void ClearConnections() override { connections.Clear(); }
 	virtual void DrawConnections() const override;
 	virtual void DrawConnectionsSelected() const override;
 
@@ -28,6 +29,8 @@ public:
 	virtual void Move(const Vec2 &d) override;
 
     void AddConnection(Pad *object);
+    uint32_t ConnectionCount() const { return connections.Size(); }
+    Pad *GetConnection(uint32_t i) const { return connections[i]; }
 protected:
 
 	static void WriteArray(File &file, const Vec2 *arr, uint32_t count, const Vec2 &shift);

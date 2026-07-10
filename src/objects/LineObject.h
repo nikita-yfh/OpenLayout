@@ -8,7 +8,7 @@ public:
 		: Object(layer, groundDistance), width(_width) {}
 
 	float GetWidth() const;
-	void SetWidth(float size);
+	virtual void SetWidth(float size) override;
 protected:
 	float width;
 

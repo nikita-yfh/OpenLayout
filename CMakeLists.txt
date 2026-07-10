@@ -3,6 +3,7 @@ project(openlayout)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
 find_package(OpenGL REQUIRED)
 
 include_directories("src" "src/tools" "src/objects")
@@ -13,6 +14,7 @@ set(SOURCES
     src/ColorScheme.cpp
     src/DirChooserButton.cpp
     src/File.cpp
+    src/FormDialog.cpp
     src/GLUtils.cpp
     src/GridPanel.cpp
     src/ImageConfig.cpp
@@ -32,6 +34,7 @@ set(SOURCES
     src/objects/Poly.cpp
     src/objects/PolygonBase.cpp
     src/objects/SMDPad.cpp
+    src/objects/Text.cpp
     src/objects/THTPad.cpp
     src/objects/Track.cpp
 
@@ -50,6 +53,7 @@ set(HEADERS
     src/ColorScheme.h
     src/DirChooserButton.h
     src/File.h
+    src/FormDialog.h
     src/GLUtils.h
     src/GridPanel.h
     src/ImageConfig.h
@@ -73,6 +77,7 @@ set(HEADERS
     src/objects/PolygonBase.h
     src/objects/Poly.h
     src/objects/SMDPad.h
+    src/objects/Text.h
     src/objects/THTPad.h
     src/objects/Track.h
     src/tools/ConnectionsTool.h
@@ -88,4 +93,4 @@ add_executable(openlayout ${SOURCES} ${HEADERS})
 
 target_link_libraries(openlayout ${OPENGL_LIBRARIES})
 
-qt5_use_modules(openlayout Widgets OpenGL)
+qt5_use_modules(openlayout Widgets OpenGL PrintSupport)

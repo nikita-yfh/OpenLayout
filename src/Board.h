@@ -6,6 +6,8 @@
 #include "ImageConfig.h"
 #include "Settings.h"
 #include "File.h"
+#include <vector>
+#include <utility>
 
 class Board : public ObjectGroup {
 public:
@@ -44,15 +46,21 @@ public:
 	Object *TestPoint(const Vec2 &point);
 	inline Pad *TestPointPad(const Vec2 &point);
 
+	// Single-layer maze (Lee) autorouter for pad rubber-band connections.
+	// Returns {routed, total}; routed connections become tracks and are dropped.
+	std::pair<int, int> Autoroute(const Settings &settings, bool twoSided);
+
 	double GetGrid() const;
 	void SetGrid(double grid);
 	void UpdateGrid(bool shift, bool ctrl);
 	void SnapSelectedToGrid();
 	void UpdateCamera(const Vec2 &delta);
+	void CenterOn(const Vec2 &point, const Vec2 &screenSize);   // pan to centre a point
 	void Zoom(float ratio, const Vec2 &mouse);
 	void ZoomBoard(const Vec2 &screenSize);
 	void ZoomObjects(const Vec2 &screenSize);
 	void ZoomSelection(const Vec2 &screenSize);
+	void ZoomPrevious();   // restore the view from before the last zoom
 
 	void Draw(const Settings &settings, const Vec2 &screenSize) const;
 	void DrawGrid(const Settings &settings, const Vec2 &screenSize) const;
@@ -70,6 +78,10 @@ public:
 
 private:
 	void ZoomAABB(const Vec2 &screenSize, const AABB &aabb);
+	void SaveView();   // push the current view onto the zoom history
+
+	struct View { Vec2 camera; double zoom; };
+	std::vector<View> viewHistory;
 
 	char name[30];
 	Vec2 size;
@@ -91,7 +103,8 @@ inline const Vec2 &Board::GetSize() const {
 	return size;
 }
 inline void Board::SetName(const char *_name) {
-	strncpy(name, _name, 30);
+	strncpy(name, _name, 29);
+	name[29] = '\0';
 }
 inline uint8_t Board::GetSelectedLayer() const {
 	return activeLayer;

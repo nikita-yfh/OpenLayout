@@ -4,6 +4,8 @@
 #include "AABB.h"
 #include "Array.h"
 
+class GerberWriter;
+
 class Object {
 public:
 	Object() {}
@@ -30,6 +32,12 @@ public:
 	virtual void UpdateConnections(Object *objects) {}
     virtual Object *TestConnections(const Vec2 &pos, float radius) const { return nullptr; }
     virtual void RemoveConnections(Object *object) {}
+    virtual void ClearConnections() {}
+
+	virtual float GetDrillDiameter() const { return 0.0f; }  // 0 = no hole
+	virtual void SetWidth(float width) {}                    // no-op for non-line objects
+
+	virtual void ExportGerber(GerberWriter &w) const {}      // emit RS-274X
 
 	void Save(File &file) const;
 	static Object *Load(File &file);
@@ -52,6 +60,8 @@ public:
 
 	void SetGroundDistance(float distance);
 	float GetGroundDistance() const;
+
+	bool HasSoldermask() const { return soldermask; }   // flagged into the solder mask
 
 	bool IsPlaced() const;
 	bool IsSelected() const;
